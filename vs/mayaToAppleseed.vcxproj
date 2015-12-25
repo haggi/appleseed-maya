@@ -1,0 +1,514 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug2014|x64">
+      <Configuration>Debug2014</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug2015|x64">
+      <Configuration>Debug2015</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug2016|x64">
+      <Configuration>Debug2016</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug2017|x64">
+      <Configuration>Debug2017</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release2015|x64">
+      <Configuration>Release2015</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release2016|x64">
+      <Configuration>Release2016</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release2017|x64">
+      <Configuration>Release2017</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{13DB921B-B2E7-42AA-8B4D-34B7CE3E5F43}</ProjectGuid>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug2014|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <PlatformToolset>v120</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug2015|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <PlatformToolset>v120</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug2016|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <PlatformToolset>v120</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug2017|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <PlatformToolset>v120</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release2015|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <PlatformToolset>v120</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release2016|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <PlatformToolset>v120</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release2017|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <PlatformToolset>v120</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release2017|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <PlatformToolset>v120</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release2014|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug2014|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(Configuration).props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug2015|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(Configuration).props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug2016|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(Configuration).props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug2017|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(Configuration).props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release2015|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(Configuration).props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release2016|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(Configuration).props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release2017|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release2017|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="Release2017.props" />
+  </ImportGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug2014|x64'">
+    <ClCompile>
+      <AdditionalOptions>/Gm /GR /GS /EHsc /Zi /I "." /RTC1 /c %(AdditionalOptions)</AdditionalOptions>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>ARCH64;WIN32;_DEBUG;_WINDOWS;_AFXDLL;_MBCS;NT_PLUGIN;REQUIRE_IOSTREAM;Bits64_;WINDOWS_LEAN_AND_MEAN;NOMINMAX;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <PrecompiledHeaderOutputFile>Debug/mayatoappleseed.pch</PrecompiledHeaderOutputFile>
+      <WarningLevel>Level3</WarningLevel>
+      <DisableSpecificWarnings>4996</DisableSpecificWarnings>
+    </ClCompile>
+    <Link>
+      <AdditionalOptions>/export:initializePlugin /export:uninitializePlugin %(AdditionalOptions)</AdditionalOptions>
+    </Link>
+    <PostBuildEvent />
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug2015|x64'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>ARCH64;WIN32;_DEBUG;_WINDOWS;_AFXDLL;_MBCS;NT_PLUGIN;REQUIRE_IOSTREAM;Bits64_;WINDOWS_LEAN_AND_MEAN;NOMINMAX;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <PrecompiledHeaderOutputFile>Debug/mayatoappleseed.pch</PrecompiledHeaderOutputFile>
+      <WarningLevel>Level3</WarningLevel>
+      <DisableSpecificWarnings>4996</DisableSpecificWarnings>
+    </ClCompile>
+    <Link>
+      <AdditionalOptions>/export:initializePlugin /export:uninitializePlugin %(AdditionalOptions)</AdditionalOptions>
+    </Link>
+    <PostBuildEvent />
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug2016|x64'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>ARCH64;WIN32;_DEBUG;_WINDOWS;_AFXDLL;_MBCS;NT_PLUGIN;REQUIRE_IOSTREAM;Bits64_;WINDOWS_LEAN_AND_MEAN;NOMINMAX;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <PrecompiledHeaderOutputFile>Debug/mayatoappleseed.pch</PrecompiledHeaderOutputFile>
+      <WarningLevel>Level3</WarningLevel>
+      <DisableSpecificWarnings>4996;4244</DisableSpecificWarnings>
+    </ClCompile>
+    <Link>
+      <AdditionalOptions>/export:initializePlugin /export:uninitializePlugin %(AdditionalOptions)</AdditionalOptions>
+    </Link>
+    <PostBuildEvent />
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug2017|x64'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>ARCH64;WIN32;_DEBUG;_WINDOWS;_AFXDLL;_MBCS;NT_PLUGIN;REQUIRE_IOSTREAM;Bits64_;WINDOWS_LEAN_AND_MEAN;NOMINMAX;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <PrecompiledHeaderOutputFile>Debug/mayatoappleseed.pch</PrecompiledHeaderOutputFile>
+      <WarningLevel>Level3</WarningLevel>
+      <DisableSpecificWarnings>4996</DisableSpecificWarnings>
+    </ClCompile>
+    <Link>
+      <AdditionalOptions>/export:initializePlugin /export:uninitializePlugin %(AdditionalOptions)</AdditionalOptions>
+    </Link>
+    <PostBuildEvent />
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release2015|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <DisableSpecificWarnings>4996</DisableSpecificWarnings>
+      <AdditionalOptions>/c %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
+    <Link>
+      <AdditionalOptions>/export:initializePlugin /export:uninitializePlugin %(AdditionalOptions)</AdditionalOptions>
+    </Link>
+    <PostBuildEvent />
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release2016|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <DisableSpecificWarnings>4996</DisableSpecificWarnings>
+      <AdditionalOptions>/c %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
+    <Link>
+      <AdditionalOptions>/export:initializePlugin /export:uninitializePlugin %(AdditionalOptions)</AdditionalOptions>
+    </Link>
+    <PostBuildEvent />
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release2017|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <DisableSpecificWarnings>4996</DisableSpecificWarnings>
+      <AdditionalOptions>/c %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
+    <Link>
+      <AdditionalOptions>/export:initializePlugin /export:uninitializePlugin %(AdditionalOptions)</AdditionalOptions>
+    </Link>
+    <PostBuildEvent />
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release2017|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <DisableSpecificWarnings>4996</DisableSpecificWarnings>
+      <AdditionalOptions>/c %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
+    <Link>
+      <AdditionalOptions>/export:initializePlugin /export:uninitializePlugin %(AdditionalOptions)</AdditionalOptions>
+    </Link>
+    <PostBuildEvent />
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\mayaToCommon\cpp\mayaObject.cpp" />
+    <ClCompile Include="..\..\mayaToCommon\cpp\mayarendernodes\rendercmd.cpp" />
+    <ClCompile Include="..\..\mayaToCommon\cpp\mayarendernodes\renderGlobalsNode.cpp" />
+    <ClCompile Include="..\..\mayaToCommon\cpp\mayarendernodes\standinLocatorNode.cpp" />
+    <ClCompile Include="..\..\mayaToCommon\cpp\mayaScene.cpp" />
+    <ClCompile Include="..\..\mayaToCommon\cpp\mayaSceneFactory.cpp" />
+    <ClCompile Include="..\..\mayaToCommon\cpp\mayaSceneParsing.cpp" />
+    <ClCompile Include="..\..\mayaToCommon\cpp\mayaSceneUtils.cpp" />
+    <ClCompile Include="..\..\mayaToCommon\cpp\memory\memoryInfo.cpp" />
+    <ClCompile Include="..\..\mayaToCommon\cpp\osl\oslUtils.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug2017|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release2015|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release2016|x64'">false</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\mayaToCommon\cpp\renderGlobals.cpp" />
+    <ClCompile Include="..\..\mayaToCommon\cpp\renderGlobalsFactory.cpp" />
+    <ClCompile Include="..\..\mayaToCommon\cpp\rendering\mayaRenderer.cpp" />
+    <ClCompile Include="..\..\mayaToCommon\cpp\rendering\renderer.cpp" />
+    <ClCompile Include="..\..\mayaToCommon\cpp\renderProcess.cpp" />
+    <ClCompile Include="..\..\mayaToCommon\cpp\shadingtools\material.cpp" />
+    <ClCompile Include="..\..\mayaToCommon\cpp\shadingtools\shaderDefs.cpp" />
+    <ClCompile Include="..\..\mayaToCommon\cpp\shadingtools\shadingNode.cpp" />
+    <ClCompile Include="..\..\mayaToCommon\cpp\shadingtools\shadingUtils.cpp" />
+    <ClCompile Include="..\..\mayaToCommon\cpp\swatchesRenderer\swatchRenderer.cpp" />
+    <ClCompile Include="..\..\mayaToCommon\cpp\threads\Compute.cpp" />
+    <ClCompile Include="..\..\mayaToCommon\cpp\threads\queue.cpp" />
+    <ClCompile Include="..\..\mayaToCommon\cpp\threads\renderQueueWorker.cpp" />
+    <ClCompile Include="..\..\mayaToCommon\cpp\threads\threads.cpp" />
+    <ClCompile Include="..\..\mayaToCommon\cpp\utilities\attrTools.cpp" />
+    <ClCompile Include="..\..\mayaToCommon\cpp\utilities\logging.cpp" />
+    <ClCompile Include="..\..\mayaToCommon\cpp\utilities\meshTools.cpp" />
+    <ClCompile Include="..\..\mayaToCommon\cpp\utilities\MiniMap.cpp" />
+    <ClCompile Include="..\..\mayaToCommon\cpp\utilities\pystring.cpp" />
+    <ClCompile Include="..\..\mayaToCommon\cpp\utilities\tools.cpp" />
+    <ClCompile Include="..\..\mayaToCommon\cpp\world.cpp" />
+    <ClCompile Include="..\src\appleseed\appleseed.cpp" />
+    <ClCompile Include="..\src\appleseed\appleseedCamera.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug2016|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug2017|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release2015|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release2017|x64'">false</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\src\appleseed\appleseedConfig.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug2015|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug2016|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug2017|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release2017|x64'">false</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\src\appleseed\appleseedCreateOSLShader.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release2017|x64'">false</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\src\appleseed\appleseedEnvironment.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug2016|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug2017|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release2015|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release2017|x64'">false</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\src\appleseed\appleseedFrameOutput.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug2016|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release2017|x64'">false</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\src\appleseed\appleseedGeo.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug2016|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug2017|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release2015|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release2017|x64'">false</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\src\appleseed\appleseedGeometry.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release2017|x64'">false</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\src\appleseed\appleseedInteractiveUpdate.cpp" />
+    <ClCompile Include="..\src\appleseed\appleseedLights.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug2016|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug2017|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release2015|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release2017|x64'">false</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\src\appleseed\appleseedMaterial.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug2016|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release2017|x64'">false</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\src\appleseed\appleseedMeshWalker.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug2015|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug2016|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug2017|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release2015|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release2016|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release2017|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release2017|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\src\appleseed\appleseedRendererFactory.cpp" />
+    <ClCompile Include="..\src\appleseed\appleseedShaders.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug2015|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug2016|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug2017|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release2015|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release2016|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release2017|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release2017|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\src\appleseed\appleseedShadingNodes.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug2015|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug2016|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug2017|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release2015|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release2016|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release2017|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release2017|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\src\appleseed\appleseedUpdateElements.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug2017|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release2015|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release2017|x64'">false</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\src\appleseed\appleseedUtils.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug2016|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug2017|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release2015|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release2017|x64'">false</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\src\appleseed\mtap_rendererController.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug2016|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug2017|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release2015|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release2017|x64'">false</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\src\appleseed\mtap_tileCallback.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug2016|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug2017|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release2015|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release2017|x64'">false</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\src\appleseed\SwatchesRenderer\appleseedSwatchRenderer.cpp" />
+    <ClCompile Include="..\src\appleseed\SwatchesRenderer\newSwatchRenderer.cpp" />
+    <ClCompile Include="..\src\appleseed\SwatchesRenderer\SwatchesEvent.cpp" />
+    <ClCompile Include="..\src\appleseed\TestRender.cpp" />
+    <ClCompile Include="..\src\mayatoappleseed.cpp" />
+    <ClCompile Include="..\src\mtap_common\mtap_material.cpp" />
+    <ClCompile Include="..\src\mtap_common\mtap_mayaObject.cpp" />
+    <ClCompile Include="..\src\mtap_common\mtap_mayaObjectFactory.cpp" />
+    <ClCompile Include="..\src\mtap_common\mtap_mayaRenderer.cpp" />
+    <ClCompile Include="..\src\mtap_common\mtap_mayaScene.cpp" />
+    <ClCompile Include="..\src\mtap_common\mtap_mayaSceneFactory.cpp" />
+    <ClCompile Include="..\src\mtap_common\mtap_renderGlobals.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug2015|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug2016|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug2017|x64'">false</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\src\mtap_common\mtap_renderGlobalsNode.cpp" />
+    <ClCompile Include="..\src\mtap_common\mtap_standinLocator.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug2015|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug2016|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug2017|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release2015|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release2016|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release2017|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release2017|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\src\mtap_common\mtap_standinMeshNode.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug2015|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug2016|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug2017|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release2015|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release2016|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release2017|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release2017|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\src\mtap_common\mtap_swatchRenderer.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug2015|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug2016|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug2017|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release2015|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\src\mtap_common\mtap_swatchRendererInterfaceFactory.cpp" />
+    <ClCompile Include="..\src\mtap_common\mtap_world.cpp" />
+    <ClCompile Include="..\src\pluginMain.cpp" />
+    <ClCompile Include="..\src\shaders\asDisneyMaterial.cpp" />
+    <ClCompile Include="..\src\shaders\asDisneyMaterialOverride.cpp" />
+    <ClCompile Include="..\src\shaders\asLayeredShader.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\mayaToCommon\cpp\mayaObject.h" />
+    <ClInclude Include="..\..\mayaToCommon\cpp\mayaObjectFactory.h" />
+    <ClInclude Include="..\..\mayaToCommon\cpp\mayarendernodes\rendercmd.h" />
+    <ClInclude Include="..\..\mayaToCommon\cpp\mayarendernodes\renderGlobalsNode.h" />
+    <ClInclude Include="..\..\mayaToCommon\cpp\mayarendernodes\standinLocatorNode.h" />
+    <ClInclude Include="..\..\mayaToCommon\cpp\mayaScene.h" />
+    <ClInclude Include="..\..\mayaToCommon\cpp\mayaSceneFactory.h" />
+    <ClInclude Include="..\..\mayaToCommon\cpp\memory\memoryInfo.h" />
+    <ClInclude Include="..\..\mayaToCommon\cpp\osl\oslUtils.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug2017|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release2015|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release2016|x64'">false</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\..\mayaToCommon\cpp\renderGlobals.h" />
+    <ClInclude Include="..\..\mayaToCommon\cpp\renderGlobalsFactory.h" />
+    <ClInclude Include="..\..\mayaToCommon\cpp\rendering\mayaRenderer.h" />
+    <ClInclude Include="..\..\mayaToCommon\cpp\rendering\renderer.h" />
+    <ClInclude Include="..\..\mayaToCommon\cpp\rendering\rendererFactory.h" />
+    <ClInclude Include="..\..\mayaToCommon\cpp\renderProcess.h" />
+    <ClInclude Include="..\..\mayaToCommon\cpp\shadingtools\material.h" />
+    <ClInclude Include="..\..\mayaToCommon\cpp\shadingtools\shaderDefs.h" />
+    <ClInclude Include="..\..\mayaToCommon\cpp\shadingtools\shadingNode.h" />
+    <ClInclude Include="..\..\mayaToCommon\cpp\shadingtools\shadingUtils.h" />
+    <ClInclude Include="..\..\mayaToCommon\cpp\swatchesRenderer\newSwatchRenderer.h" />
+    <ClInclude Include="..\..\mayaToCommon\cpp\swatchesRenderer\swatchesQueue.h" />
+    <ClInclude Include="..\..\mayaToCommon\cpp\swatchesRenderer\swatchGeometry.h" />
+    <ClInclude Include="..\..\mayaToCommon\cpp\swatchesRenderer\swatchRenderer.h" />
+    <ClInclude Include="..\..\mayaToCommon\cpp\swatchesRenderer\swatchRendererInterface.h" />
+    <ClInclude Include="..\..\mayaToCommon\cpp\swatchesRenderer\swatchRendererInterfaceFactory.h" />
+    <ClInclude Include="..\..\mayaToCommon\cpp\threads\Compute.h" />
+    <ClInclude Include="..\..\mayaToCommon\cpp\threads\queue.h" />
+    <ClInclude Include="..\..\mayaToCommon\cpp\threads\renderQueueWorker.h" />
+    <ClInclude Include="..\..\mayaToCommon\cpp\threads\threads.h" />
+    <ClInclude Include="..\..\mayaToCommon\cpp\utilities\attrTools.h" />
+    <ClInclude Include="..\..\mayaToCommon\cpp\utilities\logging.h" />
+    <ClInclude Include="..\..\mayaToCommon\cpp\utilities\meshTools.h" />
+    <ClInclude Include="..\..\mayaToCommon\cpp\utilities\MiniMap.h" />
+    <ClInclude Include="..\..\mayaToCommon\cpp\utilities\pystring.h" />
+    <ClInclude Include="..\..\mayaToCommon\cpp\utilities\tools.h" />
+    <ClInclude Include="..\..\mayaToCommon\cpp\world.h" />
+    <ClInclude Include="..\src\appleseed\appleseed.h" />
+    <ClInclude Include="..\src\appleseed\appleseedGeometry.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release2017|x64'">false</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\src\appleseed\appleseedMeshWalker.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug2015|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug2016|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug2017|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release2015|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release2016|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release2017|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release2017|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\src\appleseed\appleseedUtils.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release2017|x64'">false</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\src\appleseed\mtap_rendererController.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug2016|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug2017|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release2015|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release2017|x64'">false</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\src\appleseed\mtap_tileCallback.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug2016|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug2017|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release2015|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release2017|x64'">false</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\src\appleseed\SwatchesRenderer\appleseedSwatchRenderer.h" />
+    <ClInclude Include="..\src\appleseed\SwatchesRenderer\SwatchesEvent.h" />
+    <ClInclude Include="..\src\appleseed\TestRender.h" />
+    <ClInclude Include="..\src\appleseed\version.h" />
+    <ClInclude Include="..\src\mayatoappleseed.h" />
+    <ClInclude Include="..\src\mtap_common\mtap_material.h" />
+    <ClInclude Include="..\src\mtap_common\mtap_mayaRenderer.h" />
+    <ClInclude Include="..\src\mtap_common\mtap_mayaScene.h" />
+    <ClInclude Include="..\src\mtap_common\mtap_renderGlobals.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug2015|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug2016|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug2017|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release2015|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release2016|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release2017|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release2017|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\src\mtap_common\mtap_renderGlobalsNode.h" />
+    <ClInclude Include="..\src\mtap_common\mtap_standinLocator.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug2015|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug2016|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug2017|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release2015|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release2016|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release2017|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release2017|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\src\mtap_common\mtap_standinMeshNode.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug2015|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug2016|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug2017|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release2015|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release2016|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release2017|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release2017|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\src\mtap_common\mtap_swatchRenderer.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug2015|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug2016|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug2017|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release2015|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\src\shaders\asDisneyMaterial.h" />
+    <ClInclude Include="..\src\shaders\asDisneyMaterialOverride.h" />
+    <ClInclude Include="..\src\shaders\asLayeredShader.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\releaseNotes.txt" />
+    <None Include="sourceCodeDocs\assemblyWorkflow.txt" />
+    <None Include="sourceCodeDocs\Materials.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="..\mtap_devmodule\resources\shaderDefinitions.txt" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
