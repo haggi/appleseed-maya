@@ -17,15 +17,8 @@ void AppleseedRenderer::doInteractiveUpdate()
 		{
 			if (iElement->obj)
 			{
-				Logging::debug(MString("AppleseedRenderer::doInteractiveUpdate - found shadingEngine.") + iElement->name);
-				//MObject surface = getConnectedInNode(iElement->node, "surfaceShader");
-				//if (surface != MObject::kNullObj)
-				//{
-					//std::shared_ptr<mtap_MayaObject> obj = std::static_pointer_cast<mtap_MayaObject>(iElement->obj);
-					//this->defineMaterial(obj);
-					
-					updateMaterial(iElement->node);
-				//}
+				Logging::debug(MString("AppleseedRenderer::doInteractiveUpdate - found shadingEngine.") + iElement->name);					
+				updateMaterial(iElement->node);
 			}
 		}
 		if (iElement->node.hasFn(MFn::kCamera))
