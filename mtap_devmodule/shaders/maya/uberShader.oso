@@ -1,6 +1,6 @@
 OpenShadingLanguage 1.00
 # Compiled by oslc 1.6.8
-shader uberShader
+shader uberShader	%meta{string,help,"uber shader"} %meta{string,mayaClassification,"Appleseed/material"} %meta{int,mayaId,0} 
 param	int	matte	0		%meta{string,help,"Use matte"}  %read{2147483647,-1} %write{2147483647,-1}
 param	vector	normalCamera	0 0 0		%read{3,7} %write{0,0} %initexpr
 param	float	diffuseValue	0.80000001		%meta{string,help,"Diffuse Reflectivity"} %meta{float,min,0} %meta{float,max,1}  %read{4,8} %write{2147483647,-1}
@@ -17,27 +17,27 @@ temp	closure color	$tmp4	%read{9,9} %write{7,7}
 const	string	$const3	"diffuse"		%read{6,6} %write{2147483647,-1}
 temp	color	$tmp5	%read{9,9} %write{8,8}
 code normalCamera
-# H:/UserDatenHaggi/Documents/coding/OpenMaya/src/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\uberShader.osl:9
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\uberShader.osl:15
 #     float diffuseValue = 0.8
-	assign		normalCamera N 	%filename{"H:/UserDatenHaggi/Documents/coding/OpenMaya/src/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\uberShader.osl"} %line{9} %argrw{"wr"}
+	assign		normalCamera N 	%filename{"H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\uberShader.osl"} %line{15} %argrw{"wr"}
 code ___main___
-# H:/UserDatenHaggi/Documents/coding/OpenMaya/src/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\uberShader.osl:26
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\uberShader.osl:32
 #         outColor = diffuseValue * diffuseColor * oren_nayar(normalCamera, roughness);
-	neq		$tmp1 roughness $const1 	%filename{"H:/UserDatenHaggi/Documents/coding/OpenMaya/src/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\uberShader.osl"} %line{26} %argrw{"wrr"}
+	neq		$tmp1 roughness $const1 	%filename{"H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\uberShader.osl"} %line{32} %argrw{"wrr"}
 	if		$tmp1 6 10 	%argrw{"r"}
-# H:/UserDatenHaggi/Documents/coding/OpenMaya/src/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\uberShader.osl:27
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\uberShader.osl:33
 #     else
-	closure		$tmp2 $const2 normalCamera roughness 	%line{27} %argrw{"wrrr"}
+	closure		$tmp2 $const2 normalCamera roughness 	%line{33} %argrw{"wrrr"}
 	mul		$tmp3 diffuseValue diffuseColor 	%argrw{"wrr"}
 	mul		outColor $tmp2 $tmp3 	%argrw{"wrr"}
-# H:/UserDatenHaggi/Documents/coding/OpenMaya/src/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\uberShader.osl:29
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\uberShader.osl:35
 # }
-	functioncall	$const3 8 	%line{29} %argrw{"r"}
-# H:/UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:498
+	functioncall	$const3 8 	%line{35} %argrw{"r"}
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:498
+# float stof (string str) BUILTIN;
+	closure		$tmp4 $const2 normalCamera $const1 	%filename{"H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h"} %line{498} %argrw{"wrrr"}
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\uberShader.osl:35
 # }
-	closure		$tmp4 $const2 normalCamera $const1 	%filename{"H:/UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h"} %line{498} %argrw{"wrrr"}
-# H:/UserDatenHaggi/Documents/coding/OpenMaya/src/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\uberShader.osl:29
-# }
-	mul		$tmp5 diffuseValue diffuseColor 	%filename{"H:/UserDatenHaggi/Documents/coding/OpenMaya/src/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\uberShader.osl"} %line{29} %argrw{"wrr"}
+	mul		$tmp5 diffuseValue diffuseColor 	%filename{"H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\uberShader.osl"} %line{35} %argrw{"wrr"}
 	mul		outColor $tmp4 $tmp5 	%argrw{"wrr"}
 	end

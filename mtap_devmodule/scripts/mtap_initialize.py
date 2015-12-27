@@ -705,19 +705,15 @@ def loadAETemplates():
             pm.mel.eval(melCommand)
 
 def loadPlugins():
-    # temporarily decativated
-    return
-#     try:
-#         log.debug("Loading Appleseed maya plugins")
-#         version = pm.about(v=True).split(" ")[0]
-#         pluginName = "appleseedTools_maya{0}".format(version)
-#         log.debug("Trying to load appleseedTools: {0}".format(pluginName))
-#         if not pm.pluginInfo(pluginName, query=True, loaded=True):
-#             pm.loadPlugin(pluginName)
-#     except:
-#         traceback.print_exc(file=sys.__stderr__)
-#         log.error("Load plugins Appleseed FAILED")
-    
+    plugins = ["LoadShadersPlugin"]
+    for plugin in plugins:
+        try:
+            log.debug("Loading additional plugin: {0}".format(plugin))
+            if not pm.pluginInfo(plugin, query=True, loaded=True):
+                pm.loadPlugin(plugin)      
+        except:
+            traceback.print_exc(file=sys.__stderr__)
+            log.error("Loading of additional plugin: {0} failed.".format(plugin))    
         
 def theRenderer():
     return AppleseedRenderer.theRenderer()

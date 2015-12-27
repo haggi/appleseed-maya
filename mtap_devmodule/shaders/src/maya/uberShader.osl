@@ -1,7 +1,13 @@
 
 #include "appleseed/metadata.h"
 
-shader uberShader(
+shader uberShader
+[[
+    string help = "uber shader",
+	string mayaClassification = "Appleseed/material",
+	int mayaId = 0
+]]
+(
 	int matte = 0
 	[[ string help = "Use matte"]],
 				
