@@ -135,6 +135,7 @@ private:
 	MUuid lastShapeId; // save the last shape id, needed by translateTransform
 	MString lastMaterialName = "default";
 	std::vector<IdNameStruct> objectArray;
+	bool asyncStarted = false;
 };
 #endif
 

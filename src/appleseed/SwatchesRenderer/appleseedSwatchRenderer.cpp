@@ -46,6 +46,7 @@
 #include <thread>
 #include "OSL/oslUtils.h"
 #include "shadingTools/material.h"
+#include "../appleseedMaterial.h"
 #include "shadingTools/shadingUtils.h"
 #include "world.h"
 #include <maya/MGlobal.h>
@@ -105,34 +106,15 @@ void AppleseedSwatchRenderer::renderSwatch(NewSwatchRenderer *sr)
 	this->setSize(res);
 	this->setShader(sr->dNode);
 	mrenderer->render();
+	
 	//MString tstFile = "C:/daten/3dprojects/mayaToAppleseed/renderData/swatchRenderScene/swatchRender.exr";
 	//project->get_frame()->write_main_image(tstFile.asChar());
 	//asr::ProjectFileWriter::write(project.ref(), "C:/daten/3dprojects/mayaToAppleseed/renderData/swatchRenderScene/swOutputTest.appleseed");
-
 	//project->get_frame()->transform_to_output_color_space(project->get_frame()->image());
 
 	sr->image().create(res, res, 4, MImage::kFloat);
 	float *floatPixels = sr->image().floatPixels();
 	this->fillSwatch(floatPixels);
-
-	//float rndR = rnd();
-	//float rndG = rnd();
-	//float rndB = rnd();
-
-	//float *pixels = sr->image().floatPixels();
-	//int index = 0;
-	//for (int y = 0; y < res; y++)
-	//{
-	//	for (int x = 0; x < res; x++)
-	//	{
-	//		float fac = float(y) / res;
-	//		pixels[index++] = fac * rndR;
-	//		pixels[index++] = fac * rndG;
-	//		pixels[index++] = fac * rndB;
-	//		pixels[index++] = 1.0f;
-	//	}
-	//}
-
 }
 
 void AppleseedSwatchRenderer::fillSwatch(float *pixels)
@@ -175,7 +157,7 @@ void AppleseedSwatchRenderer::setSize(int size)
 	MString res = MString("") + size + " " + size;
 	asr::ParamArray frameParams = project->get_frame()->get_parameters();
 	frameParams.insert("resolution", res.asChar());
-	frameParams.insert("tile_size", size);
+	frameParams.insert("tile_size", res);
 	project->set_frame(
 		asr::FrameFactory::create(
 		"beauty",
@@ -235,48 +217,29 @@ void AppleseedSwatchRenderer::defineMaterial(MObject shadingNode)
 		return;
 
 	MStatus status;
-	asf::StringArray materialNames;
-	MAYATO_OSLUTIL::OSLUtilClass oslClass;
-	//MAYATO_OSL::initOSLUtil();
-	MString shaderGroupName = "previewSG";
-	MString surfaceShader;
-	MObject surfaceShaderNode = shadingNode;
-	MString surfaceShaderName = getObjectName(surfaceShaderNode);
-	ShadingNetwork network(surfaceShaderNode);
-	size_t numNodes = network.shaderList.size();
-
-	asr::Assembly *assembly = project->get_scene()->assemblies().get_by_name("sceneAssembly")->assemblies().get_by_name("world");
-	assert(assembly != nullptr);
-
-	asr::ShaderGroup *existingShaderGroup = assembly->shader_groups().get_by_name(shaderGroupName.asChar());
-	existingShaderGroup->clear();	
-	oslClass.group = (OSL::ShaderGroup *)existingShaderGroup;
-
-	//MPlug shaderPlug = shadingGroupNode.findPlug("surfaceShader");
-	//MAYATO_OSL::createOSLProjectionNodes(shaderPlug);
-
-	for (int shadingNodeId = 0; shadingNodeId < numNodes; shadingNodeId++)
+	// to use the unified material function we need the shading group
+	// this works only for surface shaders, textures can be handled differently later
+	MPlugArray pa, paOut;
+	MFnDependencyNode depFn(shadingNode);
+	depFn.getConnections(pa);
+	asr::Assembly *assembly = project->get_scene()->assemblies().get_by_name("swatchRenderer_world");
+	for (uint i = 0; i < pa.length(); i++)
 	{
-		ShadingNode snode = network.shaderList[shadingNodeId];
-		Logging::debug(MString("ShadingNode Id: ") + shadingNodeId + " ShadingNode name: " + snode.fullName);
-		if (shadingNodeId == (numNodes - 1))
-			Logging::debug(MString("LastNode Surface Shader: ") + snode.fullName);
-		//oslClass.createOSLHelperNodes(network.shaderList[shadingNodeId]);
-		oslClass.createOSLShadingNode(network.shaderList[shadingNodeId]);
-		oslClass.connectProjectionNodes(network.shaderList[shadingNodeId].mobject);
-	}
-	if (numNodes > 0)
-	{
-		ShadingNode snode = network.shaderList[numNodes - 1];
-		MString layer = (snode.fullName + "_interface");
-		Logging::debug(MString("Adding interface shader: ") + layer);
-		existingShaderGroup->add_shader("surface", "surfaceShaderInterface", layer.asChar(), asr::ParamArray());
-		const char *srcLayer = snode.fullName.asChar();
-		const char *srcAttr = "outColor";
-		const char *dstLayer = layer.asChar();
-		const char *dstAttr = "inColor";
-		Logging::debug(MString("Connecting interface shader: ") + srcLayer + "." + srcAttr + " -> " + dstLayer + "." + dstAttr);
-		existingShaderGroup->add_connection(srcLayer, srcAttr, dstLayer, dstAttr);
+		if (pa[i].isDestination())
+			continue;
+		pa[i].connectedTo(paOut, false, true);
+		if (paOut.length() > 0)
+		{
+			for (uint k = 0; k < paOut.length(); k++)
+			{
+				if (paOut[k].node().hasFn(MFn::kShadingEngine))
+				{
+					MObject outNode = paOut[k].node();
+					AppleRender::updateMaterial(outNode, assembly);
+					break;
+				}
+			}
+		}
 	}
 }
 

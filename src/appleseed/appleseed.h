@@ -82,6 +82,8 @@ public:
 	void defineCamera(std::shared_ptr<MayaObject> obj);
 	virtual void defineEnvironment();
 	virtual void defineGeometry();
+	void updateGeometry(std::shared_ptr<MayaObject> obj);
+	void updateInstance(std::shared_ptr<MayaObject> obj);
 	virtual void defineLights();
 	void defineLight(std::shared_ptr<MayaObject> obj);
 	virtual void render();

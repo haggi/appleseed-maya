@@ -132,190 +132,178 @@
             <parameter name="environment_edf" value="sky_edf" />
             <parameter name="environment_shader" value="sky_shader" />
         </environment>
-        <assembly name="sceneAssembly">
-            <assembly name="world">
-                <color name="gray">
-                    <parameter name="color_space" value="srgb" />
-                    <values>
-                        0.500000 0.500000 0.500000
-                    </values>
-                    <alpha>
-                        1.000000
-                    </alpha>
-                </color>
-                <bsdf name="diffuse_gray_brdf" model="lambertian_brdf">
-                    <parameter name="reflectance" value="gray" />
-                </bsdf>
-                <shader_group name="lambertOSLShadingGroup">
-                    <shader type="shader" name="lambert" layer="lambert1">
-                        <parameter name="diffuse" value="float 0.8" />
-                        <parameter name="inColor" value="vector 0.5 0.5 0.5" />
-                        <parameter name="incandescense" value="vector 0 0 0" />
-                        <parameter name="transparency" value="vector 0 0 0" />
-                    </shader>
-                    <shader type="surface" name="surfaceShaderInterface" layer="lambert1_interface">
-                    </shader>
-                    <connect_shaders src_layer="lambert1" src_param="outColor" dst_layer="lambert1_interface" dst_param="inColor" />
-                </shader_group>
-                <shader_group name="lambert2SG_OSLShadingGroup">
-                    <shader type="shader" name="place2dTexture" layer="place2dTexture2">
-                        <parameter name="offsetU" value="float 0" />
-                        <parameter name="offsetV" value="float 0" />
-                        <parameter name="repeatU" value="float 1" />
-                        <parameter name="repeatV" value="float 1" />
-                        <parameter name="rotateUV" value="float 0" />
-                        <parameter name="uvCoord" value="vector 0 0 0" />
-                    </shader>
-                    <shader type="shader" name="file" layer="file1">
-                        <parameter name="alphaGain" value="float 1" />
-                        <parameter name="alphaIsLuminance" value="int 0" />
-                        <parameter name="alphaOffset" value="float 0" />
-                        <parameter name="colorGain" value="vector 1 1 1" />
-                        <parameter name="colorOffset" value="vector 0 0 0" />
-                        <parameter name="defaultColor" value="vector 0.5 0.5 0.5" />
-                        <parameter name="ext" value="string jpeg" />
-                        <parameter name="fileTextureName" value="string checker.jpeg" />
-                        <parameter name="fromSRGB" value="int 0" />
-                        <parameter name="invert" value="int 0" />
-                        <parameter name="textureBlur" value="float 0" />
-                        <parameter name="textureFilter" value="int -1" />
-                        <parameter name="textureFilterWidth" value="float 0" />
-                        <parameter name="toSRGB" value="int 0" />
-                        <parameter name="uvTilingMode" value="int 0" />
-                    </shader>
-                    <shader type="shader" name="lambert" layer="lambert2">
-                        <parameter name="diffuse" value="float 0.8" />
-                        <parameter name="inColor" value="vector 0 0 0" />
-                        <parameter name="incandescense" value="vector 0 0 0" />
-                        <parameter name="transparency" value="vector 0 0 0" />
-                    </shader>
-                    <shader type="surface" name="surfaceShaderInterface" layer="lambert2_interface">
-                    </shader>
-                    <connect_shaders src_layer="place2dTexture2" src_param="outUV" dst_layer="file1" dst_param="uvCoord" />
-                    <connect_shaders src_layer="file1" src_param="outColor" dst_layer="lambert2" dst_param="inColor" />
-                    <connect_shaders src_layer="lambert2" src_param="outColor" dst_layer="lambert2_interface" dst_param="inColor" />
-                </shader_group>
-                <shader_group name="previewSG">
-                    <shader type="shader" name="lambert" layer="standinShader">
-                        <parameter name="diffuse" value="float 0.8" />
-                        <parameter name="inColor" value="vector 0.5 0.5 0.5" />
-                        <parameter name="incandescense" value="vector 1 0 1" />
-                        <parameter name="transparency" value="vector 0 0 0" />
-                    </shader>
-                    <shader type="surface" name="surfaceShaderInterface" layer="standinShader_interface">
-                    </shader>
-                    <connect_shaders src_layer="standinShader" src_param="outColor" dst_layer="standinShader_interface" dst_param="inColor" />
-                </shader_group>
-                <surface_shader name="lambert_physical_surface_shader" model="physical_surface_shader" />
-                <surface_shader name="lambert2SG_physical_surface_shader" model="physical_surface_shader" />
-                <surface_shader name="lambert3SG_physical_surface_shader" model="physical_surface_shader" />
-                <surface_shader name="physical_surface_shader" model="physical_surface_shader" />
-                <material name="default" model="generic_material">
-                    <parameter name="bsdf" value="diffuse_gray_brdf" />
-                    <parameter name="surface_shader" value="physical_surface_shader" />
-                </material>
-                <material name="lambertMaterial" model="osl_material">
-                    <parameter name="osl_surface" value="lambertOSLShadingGroup" />
-                    <parameter name="surface_shader" value="lambert_physical_surface_shader" />
-                </material>
-                <material name="lambert2SG" model="osl_material">
-                    <parameter name="osl_surface" value="lambert2SG_OSLShadingGroup" />
-                    <parameter name="surface_shader" value="lambert2SG_physical_surface_shader" />
-                </material>
-                <material name="previewOSLMaterial" model="osl_material">
-                    <parameter name="osl_surface" value="previewSG" />
-                    <parameter name="surface_shader" value="lambert3SG_physical_surface_shader" />
-                </material>
-                <object name="_Bg_BgShape" model="mesh_object">
-                    <parameter name="filename" value="swatchRenderBg.binarymesh" />
-                </object>
-                <object name="_meshLight_meshLightShape" model="mesh_object">
-                    <parameter name="filename" value="swatchRenderMeshLight.binarymesh" />
-                </object>
-                <object name="_previewSphere_previewSphereShape" model="mesh_object">
-                    <parameter name="filename" value="swatchRenderSphere.binarymesh" />
-                </object>
-                <object_instance name="Bg_BgShape_objInst" object="_Bg_BgShape._Bg_BgShape">
-                    <transform>
-                        <matrix>
-                            2.000000000000000 0.000000000000000 0.000000000000000 0.000000000000000
-                            0.000000000000000 1.000000000000000 0.000000000000000 0.000000000000000
-                            0.000000000000000 0.000000000000000 1.000000000000000 0.000000000000000
-                            0.000000000000000 0.000000000000000 0.000000000000000 1.000000000000000
-                        </matrix>
-                    </transform>
-                    <assign_material slot="slot0" side="front" material="lambert2SG" />
-                </object_instance>
-                <object_instance name="meshLightObjInst" object="_meshLight_meshLightShape._meshLight_meshLightShape">
-                    <transform>
-                        <matrix>
-                            2.880829495736127 0.026724595476459 0.008945042218900 -4.123433917033322
-                            0.008330395258277 -1.681090976944390 2.339623160476478 4.373258714237430
-                            0.026922523999788 -2.339485354628176 -1.681087818785416 6.591801961425044
-                            0.000000000000000 0.000000000000000 0.000000000000000 1.000000000000000
-                        </matrix>
-                    </transform>
-                    <assign_material slot="slot0" side="front" material="lambertMaterial" />
-                </object_instance>
-                <object_instance name="_previewSphere_previewSphereShape_objInst" object="_previewSphere_previewSphereShape._previewSphere_previewSphereShape">
-                    <transform>
-                        <matrix>
-                            1.000000000000000 0.000000000000000 0.000000000000000 0.000000000000000
-                            0.000000000000000 1.000000000000000 0.000000000000000 0.000000000000000
-                            0.000000000000000 0.000000000000000 1.000000000000000 0.000000000000000
-                            0.000000000000000 0.000000000000000 0.000000000000000 1.000000000000000
-                        </matrix>
-                    </transform>
-                    <assign_material slot="slot0" side="front" material="previewOSLMaterial" />
-                </object_instance>
-                <assembly name="|directionalLight1_ass">
-                    <light name="directionalLightShape1" model="directional_light">
-                        <parameter name="cast_indirect_light" value="true" />
-                        <parameter name="importance_multiplier" value="1" />
-                        <parameter name="irradiance" value="directionalLightShape1_intensity" />
-                        <parameter name="irradiance_multiplier" value="2" />
-                        <transform>
-                            <matrix>
-                                1.000000000000000 0.000000000000000 0.000000000000000 0.000000000000000
-                                0.000000000000000 1.000000000000000 0.000000000000000 0.000000000000000
-                                0.000000000000000 0.000000000000000 1.000000000000000 0.000000000000000
-                                0.000000000000000 0.000000000000000 0.000000000000000 1.000000000000000
-                            </matrix>
-                        </transform>
-                    </light>
-                </assembly>
-                <assembly_instance name="|directionalLight1_ass_assInst" assembly="|directionalLight1_ass">
-                    <transform time="0">
-                        <matrix>
-                            0.909787924054713 -0.405999791405418 -0.086313976985035 -1.491024445174220
-                            0.306617011548300 0.517210506202792 0.799048997560626 2.000398599224409
-                            -0.279771230603516 -0.753430462386681 0.595038315467488 -0.702855912829005
-                            0.000000000000000 0.000000000000000 0.000000000000000 1.000000000000000
-                        </matrix>
-                    </transform>
-                </assembly_instance>
-            </assembly>
-            <assembly_instance name="world_assInst" assembly="world">
-                <transform time="0">
-                    <matrix>
-                        1.000000000000000 0.000000000000000 0.000000000000000 0.000000000000000
-                        0.000000000000000 1.000000000000000 0.000000000000000 0.000000000000000
-                        0.000000000000000 0.000000000000000 1.000000000000000 0.000000000000000
-                        0.000000000000000 0.000000000000000 0.000000000000000 1.000000000000000
-                    </matrix>
-                </transform>
-            </assembly_instance>
-        </assembly>
-        <assembly_instance name="sceneAssembly_assInst" assembly="sceneAssembly">
-            <transform time="0">
-                <matrix>
-                    0.009999999776483 0.000000000000000 0.000000000000000 0.000000000000000
-                    0.000000000000000 0.009999999776483 0.000000000000000 0.000000000000000
-                    0.000000000000000 0.000000000000000 0.009999999776483 0.000000000000000
-                    0.000000000000000 0.000000000000000 0.000000000000000 1.000000000000000
-                </matrix>
-            </transform>
-        </assembly_instance>
+		<assembly name="swatchRenderer_world">
+			<color name="gray">
+				<parameter name="color_space" value="srgb" />
+				<values>
+					0.500000 0.500000 0.500000
+				</values>
+				<alpha>
+					1.000000
+				</alpha>
+			</color>
+			<bsdf name="diffuse_gray_brdf" model="lambertian_brdf">
+				<parameter name="reflectance" value="gray" />
+			</bsdf>
+			<shader_group name="lambertOSLShadingGroup">
+				<shader type="shader" name="lambert" layer="lambert1">
+					<parameter name="diffuse" value="float 0.8" />
+					<parameter name="inColor" value="vector 0.5 0.5 0.5" />
+					<parameter name="incandescense" value="vector 0 0 0" />
+					<parameter name="transparency" value="vector 0 0 0" />
+				</shader>
+				<shader type="surface" name="surfaceShaderInterface" layer="lambert1_interface">
+				</shader>
+				<connect_shaders src_layer="lambert1" src_param="outColor" dst_layer="lambert1_interface" dst_param="inColor" />
+			</shader_group>
+			<shader_group name="lambert2SG_OSLShadingGroup">
+				<shader type="shader" name="place2dTexture" layer="place2dTexture2">
+					<parameter name="offsetU" value="float 0" />
+					<parameter name="offsetV" value="float 0" />
+					<parameter name="repeatU" value="float 1" />
+					<parameter name="repeatV" value="float 1" />
+					<parameter name="rotateUV" value="float 0" />
+					<parameter name="uvCoord" value="vector 0 0 0" />
+				</shader>
+				<shader type="shader" name="file" layer="file1">
+					<parameter name="alphaGain" value="float 1" />
+					<parameter name="alphaIsLuminance" value="int 0" />
+					<parameter name="alphaOffset" value="float 0" />
+					<parameter name="colorGain" value="vector 1 1 1" />
+					<parameter name="colorOffset" value="vector 0 0 0" />
+					<parameter name="defaultColor" value="vector 0.5 0.5 0.5" />
+					<parameter name="ext" value="string jpeg" />
+					<parameter name="fileTextureName" value="string checker.jpeg" />
+					<parameter name="fromSRGB" value="int 0" />
+					<parameter name="invert" value="int 0" />
+					<parameter name="textureBlur" value="float 0" />
+					<parameter name="textureFilter" value="int -1" />
+					<parameter name="textureFilterWidth" value="float 0" />
+					<parameter name="toSRGB" value="int 0" />
+					<parameter name="uvTilingMode" value="int 0" />
+				</shader>
+				<shader type="shader" name="lambert" layer="lambert2">
+					<parameter name="diffuse" value="float 0.8" />
+					<parameter name="inColor" value="vector 0 0 0" />
+					<parameter name="incandescense" value="vector 0 0 0" />
+					<parameter name="transparency" value="vector 0 0 0" />
+				</shader>
+				<shader type="surface" name="surfaceShaderInterface" layer="lambert2_interface">
+				</shader>
+				<connect_shaders src_layer="place2dTexture2" src_param="outUV" dst_layer="file1" dst_param="uvCoord" />
+				<connect_shaders src_layer="file1" src_param="outColor" dst_layer="lambert2" dst_param="inColor" />
+				<connect_shaders src_layer="lambert2" src_param="outColor" dst_layer="lambert2_interface" dst_param="inColor" />
+			</shader_group>
+			<shader_group name="previewSG_OSLShadingGroup">
+				<shader type="shader" name="lambert" layer="standinShader">
+					<parameter name="diffuse" value="float 0.8" />
+					<parameter name="inColor" value="vector 0.5 0.5 0.5" />
+					<parameter name="incandescense" value="vector 1 0 1" />
+					<parameter name="transparency" value="vector 0 0 0" />
+				</shader>
+				<shader type="surface" name="surfaceShaderInterface" layer="standinShader_interface">
+				</shader>
+				<connect_shaders src_layer="standinShader" src_param="outColor" dst_layer="standinShader_interface" dst_param="inColor" />
+			</shader_group>
+			<surface_shader name="lambert_physical_surface_shader" model="physical_surface_shader" />
+			<surface_shader name="lambert2SG_physical_surface_shader" model="physical_surface_shader" />
+			<surface_shader name="lambert3SG_physical_surface_shader" model="physical_surface_shader" />
+			<surface_shader name="physical_surface_shader" model="physical_surface_shader" />
+			<material name="default" model="generic_material">
+				<parameter name="bsdf" value="diffuse_gray_brdf" />
+				<parameter name="surface_shader" value="physical_surface_shader" />
+			</material>
+			<material name="lambertMaterial" model="osl_material">
+				<parameter name="osl_surface" value="lambertOSLShadingGroup" />
+				<parameter name="surface_shader" value="lambert_physical_surface_shader" />
+			</material>
+			<material name="lambert2SG" model="osl_material">
+				<parameter name="osl_surface" value="lambert2SG_OSLShadingGroup" />
+				<parameter name="surface_shader" value="lambert2SG_physical_surface_shader" />
+			</material>
+			<material name="previewSG" model="osl_material">
+				<parameter name="osl_surface" value="previewSG_OSLShadingGroup" />
+				<parameter name="surface_shader" value="lambert3SG_physical_surface_shader" />
+			</material>
+			<object name="_Bg_BgShape" model="mesh_object">
+				<parameter name="filename" value="swatchRenderBg.binarymesh" />
+			</object>
+			<object name="_meshLight_meshLightShape" model="mesh_object">
+				<parameter name="filename" value="swatchRenderMeshLight.binarymesh" />
+			</object>
+			<object name="_previewSphere_previewSphereShape" model="mesh_object">
+				<parameter name="filename" value="swatchRenderSphere.binarymesh" />
+			</object>
+			<object_instance name="Bg_BgShape_objInst" object="_Bg_BgShape._Bg_BgShape">
+				<transform>
+					<matrix>
+						2.000000000000000 0.000000000000000 0.000000000000000 0.000000000000000
+						0.000000000000000 1.000000000000000 0.000000000000000 0.000000000000000
+						0.000000000000000 0.000000000000000 1.000000000000000 0.000000000000000
+						0.000000000000000 0.000000000000000 0.000000000000000 1.000000000000000
+					</matrix>
+				</transform>
+				<assign_material slot="slot0" side="front" material="lambert2SG" />
+			</object_instance>
+			<object_instance name="meshLightObjInst" object="_meshLight_meshLightShape._meshLight_meshLightShape">
+				<transform>
+					<matrix>
+						2.880829495736127 0.026724595476459 0.008945042218900 -4.123433917033322
+						0.008330395258277 -1.681090976944390 2.339623160476478 4.373258714237430
+						0.026922523999788 -2.339485354628176 -1.681087818785416 6.591801961425044
+						0.000000000000000 0.000000000000000 0.000000000000000 1.000000000000000
+					</matrix>
+				</transform>
+				<assign_material slot="slot0" side="front" material="lambertMaterial" />
+			</object_instance>
+			<object_instance name="_previewSphere_previewSphereShape_objInst" object="_previewSphere_previewSphereShape._previewSphere_previewSphereShape">
+				<transform>
+					<matrix>
+						1.000000000000000 0.000000000000000 0.000000000000000 0.000000000000000
+						0.000000000000000 1.000000000000000 0.000000000000000 0.000000000000000
+						0.000000000000000 0.000000000000000 1.000000000000000 0.000000000000000
+						0.000000000000000 0.000000000000000 0.000000000000000 1.000000000000000
+					</matrix>
+				</transform>
+				<assign_material slot="slot0" side="front" material="previewSG" />
+			</object_instance>
+			<assembly name="|directionalLight1_ass">
+				<light name="directionalLightShape1" model="directional_light">
+					<parameter name="cast_indirect_light" value="true" />
+					<parameter name="importance_multiplier" value="1" />
+					<parameter name="irradiance" value="directionalLightShape1_intensity" />
+					<parameter name="irradiance_multiplier" value="2" />
+					<transform>
+						<matrix>
+							1.000000000000000 0.000000000000000 0.000000000000000 0.000000000000000
+							0.000000000000000 1.000000000000000 0.000000000000000 0.000000000000000
+							0.000000000000000 0.000000000000000 1.000000000000000 0.000000000000000
+							0.000000000000000 0.000000000000000 0.000000000000000 1.000000000000000
+						</matrix>
+					</transform>
+				</light>
+			</assembly>
+			<assembly_instance name="|directionalLight1_ass_assInst" assembly="|directionalLight1_ass">
+				<transform time="0">
+					<matrix>
+						0.909787924054713 -0.405999791405418 -0.086313976985035 -1.491024445174220
+						0.306617011548300 0.517210506202792 0.799048997560626 2.000398599224409
+						-0.279771230603516 -0.753430462386681 0.595038315467488 -0.702855912829005
+						0.000000000000000 0.000000000000000 0.000000000000000 1.000000000000000
+					</matrix>
+				</transform>
+			</assembly_instance>
+		</assembly>
+		<assembly_instance name="swatchRenderer_world_assInst" assembly="swatchRenderer_world">
+			<transform time="0">
+				<matrix>
+				0.009999999776483 0.000000000000000 0.000000000000000 0.000000000000000
+				0.000000000000000 0.009999999776483 0.000000000000000 0.000000000000000
+				0.000000000000000 0.000000000000000 0.009999999776483 0.000000000000000
+				0.000000000000000 0.000000000000000 0.000000000000000 1.000000000000000
+				</matrix>
+			</transform>
+		</assembly_instance>
     </scene>
     <output>
         <frame name="beauty">

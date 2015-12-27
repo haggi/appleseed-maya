@@ -179,7 +179,48 @@ void AppleseedRenderer::createMesh(std::shared_ptr<mtap_MayaObject> obj)
 
 }
 
+void AppleseedRenderer::updateGeometry(std::shared_ptr<MayaObject> mobj)
+{
+	std::shared_ptr<mtap_MayaObject> obj = std::static_pointer_cast<mtap_MayaObject>(mobj);
 
+	if (!mobj->mobject.hasFn(MFn::kMesh))
+		return;
+
+	if (mobj->instanceNumber == 0)
+	{
+		createMesh(obj);
+		defineMaterial(obj);
+		return;
+	}
+}
+
+void AppleseedRenderer::updateInstance(std::shared_ptr<MayaObject> mobj)
+{
+	std::shared_ptr<mtap_MayaObject> obj = std::static_pointer_cast<mtap_MayaObject>(mobj);
+	if (obj->dagPath.node().hasFn(MFn::kWorld))
+		return;
+
+	if (mobj->instanceNumber > 0)
+	{
+		MayaObject *assemblyObject = getAssemblyMayaObject(obj.get());
+		if (assemblyObject == nullptr)
+		{
+			Logging::debug("create mesh assemblyPtr == null");
+			return;
+		}
+		MString assemblyName = getAssemblyName(assemblyObject);
+		MString assemblyInstanceName = getAssemblyInstanceName(obj.get());
+
+		asf::auto_release_ptr<asr::AssemblyInstance> assemblyInstance(
+			asr::AssemblyInstanceFactory::create(
+			assemblyInstanceName.asChar(),
+			asr::ParamArray(),
+			assemblyName.asChar()));
+		asr::TransformSequence &ts = assemblyInstance->transform_sequence();
+		fillMatrices(obj, ts);
+		getMasterAssemblyFromProject(this->project.get())->assembly_instances().insert(assemblyInstance);
+	}
+}
 
 void AppleseedRenderer::defineGeometry()
 {
@@ -187,44 +228,46 @@ void AppleseedRenderer::defineGeometry()
 	std::shared_ptr<RenderGlobals> renderGlobals = MayaTo::getWorldPtr()->worldRenderGlobalsPtr;
 	for (auto mobj : mayaScene->objectList)
 	{
-		std::shared_ptr<mtap_MayaObject> obj = std::static_pointer_cast<mtap_MayaObject>(mobj);
+		updateGeometry(mobj);
+		//std::shared_ptr<mtap_MayaObject> obj = std::static_pointer_cast<mtap_MayaObject>(mobj);
 
-		if (!mobj->mobject.hasFn(MFn::kMesh))
-			continue;
+		//if (!mobj->mobject.hasFn(MFn::kMesh))
+		//	continue;
 
-		if (mobj->instanceNumber > 0)
-			continue;
+		//if (mobj->instanceNumber > 0)
+		//	continue;
 
-		createMesh(obj);
-		defineMaterial(obj);
+		//createMesh(obj);
+		//defineMaterial(obj);
 	}
 
 	// create assembly instances
 	for (auto mobj : mayaScene->objectList)
 	{
-		std::shared_ptr<mtap_MayaObject> obj = std::static_pointer_cast<mtap_MayaObject>(mobj);
-		if (obj->dagPath.node().hasFn(MFn::kWorld))
-			continue;
-		if (obj->instanceNumber == 0)
-			continue;
+		//std::shared_ptr<mtap_MayaObject> obj = std::static_pointer_cast<mtap_MayaObject>(mobj);
+		//if (obj->dagPath.node().hasFn(MFn::kWorld))
+		//	continue;
+		//if (obj->instanceNumber == 0)
+		//	continue;
+		updateInstance(mobj);
 
-		MayaObject *assemblyObject = getAssemblyMayaObject(obj.get());
-		if (assemblyObject == nullptr)
-		{
-			Logging::debug("create mesh assemblyPtr == null");
-			continue;
-		}
-		MString assemblyName = getAssemblyName(assemblyObject);
-		MString assemblyInstanceName = getAssemblyInstanceName(obj.get());
+		//MayaObject *assemblyObject = getAssemblyMayaObject(obj.get());
+		//if (assemblyObject == nullptr)
+		//{
+		//	Logging::debug("create mesh assemblyPtr == null");
+		//	continue;
+		//}
+		//MString assemblyName = getAssemblyName(assemblyObject);
+		//MString assemblyInstanceName = getAssemblyInstanceName(obj.get());
 
-		asf::auto_release_ptr<asr::AssemblyInstance> assemblyInstance(
-				asr::AssemblyInstanceFactory::create(
-				assemblyInstanceName.asChar(),
-				asr::ParamArray(),
-				assemblyName.asChar()));
-		asr::TransformSequence &ts = assemblyInstance->transform_sequence();
-		fillMatrices(obj, ts);
-		getMasterAssemblyFromProject(this->project.get())->assembly_instances().insert(assemblyInstance);
+		//asf::auto_release_ptr<asr::AssemblyInstance> assemblyInstance(
+		//		asr::AssemblyInstanceFactory::create(
+		//		assemblyInstanceName.asChar(),
+		//		asr::ParamArray(),
+		//		assemblyName.asChar()));
+		//asr::TransformSequence &ts = assemblyInstance->transform_sequence();
+		//fillMatrices(obj, ts);
+		//getMasterAssemblyFromProject(this->project.get())->assembly_instances().insert(assemblyInstance);
 	}
 
 	for (auto mobj : mayaScene->instancerNodeElements)

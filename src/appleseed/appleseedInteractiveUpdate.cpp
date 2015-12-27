@@ -82,7 +82,10 @@ void AppleseedRenderer::doInteractiveUpdate()
 				assInst->bump_version_id();
 			}
 			else{
-				// update geo shape
+				if ( obj->instanceNumber == 0)
+					updateGeometry(obj);
+				if (obj->instanceNumber > 0)
+					updateInstance(obj);
 			}
 		}
 	}

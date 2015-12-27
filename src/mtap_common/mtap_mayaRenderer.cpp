@@ -1,3 +1,5 @@
+#include <maya/MPlugArray.h>
+#include <maya/MPlug.h>
 #include "mtap_mayaRenderer.h"
 #include "utilities/logging.h"
 #include "utilities/attrTools.h"
@@ -6,6 +8,7 @@
 #include "shadingTools/material.h"
 #include "shadingTools/shadingUtils.h"
 #include "world.h"
+#include "../appleseed/appleseedMaterial.h"
 
 #include "foundation/core/appleseed.h"
 #include "renderer/api/bsdf.h"
@@ -250,6 +253,7 @@ MStatus mtap_MayaRenderer::startAsync(const JobParams& params)
 	Logging::debug(MString("\tJobDescr: ") + params.description + " max threads: " + params.maxThreads);
 	//renderThread = std::thread(startRenderThread, this);
 	Logging::debug(MString("started async"));
+	asyncStarted = true;
 	return MStatus::kSuccess;
 };
 MStatus mtap_MayaRenderer::stopAsync()
@@ -258,6 +262,7 @@ MStatus mtap_MayaRenderer::stopAsync()
 	controller.status = asr::IRendererController::AbortRendering;
 	if (renderThread.joinable())
 		renderThread.join();
+	asyncStarted = false;
 	return MS::kSuccess;
 }
 
@@ -509,77 +514,114 @@ MStatus mtap_MayaRenderer::translateTransform(const MUuid& id, const MUuid& chil
 
 	return MStatus::kSuccess;
 };
+
 MStatus mtap_MayaRenderer::translateShader(const MUuid& id, const MObject& node)
 {
-	MFnDependencyNode depFn(node);
-	MString shaderGroupName = depFn.name() + "_" + id + "_SG";
-	MString shaderMaterialName = depFn.name() + "_" + "Material";
-	Logging::debug(MString("translateShader: ") + shaderGroupName);
-
-	MStatus status;
-	asf::StringArray materialNames;
-	MAYATO_OSLUTIL::OSLUtilClass oslClass;
-	MString surfaceShader;
-	MObject surfaceShaderNode = node;
-	ShadingNetwork network(surfaceShaderNode);
-	size_t numNodes = network.shaderList.size();
-
-	asr::ShaderGroup *existingShaderGroup = GETASM()->shader_groups().get_by_name(shaderGroupName.asChar());
-	if (existingShaderGroup != nullptr)
+	MObject sgNode;
+	// at the moment we only support surface shaders connected to a shadingEngine
+	if (node.hasFn(MFn::kShadingEngine))
 	{
-		existingShaderGroup->clear();
-		oslClass.group = (OSL::ShaderGroup *)existingShaderGroup;
+		sgNode = node;
 	}
 	else{
-		asf::auto_release_ptr<asr::ShaderGroup> oslShaderGroup = asr::ShaderGroupFactory().create(shaderGroupName.asChar());
-		GETASM()->shader_groups().insert(oslShaderGroup);
-		MString physicalSurfaceName = shaderGroupName + "_physical_surface_shader";
-		GETASM()->surface_shaders().insert(
-			asr::PhysicalSurfaceShaderFactory().create(
-			physicalSurfaceName.asChar(),
-			asr::ParamArray()));
+		MPlugArray pa, paOut;
+		MFnDependencyNode depFn(node);
+		depFn.getConnections(pa);
+		asr::Assembly *assembly = project->get_scene()->assemblies().get_by_name("swatchRenderer_world");
+		for (uint i = 0; i < pa.length(); i++)
+		{
+			if (pa[i].isDestination())
+				continue;
+			pa[i].connectedTo(paOut, false, true);
+			if (paOut.length() > 0)
+			{
+				for (uint k = 0; k < paOut.length(); k++)
+				{
+					if (paOut[k].node().hasFn(MFn::kShadingEngine))
+					{
+						sgNode = paOut[k].node();
+						break;
+					}
+				}
+			}
+		}
+	}
+	asr::Assembly *assembly = GETASM();
+	AppleRender::updateMaterial(sgNode, assembly);
 
-		GETASM()->materials().insert(
-			asr::OSLMaterialFactory().create(
-			shaderMaterialName.asChar(),
-			asr::ParamArray()
-			.insert("surface_shader", physicalSurfaceName.asChar())
-			.insert("osl_surface", shaderGroupName.asChar())));
+	MObject surfaceShaderNode = getConnectedInNode(sgNode, "surfaceShader");
+	MString surfaceShaderName = getObjectName(surfaceShaderNode);
+	MString shadingGroupName = getObjectName(sgNode);
+	MString shaderGroupName = shadingGroupName + "_OSLShadingGroup";
 
-		existingShaderGroup = GETASM()->shader_groups().get_by_name(shaderGroupName.asChar());
-	}
-	oslClass.group = (OSL::ShaderGroup *)existingShaderGroup;
-	oslClass.createOSLProjectionNodes(surfaceShaderNode);
-	for (int shadingNodeId = 0; shadingNodeId < numNodes; shadingNodeId++)
-	{
-		ShadingNode snode = network.shaderList[shadingNodeId];
-		Logging::debug(MString("ShadingNode Id: ") + shadingNodeId + " ShadingNode name: " + snode.fullName);
-		if (shadingNodeId == (numNodes - 1))
-			Logging::debug(MString("LastNode Surface Shader: ") + snode.fullName);
-		//oslClass.createOSLHelperNodes(network.shaderList[shadingNodeId]);
-		oslClass.createOSLShadingNode(network.shaderList[shadingNodeId]);
-		oslClass.connectProjectionNodes(network.shaderList[shadingNodeId].mobject);
-	}
-	if (numNodes > 0)
-	{
-		ShadingNode snode = network.shaderList[numNodes - 1];
-		MString layer = (snode.fullName + "_interface");
-		Logging::debug(MString("Adding interface shader: ") + layer);
-		existingShaderGroup->add_shader("surface", "surfaceShaderInterface", layer.asChar(), asr::ParamArray());
-		const char *srcLayer = snode.fullName.asChar();
-		const char *srcAttr = "outColor";
-		const char *dstLayer = layer.asChar();
-		const char *dstAttr = "inColor";
-		Logging::debug(MString("Connecting interface shader: ") + srcLayer + "." + srcAttr + " -> " + dstLayer + "." + dstAttr);
-		existingShaderGroup->add_connection(srcLayer, srcAttr, dstLayer, dstAttr);
-	}
+	//MString shaderGroupName = depFn.name() + "_" + id + "_SG";
+	//MString shaderMaterialName = depFn.name() + "_" + "Material";
+	//Logging::debug(MString("translateShader: ") + shaderGroupName);
+
+	//MStatus status;
+	//asf::StringArray materialNames;
+	//MAYATO_OSLUTIL::OSLUtilClass oslClass;
+	//MString surfaceShader;
+	//MObject surfaceShaderNode = node;
+	//ShadingNetwork network(surfaceShaderNode);
+	//size_t numNodes = network.shaderList.size();
+
+	//asr::ShaderGroup *existingShaderGroup = GETASM()->shader_groups().get_by_name(shaderGroupName.asChar());
+	//if (existingShaderGroup != nullptr)
+	//{
+	//	existingShaderGroup->clear();
+	//	oslClass.group = (OSL::ShaderGroup *)existingShaderGroup;
+	//}
+	//else{
+	//	asf::auto_release_ptr<asr::ShaderGroup> oslShaderGroup = asr::ShaderGroupFactory().create(shaderGroupName.asChar());
+	//	GETASM()->shader_groups().insert(oslShaderGroup);
+	//	MString physicalSurfaceName = shaderGroupName + "_physical_surface_shader";
+	//	GETASM()->surface_shaders().insert(
+	//		asr::PhysicalSurfaceShaderFactory().create(
+	//		physicalSurfaceName.asChar(),
+	//		asr::ParamArray()));
+
+	//	GETASM()->materials().insert(
+	//		asr::OSLMaterialFactory().create(
+	//		shaderMaterialName.asChar(),
+	//		asr::ParamArray()
+	//		.insert("surface_shader", physicalSurfaceName.asChar())
+	//		.insert("osl_surface", shaderGroupName.asChar())));
+
+	//	existingShaderGroup = GETASM()->shader_groups().get_by_name(shaderGroupName.asChar());
+	//}
+	//oslClass.group = (OSL::ShaderGroup *)existingShaderGroup;
+	//oslClass.createOSLProjectionNodes(surfaceShaderNode);
+	//for (int shadingNodeId = 0; shadingNodeId < numNodes; shadingNodeId++)
+	//{
+	//	ShadingNode snode = network.shaderList[shadingNodeId];
+	//	Logging::debug(MString("ShadingNode Id: ") + shadingNodeId + " ShadingNode name: " + snode.fullName);
+	//	if (shadingNodeId == (numNodes - 1))
+	//		Logging::debug(MString("LastNode Surface Shader: ") + snode.fullName);
+	//	//oslClass.createOSLHelperNodes(network.shaderList[shadingNodeId]);
+	//	oslClass.createOSLShadingNode(network.shaderList[shadingNodeId]);
+	//	oslClass.connectProjectionNodes(network.shaderList[shadingNodeId].mobject);
+	//}
+	//if (numNodes > 0)
+	//{
+	//	ShadingNode snode = network.shaderList[numNodes - 1];
+	//	MString layer = (snode.fullName + "_interface");
+	//	Logging::debug(MString("Adding interface shader: ") + layer);
+	//	existingShaderGroup->add_shader("surface", "surfaceShaderInterface", layer.asChar(), asr::ParamArray());
+	//	const char *srcLayer = snode.fullName.asChar();
+	//	const char *srcAttr = "outColor";
+	//	const char *dstLayer = layer.asChar();
+	//	const char *dstAttr = "inColor";
+	//	Logging::debug(MString("Connecting interface shader: ") + srcLayer + "." + srcAttr + " -> " + dstLayer + "." + dstAttr);
+	//	existingShaderGroup->add_connection(srcLayer, srcAttr, dstLayer, dstAttr);
+	//}
 
 	IdNameStruct idName;
 	idName.id = id;
-	idName.name = shaderMaterialName;
+	idName.name = shadingGroupName;
 	idName.mobject = node;
 	objectArray.push_back(idName);
-	lastMaterialName = shaderMaterialName;
+	lastMaterialName = shadingGroupName;
 	return MStatus::kSuccess;
 };
 
@@ -758,8 +800,15 @@ MStatus mtap_MayaRenderer::endSceneUpdate()
 	progressParams.progress = 0.0;
 	progress(progressParams);
 
-	renderThread = std::thread(startRenderThread, this);
-
+	if (asyncStarted)
+	{
+		renderThread = std::thread(startRenderThread, this);
+	}
+	else{
+		ProgressParams progressParams;
+		progressParams.progress = 2.0f;
+		progress(progressParams);
+	}
 	return MStatus::kSuccess;
 };
 MStatus mtap_MayaRenderer::destroyScene()

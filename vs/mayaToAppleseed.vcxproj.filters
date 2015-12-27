@@ -445,6 +445,9 @@
     <ClInclude Include="..\src\shaders\asLayeredShader.h">
       <Filter>Source Files\shaders</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\appleseed\appleseedMaterial.h">
+      <Filter>Source Files\appleseed</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="sourceCodeDocs\assemblyWorkflow.txt">
