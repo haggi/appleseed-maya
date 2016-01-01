@@ -16,27 +16,27 @@ temp	closure color	$tmp4	%read{9,9} %write{7,7}
 const	string	$const3	"diffuse"		%read{6,6} %write{2147483647,-1}
 temp	color	$tmp5	%read{9,9} %write{8,8}
 code Normal
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\surface\\as_diffuse_surface.osl:37
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\surface\\as_diffuse_surface.osl:37
 #     float Diffuse = 0.8
-	assign		Normal N 	%filename{"H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\surface\\as_diffuse_surface.osl"} %line{37} %argrw{"wr"}
+	assign		Normal N 	%filename{"H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\surface\\as_diffuse_surface.osl"} %line{37} %argrw{"wr"}
 code ___main___
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\surface\\as_diffuse_surface.osl:55
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\surface\\as_diffuse_surface.osl:55
 #         BRDF = Diffuse * Color * oren_nayar(Normal, Roughness);
-	neq		$tmp1 Roughness $const1 	%filename{"H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\surface\\as_diffuse_surface.osl"} %line{55} %argrw{"wrr"}
+	neq		$tmp1 Roughness $const1 	%filename{"H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\surface\\as_diffuse_surface.osl"} %line{55} %argrw{"wrr"}
 	if		$tmp1 6 10 	%argrw{"r"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\surface\\as_diffuse_surface.osl:56
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\surface\\as_diffuse_surface.osl:56
 #     else
 	closure		$tmp2 $const2 Normal Roughness 	%line{56} %argrw{"wrrr"}
 	mul		$tmp3 Diffuse Color 	%argrw{"wrr"}
 	mul		BRDF $tmp2 $tmp3 	%argrw{"wrr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\surface\\as_diffuse_surface.osl:58
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\surface\\as_diffuse_surface.osl:58
 # }
 	functioncall	$const3 8 	%line{58} %argrw{"r"}
-# C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h:498
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:498
 #     return (s <= e1) ? 0.0 : ((s >= (edge+halfwidth)) ? 1.0 : (s-e1)/width);
-	closure		$tmp4 $const2 Normal $const1 	%filename{"C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h"} %line{498} %argrw{"wrrr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\surface\\as_diffuse_surface.osl:58
+	closure		$tmp4 $const2 Normal $const1 	%filename{"H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h"} %line{498} %argrw{"wrrr"}
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\surface\\as_diffuse_surface.osl:58
 # }
-	mul		$tmp5 Diffuse Color 	%filename{"H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\surface\\as_diffuse_surface.osl"} %line{58} %argrw{"wrr"}
+	mul		$tmp5 Diffuse Color 	%filename{"H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\surface\\as_diffuse_surface.osl"} %line{58} %argrw{"wrr"}
 	mul		BRDF $tmp4 $tmp5 	%argrw{"wrr"}
 	end

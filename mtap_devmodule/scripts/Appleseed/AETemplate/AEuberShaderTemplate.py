@@ -1,5 +1,6 @@
 import pymel.core as pm
 import logging
+import Renderer.OSLTools
 
 log = logging.getLogger("ui")
 
@@ -13,6 +14,13 @@ class BaseTemplate(pm.ui.AETemplate):
 
 class AEuberShaderTemplate(BaseTemplate):
     def __init__(self, nodeName):
+        Renderer.OSLTools.readShadersXMLDescription()
+        self.shaderDesc = {}
+        if Renderer.OSLTools.SHADER_DICT.has_key('uberShader'):
+            inDesc = Renderer.OSLTools.SHADER_DICT['uberShader']['inputs']
+            print "AEuberShaderTemplate osl shder dict inputs:", inDesc
+            for i in inDesc:
+                self.shaderDesc[i['name']] = i['help']
         BaseTemplate.__init__(self, nodeName)
         pm.mel.AEswatchDisplay(nodeName)
         self.thisNode = None
@@ -42,10 +50,61 @@ class AEuberShaderTemplate(BaseTemplate):
     def buildBody(self, nodeName):
         self.thisNode = pm.PyNode(nodeName)
         self.templateUI = pm.setParent(query=True)
-        print "UberShader AE buildBody"
+        anno = ""
         self.beginLayout("Matte", collapse=True)
+        if self.shaderDesc.has_key('matte'):
+            anno = self.shaderDesc['matte']
+        self.addControl("matte", label="Matte Shader", annotation = anno)
+        self.endLayout()
+        self.beginLayout("Diffuse", collapse=False)
+        if self.shaderDesc.has_key('diffuseColor'):
+            anno = self.shaderDesc['diffuseColor']
+        self.addControl("diffuseColor", label="Diffuse Color", annotation = anno)
+        if self.shaderDesc.has_key('diffuseValue'):
+            anno = self.shaderDesc['diffuseValue']
+        self.addControl("diffuseValue", label="Diffuse Value", annotation = anno)
+        if self.shaderDesc.has_key('roughness'):
+            anno = self.shaderDesc['roughness']
+        print "AETemplate roughness anno", anno
+        self.addControl("roughness", label="Roughness", annotation = anno)
+        self.addSeparator()
+        self.addControl("translucency", label="Translucency", changeCommand=self.update)
+        self.addControl("translucencyColor", label="Translucence Color")
+        self.addSeparator()        
+        self.addControl("backlighting", label="Backlighting", changeCommand=self.update)
+        self.addControl("backlightingColor", label="Backlighting Color")
+        self.endLayout()
+        
+        self.beginLayout("Specular", collapse=False)
+        self.addControl("specular1", label="Specularity", changeCommand=self.update)
+        self.addControl("specularColor1", label="Specular Color", changeCommand=self.update)
+        self.addControl("specularIOR1", label="Specular IOR", changeCommand=self.update)
+        self.addControl("roughness1", label="Roughness", changeCommand=self.update)
+        self.addControl("anisotropy1", label="Anisotropy", changeCommand=self.update)
+        self.addControl("reflectionMdf", label="Reflection MDF", changeCommand=self.update)
+        self.addSeparator()
+        self.addControl("specularUseFresnel1", label="Use Fresnel", changeCommand=self.update)
+        self.addControl("reflectivityAtZeroDeg", label="Reflectivity at 0 Deg", changeCommand=self.update)        
+        self.endLayout()
+        
+        self.beginLayout("Refraction", collapse=False)
+        self.addControl("refractivity", label="Refractivity", changeCommand=self.update)
+        self.addControl("refractionColor", label="Refraction Color", changeCommand=self.update)
+        self.addControl("refractionIOR", label="Refraction Index", changeCommand=self.update)
+        self.addControl("refractionRoughness", label="Refraction Roughness", changeCommand=self.update)
+        self.addControl("refractionMdf", label="Refraction MDF", changeCommand=self.update)
+        self.addSeparator()
+        self.addControl("absorption", label="Absorption", changeCommand=self.update)
+        self.addControl("absorptionColor", label="Absorption Color", changeCommand=self.update)
+        self.addSeparator()
         self.endLayout()
                 
-        #self.addAOVLayout(aovReorder = ['direct_diffuse', 'indirect_diffuse', 'direct_specular', 'indirect_specular', 'direct_specular2', 'indirect_specular2', 'reflection', 'refraction', 'emission', 'sss'])
+        self.beginLayout("SSS", collapse=False)
+        self.addControl("SSS1", label="Enable SSS", changeCommand=self.update)
+        self.addControl("SSS1Color", label="SSS Color", changeCommand=self.update)
+        #self.addControl("SSS1Weight", label="Color Multiplier", changeCommand=self.update)
+        self.addControl("SSS1Radius", label="Radius per Color", changeCommand=self.update)
+        self.addControl("SSS1RadiusMultiplier", label="Radius Multiplier", changeCommand=self.update)
+        self.endLayout()
         
         self.update(nodeName)

@@ -79,10 +79,10 @@ temp	float	$tmp61	%read{81,81} %write{80,80}
 temp	float	$tmp62	%read{79,79} %write{77,77}
 temp	float	$tmp63	%read{80,80} %write{79,79}
 code ___main___
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\contrast.osl:4
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\contrast.osl:4
 # 
-	log		log05 $const1 	%filename{"H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\contrast.osl"} %line{4} %argrw{"wr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\contrast.osl:7
+	log		log05 $const1 	%filename{"H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\contrast.osl"} %line{4} %argrw{"wr"}
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\contrast.osl:7
 # 	modifiedValue[1] = pow(value[1], log05 / log(bias[1]));
 	compref		$tmp2 value $const2 	%line{7} %argrw{"wrr"}
 	compref		$tmp4 bias $const2 	%argrw{"wrr"}
@@ -90,7 +90,7 @@ code ___main___
 	div		$tmp5 log05 $tmp3 	%argrw{"wrr"}
 	pow		$tmp1 $tmp2 $tmp5 	%argrw{"wrr"}
 	compassign	modifiedValue $const2 $tmp1 	%argrw{"wrr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\contrast.osl:8
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\contrast.osl:8
 # 	modifiedValue[2] = pow(value[2], log05 / log(bias[2]));
 	compref		$tmp7 value $const3 	%line{8} %argrw{"wrr"}
 	compref		$tmp9 bias $const3 	%argrw{"wrr"}
@@ -98,7 +98,7 @@ code ___main___
 	div		$tmp10 log05 $tmp8 	%argrw{"wrr"}
 	pow		$tmp6 $tmp7 $tmp10 	%argrw{"wrr"}
 	compassign	modifiedValue $const3 $tmp6 	%argrw{"wrr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\contrast.osl:9
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\contrast.osl:9
 # 
 	compref		$tmp12 value $const4 	%line{9} %argrw{"wrr"}
 	compref		$tmp14 bias $const4 	%argrw{"wrr"}
@@ -106,7 +106,7 @@ code ___main___
 	div		$tmp15 log05 $tmp13 	%argrw{"wrr"}
 	pow		$tmp11 $tmp12 $tmp15 	%argrw{"wrr"}
 	compassign	modifiedValue $const4 $tmp11 	%argrw{"wrr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\contrast.osl:12
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\contrast.osl:12
 # 	outValue[1] = modifiedValue[1] < 0.5 ? 0.5 * pow(2.0 * modifiedValue[1], contrast[1]) : 1.0 - 0.5 * pow(2.0 * (1.0 - modifiedValue[1]), contrast[1]);
 	compref		$tmp17 modifiedValue $const2 	%line{12} %argrw{"wrr"}
 	lt		$tmp18 $tmp17 $const1 	%argrw{"wrr"}
@@ -124,7 +124,7 @@ code ___main___
 	mul		$tmp28 $const1 $tmp23 	%argrw{"wrr"}
 	sub		$tmp16 $const6 $tmp28 	%argrw{"wrr"}
 	compassign	outValue $const2 $tmp16 	%argrw{"wrr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\contrast.osl:13
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\contrast.osl:13
 # 	outValue[2] = modifiedValue[2] < 0.5 ? 0.5 * pow(2.0 * modifiedValue[2], contrast[2]) : 1.0 - 0.5 * pow(2.0 * (1.0 - modifiedValue[2]), contrast[2]);
 	compref		$tmp30 modifiedValue $const3 	%line{13} %argrw{"wrr"}
 	lt		$tmp31 $tmp30 $const1 	%argrw{"wrr"}
@@ -142,7 +142,7 @@ code ___main___
 	mul		$tmp41 $const1 $tmp36 	%argrw{"wrr"}
 	sub		$tmp29 $const6 $tmp41 	%argrw{"wrr"}
 	compassign	outValue $const3 $tmp29 	%argrw{"wrr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\contrast.osl:14
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\contrast.osl:14
 # 
 	compref		$tmp43 modifiedValue $const4 	%line{14} %argrw{"wrr"}
 	lt		$tmp44 $tmp43 $const1 	%argrw{"wrr"}
@@ -160,37 +160,37 @@ code ___main___
 	mul		$tmp54 $const1 $tmp49 	%argrw{"wrr"}
 	sub		$tmp42 $const6 $tmp54 	%argrw{"wrr"}
 	compassign	outValue $const4 $tmp42 	%argrw{"wrr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\contrast.osl:17
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\contrast.osl:17
 # 	outValue[1] = clamp(outValue[1], 0.0, 1.0);
 	compref		$tmp56 outValue $const2 	%line{17} %argrw{"wrr"}
 	functioncall	$const8 71 	%argrw{"r"}
-# C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h:157
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:157
 # point  mod (point  a, point  b) { return a - b*floor(a/b); }
-	min		$tmp57 $tmp56 $const6 	%filename{"C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h"} %line{157} %argrw{"wrr"}
+	min		$tmp57 $tmp56 $const6 	%filename{"H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h"} %line{157} %argrw{"wrr"}
 	max		$tmp55 $tmp57 $const7 	%argrw{"wrr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\contrast.osl:17
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\contrast.osl:17
 # 	outValue[1] = clamp(outValue[1], 0.0, 1.0);
-	compassign	outValue $const2 $tmp55 	%filename{"H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\contrast.osl"} %line{17} %argrw{"wrr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\contrast.osl:18
+	compassign	outValue $const2 $tmp55 	%filename{"H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\contrast.osl"} %line{17} %argrw{"wrr"}
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\contrast.osl:18
 # 	outValue[2] = clamp(outValue[2], 0.0, 1.0);
 	compref		$tmp59 outValue $const3 	%line{18} %argrw{"wrr"}
 	functioncall	$const8 76 	%argrw{"r"}
-# C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h:157
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:157
 # int    mod (int    a, int    b) { return a - b*(int)floor(a/b); }
-	min		$tmp60 $tmp59 $const6 	%filename{"C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h"} %line{157} %argrw{"wrr"}
+	min		$tmp60 $tmp59 $const6 	%filename{"H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h"} %line{157} %argrw{"wrr"}
 	max		$tmp58 $tmp60 $const7 	%argrw{"wrr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\contrast.osl:18
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\contrast.osl:18
 # 	outValue[2] = clamp(outValue[2], 0.0, 1.0);
-	compassign	outValue $const3 $tmp58 	%filename{"H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\contrast.osl"} %line{18} %argrw{"wrr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\contrast.osl:19
+	compassign	outValue $const3 $tmp58 	%filename{"H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\contrast.osl"} %line{18} %argrw{"wrr"}
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\contrast.osl:19
 # }
 	compref		$tmp62 outValue $const4 	%line{19} %argrw{"wrr"}
 	functioncall	$const8 81 	%argrw{"r"}
-# C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h:157
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:157
 # PERCOMP2F (fmod)
-	min		$tmp63 $tmp62 $const6 	%filename{"C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h"} %line{157} %argrw{"wrr"}
+	min		$tmp63 $tmp62 $const6 	%filename{"H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h"} %line{157} %argrw{"wrr"}
 	max		$tmp61 $tmp63 $const7 	%argrw{"wrr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\contrast.osl:19
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\contrast.osl:19
 # }
-	compassign	outValue $const4 $tmp61 	%filename{"H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\contrast.osl"} %line{19} %argrw{"wrr"}
+	compassign	outValue $const4 $tmp61 	%filename{"H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\contrast.osl"} %line{19} %argrw{"wrr"}
 	end

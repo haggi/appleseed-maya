@@ -42,79 +42,79 @@ temp	vector	$tmp13	%read{32,32} %write{30,30}
 temp	vector	$tmp14	%read{32,32} %write{31,31}
 temp	vector	$tmp15	%read{33,33} %write{32,32}
 code Normal
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\vector\\as_anisotropy_dir.osl:36
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\vector\\as_anisotropy_dir.osl:36
 #     vector Tangent = APPLESEED_DEFAULT_TANGENT,
-	assign		Normal N 	%filename{"H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\vector\\as_anisotropy_dir.osl"} %line{36} %argrw{"wr"}
+	assign		Normal N 	%filename{"H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\vector\\as_anisotropy_dir.osl"} %line{36} %argrw{"wr"}
 code Tangent
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\vector\\as_anisotropy_dir.osl:37
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\vector\\as_anisotropy_dir.osl:37
 #     float AngleOffset = 0,
-	normalize	Tangent dPdu 	%filename{"H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\vector\\as_anisotropy_dir.osl"} %line{37} %argrw{"wr"}
+	normalize	Tangent dPdu 	%filename{"H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\vector\\as_anisotropy_dir.osl"} %line{37} %argrw{"wr"}
 code ___main___
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\vector\\as_anisotropy_dir.osl:42
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\vector\\as_anisotropy_dir.osl:42
 #     float z = mix(-1, 1, clamp(Color[2], 0, 1));
-	compref		$tmp2 Color $const5 	%filename{"H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\vector\\as_anisotropy_dir.osl"} %line{42} %argrw{"wrr"}
+	compref		$tmp2 Color $const5 	%filename{"H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\vector\\as_anisotropy_dir.osl"} %line{42} %argrw{"wrr"}
 	functioncall	$const7 6 	%argrw{"r"}
-# C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h:157
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:157
 # PERCOMP1 (expm1)
-	min		$tmp3 $tmp2 $const4 	%filename{"C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h"} %line{157} %argrw{"wrr"}
+	min		$tmp3 $tmp2 $const4 	%filename{"H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h"} %line{157} %argrw{"wrr"}
 	max		$tmp1 $tmp3 $const6 	%argrw{"wrr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\vector\\as_anisotropy_dir.osl:42
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\vector\\as_anisotropy_dir.osl:42
 #     float z = mix(-1, 1, clamp(Color[2], 0, 1));
-	mix		x $const2 $const4 $tmp1 	%filename{"H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\vector\\as_anisotropy_dir.osl"} %line{42} %argrw{"wrrr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\vector\\as_anisotropy_dir.osl:43
+	mix		x $const2 $const4 $tmp1 	%filename{"H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\vector\\as_anisotropy_dir.osl"} %line{42} %argrw{"wrrr"}
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\vector\\as_anisotropy_dir.osl:43
 # 
 	compref		$tmp5 Color $const8 	%line{43} %argrw{"wrr"}
 	functioncall	$const7 11 	%argrw{"r"}
-# C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h:157
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:157
 # PERCOMP1 (exp2)
-	min		$tmp6 $tmp5 $const4 	%filename{"C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h"} %line{157} %argrw{"wrr"}
+	min		$tmp6 $tmp5 $const4 	%filename{"H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h"} %line{157} %argrw{"wrr"}
 	max		$tmp4 $tmp6 $const6 	%argrw{"wrr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\vector\\as_anisotropy_dir.osl:43
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\vector\\as_anisotropy_dir.osl:43
 # 
-	mix		z $const2 $const4 $tmp4 	%filename{"H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\vector\\as_anisotropy_dir.osl"} %line{43} %argrw{"wrrr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\vector\\as_anisotropy_dir.osl:45
+	mix		z $const2 $const4 $tmp4 	%filename{"H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\vector\\as_anisotropy_dir.osl"} %line{43} %argrw{"wrrr"}
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\vector\\as_anisotropy_dir.osl:45
 # 
 	functioncall	$const9 29 	%line{45} %argrw{"r"}
-# H:/UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\appleseed\\transform.h:43
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\appleseed\\transform.h:43
 #     if (angle_in_degrees != 0)
-	neq		$tmp7 AngleOffset $const5 	%filename{"H:/UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\appleseed\\transform.h"} %line{43} %argrw{"wrr"}
+	neq		$tmp7 AngleOffset $const5 	%filename{"H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\appleseed\\transform.h"} %line{43} %argrw{"wrr"}
 	if		$tmp7 27 29 	%argrw{"r"}
-# H:/UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\appleseed\\transform.h:45
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\appleseed\\transform.h:45
 #         float angle_in_rad = radians(angle_in_degrees);
 	functioncall	$const10 18 	%line{45} %argrw{"r"}
-# C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h:101
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:101
 # #define M_LN10     2.3025850929940457        /* ln(10) */
-	div		$tmp8 $const11 $const12 	%filename{"C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h"} %line{101} %argrw{"wrr"}
+	div		$tmp8 $const11 $const12 	%filename{"H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h"} %line{101} %argrw{"wrr"}
 	mul		___298_angle_in_rad AngleOffset $tmp8 	%argrw{"wrr"}
-# H:/UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\appleseed\\transform.h:47
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\appleseed\\transform.h:47
 #         sincos(angle_in_rad, s, c);
-	sincos		___298_angle_in_rad ___298_s ___298_c 	%filename{"H:/UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\appleseed\\transform.h"} %line{47} %argrw{"rww"}
-# H:/UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\appleseed\\transform.h:48
+	sincos		___298_angle_in_rad ___298_s ___298_c 	%filename{"H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\appleseed\\transform.h"} %line{47} %argrw{"rww"}
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\appleseed\\transform.h:48
 #         float xx = x * c - s * y;
 	mul		$tmp9 x ___298_c 	%line{48} %argrw{"wrr"}
 	mul		$tmp10 ___298_s z 	%argrw{"wrr"}
 	sub		___298_xx $tmp9 $tmp10 	%argrw{"wrr"}
-# H:/UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\appleseed\\transform.h:49
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\appleseed\\transform.h:49
 #         float yy = x * s + c * y;
 	mul		$tmp11 x ___298_s 	%line{49} %argrw{"wrr"}
 	mul		$tmp12 ___298_c z 	%argrw{"wrr"}
 	add		___298_yy $tmp11 $tmp12 	%argrw{"wrr"}
-# H:/UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\appleseed\\transform.h:50
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\appleseed\\transform.h:50
 #         rx = xx;
 	assign		x ___298_xx 	%line{50} %argrw{"wr"}
-# H:/UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\appleseed\\transform.h:51
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\appleseed\\transform.h:51
 #         ry = yy;
 	assign		z ___298_yy 	%line{51} %argrw{"wr"}
-# H:/UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\appleseed\\transform.h:55
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\appleseed\\transform.h:55
 #         rx = x;
 	assign		x x 	%line{55} %argrw{"wr"}
-# H:/UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\appleseed\\transform.h:56
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\appleseed\\transform.h:56
 #         ry = y;
 	assign		z z 	%line{56} %argrw{"wr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\vector\\as_anisotropy_dir.osl:47
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\vector\\as_anisotropy_dir.osl:47
 #     TangentOut = normalize(x * Tangent + z * Bitangent);
-	cross		Bitangent Tangent Normal 	%filename{"H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\vector\\as_anisotropy_dir.osl"} %line{47} %argrw{"wrr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\vector\\as_anisotropy_dir.osl:48
+	cross		Bitangent Tangent Normal 	%filename{"H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\vector\\as_anisotropy_dir.osl"} %line{47} %argrw{"wrr"}
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\vector\\as_anisotropy_dir.osl:48
 # }
 	mul		$tmp13 x Tangent 	%line{48} %argrw{"wrr"}
 	mul		$tmp14 z Bitangent 	%argrw{"wrr"}

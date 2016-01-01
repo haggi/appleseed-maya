@@ -111,16 +111,6 @@ MStatus initializePlugin( MObject obj )
 		return status;
 	}
 #endif
-
-	cmd = MString("import Appleseed.shadingNodes as shadingNodes; shadingNodes.registerShadingNodes()");
-	status = MGlobal::executePythonCommand(cmd, true, false);
-	if (!status)
-	{
-		status.perror("Problem executing cmd: shadingNodes.registerShadingNodes()");
-		MGlobal::displayInfo(status.errorString());
-		return status;
-	}
-
 	return status;
 }
 

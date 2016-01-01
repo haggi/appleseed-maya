@@ -107,100 +107,100 @@ temp	int	$tmp38	%read{88,88} %write{87,87}
 const	vector	$const13	1 0 0		%read{89,89} %write{2147483647,-1}
 const	string	$const14	"colorBalance"		%read{90,90} %write{2147483647,-1}
 code ___main___
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\noise.osl:27
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\noise.osl:27
 # 	float t = v;
-	assign		s u 	%filename{"H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\noise.osl"} %line{27} %argrw{"wr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\noise.osl:28
+	assign		s u 	%filename{"H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\noise.osl"} %line{27} %argrw{"wr"}
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\noise.osl:28
 # 	if( isconnected(uvCoord))
 	assign		t v 	%line{28} %argrw{"wr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\noise.osl:29
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\noise.osl:29
 # 	{
 	isconnected	$tmp1 uvCoord 	%line{29} %argrw{"wr"}
 	if		$tmp1 6 6 	%argrw{"r"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\noise.osl:31
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\noise.osl:31
 # 		t = uvCoord[1];
 	compref		s uvCoord $const1 	%line{31} %argrw{"wrr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\noise.osl:32
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\noise.osl:32
 # 	}
 	compref		t uvCoord $const2 	%line{32} %argrw{"wrr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\noise.osl:34
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\noise.osl:34
 # 	if (implode)
 	vector		pp s t $const3 	%line{34} %argrw{"wrrr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\noise.osl:35
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\noise.osl:35
 # 	{
 	neq		$tmp2 implode $const3 	%line{35} %argrw{"wrr"}
 	if		$tmp2 17 17 	%argrw{"r"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\noise.osl:37
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\noise.osl:37
 # 	  vector dp = pp - icp;
 	compref		$tmp3 implodeCenter $const1 	%line{37} %argrw{"wrr"}
 	compref		$tmp4 implodeCenter $const2 	%argrw{"wrr"}
 	vector		___304_icp $tmp3 $tmp4 $const3 	%argrw{"wrrr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\noise.osl:38
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\noise.osl:38
 # 	  dp = dp / pow(length(dp), implode);
 	sub		___304_dp pp ___304_icp 	%line{38} %argrw{"wrr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\noise.osl:39
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\noise.osl:39
 # 	  pp = dp + icp;
 	length		$tmp6 ___304_dp 	%line{39} %argrw{"wr"}
 	pow		$tmp5 $tmp6 implode 	%argrw{"wrr"}
 	div		___304_dp ___304_dp $tmp5 	%argrw{"wrr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\noise.osl:40
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\noise.osl:40
 # 	}
 	add		pp ___304_dp ___304_icp 	%line{40} %argrw{"wrr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\noise.osl:42
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\noise.osl:42
 # 	float ripples[3] = {2, 2, 2};
 	aassign		depth $const1 $const1 	%line{42} %argrw{"wrr"}
 	aassign		depth $const2 depthMax 	%argrw{"wrr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\noise.osl:43
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\noise.osl:43
 # 	vector pn = pp * frequency;
 	assign		ripples $const4 	%line{43} %argrw{"wr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\noise.osl:44
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\noise.osl:44
 # 	
 	mul		pn pp frequency 	%line{44} %argrw{"wrr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\noise.osl:46
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\noise.osl:46
 # 	if(noiseType == 0) // perlin
 	assign		noiseVal $const3 	%line{46} %argrw{"wr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\noise.osl:47
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\noise.osl:47
 # 	{
 	eq		$tmp7 noiseType $const1 	%line{47} %argrw{"wrr"}
 	if		$tmp7 81 81 	%argrw{"r"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\noise.osl:49
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\noise.osl:49
 #       {
 	if		inflection 25 81 	%line{49} %argrw{"r"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\noise.osl:56
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\noise.osl:56
 # 			vector pp = pn;
 	assign		___307_amp amplitude 	%line{56} %argrw{"wr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\noise.osl:57
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\noise.osl:57
 # 			float sum = 0;
 	assign		___307_pp pn 	%line{57} %argrw{"wr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\noise.osl:58
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\noise.osl:58
 # 			int i = 0;
 	assign		___307_sum $const1 	%line{58} %argrw{"wr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\noise.osl:59
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\noise.osl:59
 # 			float lacunarity = 1.0;
 	assign		___307_i $const1 	%line{59} %argrw{"wr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\noise.osl:60
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\noise.osl:60
 # 			int octaves[2] = {depth[0], depth[1]};
 	assign		___307_lacunarity $const5 	%line{60} %argrw{"wr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\noise.osl:61
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\noise.osl:61
 # 			
 	aref		$tmp8 depth $const1 	%line{61} %argrw{"wrr"}
 	aassign		___307_octaves $const1 $tmp8 	%argrw{"wrr"}
 	aref		$tmp9 depth $const2 	%argrw{"wrr"}
 	aassign		___307_octaves $const2 $tmp9 	%argrw{"wrr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\noise.osl:63
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\noise.osl:63
 # 			float nyquist = 2.0 * pixelSize;
 	functioncall	$const6 37 	%line{63} %argrw{"r"}
-# H:/UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\mayaUtils.h:21
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\mayaUtils.h:21
 # 	return length(cross(dPdu, dPdv));
-	cross		$tmp10 dPdu dPdv 	%filename{"H:/UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\mayaUtils.h"} %line{21} %argrw{"wrr"}
+	cross		$tmp10 dPdu dPdv 	%filename{"H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\mayaUtils.h"} %line{21} %argrw{"wrr"}
 	length		___307_pixelSize $tmp10 	%argrw{"wr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\noise.osl:64
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\noise.osl:64
 # 	vector pn = pp * frequency;
-	mul		___307_nyquist $const7 ___307_pixelSize 	%filename{"H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\noise.osl"} %line{64} %argrw{"wrr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\noise.osl:65
+	mul		___307_nyquist $const7 ___307_pixelSize 	%filename{"H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\noise.osl"} %line{64} %argrw{"wrr"}
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\noise.osl:65
 # 	
 	assign		___307_pixel $const5 	%line{65} %argrw{"wr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\noise.osl:67
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\noise.osl:67
 # 	if(noiseType == 0) // perlin
 	while		$tmp16 40 53 61 61 	%line{67} %argrw{"r"}
 	aref		$tmp11 ___307_octaves $const2 	%argrw{"wrr"}
@@ -216,25 +216,25 @@ code ___main___
 	lt		$tmp18 ___307_i $tmp17 	%argrw{"wrr"}
 	neq		$tmp19 $tmp18 $const1 	%argrw{"wrr"}
 	assign		$tmp16 $tmp19 	%argrw{"wr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\noise.osl:69
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\noise.osl:69
 #       if (inflection)
 	mul		$tmp21 ___307_pp ___307_lacunarity 	%line{69} %argrw{"wrr"}
 	noise		$tmp20 $tmp21 time 	%argrw{"wrr"}
 	mul		$tmp22 ___307_amp $tmp20 	%argrw{"wrr"}
 	add		___307_sum ___307_sum $tmp22 	%argrw{"wrr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\noise.osl:70
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\noise.osl:70
 #       {
 	mul		___307_amp ___307_amp ratio 	%line{70} %argrw{"wrr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\noise.osl:71
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\noise.osl:71
 # //         noiseVal = amplitude * fTurb(pn, inTime, 1.0, frequencyRatio, depth, ratio, ripples);
 	mul		___307_lacunarity ___307_lacunarity frequencyRatio 	%line{71} %argrw{"wrr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\noise.osl:72
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\noise.osl:72
 #       }
 	div		___307_pixel ___307_pixel frequencyRatio 	%line{72} %argrw{"wrr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\noise.osl:73
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\noise.osl:73
 #       else
 	add		___307_i ___307_i $const2 	%line{73} %argrw{"wrr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\noise.osl:76
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\noise.osl:76
 # 			float amp = amplitude;
 	gt		$tmp23 ___307_pixel ___307_pixelSize 	%line{76} %argrw{"wrr"}
 	neq		$tmp24 $tmp23 $const1 	%argrw{"wrr"}
@@ -244,60 +244,60 @@ code ___main___
 	neq		$tmp27 $tmp26 $const1 	%argrw{"wrr"}
 	assign		$tmp24 $tmp27 	%argrw{"wr"}
 	if		$tmp24 79 79 	%argrw{"r"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\noise.osl:78
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\noise.osl:78
 # 			float sum = 0;
 	div		$tmp28 ___307_pixel ___307_pixelSize 	%line{78} %argrw{"wrr"}
 	sub		$tmp29 $tmp28 $const5 	%argrw{"wrr"}
 	functioncall	$const8 74 	%argrw{"r"}
-# C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h:157
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:157
 #     point  name (point x, point y) BUILTIN;     \
-	min		$tmp30 $tmp29 $const5 	%filename{"C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h"} %line{157} %argrw{"wrr"}
+	min		$tmp30 $tmp29 $const5 	%filename{"H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h"} %line{157} %argrw{"wrr"}
 	max		___309_weight $tmp30 $const3 	%argrw{"wrr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\noise.osl:79
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\noise.osl:79
 # 			}
-	mul		$tmp31 ___309_weight ___307_amp 	%filename{"H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\noise.osl"} %line{79} %argrw{"wrr"}
+	mul		$tmp31 ___309_weight ___307_amp 	%filename{"H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\noise.osl"} %line{79} %argrw{"wrr"}
 	mul		$tmp33 ___307_pp ___307_lacunarity 	%argrw{"wrr"}
 	noise		$tmp32 $tmp33 time 	%argrw{"wrr"}
 	mul		$tmp34 $tmp31 $tmp32 	%argrw{"wrr"}
 	add		___307_sum ___307_sum $tmp34 	%argrw{"wrr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\noise.osl:81
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\noise.osl:81
 # 			printf("sum %f\n", sum);
 	assign		noiseVal ___307_sum 	%line{81} %argrw{"wr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\noise.osl:82
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\noise.osl:82
 #       }
 	printf		$const9 ___307_sum 	%line{82} %argrw{"rr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\noise.osl:85
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\noise.osl:85
 # 	{
 	eq		$tmp35 noiseType $const2 	%line{85} %argrw{"wrr"}
 	if		$tmp35 83 83 	%argrw{"r"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\noise.osl:88
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\noise.osl:88
 # 	{
 	eq		$tmp36 noiseType $const10 	%line{88} %argrw{"wrr"}
 	if		$tmp36 85 85 	%argrw{"r"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\noise.osl:91
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\noise.osl:91
 # 	{
 	eq		$tmp37 noiseType $const11 	%line{91} %argrw{"wrr"}
 	if		$tmp37 87 87 	%argrw{"r"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\noise.osl:94
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\noise.osl:94
 # 	{
 	eq		$tmp38 noiseType $const12 	%line{94} %argrw{"wrr"}
 	if		$tmp38 89 89 	%argrw{"r"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\noise.osl:97
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\noise.osl:97
 # 	outColor = colorBalance(outColor, colorGain, colorOffset);		
 	mul		outColor $const13 noiseVal 	%line{97} %argrw{"wrr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\noise.osl:98
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\noise.osl:98
 # }
 	functioncall	$const14 95 	%line{98} %argrw{"r"}
-# H:/UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\mayaUtils.h:26
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\mayaUtils.h:26
 # 	vector result = c;
-	assign		___298_result outColor 	%filename{"H:/UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\mayaUtils.h"} %line{26} %argrw{"wr"}
-# H:/UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\mayaUtils.h:27
+	assign		___298_result outColor 	%filename{"H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\mayaUtils.h"} %line{26} %argrw{"wr"}
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\mayaUtils.h:27
 # 	result *= colorGain;
 	mul		___298_result ___298_result colorGain 	%line{27} %argrw{"wrr"}
-# H:/UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\mayaUtils.h:28
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\mayaUtils.h:28
 # 	result += colorOffset;
 	add		___298_result ___298_result colorOffset 	%line{28} %argrw{"wrr"}
-# H:/UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\mayaUtils.h:29
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\mayaUtils.h:29
 # 	return result;
 	assign		outColor ___298_result 	%line{29} %argrw{"wr"}
 	end

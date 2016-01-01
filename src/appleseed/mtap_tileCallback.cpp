@@ -16,6 +16,7 @@ void mtap_ITileCallback::pre_render(
         const size_t width,
         const size_t height)
 {
+	return; // do not do anything
 	size_t numPixels = width * height;
 	std::shared_ptr<RV_PIXEL> pixelsPtr(new RV_PIXEL[numPixels]);
 	RV_PIXEL *pixels = pixelsPtr.get();

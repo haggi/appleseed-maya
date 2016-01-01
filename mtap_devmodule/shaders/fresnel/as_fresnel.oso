@@ -61,77 +61,77 @@ temp	float	$tmp30	%read{61,61} %write{60,60}
 temp	float	$tmp31	%read{62,62} %write{61,61}
 temp	vector	$tmp32	%read{63,63} %write{62,62}
 code Normal
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\fresnel\\as_fresnel.osl:38
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\fresnel\\as_fresnel.osl:38
 # 
-	assign		Normal N 	%filename{"H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\fresnel\\as_fresnel.osl"} %line{38} %argrw{"wr"}
+	assign		Normal N 	%filename{"H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\fresnel\\as_fresnel.osl"} %line{38} %argrw{"wr"}
 code ___main___
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\fresnel\\as_fresnel.osl:52
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\fresnel\\as_fresnel.osl:52
 #     {
-	backfacing	$tmp1 	%filename{"H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\fresnel\\as_fresnel.osl"} %line{52} %argrw{"w"}
+	backfacing	$tmp1 	%filename{"H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\fresnel\\as_fresnel.osl"} %line{52} %argrw{"w"}
 	if		$tmp1 5 7 	%argrw{"r"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\fresnel\\as_fresnel.osl:54
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\fresnel\\as_fresnel.osl:54
 #         to_ior = 1.0;
 	assign		from_ior Ior 	%line{54} %argrw{"wr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\fresnel\\as_fresnel.osl:55
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\fresnel\\as_fresnel.osl:55
 #     }
 	assign		to_ior $const1 	%line{55} %argrw{"wr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\fresnel\\as_fresnel.osl:59
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\fresnel\\as_fresnel.osl:59
 #         to_ior = Ior;
 	assign		from_ior $const1 	%line{59} %argrw{"wr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\fresnel\\as_fresnel.osl:60
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\fresnel\\as_fresnel.osl:60
 #     }
 	assign		to_ior Ior 	%line{60} %argrw{"wr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\fresnel\\as_fresnel.osl:63
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\fresnel\\as_fresnel.osl:63
 #     fresnel(I, Normal, eta, Reflect, Refract);
 	div		eta from_ior to_ior 	%line{63} %argrw{"wrr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\fresnel\\as_fresnel.osl:64
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\fresnel\\as_fresnel.osl:64
 # }
 	functioncall	$const2 68 	%line{64} %argrw{"r"}
-# C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h:244
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:244
 # int isnan (float x) BUILTIN;
-	functioncall	$const2 68 	%filename{"C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h"} %line{244} %argrw{"r"}
-# C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h:216
+	functioncall	$const2 68 	%filename{"H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h"} %line{244} %argrw{"r"}
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:216
 #     float c = dot(I, N);
 	dot		___217_c I Normal 	%line{216} %argrw{"wrr"}
-# C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h:217
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:217
 #     if (c < 0)
 	lt		$tmp2 ___217_c $const3 	%line{217} %argrw{"wrr"}
 	if		$tmp2 14 14 	%argrw{"r"}
-# C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h:218
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:218
 #         c = -c;
 	neg		___217_c ___217_c 	%line{218} %argrw{"wr"}
-# C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h:219
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:219
 #     R = reflect(I, N);
 	functioncall	$const4 19 	%line{219} %argrw{"r"}
-# C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h:205
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:205
 # vector reflect (vector I, vector N) { return I - 2*dot(N,I)*N; }
 	dot		$tmp3 Normal I 	%line{205} %argrw{"wrr"}
 	mul		$tmp4 $const6 $tmp3 	%argrw{"wrr"}
 	mul		$tmp5 $tmp4 Normal 	%argrw{"wrr"}
 	sub		___221_R I $tmp5 	%argrw{"wrr"}
-# C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h:220
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:220
 #     float g = 1.0 / sqr(eta) - 1.0 + c * c;
 	functioncall	$const7 21 	%line{220} %argrw{"r"}
-# C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h:215
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:215
 #     float sqr(float x) { return x*x; }
 	mul		$tmp6 eta eta 	%line{215} %argrw{"wrr"}
-# C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h:220
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:220
 #     float g = 1.0 / sqr(eta) - 1.0 + c * c;
 	div		$tmp7 $const1 $tmp6 	%line{220} %argrw{"wrr"}
 	sub		$tmp8 $tmp7 $const1 	%argrw{"wrr"}
 	mul		$tmp9 ___217_c ___217_c 	%argrw{"wrr"}
 	add		___217_g $tmp8 $tmp9 	%argrw{"wrr"}
-# C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h:221
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:221
 #     if (g >= 0.0) {
 	ge		$tmp10 ___217_g $const8 	%line{221} %argrw{"wrr"}
 	if		$tmp10 65 68 	%argrw{"r"}
-# C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h:222
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:222
 #         g = sqrt (g);
 	sqrt		___217_g ___217_g 	%line{222} %argrw{"wr"}
-# C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h:223
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:223
 #         float beta = g - c;
 	sub		___219_beta ___217_g ___217_c 	%line{223} %argrw{"wrr"}
-# C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h:224
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:224
 #         float F = (c * (g+c) - 1.0) / (c * beta + 1.0);
 	add		$tmp11 ___217_g ___217_c 	%line{224} %argrw{"wrr"}
 	mul		$tmp12 ___217_c $tmp11 	%argrw{"wrr"}
@@ -139,49 +139,49 @@ code ___main___
 	mul		$tmp14 ___217_c ___219_beta 	%argrw{"wrr"}
 	add		$tmp15 $tmp14 $const1 	%argrw{"wrr"}
 	div		___219_F $tmp13 $tmp15 	%argrw{"wrr"}
-# C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h:225
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:225
 #         F = 0.5 * (1.0 + sqr(F));
 	functioncall	$const7 37 	%line{225} %argrw{"r"}
-# C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h:215
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:215
 #     float sqr(float x) { return x*x; }
 	mul		$tmp16 ___219_F ___219_F 	%line{215} %argrw{"wrr"}
-# C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h:225
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:225
 #         F = 0.5 * (1.0 + sqr(F));
 	add		$tmp17 $const1 $tmp16 	%line{225} %argrw{"wrr"}
 	mul		___219_F $const9 $tmp17 	%argrw{"wrr"}
-# C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h:226
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:226
 #         F *= sqr (beta / (g+c));
 	add		$tmp19 ___217_g ___217_c 	%line{226} %argrw{"wrr"}
 	div		$tmp20 ___219_beta $tmp19 	%argrw{"wrr"}
 	functioncall	$const7 43 	%argrw{"r"}
-# C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h:215
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:215
 #     float sqr(float x) { return x*x; }
 	mul		$tmp18 $tmp20 $tmp20 	%line{215} %argrw{"wrr"}
-# C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h:226
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:226
 #         F *= sqr (beta / (g+c));
 	mul		___219_F ___219_F $tmp18 	%line{226} %argrw{"wrr"}
-# C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h:227
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:227
 #         Kr = F;
 	assign		Reflect ___219_F 	%line{227} %argrw{"wr"}
-# C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h:228
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:228
 #         Kt = (1.0 - Kr) * eta*eta;
 	sub		$tmp21 $const1 Reflect 	%line{228} %argrw{"wrr"}
 	mul		$tmp22 $tmp21 eta 	%argrw{"wrr"}
 	mul		Refract $tmp22 eta 	%argrw{"wrr"}
-# C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h:231
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:231
 #         T = refract(I, N, eta);
 	functioncall	$const10 65 	%line{231} %argrw{"r"}
-# C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h:207
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:207
 #     float IdotN = dot (I, N);
 	dot		___216_IdotN I Normal 	%line{207} %argrw{"wrr"}
-# C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h:208
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:208
 #     float k = 1 - eta*eta * (1 - IdotN*IdotN);
 	mul		$tmp23 eta eta 	%line{208} %argrw{"wrr"}
 	mul		$tmp24 ___216_IdotN ___216_IdotN 	%argrw{"wrr"}
 	sub		$tmp25 $const1 $tmp24 	%argrw{"wrr"}
 	mul		$tmp26 $tmp23 $tmp25 	%argrw{"wrr"}
 	sub		___216_k $const1 $tmp26 	%argrw{"wrr"}
-# C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h:209
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:209
 #     return (k < 0) ? vector(0,0,0) : (eta*I - N * (eta*IdotN + sqrt(k)));
 	lt		$tmp27 ___216_k $const3 	%line{209} %argrw{"wrr"}
 	if		$tmp27 58 64 	%argrw{"r"}
@@ -193,13 +193,13 @@ code ___main___
 	mul		$tmp32 Normal $tmp31 	%argrw{"wrr"}
 	sub		___221_T $tmp28 $tmp32 	%argrw{"wrr"}
 	return
-# C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h:234
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:234
 #         Kr = 1.0;
 	assign		Reflect $const1 	%line{234} %argrw{"wr"}
-# C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h:235
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:235
 #         Kt = 0.0;
 	assign		Refract $const8 	%line{235} %argrw{"wr"}
-# C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h:236
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:236
 #         T = vector (0,0,0);
 	assign		___221_T $const12 	%line{236} %argrw{"wr"}
 	end

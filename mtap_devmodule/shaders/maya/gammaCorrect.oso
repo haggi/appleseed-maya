@@ -28,36 +28,36 @@ temp	float	$tmp16	%read{22,22} %write{19,19}
 temp	float	$tmp17	%read{21,21} %write{20,20}
 temp	float	$tmp18	%read{22,22} %write{21,21}
 code ___main___
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\gammaCorrect.osl:4
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\gammaCorrect.osl:4
 # 	{
-	compref		$tmp1 gamma $const1 	%filename{"H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\gammaCorrect.osl"} %line{4} %argrw{"wrr"}
+	compref		$tmp1 gamma $const1 	%filename{"H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\gammaCorrect.osl"} %line{4} %argrw{"wrr"}
 	gt		$tmp2 $tmp1 $const2 	%argrw{"wrr"}
 	if		$tmp2 8 8 	%argrw{"r"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\gammaCorrect.osl:6
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\gammaCorrect.osl:6
 # 	}
 	compref		$tmp4 value $const1 	%line{6} %argrw{"wrr"}
 	compref		$tmp5 gamma $const1 	%argrw{"wrr"}
 	div		$tmp6 $const3 $tmp5 	%argrw{"wrr"}
 	pow		$tmp3 $tmp4 $tmp6 	%argrw{"wrr"}
 	compassign	outValue $const1 $tmp3 	%argrw{"wrr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\gammaCorrect.osl:8
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\gammaCorrect.osl:8
 # 	{
 	compref		$tmp7 gamma $const4 	%line{8} %argrw{"wrr"}
 	gt		$tmp8 $tmp7 $const2 	%argrw{"wrr"}
 	if		$tmp8 16 16 	%argrw{"r"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\gammaCorrect.osl:10
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\gammaCorrect.osl:10
 # 	}
 	compref		$tmp10 value $const4 	%line{10} %argrw{"wrr"}
 	compref		$tmp11 gamma $const4 	%argrw{"wrr"}
 	div		$tmp12 $const3 $tmp11 	%argrw{"wrr"}
 	pow		$tmp9 $tmp10 $tmp12 	%argrw{"wrr"}
 	compassign	outValue $const4 $tmp9 	%argrw{"wrr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\gammaCorrect.osl:12
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\gammaCorrect.osl:12
 # 	{
 	compref		$tmp13 gamma $const5 	%line{12} %argrw{"wrr"}
 	gt		$tmp14 $tmp13 $const2 	%argrw{"wrr"}
 	if		$tmp14 24 24 	%argrw{"r"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\gammaCorrect.osl:14
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\gammaCorrect.osl:14
 # 	}
 	compref		$tmp16 value $const5 	%line{14} %argrw{"wrr"}
 	compref		$tmp17 gamma $const5 	%argrw{"wrr"}

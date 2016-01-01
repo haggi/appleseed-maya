@@ -28,6 +28,7 @@ def getNextValidNodeId():
 
 def registerShadingNodes(plugin):
     global REGISTERED_NODES
+    global LAST_ID
     log.info("createShadingNodes")
     shadersDict = OSLTools.readShadersXMLDescription()
     classifications = set()
@@ -39,7 +40,7 @@ def registerShadingNodes(plugin):
         # at the moment we only care about uberShader for testing
         if key == "uberShader":
             classification = "shader/surface"
-            nodeId = om.MTypeId(0x87000)
+            nodeId = om.MTypeId(LAST_ID)
             shaderDict = shadersDict[key]
             if shaderDict.has_key("mayaClassification") and shaderDict['mayaClassification'] is not "":
                 classification = shaderDict['mayaClassification']

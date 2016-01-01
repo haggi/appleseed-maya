@@ -12,21 +12,21 @@ temp	float	$tmp1	%read{4,4} %write{3,3}
 const	int	$const1	0		%read{4,4} %write{2147483647,-1}
 temp	int	$tmp2	%read{5,5} %write{4,4}
 code Normal
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\normal\\as_faceforward.osl:33
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\normal\\as_faceforward.osl:33
 #     vector Incident = I,
-	assign		Normal N 	%filename{"H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\normal\\as_faceforward.osl"} %line{33} %argrw{"wr"}
+	assign		Normal N 	%filename{"H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\normal\\as_faceforward.osl"} %line{33} %argrw{"wr"}
 code Incident
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\normal\\as_faceforward.osl:34
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\normal\\as_faceforward.osl:34
 #     vector Nref = Ng,
-	assign		Incident I 	%filename{"H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\normal\\as_faceforward.osl"} %line{34} %argrw{"wr"}
+	assign		Incident I 	%filename{"H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\normal\\as_faceforward.osl"} %line{34} %argrw{"wr"}
 code Nref
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\normal\\as_faceforward.osl:35
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\normal\\as_faceforward.osl:35
 #     output vector NormalOut = 0
-	assign		Nref Ng 	%filename{"H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\normal\\as_faceforward.osl"} %line{35} %argrw{"wr"}
+	assign		Nref Ng 	%filename{"H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\normal\\as_faceforward.osl"} %line{35} %argrw{"wr"}
 code ___main___
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\normal\\as_faceforward.osl:39
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\normal\\as_faceforward.osl:39
 # }
-	dot		$tmp1 Incident Nref 	%filename{"H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\normal\\as_faceforward.osl"} %line{39} %argrw{"wrr"}
+	dot		$tmp1 Incident Nref 	%filename{"H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\normal\\as_faceforward.osl"} %line{39} %argrw{"wrr"}
 	gt		$tmp2 $tmp1 $const1 	%argrw{"wrr"}
 	if		$tmp2 7 8 	%argrw{"r"}
 	neg		NormalOut Normal 	%argrw{"wr"}

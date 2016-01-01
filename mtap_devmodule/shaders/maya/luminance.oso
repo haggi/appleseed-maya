@@ -17,9 +17,9 @@ const	int	$const6	2		%read{5,5} %write{2147483647,-1}
 temp	float	$tmp6	%read{6,6} %write{5,5}
 temp	float	$tmp7	%read{7,7} %write{6,6}
 code ___main___
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\luminance.osl:4
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\luminance.osl:4
 # }
-	compref		$tmp1 value $const2 	%filename{"H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\luminance.osl"} %line{4} %argrw{"wrr"}
+	compref		$tmp1 value $const2 	%filename{"H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\luminance.osl"} %line{4} %argrw{"wrr"}
 	mul		$tmp2 $const1 $tmp1 	%argrw{"wrr"}
 	compref		$tmp3 value $const4 	%argrw{"wrr"}
 	mul		$tmp4 $const3 $tmp3 	%argrw{"wrr"}

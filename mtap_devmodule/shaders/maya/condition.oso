@@ -26,91 +26,91 @@ const	int	$const6	5		%read{31,31} %write{2147483647,-1}
 temp	int	$tmp11	%read{32,32} %write{31,31}
 temp	int	$tmp12	%read{34,34} %write{33,33}
 code ___main___
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\condition.osl:4
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\condition.osl:4
 # 	if( operation == 0)
-	assign		outColor colorIfFalse 	%filename{"H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\condition.osl"} %line{4} %argrw{"wr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\condition.osl:5
+	assign		outColor colorIfFalse 	%filename{"H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\condition.osl"} %line{4} %argrw{"wr"}
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\condition.osl:5
 # 	{
 	eq		$tmp1 operation $const1 	%line{5} %argrw{"wrr"}
 	if		$tmp1 7 7 	%argrw{"r"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\condition.osl:7
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\condition.osl:7
 # 			outColor = colorIfTrue;
 	eq		$tmp2 firstTerm secondTerm 	%line{7} %argrw{"wrr"}
 	if		$tmp2 6 6 	%argrw{"r"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\condition.osl:8
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\condition.osl:8
 # 		return;
 	assign		outColor colorIfTrue 	%line{8} %argrw{"wr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\condition.osl:9
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\condition.osl:9
 # 	}
 	exit	%line{9}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\condition.osl:11
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\condition.osl:11
 # 	{
 	eq		$tmp3 operation $const2 	%line{11} %argrw{"wrr"}
 	if		$tmp3 13 13 	%argrw{"r"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\condition.osl:13
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\condition.osl:13
 # 			outColor = colorIfTrue;
 	neq		$tmp4 firstTerm secondTerm 	%line{13} %argrw{"wrr"}
 	if		$tmp4 12 12 	%argrw{"r"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\condition.osl:14
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\condition.osl:14
 # 		return;
 	assign		outColor colorIfTrue 	%line{14} %argrw{"wr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\condition.osl:15
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\condition.osl:15
 # 	}
 	exit	%line{15}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\condition.osl:17
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\condition.osl:17
 # 	{
 	eq		$tmp5 operation $const3 	%line{17} %argrw{"wrr"}
 	if		$tmp5 19 19 	%argrw{"r"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\condition.osl:19
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\condition.osl:19
 # 			outColor = colorIfTrue;
 	gt		$tmp6 firstTerm secondTerm 	%line{19} %argrw{"wrr"}
 	if		$tmp6 18 18 	%argrw{"r"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\condition.osl:20
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\condition.osl:20
 # 		return;
 	assign		outColor colorIfTrue 	%line{20} %argrw{"wr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\condition.osl:21
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\condition.osl:21
 # 	}
 	exit	%line{21}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\condition.osl:23
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\condition.osl:23
 # 	{
 	eq		$tmp7 operation $const4 	%line{23} %argrw{"wrr"}
 	if		$tmp7 25 25 	%argrw{"r"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\condition.osl:25
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\condition.osl:25
 # 			outColor = colorIfTrue;
 	ge		$tmp8 firstTerm secondTerm 	%line{25} %argrw{"wrr"}
 	if		$tmp8 24 24 	%argrw{"r"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\condition.osl:26
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\condition.osl:26
 # 		return;
 	assign		outColor colorIfTrue 	%line{26} %argrw{"wr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\condition.osl:27
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\condition.osl:27
 # 	}
 	exit	%line{27}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\condition.osl:29
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\condition.osl:29
 # 	{
 	eq		$tmp9 operation $const5 	%line{29} %argrw{"wrr"}
 	if		$tmp9 31 31 	%argrw{"r"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\condition.osl:31
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\condition.osl:31
 # 			outColor = colorIfTrue;
 	lt		$tmp10 firstTerm secondTerm 	%line{31} %argrw{"wrr"}
 	if		$tmp10 30 30 	%argrw{"r"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\condition.osl:32
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\condition.osl:32
 # 		return;
 	assign		outColor colorIfTrue 	%line{32} %argrw{"wr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\condition.osl:33
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\condition.osl:33
 # 	}
 	exit	%line{33}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\condition.osl:35
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\condition.osl:35
 # 	{
 	eq		$tmp11 operation $const6 	%line{35} %argrw{"wrr"}
 	if		$tmp11 37 37 	%argrw{"r"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\condition.osl:37
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\condition.osl:37
 # 			outColor = colorIfTrue;
 	le		$tmp12 firstTerm secondTerm 	%line{37} %argrw{"wrr"}
 	if		$tmp12 36 36 	%argrw{"r"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\condition.osl:38
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\condition.osl:38
 # 		return;
 	assign		outColor colorIfTrue 	%line{38} %argrw{"wr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\condition.osl:39
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\condition.osl:39
 # 	}
 	exit	%line{39}
 	end

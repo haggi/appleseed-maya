@@ -706,6 +706,7 @@ def loadAETemplates():
 
 def loadPlugins():
     plugins = ["LoadShadersPlugin"]
+    OSLTools.compileAllShaders() # compile shaders and update shader info on demand
     for plugin in plugins:
         try:
             log.debug("Loading additional plugin: {0}".format(plugin))

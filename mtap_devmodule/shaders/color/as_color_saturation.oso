@@ -8,13 +8,13 @@ local	float	___297_lum	%read{2,2} %write{1,1}
 const	string	$const1	"saturate"		%read{0,0} %write{2147483647,-1}
 temp	color	$tmp1	%read{3,3} %write{2,2}
 code ___main___
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\color\\as_color_saturation.osl:39
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\color\\as_color_saturation.osl:39
 # }
-	functioncall	$const1 4 	%filename{"H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\color\\as_color_saturation.osl"} %line{39} %argrw{"r"}
-# H:/UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\appleseed\\color.h:34
+	functioncall	$const1 4 	%filename{"H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\color\\as_color_saturation.osl"} %line{39} %argrw{"r"}
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\appleseed\\color.h:34
 #     float lum = luminance(Color);
-	luminance	___297_lum Color 	%filename{"H:/UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\appleseed\\color.h"} %line{34} %argrw{"wr"}
-# H:/UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\appleseed\\color.h:35
+	luminance	___297_lum Color 	%filename{"H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\appleseed\\color.h"} %line{34} %argrw{"wr"}
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\appleseed\\color.h:35
 #     return mix(color(lum), Color, Factor);
 	assign		$tmp1 ___297_lum 	%line{35} %argrw{"wr"}
 	mix		ColorOut $tmp1 Color Factor 	%argrw{"wrrr"}

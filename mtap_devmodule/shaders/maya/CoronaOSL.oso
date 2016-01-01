@@ -4,7 +4,7 @@ shader CoronaOSL
 param	color	inColor	1 1 1		%read{0,0} %write{2147483647,-1}
 oparam	color	Cout	0 0 0		%read{2147483647,-1} %write{0,0}
 code ___main___
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\CoronaOSL.osl:4
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\CoronaOSL.osl:4
 # }
-	assign		Cout inColor 	%filename{"H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\CoronaOSL.osl"} %line{4} %argrw{"wr"}
+	assign		Cout inColor 	%filename{"H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\CoronaOSL.osl"} %line{4} %argrw{"wr"}
 	end

@@ -25,21 +25,21 @@ const	string	$const6	"twrap"		%read{2,2} %write{2147483647,-1}
 const	string	$const7	"firstchannel"		%read{2,2} %write{2147483647,-1}
 const	float	$const8	1		%read{4,4} %write{2147483647,-1}
 code U
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\texture2d\\as_scalar_texture.osl:35
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\texture2d\\as_scalar_texture.osl:35
 #     APPLESEED_DECLARE_TEXTURE_WRAP_PARAMS,
-	assign		U u 	%filename{"H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\texture2d\\as_scalar_texture.osl"} %line{35} %argrw{"wr"}
+	assign		U u 	%filename{"H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\texture2d\\as_scalar_texture.osl"} %line{35} %argrw{"wr"}
 code V
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\texture2d\\as_scalar_texture.osl:35
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\texture2d\\as_scalar_texture.osl:35
 #     APPLESEED_DECLARE_TEXTURE_WRAP_PARAMS,
-	assign		V v 	%filename{"H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\texture2d\\as_scalar_texture.osl"} %line{35} %argrw{"wr"}
+	assign		V v 	%filename{"H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\texture2d\\as_scalar_texture.osl"} %line{35} %argrw{"wr"}
 code ___main___
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\texture2d\\as_scalar_texture.osl:59
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\texture2d\\as_scalar_texture.osl:59
 # 
-	texture		FloatOut Filename U V $const1 UWidth $const2 VWidth $const3 UBlur $const4 VBlur $const5 UWrap $const6 VWrap $const7 Channel 	%filename{"H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\texture2d\\as_scalar_texture.osl"} %line{59} %argrw{"wrrrrrrrrrrrrrrrrr"} %argderivs{2,3}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\texture2d\\as_scalar_texture.osl:61
+	texture		FloatOut Filename U V $const1 UWidth $const2 VWidth $const3 UBlur $const4 VBlur $const5 UWrap $const6 VWrap $const7 Channel 	%filename{"H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\texture2d\\as_scalar_texture.osl"} %line{59} %argrw{"wrrrrrrrrrrrrrrrrr"} %argderivs{2,3}
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\texture2d\\as_scalar_texture.osl:61
 #         FloatOut = 1.0 - FloatOut;
 	if		Invert 5 5 	%line{61} %argrw{"r"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\texture2d\\as_scalar_texture.osl:62
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\texture2d\\as_scalar_texture.osl:62
 # }
 	sub		FloatOut $const8 FloatOut 	%line{62} %argrw{"wrr"}
 	end

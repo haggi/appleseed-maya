@@ -175,112 +175,112 @@ const	vector	$const35	0.212671 0.71516001 0.072168998		%read{240,240} %write{214
 temp	float	$tmp115	%read{242,242} %write{241,241}
 const	vector	$const36	0.019334 0.119193 0.95022702		%read{241,241} %write{2147483647,-1}
 code ___main___
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\rgbToHsv.osl:4
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\rgbToHsv.osl:4
 # }
-	assign		$tmp2 inRgb 	%filename{"H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\rgbToHsv.osl"} %line{4} %argrw{"wr"}
+	assign		$tmp2 inRgb 	%filename{"H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\rgbToHsv.osl"} %line{4} %argrw{"wr"}
 	functioncall	$const3 246 	%argrw{"r"}
-# C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h:396
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:396
 #         return r;
-	eq		$tmp3 $const1 $const1 	%filename{"C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h"} %line{396} %argrw{"wrr"}
+	eq		$tmp3 $const1 $const1 	%filename{"H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h"} %line{396} %argrw{"wrr"}
 	neq		$tmp4 $tmp3 $const4 	%argrw{"wrr"}
 	if		$tmp4 5 8 	%argrw{"r"}
 	eq		$tmp5 $const1 $const5 	%argrw{"wrr"}
 	neq		$tmp6 $tmp5 $const4 	%argrw{"wrr"}
 	assign		$tmp4 $tmp6 	%argrw{"wr"}
 	if		$tmp4 10 127 	%argrw{"r"}
-# C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h:397
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:397
 #     }
 	assign		___242_r $tmp2 	%line{397} %argrw{"wr"}
-# C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h:398
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:398
 # 
 	eq		$tmp7 $const1 $const2 	%line{398} %argrw{"wrr"}
 	if		$tmp7 51 127 	%argrw{"r"}
-# C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h:399
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:399
 #     color r;
 	functioncall	$const6 51 	%line{399} %argrw{"r"}
-# C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h:359
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:359
 #         float h = c[0], s = c[1], v = c[2];
 	compref		___243_h $tmp2 $const4 	%line{359} %argrw{"wrr"}
 	compref		___243_s $tmp2 $const7 	%argrw{"wrr"}
 	compref		___243_v $tmp2 $const8 	%argrw{"wrr"}
-# C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h:361
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:361
 #         if (s < 0.0001) {
 	lt		$tmp8 ___243_s $const9 	%line{361} %argrw{"wrr"}
 	if		$tmp8 19 50 	%argrw{"r"}
-# C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h:362
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:362
 #             r = v;
 	assign		___243_r ___243_v 	%line{362} %argrw{"wr"}
-# C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h:364
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:364
 #             h = 6 * (h - floor(h));  // expand to [0..6)
 	floor		$tmp9 ___243_h 	%line{364} %argrw{"wr"}
 	sub		$tmp10 ___243_h $tmp9 	%argrw{"wrr"}
 	mul		___243_h $const11 $tmp10 	%argrw{"wrr"}
-# C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h:365
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:365
 #             int hi = (int)h;
 	assign		___245_hi ___243_h 	%line{365} %argrw{"wr"}
-# C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h:366
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:366
 #             float f = h - hi;
 	assign		$tmp11 ___245_hi 	%line{366} %argrw{"wr"}
 	sub		___245_f ___243_h $tmp11 	%argrw{"wrr"}
-# C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h:367
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:367
 #             float p = v * (1-s);
 	sub		$tmp12 $const12 ___243_s 	%line{367} %argrw{"wrr"}
 	mul		___245_p ___243_v $tmp12 	%argrw{"wrr"}
-# C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h:368
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:368
 #             float q = v * (1-s*f);
 	mul		$tmp13 ___243_s ___245_f 	%line{368} %argrw{"wrr"}
 	sub		$tmp14 $const12 $tmp13 	%argrw{"wrr"}
 	mul		___245_q ___243_v $tmp14 	%argrw{"wrr"}
-# C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h:369
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:369
 #             float t = v * (1-s*(1-f));
 	sub		$tmp15 $const12 ___245_f 	%line{369} %argrw{"wrr"}
 	mul		$tmp16 ___243_s $tmp15 	%argrw{"wrr"}
 	sub		$tmp17 $const12 $tmp16 	%argrw{"wrr"}
 	mul		___245_t ___243_v $tmp17 	%argrw{"wrr"}
-# C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h:370
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:370
 #             if      (hi == 0) r = color (v, t, p);
 	eq		$tmp18 ___245_hi $const4 	%line{370} %argrw{"wrr"}
 	if		$tmp18 37 50 	%argrw{"r"}
 	color		___243_r ___243_v ___245_t ___245_p 	%argrw{"wrrr"}
-# C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h:371
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:371
 #             else if (hi == 1) r = color (q, v, p);
 	eq		$tmp19 ___245_hi $const7 	%line{371} %argrw{"wrr"}
 	if		$tmp19 40 50 	%argrw{"r"}
 	color		___243_r ___245_q ___243_v ___245_p 	%argrw{"wrrr"}
-# C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h:372
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:372
 #             else if (hi == 2) r = color (p, v, t);
 	eq		$tmp20 ___245_hi $const8 	%line{372} %argrw{"wrr"}
 	if		$tmp20 43 50 	%argrw{"r"}
 	color		___243_r ___245_p ___243_v ___245_t 	%argrw{"wrrr"}
-# C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h:373
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:373
 #             else if (hi == 3) r = color (p, q, v);
 	eq		$tmp21 ___245_hi $const13 	%line{373} %argrw{"wrr"}
 	if		$tmp21 46 50 	%argrw{"r"}
 	color		___243_r ___245_p ___245_q ___243_v 	%argrw{"wrrr"}
-# C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h:374
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:374
 #             else if (hi == 4) r = color (t, p, v);
 	eq		$tmp22 ___245_hi $const14 	%line{374} %argrw{"wrr"}
 	if		$tmp22 49 50 	%argrw{"r"}
 	color		___243_r ___245_t ___245_p ___243_v 	%argrw{"wrrr"}
-# C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h:375
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:375
 #             else              r = color (v, p, q);
 	color		___243_r ___243_v ___245_p ___245_q 	%line{375} %argrw{"wrrr"}
-# C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h:377
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:377
 #         return r;
 	assign		___242_r ___243_r 	%line{377} %argrw{"wr"}
-# C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h:400
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:400
 #     else if (from == "hsl")
 	eq		$tmp23 $const1 $const15 	%line{400} %argrw{"wrr"}
 	if		$tmp23 113 127 	%argrw{"r"}
-# C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h:401
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:401
 #         r = hsl_to_rgb (x);
 	functioncall	$const16 113 	%line{401} %argrw{"r"}
-# C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h:381
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:381
 #         float h = c[0], s = c[1], l = c[2];
 	compref		___246_h $tmp2 $const4 	%line{381} %argrw{"wrr"}
 	compref		___246_s $tmp2 $const7 	%argrw{"wrr"}
 	compref		___246_l $tmp2 $const8 	%argrw{"wrr"}
-# C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h:383
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:383
 #         float v = (l <= 0.5) ? (l * (1 + s)) : (l * (1 - s) + s);
 	le		$tmp24 ___246_l $const17 	%line{383} %argrw{"wrr"}
 	if		$tmp24 61 64 	%argrw{"r"}
@@ -289,137 +289,137 @@ code ___main___
 	sub		$tmp26 $const12 ___246_s 	%argrw{"wrr"}
 	mul		$tmp27 ___246_l $tmp26 	%argrw{"wrr"}
 	add		___246_v $tmp27 ___246_s 	%argrw{"wrr"}
-# C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h:385
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:385
 #         if (v <= 0) {
 	le		$tmp28 ___246_v $const4 	%line{385} %argrw{"wrr"}
 	if		$tmp28 67 111 	%argrw{"r"}
-# C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h:386
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:386
 #             r = 0;
 	assign		___246_r $const4 	%line{386} %argrw{"wr"}
-# C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h:388
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:388
 #             float min = 2 * l - v;
 	mul		$tmp29 $const18 ___246_l 	%line{388} %argrw{"wrr"}
 	sub		___248_min $tmp29 ___246_v 	%argrw{"wrr"}
-# C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h:389
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:389
 #             s = (v - min) / v;
 	sub		$tmp30 ___246_v ___248_min 	%line{389} %argrw{"wrr"}
 	div		___246_s $tmp30 ___246_v 	%argrw{"wrr"}
-# C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h:390
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:390
 #             r = hsv_to_rgb (color (h, s, v));
 	color		$tmp31 ___246_h ___246_s ___246_v 	%line{390} %argrw{"wrrr"}
 	functioncall	$const6 111 	%argrw{"r"}
-# C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h:359
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:359
 #         float h = c[0], s = c[1], v = c[2];
 	compref		___243_h $tmp31 $const4 	%line{359} %argrw{"wrr"}
 	compref		___243_s $tmp31 $const7 	%argrw{"wrr"}
 	compref		___243_v $tmp31 $const8 	%argrw{"wrr"}
-# C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h:361
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:361
 #         if (s < 0.0001) {
 	lt		$tmp32 ___243_s $const9 	%line{361} %argrw{"wrr"}
 	if		$tmp32 79 110 	%argrw{"r"}
-# C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h:362
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:362
 #             r = v;
 	assign		___243_r ___243_v 	%line{362} %argrw{"wr"}
-# C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h:364
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:364
 #             h = 6 * (h - floor(h));  // expand to [0..6)
 	floor		$tmp33 ___243_h 	%line{364} %argrw{"wr"}
 	sub		$tmp34 ___243_h $tmp33 	%argrw{"wrr"}
 	mul		___243_h $const11 $tmp34 	%argrw{"wrr"}
-# C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h:365
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:365
 #             int hi = (int)h;
 	assign		___245_hi ___243_h 	%line{365} %argrw{"wr"}
-# C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h:366
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:366
 #             float f = h - hi;
 	assign		$tmp35 ___245_hi 	%line{366} %argrw{"wr"}
 	sub		___245_f ___243_h $tmp35 	%argrw{"wrr"}
-# C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h:367
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:367
 #             float p = v * (1-s);
 	sub		$tmp36 $const12 ___243_s 	%line{367} %argrw{"wrr"}
 	mul		___245_p ___243_v $tmp36 	%argrw{"wrr"}
-# C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h:368
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:368
 #             float q = v * (1-s*f);
 	mul		$tmp37 ___243_s ___245_f 	%line{368} %argrw{"wrr"}
 	sub		$tmp38 $const12 $tmp37 	%argrw{"wrr"}
 	mul		___245_q ___243_v $tmp38 	%argrw{"wrr"}
-# C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h:369
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:369
 #             float t = v * (1-s*(1-f));
 	sub		$tmp39 $const12 ___245_f 	%line{369} %argrw{"wrr"}
 	mul		$tmp40 ___243_s $tmp39 	%argrw{"wrr"}
 	sub		$tmp41 $const12 $tmp40 	%argrw{"wrr"}
 	mul		___245_t ___243_v $tmp41 	%argrw{"wrr"}
-# C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h:370
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:370
 #             if      (hi == 0) r = color (v, t, p);
 	eq		$tmp42 ___245_hi $const4 	%line{370} %argrw{"wrr"}
 	if		$tmp42 97 110 	%argrw{"r"}
 	color		___243_r ___243_v ___245_t ___245_p 	%argrw{"wrrr"}
-# C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h:371
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:371
 #             else if (hi == 1) r = color (q, v, p);
 	eq		$tmp43 ___245_hi $const7 	%line{371} %argrw{"wrr"}
 	if		$tmp43 100 110 	%argrw{"r"}
 	color		___243_r ___245_q ___243_v ___245_p 	%argrw{"wrrr"}
-# C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h:372
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:372
 #             else if (hi == 2) r = color (p, v, t);
 	eq		$tmp44 ___245_hi $const8 	%line{372} %argrw{"wrr"}
 	if		$tmp44 103 110 	%argrw{"r"}
 	color		___243_r ___245_p ___243_v ___245_t 	%argrw{"wrrr"}
-# C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h:373
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:373
 #             else if (hi == 3) r = color (p, q, v);
 	eq		$tmp45 ___245_hi $const13 	%line{373} %argrw{"wrr"}
 	if		$tmp45 106 110 	%argrw{"r"}
 	color		___243_r ___245_p ___245_q ___243_v 	%argrw{"wrrr"}
-# C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h:374
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:374
 #             else if (hi == 4) r = color (t, p, v);
 	eq		$tmp46 ___245_hi $const14 	%line{374} %argrw{"wrr"}
 	if		$tmp46 109 110 	%argrw{"r"}
 	color		___243_r ___245_t ___245_p ___243_v 	%argrw{"wrrr"}
-# C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h:375
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:375
 #             else              r = color (v, p, q);
 	color		___243_r ___243_v ___245_p ___245_q 	%line{375} %argrw{"wrrr"}
-# C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h:377
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:377
 #         return r;
 	assign		___246_r ___243_r 	%line{377} %argrw{"wr"}
-# C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h:392
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:392
 #         return r;
 	assign		___242_r ___246_r 	%line{392} %argrw{"wr"}
 	return
-# C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h:402
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:402
 #     else if (from == "YIQ")
 	eq		$tmp47 $const1 $const19 	%line{402} %argrw{"wrr"}
 	if		$tmp47 119 127 	%argrw{"r"}
-# C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h:403
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:403
 #         r = color (dot (vector(1,  0.9557,  0.6199), (vector)x),
 	dot		$tmp48 $const20 $tmp2 	%line{403} %argrw{"wrr"}
-# C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h:404
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:404
 #                    dot (vector(1, -0.2716, -0.6469), (vector)x),
 	dot		$tmp50 $const21 $tmp2 	%line{404} %argrw{"wrr"}
-# C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h:405
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:405
 #                    dot (vector(1, -1.1082,  1.7051), (vector)x));
 	dot		$tmp52 $const22 $tmp2 	%line{405} %argrw{"wrr"}
 	color		___242_r $tmp48 $tmp50 $tmp52 	%argrw{"wrrr"}
-# C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h:406
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:406
 #     else if (from == "XYZ")
 	eq		$tmp54 $const1 $const23 	%line{406} %argrw{"wrr"}
 	if		$tmp54 125 127 	%argrw{"r"}
-# C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h:407
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:407
 #         r = color (dot (vector( 3.240479, -1.537150, -0.498535), (vector)x),
 	dot		$tmp55 $const24 $tmp2 	%line{407} %argrw{"wrr"}
-# C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h:408
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:408
 #                    dot (vector(-0.969256,  1.875991,  0.041556), (vector)x),
 	dot		$tmp57 $const25 $tmp2 	%line{408} %argrw{"wrr"}
-# C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h:409
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:409
 #                    dot (vector( 0.055648, -0.204043,  1.057311), (vector)x));
 	dot		$tmp59 $const26 $tmp2 	%line{409} %argrw{"wrr"}
 	color		___242_r $tmp55 $tmp57 $tmp59 	%argrw{"wrrr"}
-# C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h:411
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:411
 #         error ("Unknown color space \"%s\"", to);
 	error		$const27 $const2 	%line{411} %argrw{"rr"}
-# C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h:412
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:412
 #         r = x;
 	assign		___242_r $tmp2 	%line{412} %argrw{"wr"}
-# C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h:414
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:414
 #     return transformc (to, r);
 	functioncall	$const3 246 	%line{414} %argrw{"r"}
-# C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h:334
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:334
 #     if (to == "rgb" || to == "RGB")
 	eq		$tmp61 $const2 $const1 	%line{334} %argrw{"wrr"}
 	neq		$tmp62 $tmp61 $const4 	%argrw{"wrr"}
@@ -428,238 +428,238 @@ code ___main___
 	neq		$tmp64 $tmp63 $const4 	%argrw{"wrr"}
 	assign		$tmp62 $tmp64 	%argrw{"wr"}
 	if		$tmp62 136 245 	%argrw{"r"}
-# C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h:335
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:335
 #         r = x;
 	assign		___237_r ___242_r 	%line{335} %argrw{"wr"}
-# C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h:336
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:336
 #     else if (to == "hsv")
 	eq		$tmp65 $const2 $const2 	%line{336} %argrw{"wrr"}
 	if		$tmp65 172 245 	%argrw{"r"}
-# C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h:337
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:337
 #         r = rgb_to_hsv (x);
 	functioncall	$const28 172 	%line{337} %argrw{"r"}
-# C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h:296
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:296
 #         float r = rgb[0], g = rgb[1], b = rgb[2];
 	compref		___238_r ___242_r $const4 	%line{296} %argrw{"wrr"}
 	compref		___238_g ___242_r $const7 	%argrw{"wrr"}
 	compref		___238_b ___242_r $const8 	%argrw{"wrr"}
-# C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h:297
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:297
 #         float mincomp = min (r, min (g, b));
 	min		$tmp66 ___238_g ___238_b 	%line{297} %argrw{"wrr"}
 	min		___238_mincomp ___238_r $tmp66 	%argrw{"wrr"}
-# C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h:298
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:298
 #         float maxcomp = max (r, max (g, b));
 	max		$tmp67 ___238_g ___238_b 	%line{298} %argrw{"wrr"}
 	max		___238_maxcomp ___238_r $tmp67 	%argrw{"wrr"}
-# C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h:299
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:299
 #         float delta = maxcomp - mincomp;  // chroma
 	sub		___238_delta ___238_maxcomp ___238_mincomp 	%line{299} %argrw{"wrr"}
-# C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h:301
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:301
 #         v = maxcomp;
 	assign		___238_v ___238_maxcomp 	%line{301} %argrw{"wr"}
-# C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h:302
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:302
 #         if (maxcomp > 0)
 	gt		$tmp68 ___238_maxcomp $const4 	%line{302} %argrw{"wrr"}
 	if		$tmp68 151 152 	%argrw{"r"}
-# C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h:303
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:303
 #             s = delta / maxcomp;
 	div		___238_s ___238_delta ___238_maxcomp 	%line{303} %argrw{"wrr"}
-# C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h:304
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:304
 #         else s = 0;
 	assign		___238_s $const4 	%line{304} %argrw{"wr"}
-# C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h:305
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:305
 #         if (s <= 0)
 	le		$tmp69 ___238_s $const4 	%line{305} %argrw{"wrr"}
 	if		$tmp69 155 171 	%argrw{"r"}
-# C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h:306
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:306
 #             h = 0;
 	assign		___238_h $const4 	%line{306} %argrw{"wr"}
-# C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h:308
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:308
 #             if      (r >= maxcomp) h = (g-b) / delta;
 	ge		$tmp70 ___238_r ___238_maxcomp 	%line{308} %argrw{"wrr"}
 	if		$tmp70 159 167 	%argrw{"r"}
 	sub		$tmp71 ___238_g ___238_b 	%argrw{"wrr"}
 	div		___238_h $tmp71 ___238_delta 	%argrw{"wrr"}
-# C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h:309
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:309
 #             else if (g >= maxcomp) h = 2 + (b-r) / delta;
 	ge		$tmp72 ___238_g ___238_maxcomp 	%line{309} %argrw{"wrr"}
 	if		$tmp72 164 167 	%argrw{"r"}
 	sub		$tmp73 ___238_b ___238_r 	%argrw{"wrr"}
 	div		$tmp74 $tmp73 ___238_delta 	%argrw{"wrr"}
 	add		___238_h $const18 $tmp74 	%argrw{"wrr"}
-# C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h:310
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:310
 #             else                   h = 4 + (r-g) / delta;
 	sub		$tmp75 ___238_r ___238_g 	%line{310} %argrw{"wrr"}
 	div		$tmp76 $tmp75 ___238_delta 	%argrw{"wrr"}
 	add		___238_h $const29 $tmp76 	%argrw{"wrr"}
-# C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h:311
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:311
 #             h /= 6;
 	div		___238_h ___238_h $const11 	%line{311} %argrw{"wrr"}
-# C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h:312
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:312
 #             if (h < 0)
 	lt		$tmp77 ___238_h $const4 	%line{312} %argrw{"wrr"}
 	if		$tmp77 171 171 	%argrw{"r"}
-# C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h:313
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:313
 #                 h += 1;
 	add		___238_h ___238_h $const12 	%line{313} %argrw{"wrr"}
-# C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h:315
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:315
 #         return color (h, s, v);
 	color		___237_r ___238_h ___238_s ___238_v 	%line{315} %argrw{"wrrr"}
-# C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h:338
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:338
 #     else if (to == "hsl")
 	eq		$tmp78 $const2 $const15 	%line{338} %argrw{"wrr"}
 	if		$tmp78 231 245 	%argrw{"r"}
-# C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h:339
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:339
 #         r = rgb_to_hsl (x);
 	functioncall	$const30 231 	%line{339} %argrw{"r"}
-# C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h:320
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:320
 #         float minval = min (rgb[0], min (rgb[1], rgb[2]));
 	compref		$tmp79 ___242_r $const4 	%line{320} %argrw{"wrr"}
 	compref		$tmp81 ___242_r $const7 	%argrw{"wrr"}
 	compref		$tmp82 ___242_r $const8 	%argrw{"wrr"}
 	min		$tmp80 $tmp81 $tmp82 	%argrw{"wrr"}
 	min		___240_minval $tmp79 $tmp80 	%argrw{"wrr"}
-# C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h:321
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:321
 #         color hsv = rgb_to_hsv (rgb);
 	functioncall	$const28 214 	%line{321} %argrw{"r"}
-# C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h:296
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:296
 #         float r = rgb[0], g = rgb[1], b = rgb[2];
 	compref		___238_r ___242_r $const4 	%line{296} %argrw{"wrr"}
 	compref		___238_g ___242_r $const7 	%argrw{"wrr"}
 	compref		___238_b ___242_r $const8 	%argrw{"wrr"}
-# C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h:297
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:297
 #         float mincomp = min (r, min (g, b));
 	min		$tmp83 ___238_g ___238_b 	%line{297} %argrw{"wrr"}
 	min		___238_mincomp ___238_r $tmp83 	%argrw{"wrr"}
-# C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h:298
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:298
 #         float maxcomp = max (r, max (g, b));
 	max		$tmp84 ___238_g ___238_b 	%line{298} %argrw{"wrr"}
 	max		___238_maxcomp ___238_r $tmp84 	%argrw{"wrr"}
-# C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h:299
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:299
 #         float delta = maxcomp - mincomp;  // chroma
 	sub		___238_delta ___238_maxcomp ___238_mincomp 	%line{299} %argrw{"wrr"}
-# C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h:301
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:301
 #         v = maxcomp;
 	assign		___238_v ___238_maxcomp 	%line{301} %argrw{"wr"}
-# C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h:302
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:302
 #         if (maxcomp > 0)
 	gt		$tmp85 ___238_maxcomp $const4 	%line{302} %argrw{"wrr"}
 	if		$tmp85 193 194 	%argrw{"r"}
-# C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h:303
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:303
 #             s = delta / maxcomp;
 	div		___238_s ___238_delta ___238_maxcomp 	%line{303} %argrw{"wrr"}
-# C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h:304
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:304
 #         else s = 0;
 	assign		___238_s $const4 	%line{304} %argrw{"wr"}
-# C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h:305
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:305
 #         if (s <= 0)
 	le		$tmp86 ___238_s $const4 	%line{305} %argrw{"wrr"}
 	if		$tmp86 197 213 	%argrw{"r"}
-# C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h:306
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:306
 #             h = 0;
 	assign		___238_h $const4 	%line{306} %argrw{"wr"}
-# C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h:308
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:308
 #             if      (r >= maxcomp) h = (g-b) / delta;
 	ge		$tmp87 ___238_r ___238_maxcomp 	%line{308} %argrw{"wrr"}
 	if		$tmp87 201 209 	%argrw{"r"}
 	sub		$tmp88 ___238_g ___238_b 	%argrw{"wrr"}
 	div		___238_h $tmp88 ___238_delta 	%argrw{"wrr"}
-# C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h:309
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:309
 #             else if (g >= maxcomp) h = 2 + (b-r) / delta;
 	ge		$tmp89 ___238_g ___238_maxcomp 	%line{309} %argrw{"wrr"}
 	if		$tmp89 206 209 	%argrw{"r"}
 	sub		$tmp90 ___238_b ___238_r 	%argrw{"wrr"}
 	div		$tmp91 $tmp90 ___238_delta 	%argrw{"wrr"}
 	add		___238_h $const18 $tmp91 	%argrw{"wrr"}
-# C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h:310
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:310
 #             else                   h = 4 + (r-g) / delta;
 	sub		$tmp92 ___238_r ___238_g 	%line{310} %argrw{"wrr"}
 	div		$tmp93 $tmp92 ___238_delta 	%argrw{"wrr"}
 	add		___238_h $const29 $tmp93 	%argrw{"wrr"}
-# C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h:311
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:311
 #             h /= 6;
 	div		___238_h ___238_h $const11 	%line{311} %argrw{"wrr"}
-# C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h:312
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:312
 #             if (h < 0)
 	lt		$tmp94 ___238_h $const4 	%line{312} %argrw{"wrr"}
 	if		$tmp94 213 213 	%argrw{"r"}
-# C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h:313
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:313
 #                 h += 1;
 	add		___238_h ___238_h $const12 	%line{313} %argrw{"wrr"}
-# C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h:315
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:315
 #         return color (h, s, v);
 	color		___240_hsv ___238_h ___238_s ___238_v 	%line{315} %argrw{"wrrr"}
-# C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h:322
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:322
 #         float maxval = hsv[2];   // v == maxval
 	compref		___240_maxval ___240_hsv $const8 	%line{322} %argrw{"wrr"}
-# C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h:323
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:323
 #         float h = hsv[0], s, l = (minval+maxval) / 2;
 	compref		___240_h ___240_hsv $const4 	%line{323} %argrw{"wrr"}
 	add		$tmp95 ___240_minval ___240_maxval 	%argrw{"wrr"}
 	div		___240_l $tmp95 $const18 	%argrw{"wrr"}
-# C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h:324
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:324
 #         if (minval == maxval)
 	eq		$tmp96 ___240_minval ___240_maxval 	%line{324} %argrw{"wrr"}
 	if		$tmp96 221 230 	%argrw{"r"}
-# C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h:325
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:325
 #             s = 0;  // special 'achromatic' case, hue is 0
 	assign		___240_s $const4 	%line{325} %argrw{"wr"}
-# C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h:326
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:326
 #         else if (l <= 0.5)
 	le		$tmp97 ___240_l $const17 	%line{326} %argrw{"wrr"}
 	if		$tmp97 226 230 	%argrw{"r"}
-# C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h:327
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:327
 #             s = (maxval - minval) / (maxval + minval);
 	sub		$tmp98 ___240_maxval ___240_minval 	%line{327} %argrw{"wrr"}
 	add		$tmp99 ___240_maxval ___240_minval 	%argrw{"wrr"}
 	div		___240_s $tmp98 $tmp99 	%argrw{"wrr"}
-# C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h:329
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:329
 #             s = (maxval - minval) / (2 - maxval - minval);
 	sub		$tmp100 ___240_maxval ___240_minval 	%line{329} %argrw{"wrr"}
 	sub		$tmp101 $const18 ___240_maxval 	%argrw{"wrr"}
 	sub		$tmp102 $tmp101 ___240_minval 	%argrw{"wrr"}
 	div		___240_s $tmp100 $tmp102 	%argrw{"wrr"}
-# C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h:330
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:330
 #         return color (h, s, l);
 	color		___237_r ___240_h ___240_s ___240_l 	%line{330} %argrw{"wrrr"}
-# C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h:340
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:340
 #     else if (to == "YIQ")
 	eq		$tmp103 $const2 $const19 	%line{340} %argrw{"wrr"}
 	if		$tmp103 237 245 	%argrw{"r"}
-# C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h:341
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:341
 #         r = color (dot (vector(0.299,  0.587,  0.114), (vector)x),
 	dot		$tmp104 $const31 ___242_r 	%line{341} %argrw{"wrr"}
-# C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h:342
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:342
 #                    dot (vector(0.596, -0.275, -0.321), (vector)x),
 	dot		$tmp106 $const32 ___242_r 	%line{342} %argrw{"wrr"}
-# C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h:343
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:343
 #                    dot (vector(0.212, -0.523,  0.311), (vector)x));
 	dot		$tmp108 $const33 ___242_r 	%line{343} %argrw{"wrr"}
 	color		___237_r $tmp104 $tmp106 $tmp108 	%argrw{"wrrr"}
-# C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h:344
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:344
 #     else if (to == "XYZ")
 	eq		$tmp110 $const2 $const23 	%line{344} %argrw{"wrr"}
 	if		$tmp110 243 245 	%argrw{"r"}
-# C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h:345
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:345
 #         r = color (dot (vector(0.412453, 0.357580, 0.180423), (vector)x),
 	dot		$tmp111 $const34 ___242_r 	%line{345} %argrw{"wrr"}
-# C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h:346
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:346
 #                    dot (vector(0.212671, 0.715160, 0.072169), (vector)x),
 	dot		$tmp113 $const35 ___242_r 	%line{346} %argrw{"wrr"}
-# C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h:347
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:347
 #                    dot (vector(0.019334, 0.119193, 0.950227), (vector)x));
 	dot		$tmp115 $const36 ___242_r 	%line{347} %argrw{"wrr"}
 	color		___237_r $tmp111 $tmp113 $tmp115 	%argrw{"wrrr"}
-# C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h:349
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:349
 #         error ("Unknown color space \"%s\"", to);
 	error		$const27 $const2 	%line{349} %argrw{"rr"}
-# C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h:350
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:350
 #         r = x;
 	assign		___237_r ___242_r 	%line{350} %argrw{"wr"}
-# C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h:352
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:352
 #     return r;
 	assign		$tmp1 ___237_r 	%line{352} %argrw{"wr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\rgbToHsv.osl:4
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\rgbToHsv.osl:4
 # }
-	assign		outHsv $tmp1 	%filename{"H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\rgbToHsv.osl"} %line{4} %argrw{"wr"}
+	assign		outHsv $tmp1 	%filename{"H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\rgbToHsv.osl"} %line{4} %argrw{"wr"}
 	end

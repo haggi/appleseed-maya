@@ -11,13 +11,13 @@ const	string	$const2	"object:object_instance_index"		%read{1,1} %write{214748364
 temp	int	$tmp3	%read{2147483647,-1} %write{2,2}
 const	string	$const3	"object:assembly_instance_id"		%read{2,2} %write{2147483647,-1}
 code ___main___
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\input\\as_object_input.osl:37
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\input\\as_object_input.osl:37
 #     getattribute("object:object_instance_index", ObjectIndex);
-	getattribute	$tmp1 $const1 ObjectInstanceId 	%filename{"H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\input\\as_object_input.osl"} %line{37} %argrw{"wrw"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\input\\as_object_input.osl:38
+	getattribute	$tmp1 $const1 ObjectInstanceId 	%filename{"H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\input\\as_object_input.osl"} %line{37} %argrw{"wrw"}
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\input\\as_object_input.osl:38
 #     getattribute("object:assembly_instance_id", AssemblyId);
 	getattribute	$tmp2 $const2 ObjectIndex 	%line{38} %argrw{"wrw"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\input\\as_object_input.osl:39
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\input\\as_object_input.osl:39
 # }
 	getattribute	$tmp3 $const3 AssemblyId 	%line{39} %argrw{"wrw"}
 	end

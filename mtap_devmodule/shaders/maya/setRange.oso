@@ -50,97 +50,97 @@ temp	float	$tmp31	%read{50,50} %write{49,49}
 temp	float	$tmp32	%read{51,51} %write{50,50}
 temp	int	$tmp33	%read{2147483647,-1} %write{52,52}
 code ___main___
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\setRange.osl:4
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\setRange.osl:4
 # 	
-	assign		clippedColor value 	%filename{"H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\setRange.osl"} %line{4} %argrw{"wr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\setRange.osl:6
+	assign		clippedColor value 	%filename{"H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\setRange.osl"} %line{4} %argrw{"wr"}
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\setRange.osl:6
 # 		clippedColor[0] = oldMin[0];
 	compref		$tmp1 clippedColor $const1 	%line{6} %argrw{"wrr"}
 	compref		$tmp2 oldMin $const1 	%argrw{"wrr"}
 	lt		$tmp3 $tmp1 $tmp2 	%argrw{"wrr"}
 	if		$tmp3 7 7 	%argrw{"r"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\setRange.osl:7
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\setRange.osl:7
 # 	if( clippedColor[1] < oldMin[1] )
 	compref		$tmp4 oldMin $const1 	%line{7} %argrw{"wrr"}
 	compassign	clippedColor $const1 $tmp4 	%argrw{"wrr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\setRange.osl:8
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\setRange.osl:8
 # 		clippedColor[1] = oldMin[1];
 	compref		$tmp5 clippedColor $const2 	%line{8} %argrw{"wrr"}
 	compref		$tmp6 oldMin $const2 	%argrw{"wrr"}
 	lt		$tmp7 $tmp5 $tmp6 	%argrw{"wrr"}
 	if		$tmp7 13 13 	%argrw{"r"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\setRange.osl:9
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\setRange.osl:9
 # 	if( clippedColor[2] < oldMin[2] )
 	compref		$tmp8 oldMin $const2 	%line{9} %argrw{"wrr"}
 	compassign	clippedColor $const2 $tmp8 	%argrw{"wrr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\setRange.osl:10
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\setRange.osl:10
 # 		clippedColor[2] = oldMin[2];
 	compref		$tmp9 clippedColor $const3 	%line{10} %argrw{"wrr"}
 	compref		$tmp10 oldMin $const3 	%argrw{"wrr"}
 	lt		$tmp11 $tmp9 $tmp10 	%argrw{"wrr"}
 	if		$tmp11 19 19 	%argrw{"r"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\setRange.osl:11
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\setRange.osl:11
 # 
 	compref		$tmp12 oldMin $const3 	%line{11} %argrw{"wrr"}
 	compassign	clippedColor $const3 $tmp12 	%argrw{"wrr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\setRange.osl:13
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\setRange.osl:13
 # 		clippedColor[0] = oldMax[0];
 	compref		$tmp13 clippedColor $const1 	%line{13} %argrw{"wrr"}
 	compref		$tmp14 oldMax $const1 	%argrw{"wrr"}
 	gt		$tmp15 $tmp13 $tmp14 	%argrw{"wrr"}
 	if		$tmp15 25 25 	%argrw{"r"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\setRange.osl:14
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\setRange.osl:14
 # 	if( clippedColor[1] > oldMax[1] )
 	compref		$tmp16 oldMax $const1 	%line{14} %argrw{"wrr"}
 	compassign	clippedColor $const1 $tmp16 	%argrw{"wrr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\setRange.osl:15
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\setRange.osl:15
 # 		clippedColor[1] = oldMax[1];
 	compref		$tmp17 clippedColor $const2 	%line{15} %argrw{"wrr"}
 	compref		$tmp18 oldMax $const2 	%argrw{"wrr"}
 	gt		$tmp19 $tmp17 $tmp18 	%argrw{"wrr"}
 	if		$tmp19 31 31 	%argrw{"r"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\setRange.osl:16
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\setRange.osl:16
 # 	if( clippedColor[2] > oldMax[2] )
 	compref		$tmp20 oldMax $const2 	%line{16} %argrw{"wrr"}
 	compassign	clippedColor $const2 $tmp20 	%argrw{"wrr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\setRange.osl:17
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\setRange.osl:17
 # 		clippedColor[3] = oldMax[2];
 	compref		$tmp21 clippedColor $const3 	%line{17} %argrw{"wrr"}
 	compref		$tmp22 oldMax $const3 	%argrw{"wrr"}
 	gt		$tmp23 $tmp21 $tmp22 	%argrw{"wrr"}
 	if		$tmp23 37 37 	%argrw{"r"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\setRange.osl:18
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\setRange.osl:18
 # 		
 	compref		$tmp24 oldMax $const3 	%line{18} %argrw{"wrr"}
 	compassign	clippedColor $const4 $tmp24 	%argrw{"wrr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\setRange.osl:20
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\setRange.osl:20
 # 	float dNew = 0.0;
 	assign		dOld $const5 	%line{20} %argrw{"wr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\setRange.osl:21
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\setRange.osl:21
 # 	for( int i = 0; i < 3; i++)
 	assign		dNew $const5 	%line{21} %argrw{"wr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\setRange.osl:22
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\setRange.osl:22
 # 	{
 	for		$tmp25 41 42 52 54 	%line{22} %argrw{"r"}
 	assign		___297_i $const1 	%argrw{"wr"}
 	lt		$tmp25 ___297_i $const4 	%argrw{"wrr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\setRange.osl:24
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\setRange.osl:24
 # 		dNew = inMax[i] - inMin[i];
 	compref		$tmp26 oldMax ___297_i 	%line{24} %argrw{"wrr"}
 	compref		$tmp27 oldMin ___297_i 	%argrw{"wrr"}
 	sub		dOld $tmp26 $tmp27 	%argrw{"wrr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\setRange.osl:25
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\setRange.osl:25
 # 		outValue[i] = clippedColor[i] * dOld/dNew;
 	compref		$tmp28 inMax ___297_i 	%line{25} %argrw{"wrr"}
 	compref		$tmp29 inMin ___297_i 	%argrw{"wrr"}
 	sub		dNew $tmp28 $tmp29 	%argrw{"wrr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\setRange.osl:26
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\setRange.osl:26
 # 	}
 	compref		$tmp30 clippedColor ___297_i 	%line{26} %argrw{"wrr"}
 	mul		$tmp31 $tmp30 dOld 	%argrw{"wrr"}
 	div		$tmp32 $tmp31 dNew 	%argrw{"wrr"}
 	compassign	outValue ___297_i $tmp32 	%argrw{"wrr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\setRange.osl:22
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\setRange.osl:22
 # 	{
 	assign		$tmp33 ___297_i 	%line{22} %argrw{"wr"}
 	add		___297_i ___297_i $const2 	%argrw{"wrr"}

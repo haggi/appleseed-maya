@@ -8,16 +8,16 @@ global	vector	I	%read{1,2} %write{2147483647,-1}
 global	normal	N	%read{0,2} %write{2147483647,-1}
 temp	float	$tmp1	%read{3,3} %write{2,2}
 code Normal
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\utility\\as_facing_ratio.osl:38
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\utility\\as_facing_ratio.osl:38
 #     vector Incident = I,
-	assign		Normal N 	%filename{"H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\utility\\as_facing_ratio.osl"} %line{38} %argrw{"wr"}
+	assign		Normal N 	%filename{"H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\utility\\as_facing_ratio.osl"} %line{38} %argrw{"wr"}
 code Incident
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\utility\\as_facing_ratio.osl:39
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\utility\\as_facing_ratio.osl:39
 #     output float FacingRatio = 0
-	assign		Incident I 	%filename{"H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\utility\\as_facing_ratio.osl"} %line{39} %argrw{"wr"}
+	assign		Incident I 	%filename{"H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\utility\\as_facing_ratio.osl"} %line{39} %argrw{"wr"}
 code ___main___
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\utility\\as_facing_ratio.osl:43
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\utility\\as_facing_ratio.osl:43
 # }
-	dot		$tmp1 I N 	%filename{"H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\utility\\as_facing_ratio.osl"} %line{43} %argrw{"wrr"}
+	dot		$tmp1 I N 	%filename{"H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\utility\\as_facing_ratio.osl"} %line{43} %argrw{"wrr"}
 	fabs		FacingRatio $tmp1 	%argrw{"wr"}
 	end

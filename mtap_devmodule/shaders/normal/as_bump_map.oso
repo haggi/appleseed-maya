@@ -34,70 +34,70 @@ const	float	$const3	1		%read{25,25} %write{2147483647,-1}
 temp	int	$tmp10	%read{26,26} %write{25,25}
 temp	vector	$tmp11	%read{28,28} %write{27,27}
 code Position
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\normal\\as_bump_map.osl:42
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\normal\\as_bump_map.osl:42
 #     vector Normal = N,
-	assign		Position P 	%filename{"H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\normal\\as_bump_map.osl"} %line{42} %argrw{"wr"}
+	assign		Position P 	%filename{"H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\normal\\as_bump_map.osl"} %line{42} %argrw{"wr"}
 code Normal
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\normal\\as_bump_map.osl:43
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\normal\\as_bump_map.osl:43
 #     float Height = 0,
-	assign		Normal N 	%filename{"H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\normal\\as_bump_map.osl"} %line{43} %argrw{"wr"}
+	assign		Normal N 	%filename{"H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\normal\\as_bump_map.osl"} %line{43} %argrw{"wr"}
 code ___main___
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\normal\\as_bump_map.osl:53
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\normal\\as_bump_map.osl:53
 # 
-	getattribute	get_attr_ok $const1 has_diffs 	%filename{"H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\normal\\as_bump_map.osl"} %line{53} %argrw{"wrw"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\normal\\as_bump_map.osl:56
+	getattribute	get_attr_ok $const1 has_diffs 	%filename{"H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\normal\\as_bump_map.osl"} %line{53} %argrw{"wrw"}
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\normal\\as_bump_map.osl:56
 #     {
 	neq		$tmp1 get_attr_ok $const2 	%line{56} %argrw{"wrr"}
 	if		$tmp1 7 7 	%argrw{"r"}
 	neq		$tmp2 has_diffs $const2 	%argrw{"wrr"}
 	assign		$tmp1 $tmp2 	%argrw{"wr"}
 	if		$tmp1 29 30 	%argrw{"r"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\normal\\as_bump_map.osl:58
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\normal\\as_bump_map.osl:58
 #         vector dpdx = Dx(Position);
 	normalize	___297_n Normal 	%line{58} %argrw{"wr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\normal\\as_bump_map.osl:59
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\normal\\as_bump_map.osl:59
 #         vector dpdy = Dy(Position);
 	Dx		___297_dpdx Position 	%line{59} %argrw{"wr"} %argderivs{1}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\normal\\as_bump_map.osl:60
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\normal\\as_bump_map.osl:60
 # 
 	Dy		___297_dpdy Position 	%line{60} %argrw{"wr"} %argderivs{1}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\normal\\as_bump_map.osl:62
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\normal\\as_bump_map.osl:62
 #         vector ry = cross(n, dpdx);
 	cross		___297_rx ___297_dpdy ___297_n 	%line{62} %argrw{"wrr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\normal\\as_bump_map.osl:63
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\normal\\as_bump_map.osl:63
 # 
 	cross		___297_ry ___297_n ___297_dpdx 	%line{63} %argrw{"wrr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\normal\\as_bump_map.osl:65
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\normal\\as_bump_map.osl:65
 #         float dhy = Dy(Height);
 	Dx		___297_dhx Height 	%line{65} %argrw{"wr"} %argderivs{1}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\normal\\as_bump_map.osl:66
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\normal\\as_bump_map.osl:66
 # 
 	Dy		___297_dhy Height 	%line{66} %argrw{"wr"} %argderivs{1}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\normal\\as_bump_map.osl:68
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\normal\\as_bump_map.osl:68
 # 
 	dot		___297_det ___297_dpdx ___297_rx 	%line{68} %argrw{"wrr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\normal\\as_bump_map.osl:70
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\normal\\as_bump_map.osl:70
 #         NormalOut = normalize(abs(det) * n - surf_grad);
 	sign		$tmp3 ___297_det 	%line{70} %argrw{"wr"}
 	mul		$tmp4 ___297_dhx ___297_rx 	%argrw{"wrr"}
 	mul		$tmp5 ___297_dhy ___297_ry 	%argrw{"wrr"}
 	add		$tmp6 $tmp4 $tmp5 	%argrw{"wrr"}
 	mul		___297_surf_grad $tmp3 $tmp6 	%argrw{"wrr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\normal\\as_bump_map.osl:71
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\normal\\as_bump_map.osl:71
 # 
 	abs		$tmp7 ___297_det 	%line{71} %argrw{"wr"}
 	mul		$tmp8 $tmp7 ___297_n 	%argrw{"wrr"}
 	sub		$tmp9 $tmp8 ___297_surf_grad 	%argrw{"wrr"}
 	normalize	NormalOut $tmp9 	%argrw{"wr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\normal\\as_bump_map.osl:73
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\normal\\as_bump_map.osl:73
 #             NormalOut = normalize(mix(Normal, NormalOut, Amount));
 	neq		$tmp10 Amount $const3 	%line{73} %argrw{"wrr"}
 	if		$tmp10 29 29 	%argrw{"r"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\normal\\as_bump_map.osl:74
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\normal\\as_bump_map.osl:74
 #     }
 	mix		$tmp11 Normal NormalOut Amount 	%line{74} %argrw{"wrrr"}
 	normalize	NormalOut $tmp11 	%argrw{"wr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\normal\\as_bump_map.osl:77
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\normal\\as_bump_map.osl:77
 # }
 	normalize	NormalOut Normal 	%line{77} %argrw{"wr"}
 	end

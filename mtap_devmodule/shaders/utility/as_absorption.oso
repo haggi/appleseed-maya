@@ -10,14 +10,14 @@ const	string	$const1	"path:ray_length"		%read{2,2} %write{2147483647,-1}
 temp	float	$tmp3	%read{4,4} %write{3,3}
 temp	float	$tmp4	%read{5,5} %write{4,4}
 code ___main___
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\utility\\as_absorption.osl:40
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\utility\\as_absorption.osl:40
 #     {
-	backfacing	$tmp1 	%filename{"H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\utility\\as_absorption.osl"} %line{40} %argrw{"w"}
+	backfacing	$tmp1 	%filename{"H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\utility\\as_absorption.osl"} %line{40} %argrw{"w"}
 	if		$tmp1 6 6 	%argrw{"r"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\utility\\as_absorption.osl:43
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\utility\\as_absorption.osl:43
 #         FloatOut = exp(-Absorption * length);
 	getattribute	$tmp2 $const1 ___297_length 	%line{43} %argrw{"wrw"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\utility\\as_absorption.osl:44
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\utility\\as_absorption.osl:44
 #     }
 	neg		$tmp3 Absorption 	%line{44} %argrw{"wr"}
 	mul		$tmp4 $tmp3 ___297_length 	%argrw{"wrr"}

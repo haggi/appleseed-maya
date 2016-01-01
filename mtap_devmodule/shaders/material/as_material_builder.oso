@@ -4,7 +4,7 @@ surface as_material_builder	%meta{string,help,"Builds a material from a surface 
 param	closure color	BSDF			%read{0,0} %write{2147483647,-1}
 global	closure color	Ci	%read{2147483647,-1} %write{0,0}
 code ___main___
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\material\\as_material_builder.osl:38
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\material\\as_material_builder.osl:38
 # }
-	assign		Ci BSDF 	%filename{"H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\material\\as_material_builder.osl"} %line{38} %argrw{"wr"}
+	assign		Ci BSDF 	%filename{"H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\material\\as_material_builder.osl"} %line{38} %argrw{"wr"}
 	end

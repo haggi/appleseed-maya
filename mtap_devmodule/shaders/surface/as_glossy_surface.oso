@@ -36,59 +36,59 @@ temp	closure color	$tmp10	%read{24,24} %write{22,22}
 const	string	$const9	"microfacet"		%read{22,22} %write{2147483647,-1}
 temp	color	$tmp11	%read{24,24} %write{23,23}
 code Normal
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\surface\\as_glossy_surface.osl:39
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\surface\\as_glossy_surface.osl:39
 #     vector Tangent = APPLESEED_DEFAULT_TANGENT,
-	assign		Normal N 	%filename{"H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\surface\\as_glossy_surface.osl"} %line{39} %argrw{"wr"}
+	assign		Normal N 	%filename{"H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\surface\\as_glossy_surface.osl"} %line{39} %argrw{"wr"}
 code Tangent
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\surface\\as_glossy_surface.osl:40
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\surface\\as_glossy_surface.osl:40
 # 
-	normalize	Tangent dPdu 	%filename{"H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\surface\\as_glossy_surface.osl"} %line{40} %argrw{"wr"}
+	normalize	Tangent dPdu 	%filename{"H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\surface\\as_glossy_surface.osl"} %line{40} %argrw{"wr"}
 code ___main___
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\surface\\as_glossy_surface.osl:68
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\surface\\as_glossy_surface.osl:68
 #         BRDF = Specular * Color * reflection(Normal);
-	eq		$tmp1 Distribution $const1 	%filename{"H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\surface\\as_glossy_surface.osl"} %line{68} %argrw{"wrr"}
+	eq		$tmp1 Distribution $const1 	%filename{"H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\surface\\as_glossy_surface.osl"} %line{68} %argrw{"wrr"}
 	if		$tmp1 7 25 	%argrw{"r"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\surface\\as_glossy_surface.osl:69
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\surface\\as_glossy_surface.osl:69
 #     else
 	closure		$tmp2 $const2 Normal 	%line{69} %argrw{"wrr"}
 	mul		$tmp3 Specular Color 	%argrw{"wrr"}
 	mul		BRDF $tmp2 $tmp3 	%argrw{"wrr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\surface\\as_glossy_surface.osl:73
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\surface\\as_glossy_surface.osl:73
 #         BRDF = Specular * Color * microfacet(Distribution, Normal, Tangent, ax, ay, 1, 0);
 	functioncall	$const3 22 	%line{73} %argrw{"r"}
-# H:/UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\appleseed\\microfacet.h:55
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\appleseed\\microfacet.h:55
 #     float aspect = sqrt(1.0 - fabs(anisotropy) * 0.9);
-	fabs		$tmp4 Anisotropy 	%filename{"H:/UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\appleseed\\microfacet.h"} %line{55} %argrw{"wr"}
+	fabs		$tmp4 Anisotropy 	%filename{"H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\appleseed\\microfacet.h"} %line{55} %argrw{"wr"}
 	mul		$tmp5 $tmp4 $const5 	%argrw{"wrr"}
 	sub		$tmp6 $const4 $tmp5 	%argrw{"wrr"}
 	sqrt		___297_aspect $tmp6 	%argrw{"wr"}
-# H:/UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\appleseed\\microfacet.h:56
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\appleseed\\microfacet.h:56
 #     float r2 = roughness * roughness;
 	mul		___297_r2 Roughness Roughness 	%line{56} %argrw{"wrr"}
-# H:/UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\appleseed\\microfacet.h:58
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\appleseed\\microfacet.h:58
 #     ax = max(0.001, r2 / aspect);
 	div		$tmp7 ___297_r2 ___297_aspect 	%line{58} %argrw{"wrr"}
 	max		___299_ax $const6 $tmp7 	%argrw{"wrr"}
-# H:/UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\appleseed\\microfacet.h:59
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\appleseed\\microfacet.h:59
 #     ay = max(0.001, r2 * aspect);
 	mul		$tmp8 ___297_r2 ___297_aspect 	%line{59} %argrw{"wrr"}
 	max		___299_ay $const6 $tmp8 	%argrw{"wrr"}
-# H:/UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\appleseed\\microfacet.h:61
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\appleseed\\microfacet.h:61
 #     if (anisotropy < 0)
 	lt		$tmp9 Anisotropy $const7 	%line{61} %argrw{"wrr"}
 	if		$tmp9 22 22 	%argrw{"r"}
-# H:/UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\appleseed\\microfacet.h:64
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\appleseed\\microfacet.h:64
 #         float tmp = ax;
 	assign		___298_tmp ___299_ax 	%line{64} %argrw{"wr"}
-# H:/UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\appleseed\\microfacet.h:65
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\appleseed\\microfacet.h:65
 #         ax = ay;
 	assign		___299_ax ___299_ay 	%line{65} %argrw{"wr"}
-# H:/UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\appleseed\\microfacet.h:66
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\appleseed\\microfacet.h:66
 #         ay = tmp;
 	assign		___299_ay ___298_tmp 	%line{66} %argrw{"wr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\surface\\as_glossy_surface.osl:74
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\surface\\as_glossy_surface.osl:74
 # // Copyright (c) 2014 The masked shader writer, The appleseedhq Organization
-	closure		$tmp10 $const9 Distribution Normal Tangent ___299_ax ___299_ay $const4 $const7 	%filename{"H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\surface\\as_glossy_surface.osl"} %line{74} %argrw{"wrrrrrrrr"}
+	closure		$tmp10 $const9 Distribution Normal Tangent ___299_ax ___299_ay $const4 $const7 	%filename{"H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\surface\\as_glossy_surface.osl"} %line{74} %argrw{"wrrrrrrrr"}
 	mul		$tmp11 Specular Color 	%argrw{"wrr"}
 	mul		BRDF $tmp10 $tmp11 	%argrw{"wrr"}
 	end

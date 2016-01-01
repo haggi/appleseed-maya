@@ -112,73 +112,73 @@ const	string	$const12	"colorBalance"		%read{107,107} %write{2147483647,-1}
 temp	int	$tmp63	%read{114,114} %write{113,113}
 temp	color	$tmp64	%read{116,116} %write{115,115}
 code ___main___
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\grid.osl:10
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\grid.osl:10
 #    float filterOffset = 0;
-	assign		filter $const1 	%filename{"H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\grid.osl"} %line{10} %argrw{"wr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\grid.osl:11
+	assign		filter $const1 	%filename{"H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\grid.osl"} %line{10} %argrw{"wr"}
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\grid.osl:11
 # 
 	assign		filterOffset $const2 	%line{11} %argrw{"wr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\grid.osl:13
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\grid.osl:13
 #    float tt = 1.0 - uvCoord[1];
 	compref		ss uvCoord $const2 	%line{13} %argrw{"wrr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\grid.osl:14
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\grid.osl:14
 #    ss = mod(ss, 1.000001);
 	compref		$tmp1 uvCoord $const1 	%line{14} %argrw{"wrr"}
 	sub		tt $const3 $tmp1 	%argrw{"wrr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\grid.osl:15
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\grid.osl:15
 #    tt = mod(tt, 1.000001);
 	functioncall	$const5 10 	%line{15} %argrw{"r"}
-# C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h:148
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:148
 # PERCOMP1 (floor)
-	div		$tmp3 ss $const4 	%filename{"C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h"} %line{148} %argrw{"wrr"}
+	div		$tmp3 ss $const4 	%filename{"H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h"} %line{148} %argrw{"wrr"}
 	floor		$tmp2 $tmp3 	%argrw{"wr"}
 	mul		$tmp4 $const4 $tmp2 	%argrw{"wrr"}
 	sub		ss ss $tmp4 	%argrw{"wrr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\grid.osl:16
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\grid.osl:16
 # 
-	functioncall	$const5 15 	%filename{"H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\grid.osl"} %line{16} %argrw{"r"}
-# C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h:148
+	functioncall	$const5 15 	%filename{"H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\grid.osl"} %line{16} %argrw{"r"}
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:148
 # PERCOMP1 (sign)
-	div		$tmp6 tt $const4 	%filename{"C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h"} %line{148} %argrw{"wrr"}
+	div		$tmp6 tt $const4 	%filename{"H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h"} %line{148} %argrw{"wrr"}
 	floor		$tmp5 $tmp6 	%argrw{"wr"}
 	mul		$tmp7 $const4 $tmp5 	%argrw{"wrr"}
 	sub		tt tt $tmp7 	%argrw{"wrr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\grid.osl:19
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\grid.osl:19
 # 
-	assign		fw $const6 	%filename{"H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\grid.osl"} %line{19} %argrw{"wr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\grid.osl:21
+	assign		fw $const6 	%filename{"H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\grid.osl"} %line{19} %argrw{"wr"}
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\grid.osl:21
 #    float dtt = fw * 2.0;
 	mul		dss fw $const7 	%line{21} %argrw{"wrr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\grid.osl:22
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\grid.osl:22
 # 
 	mul		dtt fw $const7 	%line{22} %argrw{"wrr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\grid.osl:24
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\grid.osl:24
 #              filteredPulseTrain(vWidth, 1.0, tt + vWidth * 0.5, dtt);
 	mul		$tmp8 uWidth $const8 	%line{24} %argrw{"wrr"}
 	add		$tmp9 ss $tmp8 	%argrw{"wrr"}
 	functioncall	$const9 58 	%argrw{"r"}
-# H:/UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\mayaUtils.h:41
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\mayaUtils.h:41
 # //vector colorGain; vector colorOffset; float alphaGain; float alphaOffset; int alphaIsLuminance; int invert; vector uvCoord; float filter; float filterOffset
-	div		___300_invPeriod $const3 $const3 	%filename{"H:/UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\mayaUtils.h"} %line{41} %argrw{"wrr"}
-# H:/UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\mayaUtils.h:43
+	div		___300_invPeriod $const3 $const3 	%filename{"H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\mayaUtils.h"} %line{41} %argrw{"wrr"}
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\mayaUtils.h:43
 # float sampleArea()
 	mul		___300_w dss ___300_invPeriod 	%line{43} %argrw{"wrr"}
-# H:/UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\mayaUtils.h:44
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\mayaUtils.h:44
 # {
 	mul		$tmp10 $tmp9 ___300_invPeriod 	%line{44} %argrw{"wrr"}
 	mul		$tmp11 $const8 ___300_w 	%argrw{"wrr"}
 	sub		___300_x0 $tmp10 $tmp11 	%argrw{"wrr"}
-# H:/UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\mayaUtils.h:45
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\mayaUtils.h:45
 # 	return length(cross(dPdu, dPdv));
 	add		___300_x1 ___300_x0 ___300_w 	%line{45} %argrw{"wrr"}
-# H:/UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\mayaUtils.h:46
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\mayaUtils.h:46
 # }
 	mul		___300_nedge uWidth ___300_invPeriod 	%line{46} %argrw{"wrr"}
-# H:/UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\mayaUtils.h:50
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\mayaUtils.h:50
 # 	vector result = c;
 	eq		$tmp12 ___300_x0 ___300_x1 	%line{50} %argrw{"wrr"}
 	if		$tmp12 36 56 	%argrw{"r"}
-# H:/UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\mayaUtils.h:52
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\mayaUtils.h:52
 # 	result += colorOffset;
 	floor		$tmp13 ___300_x0 	%line{52} %argrw{"wr"}
 	sub		$tmp14 ___300_x0 $tmp13 	%argrw{"wrr"}
@@ -186,10 +186,10 @@ code ___main___
 	if		$tmp15 35 36 	%argrw{"r"}
 	assign		___300_result $const6 	%argrw{"wr"}
 	assign		___300_result $const3 	%argrw{"wr"}
-# H:/UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\mayaUtils.h:56
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\mayaUtils.h:56
 # #define WRAPMAX (1.000001)
 	functioncall	$const10 45 	%line{56} %argrw{"r"}
-# H:/UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\mayaUtils.h:36
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\mayaUtils.h:36
 #    return ((1.0 - nedge) * floor(t) + max(0.0, t - floor(t) - nedge));
 	sub		$tmp17 $const3 ___300_nedge 	%line{36} %argrw{"wrr"}
 	floor		$tmp18 ___300_x1 	%argrw{"wr"}
@@ -199,10 +199,10 @@ code ___main___
 	sub		$tmp23 $tmp22 ___300_nedge 	%argrw{"wrr"}
 	max		$tmp20 $const6 $tmp23 	%argrw{"wrr"}
 	add		$tmp16 $tmp19 $tmp20 	%argrw{"wrr"}
-# H:/UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\mayaUtils.h:56
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\mayaUtils.h:56
 #       result = (integral(x1, nedge) - integral(x0, nedge)) / w;
 	functioncall	$const10 54 	%line{56} %argrw{"r"}
-# H:/UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\mayaUtils.h:36
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\mayaUtils.h:36
 #    return ((1.0 - nedge) * floor(t) + max(0.0, t - floor(t) - nedge));
 	sub		$tmp25 $const3 ___300_nedge 	%line{36} %argrw{"wrr"}
 	floor		$tmp26 ___300_x0 	%argrw{"wr"}
@@ -212,41 +212,41 @@ code ___main___
 	sub		$tmp31 $tmp30 ___300_nedge 	%argrw{"wrr"}
 	max		$tmp28 $const6 $tmp31 	%argrw{"wrr"}
 	add		$tmp24 $tmp27 $tmp28 	%argrw{"wrr"}
-# H:/UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\mayaUtils.h:56
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\mayaUtils.h:56
 #       result = (integral(x1, nedge) - integral(x0, nedge)) / w;
 	sub		$tmp32 $tmp16 $tmp24 	%line{56} %argrw{"wrr"}
 	div		___300_result $tmp32 ___300_w 	%argrw{"wrr"}
-# H:/UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\mayaUtils.h:59
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\mayaUtils.h:59
 #    return result;
 	assign		f ___300_result 	%line{59} %argrw{"wr"}
 	return
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\grid.osl:25
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\grid.osl:25
 # 
-	mul		$tmp34 vWidth $const8 	%filename{"H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\grid.osl"} %line{25} %argrw{"wrr"}
+	mul		$tmp34 vWidth $const8 	%filename{"H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\grid.osl"} %line{25} %argrw{"wrr"}
 	add		$tmp35 tt $tmp34 	%argrw{"wrr"}
 	functioncall	$const9 98 	%argrw{"r"}
-# H:/UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\mayaUtils.h:41
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\mayaUtils.h:41
 # 
-	div		___300_invPeriod $const3 $const3 	%filename{"H:/UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\mayaUtils.h"} %line{41} %argrw{"wrr"}
-# H:/UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\mayaUtils.h:43
+	div		___300_invPeriod $const3 $const3 	%filename{"H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\mayaUtils.h"} %line{41} %argrw{"wrr"}
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\mayaUtils.h:43
 # 
 	mul		___300_w dtt ___300_invPeriod 	%line{43} %argrw{"wrr"}
-# H:/UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\mayaUtils.h:44
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\mayaUtils.h:44
 # float sampleArea()
 	mul		$tmp36 $tmp35 ___300_invPeriod 	%line{44} %argrw{"wrr"}
 	mul		$tmp37 $const8 ___300_w 	%argrw{"wrr"}
 	sub		___300_x0 $tmp36 $tmp37 	%argrw{"wrr"}
-# H:/UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\mayaUtils.h:45
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\mayaUtils.h:45
 # {
 	add		___300_x1 ___300_x0 ___300_w 	%line{45} %argrw{"wrr"}
-# H:/UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\mayaUtils.h:46
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\mayaUtils.h:46
 # 	return length(cross(dPdu, dPdv));
 	mul		___300_nedge vWidth ___300_invPeriod 	%line{46} %argrw{"wrr"}
-# H:/UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\mayaUtils.h:50
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\mayaUtils.h:50
 # {
 	eq		$tmp38 ___300_x0 ___300_x1 	%line{50} %argrw{"wrr"}
 	if		$tmp38 76 96 	%argrw{"r"}
-# H:/UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\mayaUtils.h:52
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\mayaUtils.h:52
 # 	result *= colorGain;
 	floor		$tmp39 ___300_x0 	%line{52} %argrw{"wr"}
 	sub		$tmp40 ___300_x0 $tmp39 	%argrw{"wrr"}
@@ -254,10 +254,10 @@ code ___main___
 	if		$tmp41 75 76 	%argrw{"r"}
 	assign		___300_result $const6 	%argrw{"wr"}
 	assign		___300_result $const3 	%argrw{"wr"}
-# H:/UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\mayaUtils.h:56
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\mayaUtils.h:56
 # 
 	functioncall	$const10 85 	%line{56} %argrw{"r"}
-# H:/UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\mayaUtils.h:36
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\mayaUtils.h:36
 #    return ((1.0 - nedge) * floor(t) + max(0.0, t - floor(t) - nedge));
 	sub		$tmp43 $const3 ___300_nedge 	%line{36} %argrw{"wrr"}
 	floor		$tmp44 ___300_x1 	%argrw{"wr"}
@@ -267,10 +267,10 @@ code ___main___
 	sub		$tmp49 $tmp48 ___300_nedge 	%argrw{"wrr"}
 	max		$tmp46 $const6 $tmp49 	%argrw{"wrr"}
 	add		$tmp42 $tmp45 $tmp46 	%argrw{"wrr"}
-# H:/UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\mayaUtils.h:56
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\mayaUtils.h:56
 #       result = (integral(x1, nedge) - integral(x0, nedge)) / w;
 	functioncall	$const10 94 	%line{56} %argrw{"r"}
-# H:/UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\mayaUtils.h:36
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\mayaUtils.h:36
 #    return ((1.0 - nedge) * floor(t) + max(0.0, t - floor(t) - nedge));
 	sub		$tmp51 $const3 ___300_nedge 	%line{36} %argrw{"wrr"}
 	floor		$tmp52 ___300_x0 	%argrw{"wr"}
@@ -280,56 +280,56 @@ code ___main___
 	sub		$tmp57 $tmp56 ___300_nedge 	%argrw{"wrr"}
 	max		$tmp54 $const6 $tmp57 	%argrw{"wrr"}
 	add		$tmp50 $tmp53 $tmp54 	%argrw{"wrr"}
-# H:/UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\mayaUtils.h:56
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\mayaUtils.h:56
 #       result = (integral(x1, nedge) - integral(x0, nedge)) / w;
 	sub		$tmp58 $tmp42 $tmp50 	%line{56} %argrw{"wrr"}
 	div		___300_result $tmp58 ___300_w 	%argrw{"wrr"}
-# H:/UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\mayaUtils.h:59
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\mayaUtils.h:59
 #    return result;
 	assign		$tmp33 ___300_result 	%line{59} %argrw{"wr"}
 	return
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\grid.osl:27
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\grid.osl:27
 #    vector fc = Contrast(fillerColor, lineColor, contrast);	
-	functioncall	$const11 102 	%filename{"H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\grid.osl"} %line{27} %argrw{"r"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\grid.osl:6
+	functioncall	$const11 102 	%filename{"H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\grid.osl"} %line{27} %argrw{"r"}
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\grid.osl:6
 # }
 	add		$tmp59 lineColor fillerColor 	%line{6} %argrw{"wrr"}
 	div		$tmp60 $tmp59 $const7 	%argrw{"wrr"}
 	mix		lc $tmp60 lineColor contrast 	%argrw{"wrrr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\grid.osl:28
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\grid.osl:28
 #    
 	functioncall	$const11 106 	%line{28} %argrw{"r"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\grid.osl:6
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\grid.osl:6
 # }
 	add		$tmp61 fillerColor lineColor 	%line{6} %argrw{"wrr"}
 	div		$tmp62 $tmp61 $const7 	%argrw{"wrr"}
 	mix		fc $tmp62 fillerColor contrast 	%argrw{"wrrr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\grid.osl:30
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\grid.osl:30
 # 
 	mix		outColor lc fc f 	%line{30} %argrw{"wrrr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\grid.osl:32
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\grid.osl:32
 # 	outColor = C;	
 	functioncall	$const12 112 	%line{32} %argrw{"r"}
-# H:/UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\mayaUtils.h:26
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\mayaUtils.h:26
 # 	vector result = c;
-	assign		___298_result outColor 	%filename{"H:/UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\mayaUtils.h"} %line{26} %argrw{"wr"}
-# H:/UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\mayaUtils.h:27
+	assign		___298_result outColor 	%filename{"H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\mayaUtils.h"} %line{26} %argrw{"wr"}
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\mayaUtils.h:27
 # 	result *= colorGain;
 	mul		___298_result ___298_result colorGain 	%line{27} %argrw{"wrr"}
-# H:/UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\mayaUtils.h:28
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\mayaUtils.h:28
 # 	result += colorOffset;
 	add		___298_result ___298_result colorOffset 	%line{28} %argrw{"wrr"}
-# H:/UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\mayaUtils.h:29
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\mayaUtils.h:29
 # 	return result;
 	assign		C ___298_result 	%line{29} %argrw{"wr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\grid.osl:33
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\grid.osl:33
 # {
-	assign		outColor C 	%filename{"H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\grid.osl"} %line{33} %argrw{"wr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\grid.osl:34
+	assign		outColor C 	%filename{"H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\grid.osl"} %line{33} %argrw{"wr"}
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\grid.osl:34
 #    return mix((c + d) / 2.0, c, f);
 	eq		$tmp63 alphaIsLuminance $const1 	%line{34} %argrw{"wrr"}
 	if		$tmp63 117 117 	%argrw{"r"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\grid.osl:35
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\grid.osl:35
 # }
 	assign		$tmp64 outColor 	%line{35} %argrw{"wr"}
 	luminance	outAlpha $tmp64 	%argrw{"wr"}

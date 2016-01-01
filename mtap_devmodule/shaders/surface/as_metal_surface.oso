@@ -126,238 +126,238 @@ temp	closure color	$tmp58	%read{107,107} %write{105,105}
 const	string	$const41	"microfacet"		%read{105,105} %write{2147483647,-1}
 temp	color	$tmp59	%read{107,107} %write{106,106}
 code Normal
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\surface\\as_metal_surface.osl:40
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\surface\\as_metal_surface.osl:40
 #     vector Tangent = APPLESEED_DEFAULT_TANGENT,
-	assign		Normal N 	%filename{"H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\surface\\as_metal_surface.osl"} %line{40} %argrw{"wr"}
+	assign		Normal N 	%filename{"H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\surface\\as_metal_surface.osl"} %line{40} %argrw{"wr"}
 code Tangent
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\surface\\as_metal_surface.osl:41
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\surface\\as_metal_surface.osl:41
 # 
-	normalize	Tangent dPdu 	%filename{"H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\surface\\as_metal_surface.osl"} %line{41} %argrw{"wr"}
+	normalize	Tangent dPdu 	%filename{"H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\surface\\as_metal_surface.osl"} %line{41} %argrw{"wr"}
 code ___main___
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\surface\\as_metal_surface.osl:80
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\surface\\as_metal_surface.osl:80
 #     {
-	eq		$tmp1 Preset $const1 	%filename{"H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\surface\\as_metal_surface.osl"} %line{80} %argrw{"wrr"}
+	eq		$tmp1 Preset $const1 	%filename{"H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\surface\\as_metal_surface.osl"} %line{80} %argrw{"wrr"}
 	if		$tmp1 6 38 	%argrw{"r"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\surface\\as_metal_surface.osl:82
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\surface\\as_metal_surface.osl:82
 #         g = EdgeTint;
 	assign		r Reflectivity 	%line{82} %argrw{"wr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\surface\\as_metal_surface.osl:83
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\surface\\as_metal_surface.osl:83
 #     }
 	assign		g EdgeTint 	%line{83} %argrw{"wr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\surface\\as_metal_surface.osl:85
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\surface\\as_metal_surface.osl:85
 #     {
 	eq		$tmp2 Preset $const2 	%line{85} %argrw{"wrr"}
 	if		$tmp2 10 38 	%argrw{"r"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\surface\\as_metal_surface.osl:87
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\surface\\as_metal_surface.osl:87
 #         g = APPLESEED_PRESET_AL_G;
 	assign		r $const3 	%line{87} %argrw{"wr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\surface\\as_metal_surface.osl:88
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\surface\\as_metal_surface.osl:88
 #     }
 	assign		g $const4 	%line{88} %argrw{"wr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\surface\\as_metal_surface.osl:90
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\surface\\as_metal_surface.osl:90
 #     {
 	eq		$tmp3 Preset $const5 	%line{90} %argrw{"wrr"}
 	if		$tmp3 14 38 	%argrw{"r"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\surface\\as_metal_surface.osl:92
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\surface\\as_metal_surface.osl:92
 #         g = APPLESEED_PRESET_CR_G;
 	assign		r $const6 	%line{92} %argrw{"wr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\surface\\as_metal_surface.osl:93
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\surface\\as_metal_surface.osl:93
 #     }
 	assign		g $const7 	%line{93} %argrw{"wr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\surface\\as_metal_surface.osl:95
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\surface\\as_metal_surface.osl:95
 #     {
 	eq		$tmp4 Preset $const8 	%line{95} %argrw{"wrr"}
 	if		$tmp4 18 38 	%argrw{"r"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\surface\\as_metal_surface.osl:97
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\surface\\as_metal_surface.osl:97
 #         g = APPLESEED_PRESET_CU_G;
 	assign		r $const9 	%line{97} %argrw{"wr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\surface\\as_metal_surface.osl:98
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\surface\\as_metal_surface.osl:98
 #     }
 	assign		g $const10 	%line{98} %argrw{"wr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\surface\\as_metal_surface.osl:100
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\surface\\as_metal_surface.osl:100
 #     {
 	eq		$tmp5 Preset $const11 	%line{100} %argrw{"wrr"}
 	if		$tmp5 22 38 	%argrw{"r"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\surface\\as_metal_surface.osl:102
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\surface\\as_metal_surface.osl:102
 #         g = APPLESEED_PRESET_AU_G;
 	assign		r $const12 	%line{102} %argrw{"wr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\surface\\as_metal_surface.osl:103
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\surface\\as_metal_surface.osl:103
 #     }
 	assign		g $const13 	%line{103} %argrw{"wr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\surface\\as_metal_surface.osl:105
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\surface\\as_metal_surface.osl:105
 #     {
 	eq		$tmp6 Preset $const14 	%line{105} %argrw{"wrr"}
 	if		$tmp6 26 38 	%argrw{"r"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\surface\\as_metal_surface.osl:107
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\surface\\as_metal_surface.osl:107
 #         g = APPLESEED_PRESET_PT_G;
 	assign		r $const15 	%line{107} %argrw{"wr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\surface\\as_metal_surface.osl:108
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\surface\\as_metal_surface.osl:108
 #     }
 	assign		g $const16 	%line{108} %argrw{"wr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\surface\\as_metal_surface.osl:110
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\surface\\as_metal_surface.osl:110
 #     {
 	eq		$tmp7 Preset $const17 	%line{110} %argrw{"wrr"}
 	if		$tmp7 30 38 	%argrw{"r"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\surface\\as_metal_surface.osl:112
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\surface\\as_metal_surface.osl:112
 #         g = APPLESEED_PRESET_AG_G;
 	assign		r $const18 	%line{112} %argrw{"wr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\surface\\as_metal_surface.osl:113
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\surface\\as_metal_surface.osl:113
 #     }
 	assign		g $const19 	%line{113} %argrw{"wr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\surface\\as_metal_surface.osl:115
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\surface\\as_metal_surface.osl:115
 #     {
 	eq		$tmp8 Preset $const20 	%line{115} %argrw{"wrr"}
 	if		$tmp8 34 38 	%argrw{"r"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\surface\\as_metal_surface.osl:117
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\surface\\as_metal_surface.osl:117
 #         g = APPLESEED_PRESET_TI_G;
 	assign		r $const21 	%line{117} %argrw{"wr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\surface\\as_metal_surface.osl:118
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\surface\\as_metal_surface.osl:118
 #     }
 	assign		g $const22 	%line{118} %argrw{"wr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\surface\\as_metal_surface.osl:120
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\surface\\as_metal_surface.osl:120
 #     {
 	eq		$tmp9 Preset $const23 	%line{120} %argrw{"wrr"}
 	if		$tmp9 38 38 	%argrw{"r"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\surface\\as_metal_surface.osl:122
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\surface\\as_metal_surface.osl:122
 #         g = APPLESEED_PRESET_W_G;
 	assign		r $const24 	%line{122} %argrw{"wr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\surface\\as_metal_surface.osl:123
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\surface\\as_metal_surface.osl:123
 #     }
 	assign		g $const25 	%line{123} %argrw{"wr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\surface\\as_metal_surface.osl:126
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\surface\\as_metal_surface.osl:126
 # 
 	functioncall	$const26 85 	%line{126} %argrw{"r"}
-# H:/UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\appleseed\\fresnel.h:62
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\appleseed\\fresnel.h:62
 #     color rr = clamp(r, color(0.0), color(0.99));
-	functioncall	$const29 42 	%filename{"H:/UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\appleseed\\fresnel.h"} %line{62} %argrw{"r"}
-# C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h:156
+	functioncall	$const29 42 	%filename{"H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\appleseed\\fresnel.h"} %line{62} %argrw{"r"}
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:156
 # point  degrees (point x)  { return x*(180.0/M_PI); }
-	min		$tmp12 r $const28 	%filename{"C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h"} %line{156} %argrw{"wrr"}
+	min		$tmp12 r $const28 	%filename{"H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h"} %line{156} %argrw{"wrr"}
 	max		___298_rr $tmp12 $const27 	%argrw{"wrr"}
-# H:/UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\appleseed\\fresnel.h:63
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\appleseed\\fresnel.h:63
 #     color NMin = (color(1.0) - rr) / (color(1.0) + rr);
-	sub		$tmp14 $const30 ___298_rr 	%filename{"H:/UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\appleseed\\fresnel.h"} %line{63} %argrw{"wrr"}
+	sub		$tmp14 $const30 ___298_rr 	%filename{"H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\appleseed\\fresnel.h"} %line{63} %argrw{"wrr"}
 	add		$tmp16 $const30 ___298_rr 	%argrw{"wrr"}
 	div		___298_NMin $tmp14 $tmp16 	%argrw{"wrr"}
-# H:/UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\appleseed\\fresnel.h:64
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\appleseed\\fresnel.h:64
 #     color NMax = (color(1.0) + sqrt(rr)) / (color(1.0) - sqrt(rr));
 	sqrt		$tmp18 ___298_rr 	%line{64} %argrw{"wr"}
 	add		$tmp19 $const30 $tmp18 	%argrw{"wrr"}
 	sqrt		$tmp21 ___298_rr 	%argrw{"wr"}
 	sub		$tmp22 $const30 $tmp21 	%argrw{"wrr"}
 	div		___298_NMax $tmp19 $tmp22 	%argrw{"wrr"}
-# H:/UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\appleseed\\fresnel.h:65
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\appleseed\\fresnel.h:65
 #     color n = mix(NMax, NMin, g);
 	mix		___298_n ___298_NMax ___298_NMin g 	%line{65} %argrw{"wrrr"}
-# H:/UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\appleseed\\fresnel.h:67
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\appleseed\\fresnel.h:67
 #     color DoubleNPlusOne  = (n + color(1.0)) * (n + color(1.0));
 	add		$tmp24 ___298_n $const30 	%line{67} %argrw{"wrr"}
 	add		$tmp26 ___298_n $const30 	%argrw{"wrr"}
 	mul		___298_DoubleNPlusOne $tmp24 $tmp26 	%argrw{"wrr"}
-# H:/UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\appleseed\\fresnel.h:68
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\appleseed\\fresnel.h:68
 #     color DoubleNMinusOne = (n - color(1.0)) * (n - color(1.0));
 	sub		$tmp28 ___298_n $const30 	%line{68} %argrw{"wrr"}
 	sub		$tmp30 ___298_n $const30 	%argrw{"wrr"}
 	mul		___298_DoubleNMinusOne $tmp28 $tmp30 	%argrw{"wrr"}
-# H:/UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\appleseed\\fresnel.h:70
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\appleseed\\fresnel.h:70
 #     color k = sqrt((DoubleNPlusOne * rr - DoubleNMinusOne) / (color(1.0) - rr));
 	mul		$tmp31 ___298_DoubleNPlusOne ___298_rr 	%line{70} %argrw{"wrr"}
 	sub		$tmp32 $tmp31 ___298_DoubleNMinusOne 	%argrw{"wrr"}
 	sub		$tmp34 $const30 ___298_rr 	%argrw{"wrr"}
 	div		$tmp35 $tmp32 $tmp34 	%argrw{"wrr"}
 	sqrt		___298_k $tmp35 	%argrw{"wr"}
-# H:/UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\appleseed\\fresnel.h:72
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\appleseed\\fresnel.h:72
 #     return fresnel_conductor(I, N, n, k);
 	functioncall	$const31 85 	%line{72} %argrw{"r"}
-# H:/UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\appleseed\\fresnel.h:34
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\appleseed\\fresnel.h:34
 #     float CosTheta = abs(dot(I, N));
 	dot		$tmp36 I Normal 	%line{34} %argrw{"wrr"}
 	abs		___297_CosTheta $tmp36 	%argrw{"wr"}
-# H:/UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\appleseed\\fresnel.h:36
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\appleseed\\fresnel.h:36
 #     color n2 = n * n;
 	mul		___297_n2 ___298_n ___298_n 	%line{36} %argrw{"wrr"}
-# H:/UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\appleseed\\fresnel.h:37
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\appleseed\\fresnel.h:37
 #     color k2 = k * k;
 	mul		___297_k2 ___298_k ___298_k 	%line{37} %argrw{"wrr"}
-# H:/UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\appleseed\\fresnel.h:38
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\appleseed\\fresnel.h:38
 #     color N2PlusK2 = n2 + k2;
 	add		___297_N2PlusK2 ___297_n2 ___297_k2 	%line{38} %argrw{"wrr"}
-# H:/UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\appleseed\\fresnel.h:40
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\appleseed\\fresnel.h:40
 #     float CosTheta2 = CosTheta * CosTheta;
 	mul		___297_CosTheta2 ___297_CosTheta ___297_CosTheta 	%line{40} %argrw{"wrr"}
-# H:/UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\appleseed\\fresnel.h:41
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\appleseed\\fresnel.h:41
 #     color NCosTheta = n * 2.0 * CosTheta;
 	mul		$tmp37 ___298_n $const32 	%line{41} %argrw{"wrr"}
 	mul		___297_NCosTheta $tmp37 ___297_CosTheta 	%argrw{"wrr"}
-# H:/UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\appleseed\\fresnel.h:44
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\appleseed\\fresnel.h:44
 #         ((N2PlusK2 * CosTheta2) - NCosTheta + 1) /
 	mul		$tmp38 ___297_N2PlusK2 ___297_CosTheta2 	%line{44} %argrw{"wrr"}
 	sub		$tmp39 $tmp38 ___297_NCosTheta 	%argrw{"wrr"}
 	add		$tmp40 $tmp39 $const34 	%argrw{"wrr"}
-# H:/UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\appleseed\\fresnel.h:45
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\appleseed\\fresnel.h:45
 #         ((N2PlusK2 * CosTheta2) + NCosTheta + 1);
 	mul		$tmp41 ___297_N2PlusK2 ___297_CosTheta2 	%line{45} %argrw{"wrr"}
 	add		$tmp42 $tmp41 ___297_NCosTheta 	%argrw{"wrr"}
 	add		$tmp43 $tmp42 $const34 	%argrw{"wrr"}
 	div		___297_RPar $tmp40 $tmp43 	%argrw{"wrr"}
-# H:/UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\appleseed\\fresnel.h:48
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\appleseed\\fresnel.h:48
 #         (N2PlusK2 - NCosTheta + CosTheta2) / 
 	sub		$tmp44 ___297_N2PlusK2 ___297_NCosTheta 	%line{48} %argrw{"wrr"}
 	add		$tmp45 $tmp44 ___297_CosTheta2 	%argrw{"wrr"}
-# H:/UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\appleseed\\fresnel.h:49
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\appleseed\\fresnel.h:49
 #         (N2PlusK2 + NCosTheta + CosTheta2);
 	add		$tmp46 ___297_N2PlusK2 ___297_NCosTheta 	%line{49} %argrw{"wrr"}
 	add		$tmp47 $tmp46 ___297_CosTheta2 	%argrw{"wrr"}
 	div		___297_RPerp $tmp45 $tmp47 	%argrw{"wrr"}
-# H:/UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\appleseed\\fresnel.h:51
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\appleseed\\fresnel.h:51
 #     return (RPar + RPerp) / 2.0;        
 	add		$tmp48 ___297_RPar ___297_RPerp 	%line{51} %argrw{"wrr"}
 	div		Kf $tmp48 $const32 	%argrw{"wrr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\surface\\as_metal_surface.osl:128
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\surface\\as_metal_surface.osl:128
 #     color r, g;
-	eq		$tmp49 Distribution $const35 	%filename{"H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\surface\\as_metal_surface.osl"} %line{128} %argrw{"wrr"}
+	eq		$tmp49 Distribution $const35 	%filename{"H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\surface\\as_metal_surface.osl"} %line{128} %argrw{"wrr"}
 	if		$tmp49 90 108 	%argrw{"r"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\surface\\as_metal_surface.osl:129
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\surface\\as_metal_surface.osl:129
 # 
 	closure		$tmp50 $const36 Normal 	%line{129} %argrw{"wrr"}
 	mul		$tmp51 Specular Kf 	%argrw{"wrr"}
 	mul		BRDF $tmp50 $tmp51 	%argrw{"wrr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\surface\\as_metal_surface.osl:133
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\surface\\as_metal_surface.osl:133
 #         g = EdgeTint;
 	functioncall	$const37 105 	%line{133} %argrw{"r"}
-# H:/UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\appleseed\\microfacet.h:55
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\appleseed\\microfacet.h:55
 #     float aspect = sqrt(1.0 - fabs(anisotropy) * 0.9);
-	fabs		$tmp52 Anisotropy 	%filename{"H:/UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\appleseed\\microfacet.h"} %line{55} %argrw{"wr"}
+	fabs		$tmp52 Anisotropy 	%filename{"H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\appleseed\\microfacet.h"} %line{55} %argrw{"wr"}
 	mul		$tmp53 $tmp52 $const38 	%argrw{"wrr"}
 	sub		$tmp54 $const34 $tmp53 	%argrw{"wrr"}
 	sqrt		___299_aspect $tmp54 	%argrw{"wr"}
-# H:/UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\appleseed\\microfacet.h:56
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\appleseed\\microfacet.h:56
 #     float r2 = roughness * roughness;
 	mul		___299_r2 Roughness Roughness 	%line{56} %argrw{"wrr"}
-# H:/UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\appleseed\\microfacet.h:58
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\appleseed\\microfacet.h:58
 #     ax = max(0.001, r2 / aspect);
 	div		$tmp55 ___299_r2 ___299_aspect 	%line{58} %argrw{"wrr"}
 	max		___310_ax $const39 $tmp55 	%argrw{"wrr"}
-# H:/UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\appleseed\\microfacet.h:59
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\appleseed\\microfacet.h:59
 #     ay = max(0.001, r2 * aspect);
 	mul		$tmp56 ___299_r2 ___299_aspect 	%line{59} %argrw{"wrr"}
 	max		___310_ay $const39 $tmp56 	%argrw{"wrr"}
-# H:/UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\appleseed\\microfacet.h:61
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\appleseed\\microfacet.h:61
 #     if (anisotropy < 0)
 	lt		$tmp57 Anisotropy $const40 	%line{61} %argrw{"wrr"}
 	if		$tmp57 105 105 	%argrw{"r"}
-# H:/UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\appleseed\\microfacet.h:64
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\appleseed\\microfacet.h:64
 #         float tmp = ax;
 	assign		___300_tmp ___310_ax 	%line{64} %argrw{"wr"}
-# H:/UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\appleseed\\microfacet.h:65
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\appleseed\\microfacet.h:65
 #         ax = ay;
 	assign		___310_ax ___310_ay 	%line{65} %argrw{"wr"}
-# H:/UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\appleseed\\microfacet.h:66
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\appleseed\\microfacet.h:66
 #         ay = tmp;
 	assign		___310_ay ___300_tmp 	%line{66} %argrw{"wr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\surface\\as_metal_surface.osl:134
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\surface\\as_metal_surface.osl:134
 # 
-	closure		$tmp58 $const41 Distribution Normal Tangent ___310_ax ___310_ay $const34 $const40 	%filename{"H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\surface\\as_metal_surface.osl"} %line{134} %argrw{"wrrrrrrrr"}
+	closure		$tmp58 $const41 Distribution Normal Tangent ___310_ax ___310_ay $const34 $const40 	%filename{"H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\surface\\as_metal_surface.osl"} %line{134} %argrw{"wrrrrrrrr"}
 	mul		$tmp59 Specular Kf 	%argrw{"wrr"}
 	mul		BRDF $tmp58 $tmp59 	%argrw{"wrr"}
 	end

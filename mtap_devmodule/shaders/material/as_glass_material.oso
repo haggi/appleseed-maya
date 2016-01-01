@@ -119,97 +119,97 @@ temp	color	$tmp60	%read{111,111} %write{110,110}
 temp	closure color	$tmp61	%read{112,112} %write{111,111}
 temp	closure color	$tmp62	%read{113,113} %write{112,112}
 code Normal
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\material\\as_glass_material.osl:40
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\material\\as_glass_material.osl:40
 #     vector Tangent = APPLESEED_DEFAULT_TANGENT,
-	assign		Normal N 	%filename{"H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\material\\as_glass_material.osl"} %line{40} %argrw{"wr"}
+	assign		Normal N 	%filename{"H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\material\\as_glass_material.osl"} %line{40} %argrw{"wr"}
 code Tangent
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\material\\as_glass_material.osl:41
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\material\\as_glass_material.osl:41
 # 
-	normalize	Tangent dPdu 	%filename{"H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\material\\as_glass_material.osl"} %line{41} %argrw{"wr"}
+	normalize	Tangent dPdu 	%filename{"H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\material\\as_glass_material.osl"} %line{41} %argrw{"wr"}
 code ___main___
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\material\\as_glass_material.osl:92
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\material\\as_glass_material.osl:92
 # 
-	assign		Cabs $const1 	%filename{"H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\material\\as_glass_material.osl"} %line{92} %argrw{"wr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\material\\as_glass_material.osl:94
+	assign		Cabs $const1 	%filename{"H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\material\\as_glass_material.osl"} %line{92} %argrw{"wr"}
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\material\\as_glass_material.osl:94
 #     {
 	backfacing	$tmp1 	%line{94} %argrw{"w"}
 	if		$tmp1 14 16 	%argrw{"r"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\material\\as_glass_material.osl:96
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\material\\as_glass_material.osl:96
 #         to_ior = 1.0;
 	assign		from_ior Ior 	%line{96} %argrw{"wr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\material\\as_glass_material.osl:97
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\material\\as_glass_material.osl:97
 # 
 	assign		to_ior $const1 	%line{97} %argrw{"wr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\material\\as_glass_material.osl:99
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\material\\as_glass_material.osl:99
 #         {
 	neq		$tmp2 Absorption $const2 	%line{99} %argrw{"wrr"}
 	if		$tmp2 14 14 	%argrw{"r"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\material\\as_glass_material.osl:102
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\material\\as_glass_material.osl:102
 #             Cabs = exp(-Absorption * AbsorptionColor * length);
 	getattribute	$tmp3 $const3 ___301_length 	%line{102} %argrw{"wrw"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\material\\as_glass_material.osl:103
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\material\\as_glass_material.osl:103
 #         }
 	neg		$tmp4 Absorption 	%line{103} %argrw{"wr"}
 	mul		$tmp5 $tmp4 AbsorptionColor 	%argrw{"wrr"}
 	mul		$tmp6 $tmp5 ___301_length 	%argrw{"wrr"}
 	exp		Cabs $tmp6 	%argrw{"wr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\material\\as_glass_material.osl:108
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\material\\as_glass_material.osl:108
 #         to_ior = Ior;
 	assign		from_ior $const1 	%line{108} %argrw{"wr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\material\\as_glass_material.osl:109
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\material\\as_glass_material.osl:109
 #     }
 	assign		to_ior Ior 	%line{109} %argrw{"wr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\material\\as_glass_material.osl:112
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\material\\as_glass_material.osl:112
 # 
 	div		eta from_ior to_ior 	%line{112} %argrw{"wrr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\material\\as_glass_material.osl:115
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\material\\as_glass_material.osl:115
 # 
 	functioncall	$const4 77 	%line{115} %argrw{"r"}
-# C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h:244
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:244
 # int abs (int x) BUILTIN;
-	functioncall	$const4 77 	%filename{"C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h"} %line{244} %argrw{"r"}
-# C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h:216
+	functioncall	$const4 77 	%filename{"H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h"} %line{244} %argrw{"r"}
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:216
 #     float c = dot(I, N);
 	dot		___217_c I Normal 	%line{216} %argrw{"wrr"}
-# C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h:217
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:217
 #     if (c < 0)
 	lt		$tmp7 ___217_c $const5 	%line{217} %argrw{"wrr"}
 	if		$tmp7 23 23 	%argrw{"r"}
-# C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h:218
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:218
 #         c = -c;
 	neg		___217_c ___217_c 	%line{218} %argrw{"wr"}
-# C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h:219
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:219
 #     R = reflect(I, N);
 	functioncall	$const6 28 	%line{219} %argrw{"r"}
-# C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h:205
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:205
 # vector reflect (vector I, vector N) { return I - 2*dot(N,I)*N; }
 	dot		$tmp8 Normal I 	%line{205} %argrw{"wrr"}
 	mul		$tmp9 $const8 $tmp8 	%argrw{"wrr"}
 	mul		$tmp10 $tmp9 Normal 	%argrw{"wrr"}
 	sub		___221_R I $tmp10 	%argrw{"wrr"}
-# C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h:220
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:220
 #     float g = 1.0 / sqr(eta) - 1.0 + c * c;
 	functioncall	$const9 30 	%line{220} %argrw{"r"}
-# C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h:215
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:215
 #     float sqr(float x) { return x*x; }
 	mul		$tmp11 eta eta 	%line{215} %argrw{"wrr"}
-# C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h:220
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:220
 #     float g = 1.0 / sqr(eta) - 1.0 + c * c;
 	div		$tmp12 $const1 $tmp11 	%line{220} %argrw{"wrr"}
 	sub		$tmp13 $tmp12 $const1 	%argrw{"wrr"}
 	mul		$tmp14 ___217_c ___217_c 	%argrw{"wrr"}
 	add		___217_g $tmp13 $tmp14 	%argrw{"wrr"}
-# C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h:221
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:221
 #     if (g >= 0.0) {
 	ge		$tmp15 ___217_g $const2 	%line{221} %argrw{"wrr"}
 	if		$tmp15 74 77 	%argrw{"r"}
-# C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h:222
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:222
 #         g = sqrt (g);
 	sqrt		___217_g ___217_g 	%line{222} %argrw{"wr"}
-# C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h:223
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:223
 #         float beta = g - c;
 	sub		___219_beta ___217_g ___217_c 	%line{223} %argrw{"wrr"}
-# C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h:224
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:224
 #         float F = (c * (g+c) - 1.0) / (c * beta + 1.0);
 	add		$tmp16 ___217_g ___217_c 	%line{224} %argrw{"wrr"}
 	mul		$tmp17 ___217_c $tmp16 	%argrw{"wrr"}
@@ -217,49 +217,49 @@ code ___main___
 	mul		$tmp19 ___217_c ___219_beta 	%argrw{"wrr"}
 	add		$tmp20 $tmp19 $const1 	%argrw{"wrr"}
 	div		___219_F $tmp18 $tmp20 	%argrw{"wrr"}
-# C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h:225
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:225
 #         F = 0.5 * (1.0 + sqr(F));
 	functioncall	$const9 46 	%line{225} %argrw{"r"}
-# C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h:215
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:215
 #     float sqr(float x) { return x*x; }
 	mul		$tmp21 ___219_F ___219_F 	%line{215} %argrw{"wrr"}
-# C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h:225
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:225
 #         F = 0.5 * (1.0 + sqr(F));
 	add		$tmp22 $const1 $tmp21 	%line{225} %argrw{"wrr"}
 	mul		___219_F $const10 $tmp22 	%argrw{"wrr"}
-# C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h:226
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:226
 #         F *= sqr (beta / (g+c));
 	add		$tmp24 ___217_g ___217_c 	%line{226} %argrw{"wrr"}
 	div		$tmp25 ___219_beta $tmp24 	%argrw{"wrr"}
 	functioncall	$const9 52 	%argrw{"r"}
-# C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h:215
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:215
 #     float sqr(float x) { return x*x; }
 	mul		$tmp23 $tmp25 $tmp25 	%line{215} %argrw{"wrr"}
-# C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h:226
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:226
 #         F *= sqr (beta / (g+c));
 	mul		___219_F ___219_F $tmp23 	%line{226} %argrw{"wrr"}
-# C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h:227
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:227
 #         Kr = F;
 	assign		Kr ___219_F 	%line{227} %argrw{"wr"}
-# C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h:228
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:228
 #         Kt = (1.0 - Kr) * eta*eta;
 	sub		$tmp26 $const1 Kr 	%line{228} %argrw{"wrr"}
 	mul		$tmp27 $tmp26 eta 	%argrw{"wrr"}
 	mul		Kt $tmp27 eta 	%argrw{"wrr"}
-# C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h:231
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:231
 #         T = refract(I, N, eta);
 	functioncall	$const11 74 	%line{231} %argrw{"r"}
-# C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h:207
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:207
 #     float IdotN = dot (I, N);
 	dot		___216_IdotN I Normal 	%line{207} %argrw{"wrr"}
-# C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h:208
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:208
 #     float k = 1 - eta*eta * (1 - IdotN*IdotN);
 	mul		$tmp28 eta eta 	%line{208} %argrw{"wrr"}
 	mul		$tmp29 ___216_IdotN ___216_IdotN 	%argrw{"wrr"}
 	sub		$tmp30 $const1 $tmp29 	%argrw{"wrr"}
 	mul		$tmp31 $tmp28 $tmp30 	%argrw{"wrr"}
 	sub		___216_k $const1 $tmp31 	%argrw{"wrr"}
-# C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h:209
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:209
 #     return (k < 0) ? vector(0,0,0) : (eta*I - N * (eta*IdotN + sqrt(k)));
 	lt		$tmp32 ___216_k $const5 	%line{209} %argrw{"wrr"}
 	if		$tmp32 67 73 	%argrw{"r"}
@@ -271,26 +271,26 @@ code ___main___
 	mul		$tmp37 Normal $tmp36 	%argrw{"wrr"}
 	sub		___221_T $tmp33 $tmp37 	%argrw{"wrr"}
 	return
-# C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h:234
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:234
 #         Kr = 1.0;
 	assign		Kr $const1 	%line{234} %argrw{"wr"}
-# C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h:235
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:235
 #         Kt = 0.0;
 	assign		Kt $const2 	%line{235} %argrw{"wr"}
-# C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h:236
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:236
 #         T = vector (0,0,0);
 	assign		___221_T $const13 	%line{236} %argrw{"wr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\material\\as_glass_material.osl:117
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\material\\as_glass_material.osl:117
 #     {
-	eq		$tmp38 Distribution $const14 	%filename{"H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\material\\as_glass_material.osl"} %line{117} %argrw{"wrr"}
+	eq		$tmp38 Distribution $const14 	%filename{"H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\material\\as_glass_material.osl"} %line{117} %argrw{"wrr"}
 	if		$tmp38 89 114 	%argrw{"r"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\material\\as_glass_material.osl:120
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\material\\as_glass_material.osl:120
 #              (Kt * Refraction * RefractionColor * refraction(Normal, eta)));
 	closure		$tmp39 $const15 Normal 	%line{120} %argrw{"wrr"}
 	mul		$tmp40 Kr Reflection 	%argrw{"wrr"}
 	mul		$tmp41 $tmp40 ReflectionColor 	%argrw{"wrr"}
 	mul		$tmp42 $tmp39 $tmp41 	%argrw{"wrr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\material\\as_glass_material.osl:121
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\material\\as_glass_material.osl:121
 #     }
 	closure		$tmp43 $const16 Normal eta 	%line{121} %argrw{"wrrr"}
 	mul		$tmp44 Kt Refraction 	%argrw{"wrr"}
@@ -298,46 +298,46 @@ code ___main___
 	mul		$tmp46 $tmp43 $tmp45 	%argrw{"wrr"}
 	add		$tmp47 $tmp42 $tmp46 	%argrw{"wrr"}
 	mul		Ci $tmp47 Cabs 	%argrw{"wrr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\material\\as_glass_material.osl:126
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\material\\as_glass_material.osl:126
 # 
 	functioncall	$const17 104 	%line{126} %argrw{"r"}
-# H:/UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\appleseed\\microfacet.h:55
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\appleseed\\microfacet.h:55
 #     float aspect = sqrt(1.0 - fabs(anisotropy) * 0.9);
-	fabs		$tmp48 Anisotropy 	%filename{"H:/UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\appleseed\\microfacet.h"} %line{55} %argrw{"wr"}
+	fabs		$tmp48 Anisotropy 	%filename{"H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\appleseed\\microfacet.h"} %line{55} %argrw{"wr"}
 	mul		$tmp49 $tmp48 $const18 	%argrw{"wrr"}
 	sub		$tmp50 $const1 $tmp49 	%argrw{"wrr"}
 	sqrt		___298_aspect $tmp50 	%argrw{"wr"}
-# H:/UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\appleseed\\microfacet.h:56
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\appleseed\\microfacet.h:56
 #     float r2 = roughness * roughness;
 	mul		___298_r2 Roughness Roughness 	%line{56} %argrw{"wrr"}
-# H:/UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\appleseed\\microfacet.h:58
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\appleseed\\microfacet.h:58
 #     ax = max(0.001, r2 / aspect);
 	div		$tmp51 ___298_r2 ___298_aspect 	%line{58} %argrw{"wrr"}
 	max		___304_ax $const19 $tmp51 	%argrw{"wrr"}
-# H:/UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\appleseed\\microfacet.h:59
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\appleseed\\microfacet.h:59
 #     ay = max(0.001, r2 * aspect);
 	mul		$tmp52 ___298_r2 ___298_aspect 	%line{59} %argrw{"wrr"}
 	max		___304_ay $const19 $tmp52 	%argrw{"wrr"}
-# H:/UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\appleseed\\microfacet.h:61
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\appleseed\\microfacet.h:61
 #     if (anisotropy < 0)
 	lt		$tmp53 Anisotropy $const5 	%line{61} %argrw{"wrr"}
 	if		$tmp53 104 104 	%argrw{"r"}
-# H:/UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\appleseed\\microfacet.h:64
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\appleseed\\microfacet.h:64
 #         float tmp = ax;
 	assign		___299_tmp ___304_ax 	%line{64} %argrw{"wr"}
-# H:/UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\appleseed\\microfacet.h:65
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\appleseed\\microfacet.h:65
 #         ax = ay;
 	assign		___304_ax ___304_ay 	%line{65} %argrw{"wr"}
-# H:/UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\appleseed\\microfacet.h:66
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\appleseed\\microfacet.h:66
 #         ay = tmp;
 	assign		___304_ay ___299_tmp 	%line{66} %argrw{"wr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\material\\as_glass_material.osl:129
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\material\\as_glass_material.osl:129
 # 
-	closure		$tmp54 $const20 Distribution Normal Tangent ___304_ax ___304_ay eta $const5 	%filename{"H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\material\\as_glass_material.osl"} %line{129} %argrw{"wrrrrrrrr"}
+	closure		$tmp54 $const20 Distribution Normal Tangent ___304_ax ___304_ay eta $const5 	%filename{"H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\material\\as_glass_material.osl"} %line{129} %argrw{"wrrrrrrrr"}
 	mul		$tmp55 Kr Reflection 	%argrw{"wrr"}
 	mul		$tmp56 $tmp55 ReflectionColor 	%argrw{"wrr"}
 	mul		$tmp57 $tmp54 $tmp56 	%argrw{"wrr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\material\\as_glass_material.osl:130
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\material\\as_glass_material.osl:130
 #     float Refraction = 1
 	closure		$tmp58 $const20 Distribution Normal Tangent ___304_ax ___304_ay eta $const12 	%line{130} %argrw{"wrrrrrrrr"}
 	mul		$tmp59 Kt Refraction 	%argrw{"wrr"}

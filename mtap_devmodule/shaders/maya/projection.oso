@@ -216,85 +216,85 @@ temp	float	$tmp135	%read{244,244} %write{243,243}
 temp	float	$tmp136	%read{245,245} %write{244,244}
 const	string	$const24	"colorBalance"		%read{249,249} %write{2147483647,-1}
 code ___main___
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\projection.osl:133
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\projection.osl:133
 # 	float t = v;
-	assign		s u 	%filename{"H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\projection.osl"} %line{133} %argrw{"wr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\projection.osl:134
+	assign		s u 	%filename{"H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\projection.osl"} %line{133} %argrw{"wr"}
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\projection.osl:134
 # 	if( isconnected(uvCoord))
 	assign		t v 	%line{134} %argrw{"wr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\projection.osl:135
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\projection.osl:135
 # 	{
 	isconnected	$tmp1 uvCoord 	%line{135} %argrw{"wr"}
 	if		$tmp1 6 6 	%argrw{"r"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\projection.osl:137
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\projection.osl:137
 # 		t = uvCoord[1];
 	compref		s uvCoord $const1 	%line{137} %argrw{"wrr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\projection.osl:138
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\projection.osl:138
 # 	}
 	compref		t uvCoord $const2 	%line{138} %argrw{"wrr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\projection.osl:142
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\projection.osl:142
 # 	{
 	eq		$tmp2 projType $const2 	%line{142} %argrw{"wrr"}
 	if		$tmp2 21 21 	%argrw{"r"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\projection.osl:144
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\projection.osl:144
 # 		uvw = planar(PP);
 	transform	___318_PP placementMatrix P 	%line{144} %argrw{"wrr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\projection.osl:145
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\projection.osl:145
 # 	}
 	functioncall	$const3 21 	%line{145} %argrw{"r"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\projection.osl:13
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\projection.osl:13
 #    st[1] = setRange(p[1]);
 	compref		$tmp4 ___318_PP $const1 	%line{13} %argrw{"wrr"}
 	functioncall	$const4 14 	%argrw{"r"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\projection.osl:8
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\projection.osl:8
 # }
 	add		$tmp5 $const6 $tmp4 	%line{8} %argrw{"wrr"}
 	mul		$tmp3 $const5 $tmp5 	%argrw{"wrr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\projection.osl:13
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\projection.osl:13
 #    st[1] = setRange(p[1]);
 	compassign	___304_st $const1 $tmp3 	%line{13} %argrw{"wrr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\projection.osl:14
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\projection.osl:14
 # 
 	compref		$tmp7 ___318_PP $const2 	%line{14} %argrw{"wrr"}
 	functioncall	$const4 19 	%argrw{"r"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\projection.osl:8
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\projection.osl:8
 # }
 	add		$tmp8 $const6 $tmp7 	%line{8} %argrw{"wrr"}
 	mul		$tmp6 $const5 $tmp8 	%argrw{"wrr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\projection.osl:14
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\projection.osl:14
 # 
 	compassign	___304_st $const2 $tmp6 	%line{14} %argrw{"wrr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\projection.osl:16
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\projection.osl:16
 # }
 	assign		uvw ___304_st 	%line{16} %argrw{"wr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\projection.osl:147
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\projection.osl:147
 # 	{
 	eq		$tmp9 projType $const7 	%line{147} %argrw{"wrr"}
 	if		$tmp9 50 50 	%argrw{"r"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\projection.osl:149
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\projection.osl:149
 # 		uvw = spherical(PP, uAngle, vAngle);
 	transform	___319_PP placementMatrix P 	%line{149} %argrw{"wrr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\projection.osl:150
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\projection.osl:150
 # 	}
 	functioncall	$const8 50 	%line{150} %argrw{"r"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\projection.osl:22
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\projection.osl:22
 # 
 	normalize	___305_v ___319_PP 	%line{22} %argrw{"wr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\projection.osl:24
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\projection.osl:24
 #    st[1] = setRange(atan2(v[1], sqrt(v[0]*v[0] + v[2]*v[2])) / vAngle);
 	compref		$tmp12 ___305_v $const1 	%line{24} %argrw{"wrr"}
 	compref		$tmp13 ___305_v $const7 	%argrw{"wrr"}
 	atan2		$tmp11 $tmp12 $tmp13 	%argrw{"wrr"}
 	div		$tmp14 $tmp11 uAngle 	%argrw{"wrr"}
 	functioncall	$const4 33 	%argrw{"r"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\projection.osl:8
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\projection.osl:8
 # }
 	add		$tmp15 $const6 $tmp14 	%line{8} %argrw{"wrr"}
 	mul		$tmp10 $const5 $tmp15 	%argrw{"wrr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\projection.osl:24
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\projection.osl:24
 #    st[1] = setRange(atan2(v[1], sqrt(v[0]*v[0] + v[2]*v[2])) / vAngle);
 	compassign	___305_st $const1 $tmp10 	%line{24} %argrw{"wrr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\projection.osl:25
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\projection.osl:25
 # 
 	compref		$tmp18 ___305_v $const2 	%line{25} %argrw{"wrr"}
 	compref		$tmp20 ___305_v $const1 	%argrw{"wrr"}
@@ -308,30 +308,30 @@ code ___main___
 	atan2		$tmp17 $tmp18 $tmp19 	%argrw{"wrr"}
 	div		$tmp27 $tmp17 vAngle 	%argrw{"wrr"}
 	functioncall	$const4 48 	%argrw{"r"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\projection.osl:8
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\projection.osl:8
 # }
 	add		$tmp28 $const6 $tmp27 	%line{8} %argrw{"wrr"}
 	mul		$tmp16 $const5 $tmp28 	%argrw{"wrr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\projection.osl:25
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\projection.osl:25
 # 
 	compassign	___305_st $const2 $tmp16 	%line{25} %argrw{"wrr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\projection.osl:27
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\projection.osl:27
 # }
 	assign		uvw ___305_st 	%line{27} %argrw{"wr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\projection.osl:152
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\projection.osl:152
 # 	{
 	eq		$tmp29 projType $const9 	%line{152} %argrw{"wrr"}
 	if		$tmp29 70 70 	%argrw{"r"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\projection.osl:154
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\projection.osl:154
 # 		uvw = cylindrical(PP, uAngle);
 	transform	___320_PP placementMatrix P 	%line{154} %argrw{"wrr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\projection.osl:155
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\projection.osl:155
 # 	}
 	functioncall	$const10 70 	%line{155} %argrw{"r"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\projection.osl:33
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\projection.osl:33
 #    st[0] = setRange(atan2(v[0], v[2]) * 2.0/uAngle);
 	normalize	___306_v ___320_PP 	%line{33} %argrw{"wr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\projection.osl:34
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\projection.osl:34
 #    st[1] = setRange(v[1]);
 	compref		$tmp32 ___306_v $const1 	%line{34} %argrw{"wrr"}
 	compref		$tmp33 ___306_v $const7 	%argrw{"wrr"}
@@ -339,105 +339,105 @@ code ___main___
 	mul		$tmp34 $tmp31 $const11 	%argrw{"wrr"}
 	div		$tmp35 $tmp34 uAngle 	%argrw{"wrr"}
 	functioncall	$const4 63 	%argrw{"r"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\projection.osl:8
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\projection.osl:8
 # }
 	add		$tmp36 $const6 $tmp35 	%line{8} %argrw{"wrr"}
 	mul		$tmp30 $const5 $tmp36 	%argrw{"wrr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\projection.osl:34
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\projection.osl:34
 #    st[1] = setRange(v[1]);
 	compassign	___306_st $const1 $tmp30 	%line{34} %argrw{"wrr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\projection.osl:35
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\projection.osl:35
 #    return st;
 	compref		$tmp38 ___306_v $const2 	%line{35} %argrw{"wrr"}
 	functioncall	$const4 68 	%argrw{"r"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\projection.osl:8
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\projection.osl:8
 # }
 	add		$tmp39 $const6 $tmp38 	%line{8} %argrw{"wrr"}
 	mul		$tmp37 $const5 $tmp39 	%argrw{"wrr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\projection.osl:35
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\projection.osl:35
 #    return st;
 	compassign	___306_st $const2 $tmp37 	%line{35} %argrw{"wrr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\projection.osl:36
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\projection.osl:36
 # }
 	assign		uvw ___306_st 	%line{36} %argrw{"wr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\projection.osl:157
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\projection.osl:157
 # 	{
 	eq		$tmp40 projType $const12 	%line{157} %argrw{"wrr"}
 	if		$tmp40 90 90 	%argrw{"r"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\projection.osl:159
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\projection.osl:159
 # 		uvw = ball(PP);
 	transform	___321_PP placementMatrix P 	%line{159} %argrw{"wrr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\projection.osl:160
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\projection.osl:160
 # 	}
 	functioncall	$const13 90 	%line{160} %argrw{"r"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\projection.osl:42
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\projection.osl:42
 #    v[2] += 1.0;
 	normalize	___307_v ___321_PP 	%line{42} %argrw{"wr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\projection.osl:43
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\projection.osl:43
 #    v = normalize(v);
 	compref		$tmp41 ___307_v $const7 	%line{43} %argrw{"wrr"}
 	add		$tmp42 $tmp41 $const6 	%argrw{"wrr"}
 	compassign	___307_v $const7 $tmp42 	%argrw{"wrr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\projection.osl:44
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\projection.osl:44
 #    st[0] = setRange(v[0]);
 	normalize	___307_v ___307_v 	%line{44} %argrw{"wr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\projection.osl:45
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\projection.osl:45
 #    st[1] = setRange(v[1]);
 	compref		$tmp44 ___307_v $const1 	%line{45} %argrw{"wrr"}
 	functioncall	$const4 83 	%argrw{"r"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\projection.osl:8
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\projection.osl:8
 # }
 	add		$tmp45 $const6 $tmp44 	%line{8} %argrw{"wrr"}
 	mul		$tmp43 $const5 $tmp45 	%argrw{"wrr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\projection.osl:45
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\projection.osl:45
 #    st[1] = setRange(v[1]);
 	compassign	___307_st $const1 $tmp43 	%line{45} %argrw{"wrr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\projection.osl:46
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\projection.osl:46
 #    return st;
 	compref		$tmp47 ___307_v $const2 	%line{46} %argrw{"wrr"}
 	functioncall	$const4 88 	%argrw{"r"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\projection.osl:8
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\projection.osl:8
 # }
 	add		$tmp48 $const6 $tmp47 	%line{8} %argrw{"wrr"}
 	mul		$tmp46 $const5 $tmp48 	%argrw{"wrr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\projection.osl:46
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\projection.osl:46
 #    return st;
 	compassign	___307_st $const2 $tmp46 	%line{46} %argrw{"wrr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\projection.osl:47
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\projection.osl:47
 # }
 	assign		uvw ___307_st 	%line{47} %argrw{"wr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\projection.osl:162
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\projection.osl:162
 # 	{
 	eq		$tmp49 projType $const14 	%line{162} %argrw{"wrr"}
 	if		$tmp49 146 146 	%argrw{"r"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\projection.osl:164
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\projection.osl:164
 # 		uvw = cubic(PP);
 	transform	___322_PP placementMatrix P 	%line{164} %argrw{"wrr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\projection.osl:165
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\projection.osl:165
 # 	}
 	functioncall	$const15 146 	%line{165} %argrw{"r"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\projection.osl:53
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\projection.osl:53
 #    float yAbs = abs(p[1]);
 	compref		$tmp50 ___322_PP $const1 	%line{53} %argrw{"wrr"}
 	abs		___308_xAbs $tmp50 	%argrw{"wr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\projection.osl:54
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\projection.osl:54
 #    float zAbs = abs(p[2]);
 	compref		$tmp51 ___322_PP $const2 	%line{54} %argrw{"wrr"}
 	abs		___308_yAbs $tmp51 	%argrw{"wr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\projection.osl:55
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\projection.osl:55
 # 
 	compref		$tmp52 ___322_PP $const7 	%line{55} %argrw{"wrr"}
 	abs		___308_zAbs $tmp52 	%argrw{"wr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\projection.osl:57
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\projection.osl:57
 #    float t = 0;
 	assign		___308_s $const1 	%line{57} %argrw{"wr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\projection.osl:58
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\projection.osl:58
 #    float a = 0;
 	assign		___308_t $const1 	%line{58} %argrw{"wr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\projection.osl:59
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\projection.osl:59
 # 
 	assign		___308_a $const1 	%line{59} %argrw{"wr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\projection.osl:61
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\projection.osl:61
 #    {
 	ge		$tmp53 ___308_xAbs ___308_yAbs 	%line{61} %argrw{"wrr"}
 	neq		$tmp54 $tmp53 $const1 	%argrw{"wrr"}
@@ -446,16 +446,16 @@ code ___main___
 	neq		$tmp56 $tmp55 $const1 	%argrw{"wrr"}
 	assign		$tmp54 $tmp56 	%argrw{"wr"}
 	if		$tmp54 113 133 	%argrw{"r"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\projection.osl:63
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\projection.osl:63
 #       s = p[2];
 	assign		___308_a ___308_xAbs 	%line{63} %argrw{"wr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\projection.osl:64
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\projection.osl:64
 #       t = p[1];
 	compref		___308_s ___322_PP $const7 	%line{64} %argrw{"wrr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\projection.osl:65
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\projection.osl:65
 #    }
 	compref		___308_t ___322_PP $const2 	%line{65} %argrw{"wrr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\projection.osl:67
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\projection.osl:67
 #    {
 	ge		$tmp57 ___308_yAbs ___308_xAbs 	%line{67} %argrw{"wrr"}
 	neq		$tmp58 $tmp57 $const1 	%argrw{"wrr"}
@@ -464,16 +464,16 @@ code ___main___
 	neq		$tmp60 $tmp59 $const1 	%argrw{"wrr"}
 	assign		$tmp58 $tmp60 	%argrw{"wr"}
 	if		$tmp58 123 133 	%argrw{"r"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\projection.osl:69
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\projection.osl:69
 #       s = p[0];
 	assign		___308_a ___308_yAbs 	%line{69} %argrw{"wr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\projection.osl:70
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\projection.osl:70
 #       t = p[2];
 	compref		___308_s ___322_PP $const1 	%line{70} %argrw{"wrr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\projection.osl:71
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\projection.osl:71
 #    }
 	compref		___308_t ___322_PP $const7 	%line{71} %argrw{"wrr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\projection.osl:73
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\projection.osl:73
 #    {
 	ge		$tmp61 ___308_zAbs ___308_xAbs 	%line{73} %argrw{"wrr"}
 	neq		$tmp62 $tmp61 $const1 	%argrw{"wrr"}
@@ -482,53 +482,53 @@ code ___main___
 	neq		$tmp64 $tmp63 $const1 	%argrw{"wrr"}
 	assign		$tmp62 $tmp64 	%argrw{"wr"}
 	if		$tmp62 133 133 	%argrw{"r"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\projection.osl:75
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\projection.osl:75
 #       s = p[0];
 	assign		___308_a ___308_zAbs 	%line{75} %argrw{"wr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\projection.osl:76
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\projection.osl:76
 #       t = p[1];
 	compref		___308_s ___322_PP $const1 	%line{76} %argrw{"wrr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\projection.osl:77
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\projection.osl:77
 #    }
 	compref		___308_t ___322_PP $const2 	%line{77} %argrw{"wrr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\projection.osl:79
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\projection.osl:79
 #    st[1] = setRange(t / (a + EPSILON));
 	add		$tmp66 ___308_a $const16 	%line{79} %argrw{"wrr"}
 	div		$tmp67 ___308_s $tmp66 	%argrw{"wrr"}
 	functioncall	$const4 138 	%argrw{"r"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\projection.osl:8
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\projection.osl:8
 # }
 	add		$tmp68 $const6 $tmp67 	%line{8} %argrw{"wrr"}
 	mul		$tmp65 $const5 $tmp68 	%argrw{"wrr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\projection.osl:79
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\projection.osl:79
 #    st[1] = setRange(t / (a + EPSILON));
 	compassign	___308_st $const1 $tmp65 	%line{79} %argrw{"wrr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\projection.osl:80
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\projection.osl:80
 # 
 	add		$tmp70 ___308_a $const16 	%line{80} %argrw{"wrr"}
 	div		$tmp71 ___308_t $tmp70 	%argrw{"wrr"}
 	functioncall	$const4 144 	%argrw{"r"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\projection.osl:8
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\projection.osl:8
 # }
 	add		$tmp72 $const6 $tmp71 	%line{8} %argrw{"wrr"}
 	mul		$tmp69 $const5 $tmp72 	%argrw{"wrr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\projection.osl:80
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\projection.osl:80
 # 
 	compassign	___308_st $const2 $tmp69 	%line{80} %argrw{"wrr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\projection.osl:82
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\projection.osl:82
 # }
 	assign		uvw ___308_st 	%line{82} %argrw{"wr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\projection.osl:167
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\projection.osl:167
 # 	{
 	eq		$tmp73 projType $const17 	%line{167} %argrw{"wrr"}
 	if		$tmp73 206 206 	%argrw{"r"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\projection.osl:169
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\projection.osl:169
 # 		uvw = triPlanar(PP, N);
 	transform	___323_PP placementMatrix P 	%line{169} %argrw{"wrr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\projection.osl:170
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\projection.osl:170
 # 	}
 	functioncall	$const18 206 	%line{170} %argrw{"r"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\projection.osl:88
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\projection.osl:88
 #    float ay = N[1] > 0.0 ? N[1] : -N[1];
 	compref		$tmp74 N $const1 	%line{88} %argrw{"wrr"}
 	gt		$tmp75 $tmp74 $const19 	%argrw{"wrr"}
@@ -536,7 +536,7 @@ code ___main___
 	compref		___312_ax N $const1 	%argrw{"wrr"}
 	compref		$tmp76 N $const1 	%argrw{"wrr"}
 	neg		___312_ax $tmp76 	%argrw{"wr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\projection.osl:89
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\projection.osl:89
 #    float az = N[2] > 0.0 ? N[2] : -N[2];
 	compref		$tmp77 N $const2 	%line{89} %argrw{"wrr"}
 	gt		$tmp78 $tmp77 $const19 	%argrw{"wrr"}
@@ -544,7 +544,7 @@ code ___main___
 	compref		___312_ay N $const2 	%argrw{"wrr"}
 	compref		$tmp79 N $const2 	%argrw{"wrr"}
 	neg		___312_ay $tmp79 	%argrw{"wr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\projection.osl:90
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\projection.osl:90
 # 
 	compref		$tmp80 N $const7 	%line{90} %argrw{"wrr"}
 	gt		$tmp81 $tmp80 $const19 	%argrw{"wrr"}
@@ -552,7 +552,7 @@ code ___main___
 	compref		___312_az N $const7 	%argrw{"wrr"}
 	compref		$tmp82 N $const7 	%argrw{"wrr"}
 	neg		___312_az $tmp82 	%argrw{"wr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\projection.osl:92
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\projection.osl:92
 #    {
 	gt		$tmp83 ___312_ax ___312_ay 	%line{92} %argrw{"wrr"}
 	neq		$tmp84 $tmp83 $const1 	%argrw{"wrr"}
@@ -561,15 +561,15 @@ code ___main___
 	neq		$tmp86 $tmp85 $const1 	%argrw{"wrr"}
 	assign		$tmp84 $tmp86 	%argrw{"wr"}
 	if		$tmp84 179 194 	%argrw{"r"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\projection.osl:94
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\projection.osl:94
 #       st[1] = p[1];
 	compref		$tmp87 ___323_PP $const7 	%line{94} %argrw{"wrr"}
 	compassign	___312_st $const1 $tmp87 	%argrw{"wrr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\projection.osl:95
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\projection.osl:95
 #    }
 	compref		$tmp88 ___323_PP $const2 	%line{95} %argrw{"wrr"}
 	compassign	___312_st $const2 $tmp88 	%argrw{"wrr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\projection.osl:97
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\projection.osl:97
 #    {
 	gt		$tmp89 ___312_ay ___312_ax 	%line{97} %argrw{"wrr"}
 	neq		$tmp90 $tmp89 $const1 	%argrw{"wrr"}
@@ -578,59 +578,59 @@ code ___main___
 	neq		$tmp92 $tmp91 $const1 	%argrw{"wrr"}
 	assign		$tmp90 $tmp92 	%argrw{"wr"}
 	if		$tmp90 190 194 	%argrw{"r"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\projection.osl:99
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\projection.osl:99
 #       st[1] = p[2];
 	compref		$tmp93 ___323_PP $const1 	%line{99} %argrw{"wrr"}
 	compassign	___312_st $const1 $tmp93 	%argrw{"wrr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\projection.osl:100
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\projection.osl:100
 #    }
 	compref		$tmp94 ___323_PP $const7 	%line{100} %argrw{"wrr"}
 	compassign	___312_st $const2 $tmp94 	%argrw{"wrr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\projection.osl:104
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\projection.osl:104
 #       st[1] = p[1];
 	compref		$tmp95 ___323_PP $const1 	%line{104} %argrw{"wrr"}
 	compassign	___312_st $const1 $tmp95 	%argrw{"wrr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\projection.osl:105
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\projection.osl:105
 #    }
 	compref		$tmp96 ___323_PP $const2 	%line{105} %argrw{"wrr"}
 	compassign	___312_st $const2 $tmp96 	%argrw{"wrr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\projection.osl:108
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\projection.osl:108
 #    st[1] = setRange(st[1]);
 	compref		$tmp98 ___312_st $const1 	%line{108} %argrw{"wrr"}
 	functioncall	$const4 198 	%argrw{"r"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\projection.osl:8
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\projection.osl:8
 # }
 	add		$tmp99 $const6 $tmp98 	%line{8} %argrw{"wrr"}
 	mul		$tmp97 $const5 $tmp99 	%argrw{"wrr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\projection.osl:108
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\projection.osl:108
 #    st[1] = setRange(st[1]);
 	compassign	___312_st $const1 $tmp97 	%line{108} %argrw{"wrr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\projection.osl:109
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\projection.osl:109
 # 
 	compref		$tmp101 ___312_st $const2 	%line{109} %argrw{"wrr"}
 	functioncall	$const4 203 	%argrw{"r"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\projection.osl:8
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\projection.osl:8
 # }
 	add		$tmp102 $const6 $tmp101 	%line{8} %argrw{"wrr"}
 	mul		$tmp100 $const5 $tmp102 	%argrw{"wrr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\projection.osl:109
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\projection.osl:109
 # 
 	compassign	___312_st $const2 $tmp100 	%line{109} %argrw{"wrr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\projection.osl:111
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\projection.osl:111
 # }
 	assign		uvw ___312_st 	%line{111} %argrw{"wr"}
 	return
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\projection.osl:172
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\projection.osl:172
 # 	{
 	eq		$tmp103 projType $const20 	%line{172} %argrw{"wrr"}
 	if		$tmp103 248 248 	%argrw{"r"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\projection.osl:174
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\projection.osl:174
 # 		uvw = concentric(PP);
 	transform	___324_PP placementMatrix P 	%line{174} %argrw{"wrr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\projection.osl:175
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\projection.osl:175
 # 	}
 	functioncall	$const21 248 	%line{175} %argrw{"r"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\projection.osl:116
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\projection.osl:116
 #   float	temp = noise("perlin", noisePoint);
 	compref		$tmp105 ___324_PP $const1 	%line{116} %argrw{"wrr"}
 	assign		$tmp104 $tmp105 	%argrw{"wr"}
@@ -645,10 +645,10 @@ code ___main___
 	assign		$tmp115 $tmp112 	%argrw{"wr"}
 	mul		$tmp114 $const22 $tmp115 	%argrw{"wrr"}
 	vector		___316_noisePoint $tmp106 $tmp110 $tmp114 	%argrw{"wrrr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\projection.osl:117
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\projection.osl:117
 #   st[1] = 0.5 + sin((p[0] - floor(p[0])) * 0.5) * sin((p[1] - floor(p[1])) * 0.5) * sin((p[2] - floor(p[2])) * 0.5);
 	noise		___316_temp $const23 ___316_noisePoint 	%line{117} %argrw{"wrr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\projection.osl:118
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\projection.osl:118
 #   st[0] = temp;
 	compref		$tmp117 ___324_PP $const1 	%line{118} %argrw{"wrr"}
 	compref		$tmp119 ___324_PP $const1 	%argrw{"wrr"}
@@ -672,28 +672,28 @@ code ___main___
 	mul		$tmp135 $tmp128 $tmp129 	%argrw{"wrr"}
 	add		$tmp136 $const5 $tmp135 	%argrw{"wrr"}
 	compassign	___316_st $const2 $tmp136 	%argrw{"wrr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\projection.osl:119
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\projection.osl:119
 #   return st;
 	compassign	___316_st $const1 ___316_temp 	%line{119} %argrw{"wrr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\projection.osl:120
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\projection.osl:120
 # }
 	assign		uvw ___316_st 	%line{120} %argrw{"wr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\projection.osl:177
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\projection.osl:177
 # 	
 	assign		outUVCoord uvw 	%line{177} %argrw{"wr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\projection.osl:179
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\projection.osl:179
 # }
 	functioncall	$const24 254 	%line{179} %argrw{"r"}
-# H:/UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\mayaUtils.h:26
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\mayaUtils.h:26
 # 	vector result = c;
-	assign		___298_result image 	%filename{"H:/UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\mayaUtils.h"} %line{26} %argrw{"wr"}
-# H:/UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\mayaUtils.h:27
+	assign		___298_result image 	%filename{"H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\mayaUtils.h"} %line{26} %argrw{"wr"}
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\mayaUtils.h:27
 # 	result *= colorGain;
 	mul		___298_result ___298_result colorGain 	%line{27} %argrw{"wrr"}
-# H:/UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\mayaUtils.h:28
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\mayaUtils.h:28
 # 	result += colorOffset;
 	add		___298_result ___298_result colorOffset 	%line{28} %argrw{"wrr"}
-# H:/UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\mayaUtils.h:29
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\mayaUtils.h:29
 # 	return result;
 	assign		outColor ___298_result 	%line{29} %argrw{"wr"}
 	end

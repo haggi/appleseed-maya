@@ -9,7 +9,7 @@ Version 0.32:
 - reimplemented IPR in most parts
 - implemented aeLayeredShader
 - switched material description to xml format
-- implemented basic automatic shader creation
+- implemented basic automatic shader creation based on xml material descriptions
 
 Version 0.31:
 - update to refactored framework

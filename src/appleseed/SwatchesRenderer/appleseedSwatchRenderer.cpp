@@ -60,6 +60,7 @@ AppleseedSwatchRenderer::AppleseedSwatchRenderer()
 #if _DEBUG
 	log_target = std::auto_ptr<asf::ILogTarget>(asf::create_console_log_target(stdout));
 	asr::global_logger().add_target(log_target.get());
+	RENDERER_LOG_INFO("loading project file %s...", "This is a test");
 #endif
 
 	MString swatchRenderFile = getRendererHome() + "resources/swatchRender.xml";
@@ -109,7 +110,7 @@ void AppleseedSwatchRenderer::renderSwatch(NewSwatchRenderer *sr)
 	
 	//MString tstFile = "C:/daten/3dprojects/mayaToAppleseed/renderData/swatchRenderScene/swatchRender.exr";
 	//project->get_frame()->write_main_image(tstFile.asChar());
-	//asr::ProjectFileWriter::write(project.ref(), "C:/daten/3dprojects/mayaToAppleseed/renderData/swatchRenderScene/swOutputTest.appleseed");
+	asr::ProjectFileWriter::write(project.ref(), "C:/daten/3dprojects/mayaToAppleseed/renderData/swatchRenderScene/swOutputTest.appleseed");
 	//project->get_frame()->transform_to_output_color_space(project->get_frame()->image());
 
 	sr->image().create(res, res, 4, MImage::kFloat);

@@ -16,17 +16,17 @@ const	float	$const2	1		%read{4,4} %write{2147483647,-1}
 const	string	$const3	"clamp"		%read{3,3} %write{2147483647,-1}
 temp	float	$tmp4	%read{5,5} %write{4,4}
 code ___main___
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\float\\as_float_remap.osl:41
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\float\\as_float_remap.osl:41
 #     Result = mix(ToLow, ToHigh, t);
-	sub		$tmp1 Float FromLow 	%filename{"H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\float\\as_float_remap.osl"} %line{41} %argrw{"wrr"}
+	sub		$tmp1 Float FromLow 	%filename{"H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\float\\as_float_remap.osl"} %line{41} %argrw{"wrr"}
 	sub		$tmp2 FromHigh FromLow 	%argrw{"wrr"}
 	div		$tmp3 $tmp1 $tmp2 	%argrw{"wrr"}
 	functioncall	$const3 6 	%argrw{"r"}
-# C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h:157
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:157
 # PERCOMP1 (log)
-	min		$tmp4 $tmp3 $const2 	%filename{"C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h"} %line{157} %argrw{"wrr"}
+	min		$tmp4 $tmp3 $const2 	%filename{"H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h"} %line{157} %argrw{"wrr"}
 	max		t $tmp4 $const1 	%argrw{"wrr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\float\\as_float_remap.osl:42
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\float\\as_float_remap.osl:42
 # }
-	mix		Result ToLow ToHigh t 	%filename{"H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\float\\as_float_remap.osl"} %line{42} %argrw{"wrrr"}
+	mix		Result ToLow ToHigh t 	%filename{"H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\float\\as_float_remap.osl"} %line{42} %argrw{"wrrr"}
 	end

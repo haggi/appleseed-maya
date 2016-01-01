@@ -22,30 +22,30 @@ const	string	$const2	"direction"		%read{4,7} %write{2147483647,-1}
 const	string	$const3	"bandwidth"		%read{4,7} %write{2147483647,-1}
 const	string	$const4	"impulses"		%read{4,7} %write{2147483647,-1}
 code In
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\texture3d\\as_noise3d.osl:34
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\texture3d\\as_noise3d.osl:34
 # 
-	assign		In P 	%filename{"H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\texture3d\\as_noise3d.osl"} %line{34} %argrw{"wr"}
+	assign		In P 	%filename{"H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\texture3d\\as_noise3d.osl"} %line{34} %argrw{"wr"}
 code ___main___
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\texture3d\\as_noise3d.osl:59
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\texture3d\\as_noise3d.osl:59
 # 
-	mul		$tmp1 In Frequency 	%filename{"H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\texture3d\\as_noise3d.osl"} %line{59} %argrw{"wrr"}
+	mul		$tmp1 In Frequency 	%filename{"H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\texture3d\\as_noise3d.osl"} %line{59} %argrw{"wrr"}
 	add		p $tmp1 Offset 	%argrw{"wrr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\texture3d\\as_noise3d.osl:61
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\texture3d\\as_noise3d.osl:61
 #     {
 	if		Periodic 6 8 	%line{61} %argrw{"r"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\texture3d\\as_noise3d.osl:67
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\texture3d\\as_noise3d.osl:67
 # 
 	pnoise		FloatOut NoiseType p Period $const1 AnisotropyMode $const2 Direction $const3 Bandwidth $const4 Impulses 	%line{67} %argrw{"wrrrrrrrrrrr"} %argderivs{2,3}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\texture3d\\as_noise3d.osl:73
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\texture3d\\as_noise3d.osl:73
 #     }
 	pnoise		VectorOut NoiseType p Period $const1 AnisotropyMode $const2 Direction $const3 Bandwidth $const4 Impulses 	%line{73} %argrw{"wrrrrrrrrrrr"} %argderivs{2,3}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\texture3d\\as_noise3d.osl:80
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\texture3d\\as_noise3d.osl:80
 # 
 	noise		FloatOut NoiseType p $const1 AnisotropyMode $const2 Direction $const3 Bandwidth $const4 Impulses 	%line{80} %argrw{"wrrrrrrrrrr"} %argderivs{2}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\texture3d\\as_noise3d.osl:85
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\texture3d\\as_noise3d.osl:85
 #     }
 	noise		VectorOut NoiseType p $const1 AnisotropyMode $const2 Direction $const3 Bandwidth $const4 Impulses 	%line{85} %argrw{"wrrrrrrrrrr"} %argderivs{2}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\texture3d\\as_noise3d.osl:88
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\texture3d\\as_noise3d.osl:88
 # }
 	assign		ColorOut VectorOut 	%line{88} %argrw{"wr"}
 	end

@@ -49,64 +49,64 @@ temp	int	$tmp18	%read{33,33} %write{32,32}
 temp	color	$tmp19	%read{35,35} %write{34,34}
 temp	vector	$tmp20	%read{38,38} %write{37,37}
 code Color
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\normal\\as_normal_map.osl:35
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\normal\\as_normal_map.osl:35
 #     vector Normal = N,
-	assign		Color $const1 	%filename{"H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\normal\\as_normal_map.osl"} %line{35} %argrw{"wr"}
+	assign		Color $const1 	%filename{"H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\normal\\as_normal_map.osl"} %line{35} %argrw{"wr"}
 code Normal
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\normal\\as_normal_map.osl:36
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\normal\\as_normal_map.osl:36
 #     vector Tangent = APPLESEED_DEFAULT_TANGENT,
-	assign		Normal N 	%filename{"H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\normal\\as_normal_map.osl"} %line{36} %argrw{"wr"}
+	assign		Normal N 	%filename{"H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\normal\\as_normal_map.osl"} %line{36} %argrw{"wr"}
 code Tangent
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\normal\\as_normal_map.osl:37
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\normal\\as_normal_map.osl:37
 #     string UpVector = "Blue"
-	normalize	Tangent dPdu 	%filename{"H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\normal\\as_normal_map.osl"} %line{37} %argrw{"wr"}
+	normalize	Tangent dPdu 	%filename{"H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\normal\\as_normal_map.osl"} %line{37} %argrw{"wr"}
 code ___main___
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\normal\\as_normal_map.osl:57
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\normal\\as_normal_map.osl:57
 # 
-	assign		$tmp1 $const3 	%filename{"H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\normal\\as_normal_map.osl"} %line{57} %argrw{"wr"}
+	assign		$tmp1 $const3 	%filename{"H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\normal\\as_normal_map.osl"} %line{57} %argrw{"wr"}
 	assign		$tmp2 $const5 	%argrw{"wr"}
 	assign		$tmp4 $const7 	%argrw{"wr"}
 	assign		$tmp5 $const5 	%argrw{"wr"}
 	functioncall	$const8 10 	%argrw{"r"}
-# C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h:156
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:156
 # point  radians (point x)  { return x*(M_PI/180.0); }
-	min		$tmp6 Color $tmp5 	%filename{"C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h"} %line{156} %argrw{"wrr"}
+	min		$tmp6 Color $tmp5 	%filename{"H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h"} %line{156} %argrw{"wrr"}
 	max		$tmp3 $tmp6 $tmp4 	%argrw{"wrr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\normal\\as_normal_map.osl:57
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\normal\\as_normal_map.osl:57
 # 
-	mix		n $tmp1 $tmp2 $tmp3 	%filename{"H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\normal\\as_normal_map.osl"} %line{57} %argrw{"wrrr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\normal\\as_normal_map.osl:59
+	mix		n $tmp1 $tmp2 $tmp3 	%filename{"H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\normal\\as_normal_map.osl"} %line{57} %argrw{"wrrr"}
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\normal\\as_normal_map.osl:59
 #     {
 	eq		$tmp7 UpVector $const9 	%line{59} %argrw{"wrr"}
 	if		$tmp7 17 17 	%argrw{"r"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\normal\\as_normal_map.osl:61
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\normal\\as_normal_map.osl:61
 #         n[2] = n[1];
 	compref		___297_tmp n $const10 	%line{61} %argrw{"wrr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\normal\\as_normal_map.osl:62
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\normal\\as_normal_map.osl:62
 #         n[1] = tmp;
 	compref		$tmp8 n $const4 	%line{62} %argrw{"wrr"}
 	compassign	n $const10 $tmp8 	%argrw{"wrr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\normal\\as_normal_map.osl:63
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\normal\\as_normal_map.osl:63
 #     }
 	compassign	n $const4 ___297_tmp 	%line{63} %argrw{"wrr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\normal\\as_normal_map.osl:66
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\normal\\as_normal_map.osl:66
 #     vector b = cross(t, Normal);
 	assign		t Tangent 	%line{66} %argrw{"wr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\normal\\as_normal_map.osl:67
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\normal\\as_normal_map.osl:67
 # 
 	cross		b t Normal 	%line{67} %argrw{"wrr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\normal\\as_normal_map.osl:69
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\normal\\as_normal_map.osl:69
 #     {
 	eq		$tmp9 Space $const11 	%line{69} %argrw{"wrr"}
 	if		$tmp9 22 32 	%argrw{"r"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\normal\\as_normal_map.osl:71
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\normal\\as_normal_map.osl:71
 #     }
 	transformn	n $const12 $const13 n 	%line{71} %argrw{"wrrr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\normal\\as_normal_map.osl:73
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\normal\\as_normal_map.osl:73
 #     {
 	eq		$tmp10 Space $const14 	%line{73} %argrw{"wrr"}
 	if		$tmp10 32 32 	%argrw{"r"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\normal\\as_normal_map.osl:75
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\normal\\as_normal_map.osl:75
 #     }
 	compref		$tmp11 n $const6 	%line{75} %argrw{"wrr"}
 	mul		$tmp12 $tmp11 t 	%argrw{"wrr"}
@@ -116,18 +116,18 @@ code ___main___
 	compref		$tmp16 n $const10 	%argrw{"wrr"}
 	mul		$tmp17 $tmp16 Normal 	%argrw{"wrr"}
 	add		n $tmp15 $tmp17 	%argrw{"wrr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\normal\\as_normal_map.osl:78
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\normal\\as_normal_map.osl:78
 #         NormalOut = normalize(mix(Normal, n, Amount));
 	neq		$tmp18 Amount $const5 	%line{78} %argrw{"wrr"}
 	if		$tmp18 36 37 	%argrw{"r"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\normal\\as_normal_map.osl:79
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\normal\\as_normal_map.osl:79
 #     else
 	mix		$tmp19 Normal n Amount 	%line{79} %argrw{"wrrr"}
 	normalize	NormalOut $tmp19 	%argrw{"wr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\normal\\as_normal_map.osl:81
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\normal\\as_normal_map.osl:81
 # 
 	normalize	NormalOut n 	%line{81} %argrw{"wr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\normal\\as_normal_map.osl:83
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\normal\\as_normal_map.osl:83
 # }
 	cross		$tmp20 NormalOut b 	%line{83} %argrw{"wrr"}
 	normalize	TangentOut $tmp20 	%argrw{"wr"}

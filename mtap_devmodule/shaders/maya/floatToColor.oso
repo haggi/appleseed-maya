@@ -9,13 +9,13 @@ const	int	$const1	0		%read{0,0} %write{2147483647,-1}
 const	int	$const2	1		%read{1,1} %write{2147483647,-1}
 const	int	$const3	2		%read{2,2} %write{2147483647,-1}
 code ___main___
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\floatToColor.osl:4
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\floatToColor.osl:4
 # 	outValue[1] = inY;
-	compassign	outValue $const1 inX 	%filename{"H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\floatToColor.osl"} %line{4} %argrw{"wrr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\floatToColor.osl:5
+	compassign	outValue $const1 inX 	%filename{"H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\floatToColor.osl"} %line{4} %argrw{"wrr"}
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\floatToColor.osl:5
 # 	outValue[2] = inZ;
 	compassign	outValue $const2 inY 	%line{5} %argrw{"wrr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\floatToColor.osl:6
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\floatToColor.osl:6
 # }
 	compassign	outValue $const3 inZ 	%line{6} %argrw{"wrr"}
 	end

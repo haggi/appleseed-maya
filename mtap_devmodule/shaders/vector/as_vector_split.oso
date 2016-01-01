@@ -9,13 +9,13 @@ const	int	$const1	0		%read{0,0} %write{2147483647,-1}
 const	int	$const2	1		%read{1,1} %write{2147483647,-1}
 const	int	$const3	2		%read{2,2} %write{2147483647,-1}
 code ___main___
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\vector\\as_vector_split.osl:38
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\vector\\as_vector_split.osl:38
 #     Y = Vector[1];
-	compref		X Vector $const1 	%filename{"H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\vector\\as_vector_split.osl"} %line{38} %argrw{"wrr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\vector\\as_vector_split.osl:39
+	compref		X Vector $const1 	%filename{"H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\vector\\as_vector_split.osl"} %line{38} %argrw{"wrr"}
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\vector\\as_vector_split.osl:39
 #     Z = Vector[2];
 	compref		Y Vector $const2 	%line{39} %argrw{"wrr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\vector\\as_vector_split.osl:40
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\vector\\as_vector_split.osl:40
 # }
 	compref		Z Vector $const3 	%line{40} %argrw{"wrr"}
 	end

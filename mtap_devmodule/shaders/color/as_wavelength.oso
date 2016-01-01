@@ -4,7 +4,7 @@ shader as_wavelength
 param	float	Wavelength	400		%read{0,0} %write{2147483647,-1}
 oparam	color	ColorOut	0 0 0		%read{2147483647,-1} %write{0,0}
 code ___main___
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\color\\as_wavelength.osl:36
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\color\\as_wavelength.osl:36
 # }
-	wavelength_color	ColorOut Wavelength 	%filename{"H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\color\\as_wavelength.osl"} %line{36} %argrw{"wr"}
+	wavelength_color	ColorOut Wavelength 	%filename{"H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\color\\as_wavelength.osl"} %line{36} %argrw{"wr"}
 	end

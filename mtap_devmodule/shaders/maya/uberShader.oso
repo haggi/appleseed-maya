@@ -1,43 +1,624 @@
 OpenShadingLanguage 1.00
 # Compiled by oslc 1.6.8
-shader uberShader	%meta{string,help,"uber shader"} %meta{string,mayaClassification,"Appleseed/material"} %meta{int,mayaId,0} 
-param	int	matte	0		%meta{string,help,"Use matte"}  %read{2147483647,-1} %write{2147483647,-1}
-param	vector	normalCamera	0 0 0		%read{3,7} %write{0,0} %initexpr
-param	float	diffuseValue	0.80000001		%meta{string,help,"Diffuse Reflectivity"} %meta{float,min,0} %meta{float,max,1}  %read{4,8} %write{2147483647,-1}
-param	color	diffuseColor	1 1 1		%meta{string,help,"Color"}  %read{4,8} %write{2147483647,-1}
-param	float	roughness	0		%meta{string,help,"Surface roughness."}  %read{1,3} %write{2147483647,-1}
-oparam	closure color	outColor			%read{2147483647,-1} %write{5,9}
+shader uberShader	%meta{string,help,"uber shader"} %meta{string,mayaClassification,"Appleseed/material:shader/surface:swatch/AppleseedRenderSwatch"} %meta{int,mayaId,0} 
+param	int	matte	0		%meta{string,help,"Use matte"} %meta{string,hint,"useAsBool"}  %read{1,1} %write{2147483647,-1}
+param	vector	normalCamera	0 0 0		%read{20,217} %write{0,0} %initexpr
+param	float	diffuseValue	0.80000001		%meta{string,help,"Diffuse reflectivity multiplier"} %meta{float,min,0} %meta{float,max,1}  %read{21,25} %write{2147483647,-1}
+param	vector	diffuseColor	1 1 1		%meta{string,help,"Color"} %meta{string,hint,"useAsColor"}  %read{11,11} %write{2147483647,-1}
+param	float	roughness	0		%meta{string,help,"Surface roughness. Mix between lambert and orenNayar."}  %read{18,20} %write{2147483647,-1}
+param	float	backlighting	0		%meta{string,help,"Backlighting, show light though a surface (poor mans translucency)."}  %read{27,52} %write{2147483647,-1}
+param	vector	backlightingColor	0 0 0		%meta{string,help,"Backlighting color"} %meta{string,hint,"useAsColor"}  %read{30,51} %write{2147483647,-1}
+param	float	translucency	0		%meta{string,help,"Translucency."} %meta{float,min,0} %meta{float,max,1}  %read{55,80} %write{2147483647,-1}
+param	vector	translucencyColor	0 0 0		%meta{string,help,"Translucency color"} %meta{string,hint,"useAsColor"}  %read{58,79} %write{2147483647,-1}
+param	float	specular1	0.5		%meta{string,help,"Specularity 1 value"} %meta{float,min,0} %meta{float,max,1}  %read{15,174} %write{2147483647,-1}
+param	float	specularIOR1	1.3		%meta{string,help,"Specularity 1 index of reflection"} %meta{float,min,0.001} %meta{float,max,3} %meta{string,hint,"softmax"}  %read{193,193} %write{2147483647,-1}
+param	int	specularUseFresnel1	1		%meta{string,help,"Specularity 1 use fresnel"} %meta{string,hint,"useAsBool"}  %read{171,171} %write{2147483647,-1}
+param	float	reflectivityAtZeroDeg	0		%meta{string,help,"Reflectivity at 0 Degree"} %meta{float,min,0} %meta{float,max,1}  %read{2147483647,-1} %write{2147483647,-1}
+param	float	roughness1	0.1		%meta{string,help,"Specularity roughness"} %meta{string,help,"Roughness"} %meta{float,min,0.001} %meta{float,max,1}  %read{182,182} %write{2147483647,-1}
+param	vector	specularColor1	0 0 0		%meta{string,help,"Specular color 1"} %meta{string,hint,"useAsColor"}  %read{194,194} %write{2147483647,-1}
+param	float	anisotropy1	0		%meta{string,help,"Anisotropy"} %meta{float,min,-1} %meta{float,max,1}  %read{178,187} %write{2147483647,-1}
+param	string	reflectionMdf	"ggx"		%meta{string,help,"Microfacet distribution to use: Specular, Beckmann or GGX."} %meta{string,options,"sharp|beckmann|ggx"}  %read{2147483647,-1} %write{2147483647,-1}
+param	float	refractionIOR	1.3		%meta{string,help,"Refraction Index"} %meta{float,min,-2} %meta{float,max,2} %meta{string,hint,"softminmax"}  %read{87,217} %write{2147483647,-1}
+param	vector	refractionColor	1 1 1		%meta{string,help,"Refraction color"} %meta{string,hint,"useAsColor"}  %read{2147483647,-1} %write{2147483647,-1}
+param	float	absorption	0		%meta{string,help,"Absorption cross section"} %meta{float,min,0} %meta{float,max,1} %meta{string,hint,"softmax"}  %read{92,95} %write{2147483647,-1}
+param	vector	absorptionColor	0 0 0		%meta{string,help,"Absorption color"} %meta{string,hint,"useAsColor"}  %read{96,96} %write{2147483647,-1}
+param	float	refractivity	0		%meta{string,help,"Refractivity"} %meta{float,min,0} %meta{float,max,1}  %read{16,198} %write{2147483647,-1}
+param	float	refractionRoughness	0		%meta{string,help,"Roughness"} %meta{float,min,0.001} %meta{float,max,1}  %read{206,206} %write{2147483647,-1}
+param	string	refractionMdf	"ggx"		%meta{string,help,"Microfacet distribution to use: Specular, Beckmann or GGX."} %meta{string,options,"sharp|beckmann|ggx"}  %read{2147483647,-1} %write{2147483647,-1}
+param	int	SSS1	0		%meta{string,help,"Use SSS 1"} %meta{string,hint,"useAsBool"}  %read{2147483647,-1} %write{2147483647,-1}
+param	vector	SSS1Color	0 0 0		%meta{string,help,"Subsurface color"} %meta{string,hint,"useAsColor"}  %read{2147483647,-1} %write{2147483647,-1}
+param	float	SSS1Weight	0		%meta{string,help,"Subsurface color Multiplier"} %meta{float,min,0} %meta{float,max,1}  %read{2147483647,-1} %write{2147483647,-1}
+param	vector	SSS1Radius	0 0 0		%meta{string,help,"Radius per Color"} %meta{string,hint,"useAsColor"}  %read{2147483647,-1} %write{2147483647,-1}
+param	float	SSS1RadiusMultiplier	1		%meta{string,help,"Subsurface color Multiplier"} %meta{float,min,0} %meta{float,max,3} %meta{string,hint,"softmax"}  %read{2147483647,-1} %write{2147483647,-1}
+oparam	closure color	outColor			%read{82,82} %write{10,219}
+global	vector	I	%read{113,161} %write{2147483647,-1}
 global	normal	N	%read{0,0} %write{2147483647,-1}
-const	float	$const1	0		%read{1,7} %write{2147483647,-1}
+global	vector	dPdu	%read{17,17} %write{2147483647,-1}
+local	float	___216_IdotN	%read{154,162} %write{152,152}
+local	float	___216_k	%read{158,163} %write{157,157}
+local	float	___217_c	%read{114,142} %write{113,116}
+local	float	___217_g	%read{128,142} %write{127,130}
+local	float	___219_beta	%read{135,143} %write{131,131}
+local	float	___219_F	%read{139,147} %write{137,146}
+local	vector	___221_R	%read{2147483647,-1} %write{121,121}
+local	vector	___221_T	%read{2147483647,-1} %write{160,170}
+local	float	___297_aspect	%read{183,209} %write{181,205}
+local	float	___297_r2	%read{183,209} %write{182,206}
+local	float	___298_tmp	%read{191,215} %write{189,213}
+local	color	___300_diffColor	%read{21,25} %write{11,11}
+local	closure color	___300_diffuseClosure	%read{54,219} %write{12,54}
+local	closure color	___300_specularClosure	%read{197,197} %write{13,197}
+local	closure color	___300_refractiveClosure	%read{219,219} %write{14,217}
+local	float	___300_specValue	%read{196,196} %write{15,196}
+local	float	___300_refrValue	%read{218,218} %write{16,218}
+local	vector	___300_tangent	%read{193,217} %write{17,17}
+local	float	___300_from_ior	%read{101,101} %write{90,99}
+local	float	___300_to_ior	%read{101,101} %write{91,100}
+local	float	___300_ior	%read{90,162} %write{83,101}
+local	color	___300_cabs	%read{2147483647,-1} %write{84,98}
+local	float	___304_length	%read{97,97} %write{94,94}
+local	float	___300_Kt	%read{218,218} %write{102,169}
+local	float	___300_Kr	%read{148,197} %write{103,173}
+local	string	___307_distribution	%read{193,193} %write{176,176}
+local	float	___307_ax	%read{189,193} %write{184,190}
+local	float	___307_ay	%read{190,193} %write{186,191}
+local	int	___307_doRefraction	%read{193,193} %write{192,192}
+local	string	___308_distribution	%read{217,217} %write{200,200}
+local	float	___308_ax	%read{213,217} %write{208,214}
+local	float	___308_ay	%read{214,217} %write{210,215}
+local	int	___308_doRefraction	%read{217,217} %write{216,216}
+const	int	$const1	1		%read{1,216} %write{2147483647,-1}
 temp	int	$tmp1	%read{2,2} %write{1,1}
-temp	closure color	$tmp2	%read{5,5} %write{3,3}
-const	string	$const2	"oren_nayar"		%read{3,7} %write{2147483647,-1}
-temp	color	$tmp3	%read{5,5} %write{4,4}
-temp	closure color	$tmp4	%read{9,9} %write{7,7}
-const	string	$const3	"diffuse"		%read{6,6} %write{2147483647,-1}
-temp	color	$tmp5	%read{9,9} %write{8,8}
+temp	int	$tmp2	%read{3,8} %write{2,7}
+const	int	$const2	0		%read{2,211} %write{2147483647,-1}
+temp	int	$tmp3	%read{6,6} %write{5,5}
+const	string	$const3	"iscameraray"		%read{4,4} %write{2147483647,-1}
+const	string	$const4	"camera"		%read{5,5} %write{2147483647,-1}
+temp	int	$tmp4	%read{7,7} %write{6,6}
+temp	closure color	$tmp5	%read{10,10} %write{9,9}
+const	string	$const5	"emission"		%read{9,9} %write{2147483647,-1}
+const	float	$const6	0		%read{10,198} %write{2147483647,-1}
+temp	int	$tmp6	%read{19,19} %write{18,18}
+temp	closure color	$tmp7	%read{22,22} %write{20,20}
+const	string	$const7	"oren_nayar"		%read{20,78} %write{2147483647,-1}
+temp	color	$tmp8	%read{22,22} %write{21,21}
+temp	closure color	$tmp9	%read{26,26} %write{24,24}
+const	string	$const8	"diffuse"		%read{23,77} %write{2147483647,-1}
+temp	color	$tmp10	%read{26,26} %write{25,25}
+temp	int	$tmp11	%read{28,28} %write{27,27}
+temp	int	$tmp12	%read{29,47} %write{28,46}
+temp	float	$tmp13	%read{31,31} %write{30,30}
+temp	int	$tmp14	%read{32,32} %write{31,31}
+temp	int	$tmp15	%read{33,38} %write{32,37}
+temp	float	$tmp16	%read{35,35} %write{34,34}
+temp	int	$tmp17	%read{36,36} %write{35,35}
+temp	int	$tmp18	%read{37,37} %write{36,36}
+temp	int	$tmp19	%read{39,44} %write{38,43}
+const	int	$const9	2		%read{40,68} %write{2147483647,-1}
+temp	float	$tmp20	%read{41,41} %write{40,40}
+temp	int	$tmp21	%read{42,42} %write{41,41}
+temp	int	$tmp22	%read{43,43} %write{42,42}
+temp	int	$tmp23	%read{45,45} %write{44,44}
+temp	int	$tmp24	%read{46,46} %write{45,45}
+temp	closure color	$tmp25	%read{53,53} %write{50,50}
+temp	vector	$tmp26	%read{50,50} %write{48,48}
+temp	color	$tmp27	%read{52,52} %write{51,51}
+temp	color	$tmp28	%read{53,53} %write{52,52}
+temp	closure color	$tmp29	%read{54,54} %write{53,53}
+temp	int	$tmp30	%read{56,56} %write{55,55}
+temp	int	$tmp31	%read{57,75} %write{56,74}
+temp	float	$tmp32	%read{59,59} %write{58,58}
+temp	int	$tmp33	%read{60,60} %write{59,59}
+temp	int	$tmp34	%read{61,66} %write{60,65}
+temp	float	$tmp35	%read{63,63} %write{62,62}
+temp	int	$tmp36	%read{64,64} %write{63,63}
+temp	int	$tmp37	%read{65,65} %write{64,64}
+temp	int	$tmp38	%read{67,72} %write{66,71}
+temp	float	$tmp39	%read{69,69} %write{68,68}
+temp	int	$tmp40	%read{70,70} %write{69,69}
+temp	int	$tmp41	%read{71,71} %write{70,70}
+temp	int	$tmp42	%read{73,73} %write{72,72}
+temp	int	$tmp43	%read{74,74} %write{73,73}
+temp	closure color	$tmp44	%read{81,81} %write{78,78}
+temp	vector	$tmp45	%read{78,78} %write{76,76}
+temp	color	$tmp46	%read{80,80} %write{79,79}
+temp	color	$tmp47	%read{81,81} %write{80,80}
+temp	closure color	$tmp48	%read{82,82} %write{81,81}
+const	float	$const10	1		%read{83,211} %write{2147483647,-1}
+temp	int	$tmp49	%read{86,86} %write{85,85}
+temp	int	$tmp50	%read{89,89} %write{88,88}
+temp	int	$tmp51	%read{93,93} %write{92,92}
+temp	int	$tmp52	%read{2147483647,-1} %write{94,94}
+const	string	$const11	"path:ray_length"		%read{94,94} %write{2147483647,-1}
+temp	float	$tmp53	%read{96,96} %write{95,95}
+temp	vector	$tmp54	%read{97,97} %write{96,96}
+temp	vector	$tmp55	%read{98,98} %write{97,97}
+temp	int	$tmp56	%read{105,105} %write{104,104}
+temp	int	$tmp57	%read{106,110} %write{105,109}
+temp	int	$tmp58	%read{108,108} %write{107,107}
+temp	int	$tmp59	%read{109,109} %write{108,108}
+const	string	$const12	"fresnel"		%read{111,112} %write{2147483647,-1}
+temp	int	$tmp60	%read{115,115} %write{114,114}
+const	string	$const13	"reflect"		%read{117,117} %write{2147483647,-1}
+temp	float	$tmp61	%read{119,119} %write{118,118}
+temp	float	$tmp62	%read{120,120} %write{119,119}
+const	float	$const14	2		%read{119,119} %write{2147483647,-1}
+temp	vector	$tmp63	%read{121,121} %write{120,120}
+temp	float	$tmp64	%read{124,124} %write{123,123}
+const	string	$const15	"sqr"		%read{122,144} %write{2147483647,-1}
+temp	float	$tmp65	%read{125,125} %write{124,124}
+temp	float	$tmp66	%read{127,127} %write{125,125}
+temp	float	$tmp67	%read{127,127} %write{126,126}
+temp	int	$tmp68	%read{129,129} %write{128,128}
+temp	float	$tmp69	%read{133,133} %write{132,132}
+temp	float	$tmp70	%read{134,134} %write{133,133}
+temp	float	$tmp71	%read{137,137} %write{134,134}
+temp	float	$tmp72	%read{136,136} %write{135,135}
+temp	float	$tmp73	%read{137,137} %write{136,136}
+const	float	$const16	0.5		%read{141,141} %write{2147483647,-1}
+temp	float	$tmp74	%read{140,140} %write{139,139}
+temp	float	$tmp75	%read{141,141} %write{140,140}
+temp	float	$tmp76	%read{146,146} %write{145,145}
+temp	float	$tmp77	%read{143,143} %write{142,142}
+temp	float	$tmp78	%read{145,145} %write{143,143}
+temp	float	$tmp79	%read{149,149} %write{148,148}
+temp	float	$tmp80	%read{150,150} %write{149,149}
+const	string	$const17	"refract"		%read{151,151} %write{2147483647,-1}
+temp	float	$tmp81	%read{156,156} %write{153,153}
+temp	float	$tmp82	%read{155,155} %write{154,154}
+temp	float	$tmp83	%read{156,156} %write{155,155}
+temp	float	$tmp84	%read{157,157} %write{156,156}
+temp	int	$tmp85	%read{159,159} %write{158,158}
+const	vector	$const18	0 0 0		%read{160,170} %write{2147483647,-1}
+temp	vector	$tmp86	%read{166,166} %write{161,161}
+temp	float	$tmp87	%read{164,164} %write{162,162}
+temp	float	$tmp88	%read{164,164} %write{163,163}
+temp	float	$tmp89	%read{165,165} %write{164,164}
+temp	vector	$tmp90	%read{166,166} %write{165,165}
+temp	int	$tmp91	%read{172,172} %write{171,171}
+temp	int	$tmp92	%read{175,175} %write{174,174}
+const	string	$const19	"ggx"		%read{176,200} %write{2147483647,-1}
+const	string	$const20	"mdf_roughness"		%read{177,201} %write{2147483647,-1}
+temp	float	$tmp93	%read{179,179} %write{178,178}
+const	float	$const21	0.89999998		%read{179,203} %write{2147483647,-1}
+temp	float	$tmp94	%read{180,180} %write{179,179}
+temp	float	$tmp95	%read{181,181} %write{180,180}
+const	float	$const22	0.001		%read{184,210} %write{2147483647,-1}
+temp	float	$tmp96	%read{184,184} %write{183,183}
+temp	float	$tmp97	%read{186,186} %write{185,185}
+temp	int	$tmp98	%read{188,188} %write{187,187}
+temp	closure color	$tmp99	%read{195,195} %write{193,193}
+const	string	$const23	"microfacet"		%read{193,217} %write{2147483647,-1}
+temp	color	$tmp100	%read{195,195} %write{194,194}
+temp	int	$tmp101	%read{199,199} %write{198,198}
+temp	float	$tmp102	%read{203,203} %write{202,202}
+temp	float	$tmp103	%read{204,204} %write{203,203}
+temp	float	$tmp104	%read{205,205} %write{204,204}
+temp	float	$tmp105	%read{208,208} %write{207,207}
+temp	float	$tmp106	%read{210,210} %write{209,209}
+temp	int	$tmp107	%read{212,212} %write{211,211}
 code normalCamera
-# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\uberShader.osl:15
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\uberShader.osl:19
 #     float diffuseValue = 0.8
-	assign		normalCamera N 	%filename{"H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\uberShader.osl"} %line{15} %argrw{"wr"}
+	assign		normalCamera N 	%filename{"H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\uberShader.osl"} %line{19} %argrw{"wr"}
 code ___main___
-# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\uberShader.osl:32
-#         outColor = diffuseValue * diffuseColor * oren_nayar(normalCamera, roughness);
-	neq		$tmp1 roughness $const1 	%filename{"H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\uberShader.osl"} %line{32} %argrw{"wrr"}
-	if		$tmp1 6 10 	%argrw{"r"}
-# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\uberShader.osl:33
-#     else
-	closure		$tmp2 $const2 normalCamera roughness 	%line{33} %argrw{"wrrr"}
-	mul		$tmp3 diffuseValue diffuseColor 	%argrw{"wrr"}
-	mul		outColor $tmp2 $tmp3 	%argrw{"wrr"}
-# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\uberShader.osl:35
-# }
-	functioncall	$const3 8 	%line{35} %argrw{"r"}
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\uberShader.osl:169
+# 	{
+	eq		$tmp1 matte $const1 	%filename{"H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\uberShader.osl"} %line{169} %argrw{"wrr"}
+	neq		$tmp2 $tmp1 $const2 	%argrw{"wrr"}
+	if		$tmp2 8 8 	%argrw{"r"}
+	functioncall	$const3 6 	%argrw{"r"}
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:612
+#     return aastep (edge, s, filterwidth(edge), ds);
+	raytype		$tmp3 $const4 	%filename{"H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h"} %line{612} %argrw{"wr"}
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\uberShader.osl:169
+# 	{
+	neq		$tmp4 $tmp3 $const2 	%filename{"H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\uberShader.osl"} %line{169} %argrw{"wrr"}
+	assign		$tmp2 $tmp4 	%argrw{"wr"}
+	if		$tmp2 11 220 	%argrw{"r"}
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\uberShader.osl:171
+# 	}
+	closure		$tmp5 $const5 	%line{171} %argrw{"wr"}
+	mul		outColor $tmp5 $const6 	%argrw{"wrr"}
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\uberShader.osl:175
+# 		closure color diffuseClosure = 0.0;
+	assign		___300_diffColor diffuseColor 	%line{175} %argrw{"wr"}
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\uberShader.osl:176
+# 		closure color specularClosure = 0.0;
+	assign		___300_diffuseClosure $const6 	%line{176} %argrw{"wr"}
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\uberShader.osl:177
+# 		closure color refractiveClosure = 0.0;
+	assign		___300_specularClosure $const6 	%line{177} %argrw{"wr"}
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\uberShader.osl:178
+# 		float specValue = specular1;
+	assign		___300_refractiveClosure $const6 	%line{178} %argrw{"wr"}
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\uberShader.osl:179
+# 		float refrValue = refractivity;
+	assign		___300_specValue specular1 	%line{179} %argrw{"wr"}
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\uberShader.osl:180
+# 		vector tangent = normalize(dPdu);				
+	assign		___300_refrValue refractivity 	%line{180} %argrw{"wr"}
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\uberShader.osl:181
+# 		
+	normalize	___300_tangent dPdu 	%line{181} %argrw{"wr"}
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\uberShader.osl:183
+# 			diffuseClosure = diffuseValue * diffColor * oren_nayar(normalCamera, roughness);
+	neq		$tmp6 roughness $const6 	%line{183} %argrw{"wrr"}
+	if		$tmp6 23 27 	%argrw{"r"}
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\uberShader.osl:184
+# 		else
+	closure		$tmp7 $const7 normalCamera roughness 	%line{184} %argrw{"wrrr"}
+	mul		$tmp8 diffuseValue ___300_diffColor 	%argrw{"wrr"}
+	mul		___300_diffuseClosure $tmp7 $tmp8 	%argrw{"wrr"}
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\uberShader.osl:186
+# 		
+	functioncall	$const8 25 	%line{186} %argrw{"r"}
 # H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:498
-# float stof (string str) BUILTIN;
-	closure		$tmp4 $const2 normalCamera $const1 	%filename{"H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h"} %line{498} %argrw{"wrrr"}
-# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\uberShader.osl:35
-# }
-	mul		$tmp5 diffuseValue diffuseColor 	%filename{"H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\uberShader.osl"} %line{35} %argrw{"wrr"}
-	mul		outColor $tmp4 $tmp5 	%argrw{"wrr"}
+#             if (h < 0)
+	closure		$tmp9 $const7 normalCamera $const6 	%filename{"H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h"} %line{498} %argrw{"wrrr"}
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\uberShader.osl:186
+# 		
+	mul		$tmp10 diffuseValue ___300_diffColor 	%filename{"H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\uberShader.osl"} %line{186} %argrw{"wrr"}
+	mul		___300_diffuseClosure $tmp9 $tmp10 	%argrw{"wrr"}
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\uberShader.osl:188
+# 		{
+	gt		$tmp11 backlighting $const6 	%line{188} %argrw{"wrr"}
+	neq		$tmp12 $tmp11 $const2 	%argrw{"wrr"}
+	if		$tmp12 47 47 	%argrw{"r"}
+	compref		$tmp13 backlightingColor $const2 	%argrw{"wrr"}
+	le		$tmp14 $tmp13 $const6 	%argrw{"wrr"}
+	neq		$tmp15 $tmp14 $const2 	%argrw{"wrr"}
+	if		$tmp15 38 38 	%argrw{"r"}
+	compref		$tmp16 backlightingColor $const1 	%argrw{"wrr"}
+	le		$tmp17 $tmp16 $const6 	%argrw{"wrr"}
+	neq		$tmp18 $tmp17 $const2 	%argrw{"wrr"}
+	assign		$tmp15 $tmp18 	%argrw{"wr"}
+	neq		$tmp19 $tmp15 $const2 	%argrw{"wrr"}
+	if		$tmp19 44 44 	%argrw{"r"}
+	compref		$tmp20 backlightingColor $const9 	%argrw{"wrr"}
+	le		$tmp21 $tmp20 $const6 	%argrw{"wrr"}
+	neq		$tmp22 $tmp21 $const2 	%argrw{"wrr"}
+	assign		$tmp19 $tmp22 	%argrw{"wr"}
+	eq		$tmp23 $tmp19 $const2 	%argrw{"wrr"}
+	neq		$tmp24 $tmp23 $const2 	%argrw{"wrr"}
+	assign		$tmp12 $tmp24 	%argrw{"wr"}
+	if		$tmp12 55 55 	%argrw{"r"}
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\uberShader.osl:190
+# 		}
+	neg		$tmp26 normalCamera 	%line{190} %argrw{"wr"}
+	functioncall	$const8 51 	%argrw{"r"}
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:498
+#             if      (r >= maxcomp) h = (g-b) / delta;
+	closure		$tmp25 $const7 $tmp26 $const6 	%filename{"H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h"} %line{498} %argrw{"wrrr"}
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\uberShader.osl:190
+# 		}
+	assign		$tmp27 backlightingColor 	%filename{"H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\uberShader.osl"} %line{190} %argrw{"wr"}
+	mul		$tmp28 $tmp27 backlighting 	%argrw{"wrr"}
+	mul		$tmp29 $tmp25 $tmp28 	%argrw{"wrr"}
+	add		___300_diffuseClosure ___300_diffuseClosure $tmp29 	%argrw{"wrr"}
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\uberShader.osl:193
+# 		{
+	gt		$tmp30 translucency $const6 	%line{193} %argrw{"wrr"}
+	neq		$tmp31 $tmp30 $const2 	%argrw{"wrr"}
+	if		$tmp31 75 75 	%argrw{"r"}
+	compref		$tmp32 translucencyColor $const2 	%argrw{"wrr"}
+	le		$tmp33 $tmp32 $const6 	%argrw{"wrr"}
+	neq		$tmp34 $tmp33 $const2 	%argrw{"wrr"}
+	if		$tmp34 66 66 	%argrw{"r"}
+	compref		$tmp35 translucencyColor $const1 	%argrw{"wrr"}
+	le		$tmp36 $tmp35 $const6 	%argrw{"wrr"}
+	neq		$tmp37 $tmp36 $const2 	%argrw{"wrr"}
+	assign		$tmp34 $tmp37 	%argrw{"wr"}
+	neq		$tmp38 $tmp34 $const2 	%argrw{"wrr"}
+	if		$tmp38 72 72 	%argrw{"r"}
+	compref		$tmp39 translucencyColor $const9 	%argrw{"wrr"}
+	le		$tmp40 $tmp39 $const6 	%argrw{"wrr"}
+	neq		$tmp41 $tmp40 $const2 	%argrw{"wrr"}
+	assign		$tmp38 $tmp41 	%argrw{"wr"}
+	eq		$tmp42 $tmp38 $const2 	%argrw{"wrr"}
+	neq		$tmp43 $tmp42 $const2 	%argrw{"wrr"}
+	assign		$tmp31 $tmp43 	%argrw{"wr"}
+	if		$tmp31 83 83 	%argrw{"r"}
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\uberShader.osl:195
+# 		}
+	neg		$tmp45 normalCamera 	%line{195} %argrw{"wr"}
+	functioncall	$const8 79 	%argrw{"r"}
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:498
+#             s = delta / maxcomp;
+	closure		$tmp44 $const7 $tmp45 $const6 	%filename{"H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h"} %line{498} %argrw{"wrrr"}
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\uberShader.osl:195
+# 		}
+	assign		$tmp46 translucencyColor 	%filename{"H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\uberShader.osl"} %line{195} %argrw{"wr"}
+	mul		$tmp47 $tmp46 translucency 	%argrw{"wrr"}
+	mul		$tmp48 $tmp44 $tmp47 	%argrw{"wrr"}
+	add		outColor outColor $tmp48 	%argrw{"wrr"}
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\uberShader.osl:200
+# 		
+	assign		___300_ior $const10 	%line{200} %argrw{"wr"}
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\uberShader.osl:202
+# 		if( refractivity > 0.0)
+	assign		___300_cabs $const10 	%line{202} %argrw{"wr"}
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\uberShader.osl:203
+# 			ior = refractionIOR;
+	gt		$tmp49 refractivity $const6 	%line{203} %argrw{"wrr"}
+	if		$tmp49 88 88 	%argrw{"r"}
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\uberShader.osl:204
+# 
+	assign		___300_ior refractionIOR 	%line{204} %argrw{"wr"}
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\uberShader.osl:206
+# 		{
+	backfacing	$tmp50 	%line{206} %argrw{"w"}
+	if		$tmp50 99 101 	%argrw{"r"}
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\uberShader.osl:208
+# 			to_ior = 1.0;
+	assign		___300_from_ior ___300_ior 	%line{208} %argrw{"wr"}
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\uberShader.osl:209
+# 
+	assign		___300_to_ior $const10 	%line{209} %argrw{"wr"}
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\uberShader.osl:211
+# 			{
+	neq		$tmp51 absorption $const6 	%line{211} %argrw{"wrr"}
+	if		$tmp51 99 99 	%argrw{"r"}
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\uberShader.osl:214
+# 				cabs = exp(-absorption * absorptionColor * length);
+	getattribute	$tmp52 $const11 ___304_length 	%line{214} %argrw{"wrw"}
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\uberShader.osl:215
+# 			}
+	neg		$tmp53 absorption 	%line{215} %argrw{"wr"}
+	mul		$tmp54 $tmp53 absorptionColor 	%argrw{"wrr"}
+	mul		$tmp55 $tmp54 ___304_length 	%argrw{"wrr"}
+	exp		___300_cabs $tmp55 	%argrw{"wr"}
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\uberShader.osl:220
+# 			to_ior = refractionIOR;
+	assign		___300_from_ior $const10 	%line{220} %argrw{"wr"}
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\uberShader.osl:221
+# 		}
+	assign		___300_to_ior refractionIOR 	%line{221} %argrw{"wr"}
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\uberShader.osl:224
+# 
+	div		___300_ior ___300_from_ior ___300_to_ior 	%line{224} %argrw{"wrr"}
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\uberShader.osl:226
+# 		if( (specular1 > 0.0) || (refractivity > 0.0))
+	assign		___300_Kt $const10 	%line{226} %argrw{"wr"}
+	assign		___300_Kr $const10 	%argrw{"wr"}
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\uberShader.osl:227
+# 		{
+	gt		$tmp56 specular1 $const6 	%line{227} %argrw{"wrr"}
+	neq		$tmp57 $tmp56 $const2 	%argrw{"wrr"}
+	if		$tmp57 107 110 	%argrw{"r"}
+	gt		$tmp58 refractivity $const6 	%argrw{"wrr"}
+	neq		$tmp59 $tmp58 $const2 	%argrw{"wrr"}
+	assign		$tmp57 $tmp59 	%argrw{"wr"}
+	if		$tmp57 174 174 	%argrw{"r"}
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\uberShader.osl:229
+# 			if(specularUseFresnel1 == 0)
+	functioncall	$const12 171 	%line{229} %argrw{"r"}
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:244
+# //   documentation and/or other materials provided with the distribution.
+	functioncall	$const12 171 	%filename{"H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h"} %line{244} %argrw{"r"}
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:216
+#     float c = dot(I, N);
+	dot		___217_c I normalCamera 	%line{216} %argrw{"wrr"}
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:217
+#     if (c < 0)
+	lt		$tmp60 ___217_c $const2 	%line{217} %argrw{"wrr"}
+	if		$tmp60 117 117 	%argrw{"r"}
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:218
+#         c = -c;
+	neg		___217_c ___217_c 	%line{218} %argrw{"wr"}
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:219
+#     R = reflect(I, N);
+	functioncall	$const13 122 	%line{219} %argrw{"r"}
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:205
+# vector reflect (vector I, vector N) { return I - 2*dot(N,I)*N; }
+	dot		$tmp61 normalCamera I 	%line{205} %argrw{"wrr"}
+	mul		$tmp62 $const14 $tmp61 	%argrw{"wrr"}
+	mul		$tmp63 $tmp62 normalCamera 	%argrw{"wrr"}
+	sub		___221_R I $tmp63 	%argrw{"wrr"}
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:220
+#     float g = 1.0 / sqr(eta) - 1.0 + c * c;
+	functioncall	$const15 124 	%line{220} %argrw{"r"}
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:215
+#     float sqr(float x) { return x*x; }
+	mul		$tmp64 ___300_ior ___300_ior 	%line{215} %argrw{"wrr"}
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:220
+#     float g = 1.0 / sqr(eta) - 1.0 + c * c;
+	div		$tmp65 $const10 $tmp64 	%line{220} %argrw{"wrr"}
+	sub		$tmp66 $tmp65 $const10 	%argrw{"wrr"}
+	mul		$tmp67 ___217_c ___217_c 	%argrw{"wrr"}
+	add		___217_g $tmp66 $tmp67 	%argrw{"wrr"}
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:221
+#     if (g >= 0.0) {
+	ge		$tmp68 ___217_g $const6 	%line{221} %argrw{"wrr"}
+	if		$tmp68 168 171 	%argrw{"r"}
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:222
+#         g = sqrt (g);
+	sqrt		___217_g ___217_g 	%line{222} %argrw{"wr"}
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:223
+#         float beta = g - c;
+	sub		___219_beta ___217_g ___217_c 	%line{223} %argrw{"wrr"}
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:224
+#         float F = (c * (g+c) - 1.0) / (c * beta + 1.0);
+	add		$tmp69 ___217_g ___217_c 	%line{224} %argrw{"wrr"}
+	mul		$tmp70 ___217_c $tmp69 	%argrw{"wrr"}
+	sub		$tmp71 $tmp70 $const10 	%argrw{"wrr"}
+	mul		$tmp72 ___217_c ___219_beta 	%argrw{"wrr"}
+	add		$tmp73 $tmp72 $const10 	%argrw{"wrr"}
+	div		___219_F $tmp71 $tmp73 	%argrw{"wrr"}
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:225
+#         F = 0.5 * (1.0 + sqr(F));
+	functioncall	$const15 140 	%line{225} %argrw{"r"}
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:215
+#     float sqr(float x) { return x*x; }
+	mul		$tmp74 ___219_F ___219_F 	%line{215} %argrw{"wrr"}
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:225
+#         F = 0.5 * (1.0 + sqr(F));
+	add		$tmp75 $const10 $tmp74 	%line{225} %argrw{"wrr"}
+	mul		___219_F $const16 $tmp75 	%argrw{"wrr"}
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:226
+#         F *= sqr (beta / (g+c));
+	add		$tmp77 ___217_g ___217_c 	%line{226} %argrw{"wrr"}
+	div		$tmp78 ___219_beta $tmp77 	%argrw{"wrr"}
+	functioncall	$const15 146 	%argrw{"r"}
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:215
+#     float sqr(float x) { return x*x; }
+	mul		$tmp76 $tmp78 $tmp78 	%line{215} %argrw{"wrr"}
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:226
+#         F *= sqr (beta / (g+c));
+	mul		___219_F ___219_F $tmp76 	%line{226} %argrw{"wrr"}
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:227
+#         Kr = F;
+	assign		___300_Kr ___219_F 	%line{227} %argrw{"wr"}
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:228
+#         Kt = (1.0 - Kr) * eta*eta;
+	sub		$tmp79 $const10 ___300_Kr 	%line{228} %argrw{"wrr"}
+	mul		$tmp80 $tmp79 ___300_ior 	%argrw{"wrr"}
+	mul		___300_Kt $tmp80 ___300_ior 	%argrw{"wrr"}
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:231
+#         T = refract(I, N, eta);
+	functioncall	$const17 168 	%line{231} %argrw{"r"}
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:207
+#     float IdotN = dot (I, N);
+	dot		___216_IdotN I normalCamera 	%line{207} %argrw{"wrr"}
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:208
+#     float k = 1 - eta*eta * (1 - IdotN*IdotN);
+	mul		$tmp81 ___300_ior ___300_ior 	%line{208} %argrw{"wrr"}
+	mul		$tmp82 ___216_IdotN ___216_IdotN 	%argrw{"wrr"}
+	sub		$tmp83 $const10 $tmp82 	%argrw{"wrr"}
+	mul		$tmp84 $tmp81 $tmp83 	%argrw{"wrr"}
+	sub		___216_k $const10 $tmp84 	%argrw{"wrr"}
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:209
+#     return (k < 0) ? vector(0,0,0) : (eta*I - N * (eta*IdotN + sqrt(k)));
+	lt		$tmp85 ___216_k $const2 	%line{209} %argrw{"wrr"}
+	if		$tmp85 161 167 	%argrw{"r"}
+	assign		___221_T $const18 	%argrw{"wr"}
+	mul		$tmp86 ___300_ior I 	%argrw{"wrr"}
+	mul		$tmp87 ___300_ior ___216_IdotN 	%argrw{"wrr"}
+	sqrt		$tmp88 ___216_k 	%argrw{"wr"}
+	add		$tmp89 $tmp87 $tmp88 	%argrw{"wrr"}
+	mul		$tmp90 normalCamera $tmp89 	%argrw{"wrr"}
+	sub		___221_T $tmp86 $tmp90 	%argrw{"wrr"}
+	return
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:234
+#         Kr = 1.0;
+	assign		___300_Kr $const10 	%line{234} %argrw{"wr"}
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:235
+#         Kt = 0.0;
+	assign		___300_Kt $const6 	%line{235} %argrw{"wr"}
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:236
+#         T = vector (0,0,0);
+	assign		___221_T $const18 	%line{236} %argrw{"wr"}
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\uberShader.osl:230
+# 				Kr = 1.0;
+	eq		$tmp91 specularUseFresnel1 $const2 	%filename{"H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\uberShader.osl"} %line{230} %argrw{"wrr"}
+	if		$tmp91 174 174 	%argrw{"r"}
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\uberShader.osl:231
+# 		}
+	assign		___300_Kr $const10 	%line{231} %argrw{"wr"}
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\uberShader.osl:235
+# 		{
+	gt		$tmp92 specular1 $const6 	%line{235} %argrw{"wrr"}
+	if		$tmp92 198 198 	%argrw{"r"}
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\uberShader.osl:237
+# 			
+	assign		___307_distribution $const19 	%line{237} %argrw{"wr"}
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\uberShader.osl:244
+# 				int doRefraction = 0;
+	functioncall	$const20 192 	%line{244} %argrw{"r"}
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\appleseed\\microfacet.h:55
+#     float aspect = sqrt(1.0 - fabs(anisotropy) * 0.9);
+	fabs		$tmp93 anisotropy1 	%filename{"H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\appleseed\\microfacet.h"} %line{55} %argrw{"wr"}
+	mul		$tmp94 $tmp93 $const21 	%argrw{"wrr"}
+	sub		$tmp95 $const10 $tmp94 	%argrw{"wrr"}
+	sqrt		___297_aspect $tmp95 	%argrw{"wr"}
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\appleseed\\microfacet.h:56
+#     float r2 = roughness * roughness;
+	mul		___297_r2 roughness1 roughness1 	%line{56} %argrw{"wrr"}
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\appleseed\\microfacet.h:58
+#     ax = max(0.001, r2 / aspect);
+	div		$tmp96 ___297_r2 ___297_aspect 	%line{58} %argrw{"wrr"}
+	max		___307_ax $const22 $tmp96 	%argrw{"wrr"}
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\appleseed\\microfacet.h:59
+#     ay = max(0.001, r2 * aspect);
+	mul		$tmp97 ___297_r2 ___297_aspect 	%line{59} %argrw{"wrr"}
+	max		___307_ay $const22 $tmp97 	%argrw{"wrr"}
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\appleseed\\microfacet.h:61
+#     if (anisotropy < 0)
+	lt		$tmp98 anisotropy1 $const2 	%line{61} %argrw{"wrr"}
+	if		$tmp98 192 192 	%argrw{"r"}
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\appleseed\\microfacet.h:64
+#         float tmp = ax;
+	assign		___298_tmp ___307_ax 	%line{64} %argrw{"wr"}
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\appleseed\\microfacet.h:65
+#         ax = ay;
+	assign		___307_ax ___307_ay 	%line{65} %argrw{"wr"}
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\appleseed\\microfacet.h:66
+#         ay = tmp;
+	assign		___307_ay ___298_tmp 	%line{66} %argrw{"wr"}
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\uberShader.osl:245
+# 		float refrValue = refractivity;
+	assign		___307_doRefraction $const2 	%filename{"H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\uberShader.osl"} %line{245} %argrw{"wr"}
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\uberShader.osl:246
+# 		vector tangent = normalize(dPdu);				
+	closure		$tmp99 $const23 ___307_distribution normalCamera ___300_tangent ___307_ax ___307_ay specularIOR1 ___307_doRefraction 	%line{246} %argrw{"wrrrrrrrr"}
+	assign		$tmp100 specularColor1 	%argrw{"wr"}
+	mul		___300_specularClosure $tmp99 $tmp100 	%argrw{"wrr"}
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\uberShader.osl:247
+# 		
+	mul		___300_specValue ___300_specValue ___300_Kr 	%line{247} %argrw{"wrr"}
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\uberShader.osl:248
+# 		if (roughness != 0.0)
+	mul		___300_specularClosure ___300_specularClosure ___300_Kr 	%line{248} %argrw{"wrr"}
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\uberShader.osl:253
+# 		if( (backlighting > 0.0) && (!isBlack(backlightingColor)))
+	gt		$tmp101 refractivity $const6 	%line{253} %argrw{"wrr"}
+	if		$tmp101 219 219 	%argrw{"r"}
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\uberShader.osl:260
+# 			outColor += color(translucencyColor) * translucency * diffuse(-normalCamera);
+	assign		___308_distribution $const19 	%line{260} %argrw{"wr"}
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\uberShader.osl:266
+# 		
+	functioncall	$const20 216 	%line{266} %argrw{"r"}
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\appleseed\\microfacet.h:55
+#     float aspect = sqrt(1.0 - fabs(anisotropy) * 0.9);
+	fabs		$tmp102 $const10 	%filename{"H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\appleseed\\microfacet.h"} %line{55} %argrw{"wr"}
+	mul		$tmp103 $tmp102 $const21 	%argrw{"wrr"}
+	sub		$tmp104 $const10 $tmp103 	%argrw{"wrr"}
+	sqrt		___297_aspect $tmp104 	%argrw{"wr"}
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\appleseed\\microfacet.h:56
+#     float r2 = roughness * roughness;
+	mul		___297_r2 refractionRoughness refractionRoughness 	%line{56} %argrw{"wrr"}
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\appleseed\\microfacet.h:58
+#     ax = max(0.001, r2 / aspect);
+	div		$tmp105 ___297_r2 ___297_aspect 	%line{58} %argrw{"wrr"}
+	max		___308_ax $const22 $tmp105 	%argrw{"wrr"}
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\appleseed\\microfacet.h:59
+#     ay = max(0.001, r2 * aspect);
+	mul		$tmp106 ___297_r2 ___297_aspect 	%line{59} %argrw{"wrr"}
+	max		___308_ay $const22 $tmp106 	%argrw{"wrr"}
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\appleseed\\microfacet.h:61
+#     if (anisotropy < 0)
+	lt		$tmp107 $const10 $const2 	%line{61} %argrw{"wrr"}
+	if		$tmp107 216 216 	%argrw{"r"}
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\appleseed\\microfacet.h:64
+#         float tmp = ax;
+	assign		___298_tmp ___308_ax 	%line{64} %argrw{"wr"}
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\appleseed\\microfacet.h:65
+#         ax = ay;
+	assign		___308_ax ___308_ay 	%line{65} %argrw{"wr"}
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\appleseed\\microfacet.h:66
+#         ay = tmp;
+	assign		___308_ay ___298_tmp 	%line{66} %argrw{"wr"}
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\uberShader.osl:267
+# 		color cabs = 1.0;
+	assign		___308_doRefraction $const1 	%filename{"H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\uberShader.osl"} %line{267} %argrw{"wr"}
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\uberShader.osl:268
+# 		if( refractivity > 0.0)
+	closure		___300_refractiveClosure $const23 ___308_distribution normalCamera ___300_tangent ___308_ax ___308_ay refractionIOR ___308_doRefraction 	%line{268} %argrw{"wrrrrrrrr"}
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\uberShader.osl:269
+# 			ior = refractionIOR;
+	mul		___300_refrValue ___300_refrValue ___300_Kt 	%line{269} %argrw{"wrr"}
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\uberShader.osl:274
+# 			to_ior = 1.0;
+	add		outColor ___300_diffuseClosure ___300_refractiveClosure 	%line{274} %argrw{"wrr"}
 	end

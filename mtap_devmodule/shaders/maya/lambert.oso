@@ -25,19 +25,19 @@ const	string	$const6	"transparent"		%read{10,10} %write{2147483647,-1}
 temp	color	$tmp10	%read{12,12} %write{11,11}
 temp	closure color	$tmp11	%read{13,13} %write{12,12}
 code Normal
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\lambert.osl:6
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\lambert.osl:6
 #     float inDiffuse = 0.8,
-	assign		Normal N 	%filename{"H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\lambert.osl"} %line{6} %argrw{"wr"}
+	assign		Normal N 	%filename{"H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\lambert.osl"} %line{6} %argrw{"wr"}
 code ___main___
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\lambert.osl:14
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\lambert.osl:14
 # }
-	functioncall	$const1 3 	%filename{"H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\lambert.osl"} %line{14} %argrw{"r"}
-# C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h:498
+	functioncall	$const1 3 	%filename{"H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\lambert.osl"} %line{14} %argrw{"r"}
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:498
 # 
-	closure		$tmp1 $const4 Normal $const3 	%filename{"C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h"} %line{498} %argrw{"wrrr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\lambert.osl:14
+	closure		$tmp1 $const4 Normal $const3 	%filename{"H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h"} %line{498} %argrw{"wrrr"}
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\lambert.osl:14
 # }
-	assign		$tmp2 inColor 	%filename{"H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\lambert.osl"} %line{14} %argrw{"wr"}
+	assign		$tmp2 inColor 	%filename{"H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\lambert.osl"} %line{14} %argrw{"wr"}
 	mul		$tmp3 inDiffuse $tmp2 	%argrw{"wrr"}
 	mul		$tmp4 $tmp1 $tmp3 	%argrw{"wrr"}
 	closure		$tmp5 $const5 	%argrw{"wr"}

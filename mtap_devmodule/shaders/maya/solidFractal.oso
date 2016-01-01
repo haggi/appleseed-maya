@@ -20,23 +20,23 @@ const	int	$const1	1		%read{0,0} %write{2147483647,-1}
 temp	int	$tmp1	%read{2,2} %write{1,1}
 const	string	$const2	"noise"		%read{5,5} %write{2147483647,-1}
 code ___main___
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\solidFractal.osl:6
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\solidFractal.osl:6
 # 	if( isconnected(placementMatrix))
-	assign		m $const1 	%filename{"H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\solidFractal.osl"} %line{6} %argrw{"wr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\solidFractal.osl:7
+	assign		m $const1 	%filename{"H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\solidFractal.osl"} %line{6} %argrw{"wr"}
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\solidFractal.osl:7
 # 	{
 	isconnected	$tmp1 placementMatrix 	%line{7} %argrw{"wr"}
 	if		$tmp1 4 4 	%argrw{"r"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\solidFractal.osl:9
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\solidFractal.osl:9
 # 	}
 	assign		m placementMatrix 	%line{9} %argrw{"wr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\solidFractal.osl:12
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\solidFractal.osl:12
 # 	color nc = noise("noise", PP);
 	transform	PP m P 	%line{12} %argrw{"wrr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\solidFractal.osl:13
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\solidFractal.osl:13
 # 	outColor = vector(nc);
 	noise		nc $const2 PP 	%line{13} %argrw{"wrr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\maya\\solidFractal.osl:14
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\solidFractal.osl:14
 # }
 	assign		outColor nc 	%line{14} %argrw{"wr"}
 	end

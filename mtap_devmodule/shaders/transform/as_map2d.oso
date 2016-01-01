@@ -51,102 +51,102 @@ temp	float	$tmp19	%read{44,44} %write{43,43}
 temp	float	$tmp20	%read{46,46} %write{44,44}
 temp	float	$tmp21	%read{46,46} %write{45,45}
 code U
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\transform\\as_map2d.osl:35
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\transform\\as_map2d.osl:35
 #     string Flip = "Off"
-	assign		U u 	%filename{"H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\transform\\as_map2d.osl"} %line{35} %argrw{"wr"}
+	assign		U u 	%filename{"H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\transform\\as_map2d.osl"} %line{35} %argrw{"wr"}
 code V
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\transform\\as_map2d.osl:35
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\transform\\as_map2d.osl:35
 #     string Flip = "Off"
-	assign		V v 	%filename{"H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\transform\\as_map2d.osl"} %line{35} %argrw{"wr"}
+	assign		V v 	%filename{"H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\transform\\as_map2d.osl"} %line{35} %argrw{"wr"}
 code ___main___
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\transform\\as_map2d.osl:49
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\transform\\as_map2d.osl:49
 #     float vv = V;
-	assign		uu U 	%filename{"H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\transform\\as_map2d.osl"} %line{49} %argrw{"wr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\transform\\as_map2d.osl:50
+	assign		uu U 	%filename{"H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\transform\\as_map2d.osl"} %line{49} %argrw{"wr"}
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\transform\\as_map2d.osl:50
 # 
 	assign		vv V 	%line{50} %argrw{"wr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\transform\\as_map2d.osl:52
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\transform\\as_map2d.osl:52
 #         uu = 1.0 - uu;
 	eq		$tmp1 Flip $const1 	%line{52} %argrw{"wrr"}
 	if		$tmp1 7 14 	%argrw{"r"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\transform\\as_map2d.osl:53
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\transform\\as_map2d.osl:53
 #     else if (Flip == "V")
 	sub		uu $const2 uu 	%line{53} %argrw{"wrr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\transform\\as_map2d.osl:54
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\transform\\as_map2d.osl:54
 #         vv = 1.0 - vv;
 	eq		$tmp2 Flip $const3 	%line{54} %argrw{"wrr"}
 	if		$tmp2 10 14 	%argrw{"r"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\transform\\as_map2d.osl:55
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\transform\\as_map2d.osl:55
 #     else if (Flip == "Both")
 	sub		vv $const2 vv 	%line{55} %argrw{"wrr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\transform\\as_map2d.osl:56
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\transform\\as_map2d.osl:56
 #     {
 	eq		$tmp3 Flip $const4 	%line{56} %argrw{"wrr"}
 	if		$tmp3 14 14 	%argrw{"r"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\transform\\as_map2d.osl:58
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\transform\\as_map2d.osl:58
 #         vv = 1.0 - vv;
 	sub		uu $const2 uu 	%line{58} %argrw{"wrr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\transform\\as_map2d.osl:59
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\transform\\as_map2d.osl:59
 #     }
 	sub		vv $const2 vv 	%line{59} %argrw{"wrr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\transform\\as_map2d.osl:62
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\transform\\as_map2d.osl:62
 #     vv = (vv - Center[1]) * Repeat[1];
 	compref		$tmp4 Center $const5 	%line{62} %argrw{"wrr"}
 	sub		$tmp5 uu $tmp4 	%argrw{"wrr"}
 	compref		$tmp6 Repeat $const5 	%argrw{"wrr"}
 	mul		uu $tmp5 $tmp6 	%argrw{"wrr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\transform\\as_map2d.osl:63
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\transform\\as_map2d.osl:63
 # 
 	compref		$tmp7 Center $const6 	%line{63} %argrw{"wrr"}
 	sub		$tmp8 vv $tmp7 	%argrw{"wrr"}
 	compref		$tmp9 Repeat $const6 	%argrw{"wrr"}
 	mul		vv $tmp8 $tmp9 	%argrw{"wrr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\transform\\as_map2d.osl:65
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\transform\\as_map2d.osl:65
 # 
 	functioncall	$const7 39 	%line{65} %argrw{"r"}
-# H:/UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\appleseed\\transform.h:43
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\appleseed\\transform.h:43
 #     if (angle_in_degrees != 0)
-	neq		$tmp10 Rotate $const5 	%filename{"H:/UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\appleseed\\transform.h"} %line{43} %argrw{"wrr"}
+	neq		$tmp10 Rotate $const5 	%filename{"H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\appleseed\\transform.h"} %line{43} %argrw{"wrr"}
 	if		$tmp10 37 39 	%argrw{"r"}
-# H:/UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\appleseed\\transform.h:45
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\appleseed\\transform.h:45
 #         float angle_in_rad = radians(angle_in_degrees);
 	functioncall	$const8 28 	%line{45} %argrw{"r"}
-# C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h:101
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h:101
 # #define M_LN10     2.3025850929940457        /* ln(10) */
-	div		$tmp11 $const9 $const10 	%filename{"C:/daten\\install\\3d\\Appleseed\\appleseed\\shaders\\stdosl.h"} %line{101} %argrw{"wrr"}
+	div		$tmp11 $const9 $const10 	%filename{"H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\stdosl.h"} %line{101} %argrw{"wrr"}
 	mul		___298_angle_in_rad Rotate $tmp11 	%argrw{"wrr"}
-# H:/UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\appleseed\\transform.h:47
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\appleseed\\transform.h:47
 #         sincos(angle_in_rad, s, c);
-	sincos		___298_angle_in_rad ___298_s ___298_c 	%filename{"H:/UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\appleseed\\transform.h"} %line{47} %argrw{"rww"}
-# H:/UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\appleseed\\transform.h:48
+	sincos		___298_angle_in_rad ___298_s ___298_c 	%filename{"H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\appleseed\\transform.h"} %line{47} %argrw{"rww"}
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\appleseed\\transform.h:48
 #         float xx = x * c - s * y;
 	mul		$tmp12 uu ___298_c 	%line{48} %argrw{"wrr"}
 	mul		$tmp13 ___298_s vv 	%argrw{"wrr"}
 	sub		___298_xx $tmp12 $tmp13 	%argrw{"wrr"}
-# H:/UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\appleseed\\transform.h:49
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\appleseed\\transform.h:49
 #         float yy = x * s + c * y;
 	mul		$tmp14 uu ___298_s 	%line{49} %argrw{"wrr"}
 	mul		$tmp15 ___298_c vv 	%argrw{"wrr"}
 	add		___298_yy $tmp14 $tmp15 	%argrw{"wrr"}
-# H:/UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\appleseed\\transform.h:50
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\appleseed\\transform.h:50
 #         rx = xx;
 	assign		uu ___298_xx 	%line{50} %argrw{"wr"}
-# H:/UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\appleseed\\transform.h:51
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\appleseed\\transform.h:51
 #         ry = yy;
 	assign		vv ___298_yy 	%line{51} %argrw{"wr"}
-# H:/UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\appleseed\\transform.h:55
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\appleseed\\transform.h:55
 #         rx = x;
 	assign		uu uu 	%line{55} %argrw{"wr"}
-# H:/UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\appleseed\\transform.h:56
+# H:/UserDatenHaggi\\Documents\\coding\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\include\\appleseed\\transform.h:56
 #         ry = y;
 	assign		vv vv 	%line{56} %argrw{"wr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\transform\\as_map2d.osl:67
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\transform\\as_map2d.osl:67
 # // of this software and associated documentation files (the "Software"), to deal
-	compref		$tmp16 Center $const5 	%filename{"H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\transform\\as_map2d.osl"} %line{67} %argrw{"wrr"}
+	compref		$tmp16 Center $const5 	%filename{"H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\transform\\as_map2d.osl"} %line{67} %argrw{"wrr"}
 	add		$tmp17 uu $tmp16 	%argrw{"wrr"}
 	compref		$tmp18 Offset $const5 	%argrw{"wrr"}
 	add		UOut $tmp17 $tmp18 	%argrw{"wrr"}
-# H:\\UserDatenHaggi\\Documents\\coding\\OpenMaya\\src\\mayaToAppleseed\\mtap_devmodule\\shaders\\src\\transform\\as_map2d.osl:68
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\transform\\as_map2d.osl:68
 # // in the Software without restriction, including without limitation the rights
 	compref		$tmp19 Center $const6 	%line{68} %argrw{"wrr"}
 	add		$tmp20 vv $tmp19 	%argrw{"wrr"}
