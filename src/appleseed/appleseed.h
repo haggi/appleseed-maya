@@ -106,7 +106,7 @@ public:
 	virtual void doInteractiveUpdate();
 	virtual void handleUserEvent(int event, MString strData, float floatData, int intData){};
 
-	asf::auto_release_ptr<asr::MeshObject> defineStandardPlane();
+	asf::auto_release_ptr<asr::MeshObject> defineStandardPlane(bool area = false);
 	void defineProject();
 	void addRenderParams(asr::ParamArray& paramArray);//add current render settings to all render configurations 
 	void defineConfig();

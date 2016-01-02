@@ -17,6 +17,7 @@ void mtap_ITileCallback::pre_render(
         const size_t height)
 {
 	return; // do not do anything
+
 	size_t numPixels = width * height;
 	std::shared_ptr<RV_PIXEL> pixelsPtr(new RV_PIXEL[numPixels]);
 	RV_PIXEL *pixels = pixelsPtr.get();
@@ -27,16 +28,17 @@ void mtap_ITileCallback::pre_render(
 		{
 			size_t pid = yy * width + xx;
 			pixels[pid].r = pixels[pid].g = pixels[pid].b = pixels[pid].a = 0.0f; 
-			if((xx < 1) || (xx > width-2) )
-			{
-				pixels[pid].r = pixels[pid].g = pixels[pid].b = pixels[pid].a = 180.0f;
-				pixels[pid].b = 255.0f; 
-			}
-			if((yy < 1) || (yy > height-2))
-			{
-				pixels[pid].r = pixels[pid].g = pixels[pid].b = pixels[pid].a = 180.0f; 						
-				pixels[pid].b = 255.0f; 
-			}
+			pixels[pid].r = 255.0;
+			//if((xx < 1) || (xx > width-2) )
+			//{
+			//	pixels[pid].r = pixels[pid].g = pixels[pid].b = pixels[pid].a = 180.0f;
+			//	pixels[pid].b = 255.0f; 
+			//}
+			//if((yy < 1) || (yy > height-2))
+			//{
+			//	pixels[pid].r = pixels[pid].g = pixels[pid].b = pixels[pid].a = 180.0f; 						
+			//	pixels[pid].b = 255.0f; 
+			//}
 
 		}
 	}

@@ -40,19 +40,33 @@ using namespace AppleRender;
 //	createMeshFromFile(obj, proxyFile, meshArray);
 //}
 
-asf::auto_release_ptr<asr::MeshObject> AppleseedRenderer::defineStandardPlane()
+asf::auto_release_ptr<asr::MeshObject> AppleseedRenderer::defineStandardPlane(bool area)
 {
-	asf::auto_release_ptr<asr::MeshObject> object(asr::MeshObjectFactory::create("right_wall", asr::ParamArray()));
+	asf::auto_release_ptr<asr::MeshObject> object(asr::MeshObjectFactory::create("stdPlane", asr::ParamArray()));
 
-	// Vertices.
-	object->push_vertex(asr::GVector3(-1.0f, 0.0f, -1.0f));
-	object->push_vertex(asr::GVector3(-1.0f, 0.0f,  1.0f));
-	object->push_vertex(asr::GVector3( 1.0f, 0.0f,  1.0f));
-	object->push_vertex(asr::GVector3( 1.0f, 0.0f, -1.0f));
-
+	if ( area)
+	{
+		// Vertices.
+		object->push_vertex(asr::GVector3(-1.0f, -1.0f, 0.0f));
+		object->push_vertex(asr::GVector3(-1.0f, 1.0f, 0.0f));
+		object->push_vertex(asr::GVector3(1.0f, 1.0f, 0.0f));
+		object->push_vertex(asr::GVector3(1.0f, -1.0f, 0.0f));
+	}
+	else{
+		// Vertices.
+		object->push_vertex(asr::GVector3(-1.0f, 0.0f, -1.0f));
+		object->push_vertex(asr::GVector3(-1.0f, 0.0f, 1.0f));
+		object->push_vertex(asr::GVector3(1.0f, 0.0f, 1.0f));
+		object->push_vertex(asr::GVector3(1.0f, 0.0f, -1.0f));
+	}
 	// Vertex normals.
-	object->push_vertex_normal(asr::GVector3(0.0f, 1.0f, 0.0f));
-	
+	if (area)
+	{
+		object->push_vertex_normal(asr::GVector3(0.0f, 0.0f, -1.0f));
+	}
+	else{
+		object->push_vertex_normal(asr::GVector3(0.0f, 1.0f, 0.0f));
+	}
 	object->push_tex_coords(asr::GVector2(0.0, 0.0));
 	object->push_tex_coords(asr::GVector2(1.0, 0.0));
 	object->push_tex_coords(asr::GVector2(1.0, 1.0));
@@ -183,6 +197,9 @@ void AppleseedRenderer::updateGeometry(std::shared_ptr<MayaObject> mobj)
 {
 	std::shared_ptr<mtap_MayaObject> obj = std::static_pointer_cast<mtap_MayaObject>(mobj);
 
+	if (!obj->isObjVisible())
+		return;
+
 	if (!mobj->mobject.hasFn(MFn::kMesh))
 		return;
 
@@ -198,6 +215,9 @@ void AppleseedRenderer::updateInstance(std::shared_ptr<MayaObject> mobj)
 {
 	std::shared_ptr<mtap_MayaObject> obj = std::static_pointer_cast<mtap_MayaObject>(mobj);
 	if (obj->dagPath.node().hasFn(MFn::kWorld))
+		return;
+
+	if (!obj->isObjVisible())
 		return;
 
 	if (mobj->instanceNumber > 0)

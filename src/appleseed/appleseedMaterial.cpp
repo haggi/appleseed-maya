@@ -215,6 +215,7 @@ asf::StringArray AppleRender::AppleseedRenderer::defineMaterial(std::shared_ptr<
 		MString shadingGroupName = getObjectName(materialNode);
 		asr::ObjectInstance *objInstance = ass->object_instances().get_by_name(objectInstanceName.asChar());
 		objInstance->get_front_material_mappings().insert("slot0", shadingGroupName.asChar());
+		objInstance->get_back_material_mappings().insert("slot0", shadingGroupName.asChar());
 	}
 
 	return materialNames;

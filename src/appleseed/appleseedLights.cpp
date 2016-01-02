@@ -129,7 +129,7 @@ void AppleseedRenderer::defineLight(std::shared_ptr<MayaObject> obj)
 	if (obj->mobject.hasFn(MFn::kAreaLight))
 	{
 		MString areaLightName = obj->fullNiceName;
-		asf::auto_release_ptr<asr::MeshObject> plane = defineStandardPlane();
+		asf::auto_release_ptr<asr::MeshObject> plane = defineStandardPlane(true);
 		plane->set_name(areaLightName.asChar());
 		MayaObject *assemblyObject = getAssemblyMayaObject(obj.get());
 		asr::Assembly *ass = getCreateObjectAssembly(obj);
@@ -140,12 +140,14 @@ void AppleseedRenderer::defineLight(std::shared_ptr<MayaObject> obj)
 		// rotate the defalt up pointing standard plane by 90 degree to match the area light direction
 		MTransformationMatrix tm;
 		double rotate90Deg[3] = { -M_PI_2, 0, 0 };
+		//double rotate90Deg[3] = { 0, 0, 0 };
 		tm.setRotation(rotate90Deg, MTransformationMatrix::kXYZ);
 		MMatrix objectMatrix = tm.asMatrix();
 		MMatrix diffMatrix = objectMatrix;// *assemblyObjectMatrix;
 		asf::Matrix4d appleMatrix;
+		asf::Matrix4d::identity();
 		MMatrixToAMatrix(diffMatrix, appleMatrix);
-
+		appleMatrix = asf::Matrix4d::identity();
 		MString areaLightMaterialName = areaLightName + "_material";
 
 		MString physicalSurfaceName = areaLightName + "_physical_surface_shader";

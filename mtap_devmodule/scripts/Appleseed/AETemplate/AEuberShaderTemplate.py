@@ -68,19 +68,29 @@ class AEuberShaderTemplate(BaseTemplate):
         print "AETemplate roughness anno", anno
         self.addControl("roughness", label="Roughness", annotation = anno)
         self.addSeparator()
+        if self.shaderDesc.has_key('translucency'):
+            anno = self.shaderDesc['translucency']
         self.addControl("translucency", label="Translucency", changeCommand=self.update)
+        if self.shaderDesc.has_key('translucencyColor'):
+            anno = self.shaderDesc['translucencyColor']
         self.addControl("translucencyColor", label="Translucence Color")
         self.addSeparator()        
-        self.addControl("backlighting", label="Backlighting", changeCommand=self.update)
-        self.addControl("backlightingColor", label="Backlighting Color")
+        #if self.shaderDesc.has_key('backlighting'):
+        #    anno = self.shaderDesc['backlighting']
+        #self.addControl("backlighting", label="Backlighting", changeCommand=self.update)
+        #if self.shaderDesc.has_key('backlightingColor'):
+        #    anno = self.shaderDesc['backlightingColor']
+        #self.addControl("backlightingColor", label="Backlighting Color")
         self.endLayout()
         
         self.beginLayout("Specular", collapse=False)
         self.addControl("specular1", label="Specularity", changeCommand=self.update)
         self.addControl("specularColor1", label="Specular Color", changeCommand=self.update)
-        self.addControl("specularIOR1", label="Specular IOR", changeCommand=self.update)
+        #self.addControl("specularIOR1", label="Specular IOR", changeCommand=self.update)
         self.addControl("roughness1", label="Roughness", changeCommand=self.update)
         self.addControl("anisotropy1", label="Anisotropy", changeCommand=self.update)
+        if self.shaderDesc.has_key('reflectionMdf'):
+            anno = self.shaderDesc['reflectionMdf']
         self.addControl("reflectionMdf", label="Reflection MDF", changeCommand=self.update)
         self.addSeparator()
         self.addControl("specularUseFresnel1", label="Use Fresnel", changeCommand=self.update)
@@ -92,6 +102,8 @@ class AEuberShaderTemplate(BaseTemplate):
         self.addControl("refractionColor", label="Refraction Color", changeCommand=self.update)
         self.addControl("refractionIOR", label="Refraction Index", changeCommand=self.update)
         self.addControl("refractionRoughness", label="Refraction Roughness", changeCommand=self.update)
+        if self.shaderDesc.has_key('refractionMdf'):
+            anno = self.shaderDesc['refractionMdf']
         self.addControl("refractionMdf", label="Refraction MDF", changeCommand=self.update)
         self.addSeparator()
         self.addControl("absorption", label="Absorption", changeCommand=self.update)

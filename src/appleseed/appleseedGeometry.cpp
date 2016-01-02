@@ -19,18 +19,33 @@ namespace asr = renderer;
 #define MPointToAppleseed(pt) asr::GVector3((float)pt.x, (float)pt.y, (float)pt.z)
 namespace MTAP_GEOMETRY{
 
-	asf::auto_release_ptr<asr::MeshObject> defineStandardPlane()
+	asf::auto_release_ptr<asr::MeshObject> defineStandardPlane(bool area)
 	{
 		asf::auto_release_ptr<asr::MeshObject> object(asr::MeshObjectFactory::create("standardPlane", asr::ParamArray()));
 
-		// Vertices.
-		object->push_vertex(asr::GVector3(-1.0f, 0.0f, -1.0f));
-		object->push_vertex(asr::GVector3(-1.0f, 0.0f, 1.0f));
-		object->push_vertex(asr::GVector3(1.0f, 0.0f, 1.0f));
-		object->push_vertex(asr::GVector3(1.0f, 0.0f, -1.0f));
+		if (area)
+		{
+			// Vertices.
+			object->push_vertex(asr::GVector3(-1.0f, -1.0f, 0.0f));
+			object->push_vertex(asr::GVector3(-1.0f, 1.0f, 0.0f));
+			object->push_vertex(asr::GVector3(1.0f, 1.0f, 0.0f));
+			object->push_vertex(asr::GVector3(1.0f, -1.0f, 0.0f));
+		}
+		else{
+			// Vertices.
+			object->push_vertex(asr::GVector3(-1.0f, 0.0f, -1.0f));
+			object->push_vertex(asr::GVector3(-1.0f, 0.0f, 1.0f));
+			object->push_vertex(asr::GVector3(1.0f, 0.0f, 1.0f));
+			object->push_vertex(asr::GVector3(1.0f, 0.0f, -1.0f));
+		}
 
-		// Vertex normals.
-		object->push_vertex_normal(asr::GVector3(0.0f, 1.0f, 0.0f));
+		if (area)
+		{
+			object->push_vertex_normal(asr::GVector3(0.0f, 0.0f, -1.0f));
+		}
+		else{
+			object->push_vertex_normal(asr::GVector3(0.0f, 1.0f, 0.0f));
+		}
 
 		object->push_tex_coords(asr::GVector2(0.0, 0.0));
 		object->push_tex_coords(asr::GVector2(1.0, 0.0));

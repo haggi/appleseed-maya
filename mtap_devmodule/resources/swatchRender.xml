@@ -215,6 +215,7 @@
 					</matrix>
 				</transform>
 				<assign_material slot="slot0" side="front" material="previewSG" />
+				<assign_material slot="slot0" side="back" material="previewSG" />
 			</object_instance>
 			<assembly name="|directionalLight1_ass">
 				<light name="directionalLightShape1" model="directional_light">

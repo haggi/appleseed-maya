@@ -10,6 +10,7 @@ Version 0.32:
 - implemented aeLayeredShader
 - switched material description to xml format
 - implemented basic automatic shader creation based on xml material descriptions
+- fixed area light orientation
 
 Version 0.31:
 - update to refactored framework
