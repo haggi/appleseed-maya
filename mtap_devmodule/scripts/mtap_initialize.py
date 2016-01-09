@@ -404,20 +404,8 @@ class AppleseedRenderer(Renderer.MayaToRenderer):
                     uiDict['directLightSamples'].setEnable(False)
                 else:
                     uiDict['directLightSamples'].setEnable(True)
-                
-            if self.renderGlobalsNode.lightingEngine.get() == 1:  # distributed ray tracer
-                self.addRenderGlobalsUIElement(attName='enable_ibl', uiType='bool', displayName='Enable IBL', default=False, uiDict=uiDict, callback=self.AppleseedRendererUpdateTab)
-                pm.separator()
-                self.addRenderGlobalsUIElement(attName='environmentSamples', uiType='int', displayName='Environment Samples', uiDict=uiDict)                        
-                self.addRenderGlobalsUIElement(attName='directLightSamples', uiType='int', displayName='Direct Light Samples', uiDict=uiDict)                        
-                self.addRenderGlobalsUIElement(attName='maxTraceDepth', uiType='int', displayName='Max Bounces', uiDict=uiDict)                        
-                self.addRenderGlobalsUIElement(attName='rr_min_path_length', uiType='float', displayName='RR Start Bounce', anno='Consider pruning low contribution paths starting with this bounce', uiDict=uiDict)                        
-                if not self.renderGlobalsNode.enable_ibl.get():
-                    uiDict['environmentSamples'].setEnable(False)
-                else:
-                    uiDict['environmentSamples'].setEnable(True)
-                    
-            if self.renderGlobalsNode.lightingEngine.get() == 2:  # sppm
+                                    
+            if self.renderGlobalsNode.lightingEngine.get() == 1:  # sppm
                 self.addRenderGlobalsUIElement(attName='enable_ibl', uiType='bool', displayName='Enable IBL', default=False, uiDict=uiDict, callback=self.AppleseedRendererUpdateTab)
                 self.addRenderGlobalsUIElement(attName='enable_caustics', uiType='bool', displayName='Enable Caustics', default=False, uiDict=uiDict)
                 pm.separator()
