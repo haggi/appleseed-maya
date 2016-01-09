@@ -4,7 +4,7 @@ To run and compile you need the repository mayaToCommon. At the moment the repos
 
     SomeDir
         mayaToCommon
-        mayaToCentileo
+        mayaToAppleseed
 
 You will need the Appleseed dependencies. Have a look here for a detailed description how tho get them: https://github.com/appleseedhq/appleseed/wiki/Building-appleseed-on-Windows
 I used Boost 1.55. There is a VisualStudio props file which contains some macros with the API/Boost locations, these should be set appropriatly.
