@@ -90,7 +90,12 @@ void AppleseedRenderer::unInitializeRenderer()
 	MayaTo::getWorldPtr()->setRenderType(MayaTo::MayaToWorld::RTYPENONE);
 
 	// Save the frame to disk.
-	project->get_frame()->write_main_image("C:/daten/3dprojects/mayaToAppleseed/images/test.png");
+	std::shared_ptr<RenderGlobals> renderGlobals = MayaTo::getWorldPtr()->worldRenderGlobalsPtr;
+	renderGlobals->getImageName();
+	MString filename = renderGlobals->imageOutputFile.asChar();
+	Logging::debug(MString("Saving image as ") + renderGlobals->imageOutputFile);
+
+	project->get_frame()->write_main_image(renderGlobals->imageOutputFile.asChar());
 
 	Logging::debug("Releasing project");
 	this->project.release();

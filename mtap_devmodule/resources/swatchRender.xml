@@ -31,56 +31,6 @@
                 1.000000
             </alpha>
         </color>
-        <color name="environmentColor">
-            <parameter name="color_space" value="srgb" />
-            <parameter name="multiplier" value="0" />
-            <values>
-                1.000000 1.000000 1.000000
-            </values>
-            <alpha>
-                1.000000
-            </alpha>
-        </color>
-        <color name="environmentMap_color">
-            <parameter name="color_space" value="srgb" />
-            <parameter name="multiplier" value="1" />
-            <values>
-                0.600000 0.700000 0.900000
-            </values>
-            <alpha>
-                1.000000
-            </alpha>
-        </color>
-        <color name="gradientHorizon">
-            <parameter name="color_space" value="srgb" />
-            <parameter name="multiplier" value="1" />
-            <values>
-                0.800000 0.800000 0.900000
-            </values>
-            <alpha>
-                1.000000
-            </alpha>
-        </color>
-        <color name="gradientZenit">
-            <parameter name="color_space" value="srgb" />
-            <parameter name="multiplier" value="1" />
-            <values>
-                0.200000 0.300000 0.600000
-            </values>
-            <alpha>
-                1.000000
-            </alpha>
-        </color>
-        <environment_edf name="sky_edf" model="constant_environment_edf">
-            <parameter name="radiance" value="environmentColor" />
-        </environment_edf>
-        <environment_shader name="sky_shader" model="edf_environment_shader">
-            <parameter name="environment_edf" value="sky_edf" />
-        </environment_shader>
-        <environment name="sky" model="generic_environment">
-            <parameter name="environment_edf" value="sky_edf" />
-            <parameter name="environment_shader" value="sky_shader" />
-        </environment>
 		<assembly name="swatchRenderer_world">
 			<color name="gray">
 				<parameter name="color_space" value="srgb" />
@@ -126,7 +76,7 @@
 					<parameter name="fromSRGB" value="int 0" />
 					<parameter name="invert" value="int 0" />
 					<parameter name="textureBlur" value="float 0" />
-					<parameter name="textureFilter" value="int -1" />
+					<parameter name="textureFilter" value="int 0" />
 					<parameter name="textureFilterWidth" value="float 0" />
 					<parameter name="toSRGB" value="int 0" />
 					<parameter name="uvTilingMode" value="int 0" />

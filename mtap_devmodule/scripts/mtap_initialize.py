@@ -94,8 +94,15 @@ class AppleseedRenderer(Renderer.MayaToRenderer):
             envDict['environmentMap'].setEnable(True)
             envDict['latlongVeShift'].setEnable(True)
             envDict['latlongHoShift'].setEnable(True)
-        # Pyhsical Sky
+            
+        # MirrorBall
         if envType == 4:
+            envDict['environmentMap'].setEnable(True)
+            envDict['latlongVeShift'].setEnable(True)
+            envDict['latlongHoShift'].setEnable(True)
+            
+        # Pyhsical Sky
+        if envType == 5:
             envDict['pskModel'].setEnable(True)
             envDict['pskUsePhySun'].setEnable(True)
             envDict['pskSunExitMulti'].setEnable(True)
@@ -129,6 +136,11 @@ class AppleseedRenderer(Renderer.MayaToRenderer):
             envDict['pskTurb'].setEnable(True)
             envDict['pskTurbMax'].setEnable(True)
             envDict['pskTurbMin'].setEnable(True)
+
+        # OSL
+        if envType == 6:
+            pass
+
 
     def AppleseedEnvironmentCreateTab(self):
         log.debug("AppleseedEnvironmentCreateTab()")

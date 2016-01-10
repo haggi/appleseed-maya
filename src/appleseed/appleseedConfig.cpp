@@ -55,7 +55,9 @@ void AppleseedRenderer::addRenderParams(asr::ParamArray& paramArray)
 	paramArray.insert_path((lightingEngine + ".light_photons_per_pass").asChar(), getIntAttr("light_photons_per_pass", renderGlobalsFn, 100000));
 	paramArray.insert_path((lightingEngine + ".max_photons_per_estimate").asChar(), getIntAttr("max_photons_per_estimate", renderGlobalsFn, 100));
 	paramArray.insert_path((lightingEngine + ".photons_per_pass").asChar(), getIntAttr("photons_per_pass", renderGlobalsFn, 100000));
-	paramArray.insert_path((lightingEngine + ".max_ray_intensity").asChar(), getFloatAttr("max_ray_intensity", renderGlobalsFn, .5f));
+
+	if (getFloatAttr("max_ray_intensity", renderGlobalsFn, .5f) > 0.0)
+		paramArray.insert_path((lightingEngine + ".max_ray_intensity").asChar(), getFloatAttr("max_ray_intensity", renderGlobalsFn, .5f));
 	paramArray.insert_path((lightingEngine + ".photon_type").asChar(), photonType.asChar());
 	paramArray.insert_path((lightingEngine + ".max_path_length").asChar(), getFloatAttr("max_path_length", renderGlobalsFn, 8.0f));
 	paramArray.insert_path((lightingEngine + ".rr_min_path_length").asChar(), getFloatAttr("rr_min_path_length", renderGlobalsFn, 3.0f));

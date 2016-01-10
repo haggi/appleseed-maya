@@ -676,45 +676,135 @@
 	<shader>
 		<inputs>
 			<input>
+				<name>uvCoord</name>
+				<min>0</min>
+				<default>[0.0, 0.0, 0.0]</default>
+				<max>1</max>
+				<hint>None</hint>
+				<type>vector</type>
+				<help>None</help>
+			</input>
+			<input>
 				<name>fileTextureName</name>
 				<min>0</min>
-				<default>0</default>
+				<default>None</default>
 				<max>1</max>
 				<hint>None</hint>
 				<type>string</type>
 				<help>None</help>
 			</input>
 			<input>
-				<name>defaultColor</name>
+				<name>baseName</name>
+				<min>0</min>
+				<default>None</default>
+				<max>1</max>
+				<hint>None</hint>
+				<type>string</type>
+				<help>None</help>
+			</input>
+			<input>
+				<name>ext</name>
+				<min>0</min>
+				<default>None</default>
+				<max>1</max>
+				<hint>None</hint>
+				<type>string</type>
+				<help>None</help>
+			</input>
+			<input>
+				<name>uvTilingMode</name>
+				<min>0</min>
+				<default>2</default>
+				<max>1</max>
+				<hint>None</hint>
+				<type>int</type>
+				<help>None</help>
+			</input>
+			<input>
+				<name>fromSRGB</name>
 				<min>0</min>
 				<default>0</default>
 				<max>1</max>
 				<hint>None</hint>
-				<type>color</type>
+				<type>int</type>
+				<help>None</help>
+			</input>
+			<input>
+				<name>toSRGB</name>
+				<min>0</min>
+				<default>0</default>
+				<max>1</max>
+				<hint>None</hint>
+				<type>int</type>
+				<help>None</help>
+			</input>
+			<input>
+				<name>textureFilter</name>
+				<min>0</min>
+				<default>0</default>
+				<max>1</max>
+				<hint>None</hint>
+				<type>int</type>
+				<help>None</help>
+			</input>
+			<input>
+				<name>textureFilterWidth</name>
+				<min>0</min>
+				<default>1</default>
+				<max>1</max>
+				<hint>None</hint>
+				<type>float</type>
+				<help>None</help>
+			</input>
+			<input>
+				<name>textureBlur</name>
+				<min>0</min>
+				<default>0</default>
+				<max>1</max>
+				<hint>None</hint>
+				<type>float</type>
+				<help>None</help>
+			</input>
+			<input>
+				<name>exposure</name>
+				<min>0</min>
+				<default>0</default>
+				<max>1</max>
+				<hint>None</hint>
+				<type>float</type>
+				<help>None</help>
+			</input>
+			<input>
+				<name>defaultColor</name>
+				<min>0</min>
+				<default>[0.5, 0.5, 0.5]</default>
+				<max>1</max>
+				<hint>None</hint>
+				<type>vector</type>
 				<help>None</help>
 			</input>
 			<input>
 				<name>colorGain</name>
 				<min>0</min>
-				<default>0</default>
+				<default>[1.0, 1.0, 1.0]</default>
 				<max>1</max>
 				<hint>None</hint>
-				<type>color</type>
+				<type>vector</type>
 				<help>None</help>
 			</input>
 			<input>
 				<name>colorOffset</name>
 				<min>0</min>
-				<default>0</default>
+				<default>[0.0, 0.0, 0.0]</default>
 				<max>1</max>
 				<hint>None</hint>
-				<type>color</type>
+				<type>vector</type>
 				<help>None</help>
 			</input>
 			<input>
 				<name>alphaGain</name>
 				<min>0</min>
-				<default>0</default>
+				<default>1</default>
 				<max>1</max>
 				<hint>None</hint>
 				<type>float</type>
@@ -732,7 +822,7 @@
 			<input>
 				<name>alphaIsLuminance</name>
 				<min>0</min>
-				<default>0</default>
+				<default>1</default>
 				<max>1</max>
 				<hint>None</hint>
 				<type>int</type>
@@ -747,70 +837,16 @@
 				<type>int</type>
 				<help>None</help>
 			</input>
-			<input>
-				<name>uvCoord</name>
-				<min>0</min>
-				<default>0</default>
-				<max>1</max>
-				<hint>None</hint>
-				<type>float2</type>
-				<help>None</help>
-			</input>
-			<input>
-				<name>fromSRGB</name>
-				<min>0</min>
-				<default>0</default>
-				<max>1</max>
-				<hint>None</hint>
-				<type>bool</type>
-				<help>None</help>
-			</input>
-			<input>
-				<name>toSRGB</name>
-				<min>0</min>
-				<default>0</default>
-				<max>1</max>
-				<hint>None</hint>
-				<type>bool</type>
-				<help>None</help>
-			</input>
-			<input>
-				<name>textureFilter</name>
-				<min>0</min>
-				<default>0</default>
-				<max>1</max>
-				<hint>None</hint>
-				<type>enumint</type>
-				<help>None</help>
-			</input>
-			<input>
-				<name>textureFilterWidth</name>
-				<min>0</min>
-				<default>0</default>
-				<max>1</max>
-				<hint>None</hint>
-				<type>float</type>
-				<help>None</help>
-			</input>
-			<input>
-				<name>textureBlur</name>
-				<min>0</min>
-				<default>0</default>
-				<max>1</max>
-				<hint>None</hint>
-				<type>float</type>
-				<help>None</help>
-			</input>
 		</inputs>
 		<name>file</name>
 		<outputs>
 			<output>
-				<type>color</type>
+				<type>output vector</type>
 				<name>outColor</name>
 				<help />
 			</output>
 			<output>
-				<type>float</type>
+				<type>output float</type>
 				<name>outAlpha</name>
 				<help />
 			</output>
@@ -875,7 +911,7 @@
 			<input>
 				<name>bumpDepth</name>
 				<min>0</min>
-				<default>0</default>
+				<default>1</default>
 				<max>1</max>
 				<hint>None</hint>
 				<type>float</type>
@@ -891,18 +927,18 @@
 				<help>None</help>
 			</input>
 			<input>
-				<name>normalMap</name>
+				<name>normalCamera</name>
 				<min>0</min>
-				<default>0</default>
+				<default>[ 0.0, 0.0, 0.0 ]</default>
 				<max>1</max>
 				<hint>None</hint>
-				<type>color</type>
+				<type>vector</type>
 				<help>None</help>
 			</input>
 			<input>
-				<name>normalCamera</name>
+				<name>normalMap</name>
 				<min>0</min>
-				<default>0</default>
+				<default>[0.0, 0.0, 0.0]</default>
 				<max>1</max>
 				<hint>None</hint>
 				<type>vector</type>
@@ -912,7 +948,7 @@
 		<name>bump2d</name>
 		<outputs>
 			<output>
-				<type>vector</type>
+				<type>output vector</type>
 				<name>outNormal</name>
 				<help />
 			</output>
@@ -1232,13 +1268,6 @@
 				<help>Backlighting, show light though a surface (poor mans translucency).</help>
 			</input>
 			<input>
-				<default>[0.0, 0.0, 0.0]</default>
-				<hint>useAsColor</hint>
-				<type>vector</type>
-				<name>backlightingColor</name>
-				<help>Backlighting color</help>
-			</input>
-			<input>
 				<name>translucency</name>
 				<min>0</min>
 				<default>0</default>
@@ -1407,6 +1436,22 @@
 				<hint>softmax</hint>
 				<type>float</type>
 				<help>Subsurface color Multiplier</help>
+			</input>
+			<input>
+				<default>[0.0, 0.0, 0.0]</default>
+				<hint>useAsColor</hint>
+				<type>vector</type>
+				<name>emissionColor</name>
+				<help>Emission Color</help>
+			</input>
+			<input>
+				<name>emissionMultiplier</name>
+				<min>0</min>
+				<default>1</default>
+				<max>3</max>
+				<hint>softmax</hint>
+				<type>float</type>
+				<help>Emission Color Multiplier</help>
 			</input>
 		</inputs>
 		<name>uberShader</name>

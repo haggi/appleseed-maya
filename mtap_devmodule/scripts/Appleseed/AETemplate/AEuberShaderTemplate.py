@@ -31,7 +31,22 @@ class AEuberShaderTemplate(BaseTemplate):
         self.endScrollLayout()
     
     def update(self, nodeName):
-        self.thisNode = pm.PyNode(nodeName)        
+        self.thisNode = pm.PyNode(nodeName)
+        reflectionEDF = self.thisNode.reflectionMdf.getEnums().keys()[self.thisNode.reflectionMdf.get()]
+        self.dimControl(self.thisNode, "roughness1", False)
+        if reflectionEDF == "sharp":
+            self.dimControl(self.thisNode, "roughness1", True)
+            
+        refractionMDF = self.thisNode.refractionMdf.getEnums().keys()[self.thisNode.refractionMdf.get()]
+        self.dimControl(self.thisNode, "refractionRoughness", False)
+        if refractionMDF == "sharp":
+            self.dimControl(self.thisNode, "refractionRoughness", True)
+            
+        self.dimControl(self.thisNode, "SSS1Color", True)
+        self.dimControl(self.thisNode, "SSS1RadiusMultiplier", True)
+        if self.thisNode.SSS1.get():
+            self.dimControl(self.thisNode, "SSS1Color", False)
+            self.dimControl(self.thisNode, "SSS1RadiusMultiplier", False)
             
     def updateSpec(self, nodeName):
         self.thisNode = pm.PyNode(nodeName)
@@ -75,12 +90,12 @@ class AEuberShaderTemplate(BaseTemplate):
             anno = self.shaderDesc['translucencyColor']
         self.addControl("translucencyColor", label="Translucence Color")
         self.addSeparator()        
-        #if self.shaderDesc.has_key('backlighting'):
-        #    anno = self.shaderDesc['backlighting']
-        #self.addControl("backlighting", label="Backlighting", changeCommand=self.update)
-        #if self.shaderDesc.has_key('backlightingColor'):
-        #    anno = self.shaderDesc['backlightingColor']
-        #self.addControl("backlightingColor", label="Backlighting Color")
+        if self.shaderDesc.has_key('emissionColor'):
+            anno = self.shaderDesc['emissionColor']
+        self.addControl("emissionColor", label="Emission Color", changeCommand=self.update)
+        if self.shaderDesc.has_key('emissionMultiplier'):
+            anno = self.shaderDesc['emissionMultiplier']
+        self.addControl("emissionMultiplier", label="Emission Color Multiplier")
         self.endLayout()
         
         self.beginLayout("Specular", collapse=False)
@@ -115,8 +130,9 @@ class AEuberShaderTemplate(BaseTemplate):
         self.addControl("SSS1", label="Enable SSS", changeCommand=self.update)
         self.addControl("SSS1Color", label="SSS Color", changeCommand=self.update)
         #self.addControl("SSS1Weight", label="Color Multiplier", changeCommand=self.update)
-        self.addControl("SSS1Radius", label="Radius per Color", changeCommand=self.update)
-        self.addControl("SSS1RadiusMultiplier", label="Radius Multiplier", changeCommand=self.update)
+        #self.addControl("SSS1Radius", label="Radius per Color", changeCommand=self.update)
+        #self.addControl("SSS1RadiusMultiplier", label="Radius Multiplier", changeCommand=self.update)
+        self.addControl("SSS1RadiusMultiplier", label="Radius", changeCommand=self.update)
         self.endLayout()
         
         self.update(nodeName)

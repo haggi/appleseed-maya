@@ -147,8 +147,7 @@ MStatus	MayaToAppleseedGlobals::initialize()
 
 	lightingEngine = eAttr.create( "lightingEngine", "lightingEngine", 0, &stat);
 	stat = eAttr.addField( "Unidirectional Path tracing", 0 );
-	stat = eAttr.addField( "Distributed Raytracing", 1 );
-	stat = eAttr.addField( "Stochastic Progressive Photon Mapping", 2 );
+	stat = eAttr.addField( "Stochastic Progressive Photon Mapping", 1);
 	CHECK_MSTATUS(addAttribute( lightingEngine ));
 
 	clamping = nAttr.create("clamping", "clamping",  MFnNumericData::kBoolean, false);

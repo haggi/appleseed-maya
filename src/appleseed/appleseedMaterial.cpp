@@ -2,6 +2,7 @@
 #include "appleseedUtils.h"
 #include "appleseedMaterial.h"
 #include "shadingTools/material.h"
+#include "shadingTools/shaderDefs.h"
 #include "shadingTools/shadingUtils.h"
 #include "renderer/modeling/shadergroup/shadergroup.h"
 #include "utilities/logging.h"
@@ -188,6 +189,21 @@ asf::StringArray AppleRender::AppleseedRenderer::defineMaterial(std::shared_ptr<
 		MString surfaceShader;
 		MObject surfaceShaderNode = getConnectedInNode(materialNode, "surfaceShader");
 		MString surfaceShaderName = getObjectName(surfaceShaderNode);
+		MFnDependencyNode depFn(surfaceShaderNode);
+		MString typeName = depFn.typeName();
+
+		// if the connected surface shader is not supported, use a default material because otherwise osl will crash
+		if (!ShaderDefinitions::shadingNodeSupported(typeName))
+		{
+			Logging::warning(MString("Surface shader type: ") + typeName + " is not supported, using default material.");
+			MString objectInstanceName = getObjectInstanceName(obj.get());
+			asr::Assembly *ass = getCreateObjectAssembly(obj);
+			MString shadingGroupName = getObjectName(materialNode);
+			asr::ObjectInstance *objInstance = ass->object_instances().get_by_name(objectInstanceName.asChar());
+			objInstance->get_front_material_mappings().insert("slot0", "default");
+			objInstance->get_back_material_mappings().insert("slot0", "default");
+			continue;
+		}
 		
 		// if we are in IPR mode, save all translated shading nodes to the interactive update list
 		if (MayaTo::getWorldPtr()->renderType == MayaTo::MayaToWorld::WorldRenderType::IPRRENDER)
