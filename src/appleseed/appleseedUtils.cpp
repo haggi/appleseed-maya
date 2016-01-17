@@ -15,14 +15,8 @@
 void defineDefaultMaterial(asr::Project *project)
 {
 	asr::Assembly *assembly = getMasterAssemblyFromProject(project);
-	// Create a color called "gray" and insert it into the assembly.
-	static const float GrayReflectance[] = { 0.5f, 0.5f, 0.5f };
-	assembly->colors().insert(
-		asr::ColorEntityFactory::create(
-		"gray",
-		asr::ParamArray()
-		.insert("color_space", "srgb"),
-		asr::ColorValueArray(3, GrayReflectance)));
+	MColor gray = { 0.5f, 0.5f, 0.5f };
+	defineColor(project, "gray", gray, 1.0f);
 
 	// Create a BRDF called "diffuse_gray_brdf" and insert it into the assembly.
 	assembly->bsdfs().insert(
@@ -222,7 +216,7 @@ asr::AssemblyInstance *getExistingObjectAssemblyInstance(MayaObject *obj)
 //
 // colors are defined in the scene scope, makes handling easier
 //
-void mayaColorToFloat(MColor& col, float *floatCol, float *alpha)
+void mayaColorToFloat(const MColor col, float *floatCol, float *alpha)
 {
 	floatCol[0] = col.r;
 	floatCol[1] = col.g;
@@ -230,7 +224,7 @@ void mayaColorToFloat(MColor& col, float *floatCol, float *alpha)
 	*alpha = col.a;
 }
 
-void removeColorEntityIfItExists(MString& colorName)
+void removeColorEntityIfItExists(const MString colorName)
 {
 	std::shared_ptr<AppleRender::AppleseedRenderer> appleRenderer = std::static_pointer_cast<AppleRender::AppleseedRenderer>(MayaTo::getWorldPtr()->worldRendererPtr);
 	assert(appleRenderer != nullptr);
@@ -242,27 +236,27 @@ void removeColorEntityIfItExists(MString& colorName)
 	}
 }
 
-void defineColor(MString& name, MColor& color, float intensity, MString colorSpace)
-{
-	std::shared_ptr<AppleRender::AppleseedRenderer> appleRenderer = std::static_pointer_cast<AppleRender::AppleseedRenderer>(MayaTo::getWorldPtr()->worldRendererPtr);
-	assert(appleRenderer != nullptr);
-
-	float colorDef[3];
-	float alpha = color.a;
-	mayaColorToFloat(color, colorDef, &alpha);
-	removeColorEntityIfItExists(name);
-
-	asf::auto_release_ptr<asr::ColorEntity> colorEntity = asr::ColorEntityFactory::create(
-				name.asChar(),
-				asr::ParamArray()
-					.insert("color_space", colorSpace.asChar())
-					.insert("multiplier", intensity),
-				asr::ColorValueArray(3, colorDef),
-				asr::ColorValueArray(1, &alpha));
-
-	asr::Scene *scene = getSceneFromProject(appleRenderer->getProjectPtr());
-	scene->colors().insert(colorEntity);
-}
+//void defineColor(const MString name, const MColor color, const float intensity, MString colorSpace)
+//{
+//	std::shared_ptr<AppleRender::AppleseedRenderer> appleRenderer = std::static_pointer_cast<AppleRender::AppleseedRenderer>(MayaTo::getWorldPtr()->worldRendererPtr);
+//	assert(appleRenderer != nullptr);
+//
+//	float colorDef[3];
+//	float alpha = color.a;
+//	mayaColorToFloat(color, colorDef, &alpha);
+//	removeColorEntityIfItExists(name);
+//
+//	asf::auto_release_ptr<asr::ColorEntity> colorEntity = asr::ColorEntityFactory::create(
+//				name.asChar(),
+//				asr::ParamArray()
+//					.insert("color_space", colorSpace.asChar())
+//					.insert("multiplier", intensity),
+//				asr::ColorValueArray(3, colorDef),
+//				asr::ColorValueArray(1, &alpha));
+//
+//	asr::Scene *scene = getSceneFromProject(appleRenderer->getProjectPtr());
+//	scene->colors().insert(colorEntity);
+//}
 
 void defineColor(asr::Project *project, const char *name, MColor color, float intensity, MString colorSpace)
 {
@@ -286,13 +280,13 @@ void defineColor(asr::Project *project, const char *name, MColor color, float in
 }
 
 // check if a texture is connected to this attribute. If yes, return the texture name, if not define the currentColor and return the color name.
-MString colorOrMap(MFnDependencyNode& shaderNode, MString& attributeName)
+MString colorOrMap(asr::Project *project, MFnDependencyNode& shaderNode, MString& attributeName)
 {
 	MString definition = defineTexture(shaderNode, attributeName);
 	if (definition.length() == 0)
 	{
 		MColor color = getColorAttr(attributeName.asChar(), shaderNode);
-		defineColor(attributeName + "_color", color, 1.0f);
+		defineColor(project, (attributeName + "_color").asChar(), color, 1.0f);
 		definition = attributeName + "_color";
 	}
 	return definition;
@@ -313,6 +307,7 @@ void removeTextureEntityIfItExists(MString& textureName)
 	if( textureInstance != nullptr)
 		scene->texture_instances().remove(textureInstance);
 }
+
 MString defineTexture(MFnDependencyNode& shader, MString& attributeName)
 {
 	std::shared_ptr<AppleRender::AppleseedRenderer> appleRenderer = std::static_pointer_cast<AppleRender::AppleseedRenderer>(MayaTo::getWorldPtr()->worldRendererPtr);

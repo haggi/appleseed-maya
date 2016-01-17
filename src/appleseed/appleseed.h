@@ -116,6 +116,8 @@ public:
 	asr::Project *getProjectPtr(){ return this->project.get(); };
 	asf::StringArray defineMaterial(std::shared_ptr<mtap_MayaObject> obj);
 	void updateMaterial(MObject sufaceShader);
+	virtual void preFrame();
+	virtual void postFrame();
 
 private:
 	asf::auto_release_ptr<asr::Project> project;

@@ -23,7 +23,7 @@ void AppleseedRenderer::addRenderParams(asr::ParamArray& paramArray)
 	MString dlType = dlTypes[getEnumInt("dl_mode", renderGlobalsFn)];
 	std::shared_ptr<RenderGlobals> renderGlobals = MayaTo::getWorldPtr()->worldRenderGlobalsPtr;
 
-	paramArray.insert("rendering_threads", renderGlobals->threads);
+	//paramArray.insert("rendering_threads", renderGlobals->threads);
 	paramArray.insert_path("texture_store.max_size", getIntAttr("texCacheSize", renderGlobalsFn, 128) * 1024 * 1024); // at least 128 MB
 
 	paramArray.insert("sampling_mode", getEnumString("sampling_mode", renderGlobalsFn));

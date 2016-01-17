@@ -78,24 +78,13 @@ void AppleseedRenderer::initializeRenderer()
 		project->search_paths().push_back(MayaTo::getWorldPtr()->shaderSearchPath[i].asChar());
 	}
 	defineConfig();
-
 	defineScene(this->project.get());
-	defineMasterAssembly(this->project.get());
-	defineDefaultMaterial(this->project.get());
 }
 
 void AppleseedRenderer::unInitializeRenderer()
 {
 	MayaTo::getWorldPtr()->setRenderState(MayaTo::MayaToWorld::RSTATEDONE);
 	MayaTo::getWorldPtr()->setRenderType(MayaTo::MayaToWorld::RTYPENONE);
-
-	// Save the frame to disk.
-	std::shared_ptr<RenderGlobals> renderGlobals = MayaTo::getWorldPtr()->worldRenderGlobalsPtr;
-	renderGlobals->getImageName();
-	MString filename = renderGlobals->imageOutputFile.asChar();
-	Logging::debug(MString("Saving image as ") + renderGlobals->imageOutputFile);
-
-	project->get_frame()->write_main_image(renderGlobals->imageOutputFile.asChar());
 
 	Logging::debug("Releasing project");
 	this->project.release();
@@ -105,10 +94,45 @@ void AppleseedRenderer::unInitializeRenderer()
 void AppleseedRenderer::defineProject()
 {
 	defineCamera(); // first camera
-	defineOutput(); // output accesses camera so define it after camera 
+	defineOutput(); // output accesses camera so define it after camera
+	defineMasterAssembly(this->project.get());
+	defineDefaultMaterial(this->project.get());
 	defineEnvironment();
 	defineGeometry();
 	defineLights();
+}
+
+void AppleseedRenderer::preFrame()
+{
+	Logging::debug("AppleseedRenderer::preFrame");
+	defineProject();
+}
+
+void AppleseedRenderer::postFrame()
+{
+	Logging::debug("AppleseedRenderer::postFrame");
+	// Save the frame to disk.
+	std::shared_ptr<RenderGlobals> renderGlobals = MayaTo::getWorldPtr()->worldRenderGlobalsPtr;
+	renderGlobals->getImageName();
+	MString filename = renderGlobals->imageOutputFile.asChar();
+	Logging::debug(MString("Saving image as ") + renderGlobals->imageOutputFile);
+	project->get_frame()->write_main_image(renderGlobals->imageOutputFile.asChar());	
+
+	// if we render the very last frame or if we are in UI where the last frame == first frame, then delete the master renderer before
+	// the deletion of the assembly because otherwise it will be deleted automatically if the renderer instance is deleted what results in a crash
+	// because the masterRenderer still have references to the shading groups which are defined in the world assembly. If the masterRenderer is deleted
+	// AFTER the assembly it tries to access non existent shadingGroups.
+	if (renderGlobals->currentFrameNumber == renderGlobals->frameList.back())
+	{
+		masterRenderer.release();
+	}
+
+	asf::UniqueID aiuid = project->get_scene()->assembly_instances().get_by_name("world_Inst")->get_uid();
+	asf::UniqueID auid = project->get_scene()->assemblies().get_by_name("world")->get_uid();
+	project->get_scene()->assembly_instances().remove(aiuid);
+	project->get_scene()->assemblies().remove(auid);
+	asr::Assembly *worldass = project->get_scene()->assemblies().get_by_name("world");
+	
 }
 
 void AppleseedRenderer::render()
@@ -116,7 +140,6 @@ void AppleseedRenderer::render()
 	Logging::debug("AppleseedRenderer::render");
 	if (!sceneBuilt)
 	{
-		defineProject();
 
 		RENDERER_LOG_INFO("%s", asf::Appleseed::get_synthetic_version_string());
 
@@ -138,7 +161,7 @@ void AppleseedRenderer::render()
 				this->tileCallbackFac.get()));
 		}
 		// Save the project to disk.
-		asr::ProjectFileWriter::write(project.ref(), "C:/daten/3dprojects/mayaToAppleseed/renderData/test.appleseed.xml");
+		asr::ProjectFileWriter::write(project.ref(), "C:/daten/3dprojects/mayaToAppleseed/renderData/test.appleseed");
 
 		if (MayaTo::getWorldPtr()->getRenderType() == MayaTo::MayaToWorld::WorldRenderType::IPRRENDER)
 		{

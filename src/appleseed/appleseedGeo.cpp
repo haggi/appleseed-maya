@@ -138,7 +138,7 @@ void AppleseedRenderer::createMesh(std::shared_ptr<mtap_MayaObject> obj)
 	mesh->reserve_material_slots(obj->shadingGroups.length());
 	for( uint sgId = 0; sgId < obj->shadingGroups.length(); sgId++)
 	{
-		MString slotName = MString("slot_") + sgId;
+		MString slotName = MString("slot") + sgId;
 		mesh->push_material_slot(slotName.asChar());
 	}
 
@@ -168,8 +168,18 @@ void AppleseedRenderer::createMesh(std::shared_ptr<mtap_MayaObject> obj)
 	asr::Assembly *ass = getCreateObjectAssembly(obj);
 
 	Logging::debug(MString("Placing mesh ") + mesh->get_name() + " into assembly " + ass->get_name());
-	ass->objects().insert(asf::auto_release_ptr<asr::Object>(mesh));
+
 	asr::MeshObject *meshPtr = (asr::MeshObject *)ass->objects().get_by_name(meshFullName.asChar());
+
+	if (meshPtr != nullptr)
+	{
+		Logging::debug(MString("Mesh object ") + meshFullName + " is already defined, removing...");
+		ass->objects().remove(meshPtr);
+		ass->bump_version_id();
+	}
+
+	ass->objects().insert(asf::auto_release_ptr<asr::Object>(mesh));
+	meshPtr = (asr::MeshObject *)ass->objects().get_by_name(meshFullName.asChar());
 
 	MString objectInstanceName = getObjectInstanceName(obj.get());
 
@@ -181,6 +191,14 @@ void AppleseedRenderer::createMesh(std::shared_ptr<mtap_MayaObject> obj)
 
 	asr::ParamArray objInstanceParamArray;
 	addVisibilityFlags(obj, objInstanceParamArray);
+
+	asr::ObjectInstance *oinst = ass->object_instances().get_by_name(objectInstanceName.asChar());
+	if (oinst != nullptr)
+	{
+		Logging::debug(MString("Mesh object instance ") + objectInstanceName + " is already defined, removing...");
+		ass->object_instances().remove(oinst);
+		ass->bump_version_id();
+	}
 	ass->object_instances().insert(
 		asr::ObjectInstanceFactory::create(
 		objectInstanceName.asChar(),

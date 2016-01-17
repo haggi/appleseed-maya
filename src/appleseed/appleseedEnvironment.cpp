@@ -27,37 +27,6 @@ using namespace AppleRender;
 void AppleseedRenderer::defineEnvironment()
 {
 	asr::Scene *scene = project->get_scene();
-	// Create a color called "sky_radiance" and insert it into the scene.
-	//static const float SkyRadiance[] = { 0.75f, 0.80f, 1.0f };
-	//scene->colors().insert(
-	//	asr::ColorEntityFactory::create(
-	//	"sky_radiance",
-	//	asr::ParamArray()
-	//	.insert("color_space", "srgb")
-	//	.insert("multiplier", "3.0"),
-	//	asr::ColorValueArray(3, SkyRadiance)));
-
-	//// Create an environment EDF called "sky_edf" and insert it into the scene.
-	//scene->environment_edfs().insert(
-	//	asr::ConstantEnvironmentEDFFactory().create(
-	//	"sky_edf",
-	//	asr::ParamArray()
-	//	.insert("radiance", "sky_radiance")));
-
-	//// Create an environment shader called "sky_shader" and insert it into the scene.
-	//scene->environment_shaders().insert(
-	//	asr::EDFEnvironmentShaderFactory().create(
-	//	"sky_shader",
-	//	asr::ParamArray()
-	//	.insert("environment_edf", "sky_edf")));
-
-	//// Create an environment called "sky" and bind it to the scene.
-	//scene->set_environment(
-	//	asr::EnvironmentFactory::create(
-	//	"sky",
-	//	asr::ParamArray()
-	//	.insert("environment_edf", "sky_edf")
-	//	.insert("environment_shader", "sky_shader")));
 
 	MFnDependencyNode appleseedGlobals(getRenderGlobalsNode());
 	MString textInstName = "bg_texture_inst";
@@ -86,11 +55,11 @@ void AppleseedRenderer::defineEnvironment()
 	MColor gradientZenitColor = getColorAttr("gradientZenit", appleseedGlobals);
 	float environmentIntensity = getFloatAttr("environmentIntensity", appleseedGlobals, 1.0f);
 
-	defineColor(envColorName, environmentColorColor, environmentIntensity);
-	defineColor(gradHorizName, gradientHorizonColor, environmentIntensity);
-	defineColor(gradZenitName, gradientZenitColor, environmentIntensity);
+	defineColor(project.get(), envColorName.asChar(), environmentColorColor, environmentIntensity);
+	defineColor(project.get(), gradHorizName.asChar(), gradientHorizonColor, environmentIntensity);
+	defineColor(project.get(), gradZenitName.asChar(), gradientZenitColor, environmentIntensity);
 
-	MString envMapAttrName = colorOrMap(appleseedGlobals, envMapName);
+	MString envMapAttrName = colorOrMap(project.get(), appleseedGlobals, envMapName);
 
 	asf::auto_release_ptr<asr::EnvironmentEDF> environmentEDF;
 	
@@ -234,6 +203,11 @@ void AppleseedRenderer::defineEnvironment()
 	scene->environment_edfs().insert(environmentEDF);
 
 	// Create an environment shader called "sky_shader" and insert it into the scene.
+	if (scene->environment_shaders().get_by_name("sky_shader") != nullptr)
+	{
+		asr::EnvironmentShader *skyShader = scene->environment_shaders().get_by_name("sky_shader");
+		scene->environment_shaders().remove(skyShader);	
+	}
 	scene->environment_shaders().insert(
 		asr::EDFEnvironmentShaderFactory().create(
 			"sky_shader",
@@ -248,44 +222,3 @@ void AppleseedRenderer::defineEnvironment()
 				.insert("environment_edf", "sky_edf")
 				.insert("environment_shader", "sky_shader")));	
 }
-
-
-//void AppleseedRenderer::updateEnv(MObject mobj)
-//{
-//	MFnDependencyNode appleseedGlobals(mobj);
-//
-//	int envType = 0;
-//	getEnum(MString("environmentType"), appleseedGlobals, envType);
-//
-//	MColor envColor;
-//	getColor(MString("environmentColor"), appleseedGlobals,envColor);
-//
-//	MColor envMap;
-//	getColor(MString("environmentMap"), appleseedGlobals, envMap);
-//
-//	float intens = 1.0f;
-//	getFloat(MString("environmentIntensity"), appleseedGlobals, intens);
-//
-//	MColor grHoriz;
-//	getColor(MString("gradientHorizon"), appleseedGlobals, grHoriz);
-//
-//	MColor grZeni;
-//	getColor(MString("gradientZenit"), appleseedGlobals, grZeni);
-//
-//	//this->project->
-//	MString envName = "environmentColor";
-//	MString envMapName = "environmentMap";
-//	MString gradHorizName = "gradientHorizon";
-//	MString gradZenitName = "gradientZenit";
-//
-//	asr::ColorEntity *entity = nullptr;
-//	entity = this->project->get_scene()->colors().get_by_name(envName.asChar());
-//	if( entity != nullptr )
-//	{
-//		Logging::debug("Found envColor entity");
-//		asr::ColorValueArray cva = entity->get_values();
-//		cva[0] = envColor.r;
-//		cva[1] = envColor.g;
-//		cva[2] = envColor.b;
-//	}
-//}

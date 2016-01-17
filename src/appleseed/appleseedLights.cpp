@@ -32,7 +32,7 @@ void AppleseedRenderer::defineLight(std::shared_ptr<MayaObject> obj)
 		MColor col = getColorAttr("color", depFn);
 		float intensity = getFloatAttr("intensity", depFn, 1.0f);
 		MString colorAttribute = obj->shortName + "_intensity";
-		defineColor(colorAttribute, col, intensity);
+		defineColor(project.get(), colorAttribute.asChar(), col, intensity);
 		int decay = getEnumInt("decayRate", depFn);
 		if (light == nullptr)
 		{
@@ -58,7 +58,7 @@ void AppleseedRenderer::defineLight(std::shared_ptr<MayaObject> obj)
 		MColor col = getColorAttr("color", depFn);
 		float intensity = getFloatAttr("intensity", depFn, 1.0f);
 		MString colorAttribute = obj->shortName + "_intensity";
-		defineColor(colorAttribute, col, intensity);
+		defineColor(project.get(), colorAttribute.asChar(), col, intensity);
 		Logging::debug(MString("Creating spotLight: ") + depFn.name());
 		float coneAngle = getDegree("coneAngle", depFn);
 		float penumbraAngle = getDegree("penumbraAngle", depFn);
@@ -94,7 +94,7 @@ void AppleseedRenderer::defineLight(std::shared_ptr<MayaObject> obj)
 		MColor col = getColorAttr("color", depFn);
 		float intensity = getFloatAttr("intensity", depFn, 1.0f);
 		MString colorAttribute = obj->shortName + "_intensity";
-		defineColor(colorAttribute, col, intensity);
+		defineColor(project.get(), colorAttribute.asChar(), col, intensity);
 
 		if (isSunLight(obj->mobject))
 		{
@@ -156,7 +156,7 @@ void AppleseedRenderer::defineLight(std::shared_ptr<MayaObject> obj)
 		asr::ParamArray edfParams;
 		MString lightColor = lightColorAsString(depFn);
 		MColor color = getColorAttr("color", depFn);
-		defineColor(areaLightColorName, color, getFloatAttr("intensity", depFn, 1.0f));
+		defineColor(project.get(), areaLightColorName.asChar(), color, getFloatAttr("intensity", depFn, 1.0f));
 		edfParams.insert("radiance", areaLightColorName.asChar());
 		//edfParams.insert("radiance_multiplier", getFloatAttr("intensity", depFn, 1.0f));
 

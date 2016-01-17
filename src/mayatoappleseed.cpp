@@ -135,5 +135,10 @@ MStatus MayaToAppleseed::doIt(const MArgList& args)
 	e.type = EventQueue::Event::INITRENDER;
 	theRenderEventQueue()->push(e);
 
+	if (MGlobal::mayaState() == MGlobal::kBatch)
+	{
+		RenderQueueWorker::startRenderQueueWorker();
+	}
+
 	return MStatus::kSuccess;
 }
