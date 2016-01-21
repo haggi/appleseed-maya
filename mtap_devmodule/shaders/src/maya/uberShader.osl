@@ -107,7 +107,7 @@ shader uberShader
         string help = "Specularity 1 value",
 		APPLESEED_01_LIMIT_METADATA
     ]],
-	float specularIOR1 = 1.3
+	float specularIOR1 = 1.5
     [[
         string help = "Specularity 1 index of reflection",
 		float min = 0.001,
@@ -286,7 +286,7 @@ shader uberShader
 		{
 			int depth;
 			getattribute("path:ray_depth", depth);
-			//if (depth == 0)
+			if (depth == 0)
 			{
 				float sssIOR = 1.3;
 				float g = 0.0;
@@ -302,11 +302,4 @@ shader uberShader
 		}
 		outColor = (diffuseClosure * (1.0 - refractivity) + refractionClosure * refractivity) * (1.0 - Kr) + reflectionClosure * Kr + subsurfaceClosure + emissionClosure;
 	}	
-	//float sssIOR = 1.3;
-	//float g = 0.0;
-	//directional_dipole
-	//normalized_diffusion
-	//outColor = as_subsurface("normalized_diffusion", N, color(1,1,1) * 10, color(1,1,1) * SSS1RadiusMultiplier, sssIOR, g);
-	
-	
 }

@@ -10,7 +10,7 @@ param	float	backlighting	0		%meta{string,help,"Backlighting, show light though a
 param	float	translucency	0		%meta{string,help,"Translucency."} %meta{float,min,0} %meta{float,max,1}  %read{28,51} %write{2147483647,-1}
 param	vector	translucencyColor	0 0 0		%meta{string,help,"Translucency color"} %meta{string,hint,"useAsColor"}  %read{16,16} %write{2147483647,-1}
 param	float	specular1	0.5		%meta{string,help,"Specularity 1 value"} %meta{float,min,0} %meta{float,max,1}  %read{57,191} %write{2147483647,-1}
-param	float	specularIOR1	1.3		%meta{string,help,"Specularity 1 index of reflection"} %meta{float,min,0.001} %meta{float,max,3} %meta{string,hint,"softmax"}  %read{101,101} %write{2147483647,-1}
+param	float	specularIOR1	10		%meta{string,help,"Specularity 1 index of reflection"} %meta{float,min,0.001} %meta{float,max,3} %meta{string,hint,"softmax"}  %read{101,101} %write{2147483647,-1}
 param	int	specularUseFresnel1	1		%meta{string,help,"Specularity 1 use fresnel"} %meta{string,hint,"useAsBool"}  %read{102,102} %write{2147483647,-1}
 param	float	reflectivityAtZeroDeg	0		%meta{string,help,"Reflectivity at 0 Degree"} %meta{float,min,0} %meta{float,max,1}  %read{194,194} %write{2147483647,-1}
 param	float	roughness1	0.1		%meta{string,help,"Roughness"} %meta{float,min,0.001} %meta{float,max,1}  %read{180,180} %write{2147483647,-1}
@@ -882,7 +882,7 @@ code ___main___
 	mul		$tmp162 $tmp160 $tmp161 	%argrw{"wrr"}
 	mul		___308_emissionClosure $tmp162 emissionMultiplier 	%argrw{"wrr"}
 # H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\uberShader.osl:304
-# 	}	
+# 		//Kr *= 5;
 	sub		$tmp163 $const11 refractivity 	%line{304} %argrw{"wrr"}
 	mul		$tmp164 ___308_diffuseClosure $tmp163 	%argrw{"wrr"}
 	mul		$tmp165 ___308_refractionClosure refractivity 	%argrw{"wrr"}
