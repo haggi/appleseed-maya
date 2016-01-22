@@ -53,46 +53,46 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\mayatocommon\cpp\mayaobject.cpp">
+    <ClCompile Include="..\mayatocommon\cpp\mayaobject.cpp">
       <Filter>common</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\mayatocommon\cpp\mayascene.cpp">
+    <ClCompile Include="..\mayatocommon\cpp\mayascene.cpp">
       <Filter>common</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\mayatocommon\cpp\renderglobals.cpp">
+    <ClCompile Include="..\mayatocommon\cpp\renderglobals.cpp">
       <Filter>common</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\mayatocommon\cpp\utilities\attrtools.cpp">
+    <ClCompile Include="..\mayatocommon\cpp\utilities\attrtools.cpp">
       <Filter>common\utilities</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\mayatocommon\cpp\utilities\logging.cpp">
+    <ClCompile Include="..\mayatocommon\cpp\utilities\logging.cpp">
       <Filter>common\utilities</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\mayatocommon\cpp\utilities\pystring.cpp">
+    <ClCompile Include="..\mayatocommon\cpp\utilities\pystring.cpp">
       <Filter>common\utilities</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\mayatocommon\cpp\utilities\tools.cpp">
+    <ClCompile Include="..\mayatocommon\cpp\utilities\tools.cpp">
       <Filter>common\utilities</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\mayatocommon\cpp\shadingtools\material.cpp">
+    <ClCompile Include="..\mayatocommon\cpp\shadingtools\material.cpp">
       <Filter>common\shadingtools</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\mayatocommon\cpp\shadingtools\shadingnode.cpp">
+    <ClCompile Include="..\mayatocommon\cpp\shadingtools\shadingnode.cpp">
       <Filter>common\shadingtools</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\mayatocommon\cpp\mayarendernodes\renderglobalsnode.cpp">
+    <ClCompile Include="..\mayatocommon\cpp\mayarendernodes\renderglobalsnode.cpp">
       <Filter>common\mayarendernodes</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\mayatocommon\cpp\mayarendernodes\rendercmd.cpp">
+    <ClCompile Include="..\mayatocommon\cpp\mayarendernodes\rendercmd.cpp">
       <Filter>common\mayarendernodes</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\mayatocommon\cpp\memory\memoryinfo.cpp">
+    <ClCompile Include="..\mayatocommon\cpp\memory\memoryinfo.cpp">
       <Filter>common\memory</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\mayatocommon\cpp\threads\queue.cpp">
+    <ClCompile Include="..\mayatocommon\cpp\threads\queue.cpp">
       <Filter>common\threads</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\mayatocommon\cpp\threads\threads.cpp">
+    <ClCompile Include="..\mayatocommon\cpp\threads\threads.cpp">
       <Filter>common\threads</Filter>
     </ClCompile>
     <ClCompile Include="..\src\mayatoappleseed.cpp">
@@ -101,10 +101,10 @@
     <ClCompile Include="..\src\pluginmain.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\mayatocommon\cpp\threads\renderqueueworker.cpp">
+    <ClCompile Include="..\mayatocommon\cpp\threads\renderqueueworker.cpp">
       <Filter>common\threads</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\mayatocommon\cpp\utilities\minimap.cpp">
+    <ClCompile Include="..\mayatocommon\cpp\utilities\minimap.cpp">
       <Filter>common\utilities</Filter>
     </ClCompile>
     <ClCompile Include="..\src\appleseed\appleseed.cpp">
@@ -137,16 +137,16 @@
     <ClCompile Include="..\src\appleseed\appleseedutils.cpp">
       <Filter>Source Files\appleseed</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\mayatocommon\cpp\rendering\renderer.cpp">
+    <ClCompile Include="..\mayatocommon\cpp\rendering\renderer.cpp">
       <Filter>common\rendering</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\mayatocommon\cpp\shadingtools\shadingutils.cpp">
+    <ClCompile Include="..\mayatocommon\cpp\shadingtools\shadingutils.cpp">
       <Filter>common\shadingtools</Filter>
     </ClCompile>
     <ClCompile Include="..\src\mtap_common\mtap_swatchrenderer.cpp">
       <Filter>mtap_common</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\mayatocommon\cpp\mayarendernodes\standinlocatornode.cpp">
+    <ClCompile Include="..\mayatocommon\cpp\mayarendernodes\standinlocatornode.cpp">
       <Filter>common\mayarendernodes</Filter>
     </ClCompile>
     <ClCompile Include="..\src\mtap_common\mtap_standinlocator.cpp">
@@ -170,7 +170,7 @@
     <ClCompile Include="..\src\appleseed\appleseedupdateelements.cpp">
       <Filter>Source Files\appleseed</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\mayatocommon\cpp\shadingtools\shaderdefs.cpp">
+    <ClCompile Include="..\mayatocommon\cpp\shadingtools\shaderdefs.cpp">
       <Filter>common\shadingtools</Filter>
     </ClCompile>
     <ClCompile Include="..\src\appleseed\appleseedshadingnodes.cpp">
@@ -179,28 +179,28 @@
     <ClCompile Include="..\src\mtap_common\mtap_mayascenefactory.cpp">
       <Filter>mtap_common</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\mayatocommon\cpp\osl\oslutils.cpp">
+    <ClCompile Include="..\mayatocommon\cpp\osl\oslutils.cpp">
       <Filter>common\osl</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\mayatocommon\cpp\world.cpp">
+    <ClCompile Include="..\mayatocommon\cpp\world.cpp">
       <Filter>common</Filter>
     </ClCompile>
     <ClCompile Include="..\src\mtap_common\mtap_world.cpp">
       <Filter>mtap_common</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\mayatocommon\cpp\mayascenefactory.cpp">
+    <ClCompile Include="..\mayatocommon\cpp\mayascenefactory.cpp">
       <Filter>common</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\mayatocommon\cpp\mayasceneparsing.cpp">
+    <ClCompile Include="..\mayatocommon\cpp\mayasceneparsing.cpp">
       <Filter>common</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\mayatocommon\cpp\mayasceneutils.cpp">
+    <ClCompile Include="..\mayatocommon\cpp\mayasceneutils.cpp">
       <Filter>common</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\mayatocommon\cpp\renderglobalsfactory.cpp">
+    <ClCompile Include="..\mayatocommon\cpp\renderglobalsfactory.cpp">
       <Filter>common</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\mayatocommon\cpp\renderprocess.cpp">
+    <ClCompile Include="..\mayatocommon\cpp\renderprocess.cpp">
       <Filter>common</Filter>
     </ClCompile>
     <ClCompile Include="..\src\mtap_common\mtap_mayaobjectfactory.cpp">
@@ -209,10 +209,10 @@
     <ClCompile Include="..\src\appleseed\appleseedrendererfactory.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\mayatocommon\cpp\threads\compute.cpp">
+    <ClCompile Include="..\mayatocommon\cpp\threads\compute.cpp">
       <Filter>common\threads</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\mayatocommon\cpp\rendering\mayarenderer.cpp">
+    <ClCompile Include="..\mayatocommon\cpp\rendering\mayarenderer.cpp">
       <Filter>common\rendering</Filter>
     </ClCompile>
     <ClCompile Include="..\src\appleseed\testrender.cpp">
@@ -242,7 +242,7 @@
     <ClCompile Include="..\src\mtap_common\mtap_swatchrendererinterfacefactory.cpp">
       <Filter>mtap_common</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\mayatocommon\cpp\swatchesrenderer\swatchrenderer.cpp">
+    <ClCompile Include="..\mayatocommon\cpp\swatchesrenderer\swatchrenderer.cpp">
       <Filter>common\swatchesrenderer</Filter>
     </ClCompile>
     <ClCompile Include="..\src\appleseed\swatchesrenderer\appleseedswatchrenderer.cpp">
@@ -260,7 +260,7 @@
     <ClCompile Include="..\src\appleseed\appleseedgeometry.cpp">
       <Filter>Source Files\appleseed</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\mayatocommon\cpp\utilities\meshtools.cpp">
+    <ClCompile Include="..\mayatocommon\cpp\utilities\meshtools.cpp">
       <Filter>common\utilities</Filter>
     </ClCompile>
     <ClCompile Include="..\src\shaders\aslayeredshader.cpp">
@@ -271,52 +271,52 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\mayatocommon\cpp\mayaobject.h">
+    <ClInclude Include="..\mayatocommon\cpp\mayaobject.h">
       <Filter>common</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\mayatocommon\cpp\mayascene.h">
+    <ClInclude Include="..\mayatocommon\cpp\mayascene.h">
       <Filter>common</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\mayatocommon\cpp\renderglobals.h">
+    <ClInclude Include="..\mayatocommon\cpp\renderglobals.h">
       <Filter>common</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\mayatocommon\cpp\utilities\logging.h">
+    <ClInclude Include="..\mayatocommon\cpp\utilities\logging.h">
       <Filter>common\utilities</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\mayatocommon\cpp\utilities\attrtools.h">
+    <ClInclude Include="..\mayatocommon\cpp\utilities\attrtools.h">
       <Filter>common\utilities</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\mayatocommon\cpp\utilities\pystring.h">
+    <ClInclude Include="..\mayatocommon\cpp\utilities\pystring.h">
       <Filter>common\utilities</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\mayatocommon\cpp\utilities\tools.h">
+    <ClInclude Include="..\mayatocommon\cpp\utilities\tools.h">
       <Filter>common\utilities</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\mayatocommon\cpp\shadingtools\material.h">
+    <ClInclude Include="..\mayatocommon\cpp\shadingtools\material.h">
       <Filter>common\shadingtools</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\mayatocommon\cpp\shadingtools\shadingnode.h">
+    <ClInclude Include="..\mayatocommon\cpp\shadingtools\shadingnode.h">
       <Filter>common\shadingtools</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\mayatocommon\cpp\mayarendernodes\rendercmd.h">
+    <ClInclude Include="..\mayatocommon\cpp\mayarendernodes\rendercmd.h">
       <Filter>common\mayarendernodes</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\mayatocommon\cpp\mayarendernodes\renderglobalsnode.h">
+    <ClInclude Include="..\mayatocommon\cpp\mayarendernodes\renderglobalsnode.h">
       <Filter>common\mayarendernodes</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\mayatocommon\cpp\memory\memoryinfo.h">
+    <ClInclude Include="..\mayatocommon\cpp\memory\memoryinfo.h">
       <Filter>common\memory</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\mayatocommon\cpp\threads\queue.h">
+    <ClInclude Include="..\mayatocommon\cpp\threads\queue.h">
       <Filter>common\threads</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\mayatocommon\cpp\threads\threads.h">
+    <ClInclude Include="..\mayatocommon\cpp\threads\threads.h">
       <Filter>common\threads</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\mayatocommon\cpp\threads\renderqueueworker.h">
+    <ClInclude Include="..\mayatocommon\cpp\threads\renderqueueworker.h">
       <Filter>common\threads</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\mayatocommon\cpp\utilities\minimap.h">
+    <ClInclude Include="..\mayatocommon\cpp\utilities\minimap.h">
       <Filter>common\utilities</Filter>
     </ClInclude>
     <ClInclude Include="..\src\appleseed\appleseed.h">
@@ -340,16 +340,16 @@
     <ClInclude Include="..\src\appleseed\mtap_tilecallback.h">
       <Filter>Source Files\appleseed</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\mayatocommon\cpp\rendering\renderer.h">
+    <ClInclude Include="..\mayatocommon\cpp\rendering\renderer.h">
       <Filter>common\rendering</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\mayatocommon\cpp\shadingtools\shadingutils.h">
+    <ClInclude Include="..\mayatocommon\cpp\shadingtools\shadingutils.h">
       <Filter>common\shadingtools</Filter>
     </ClInclude>
     <ClInclude Include="..\src\mtap_common\mtap_swatchrenderer.h">
       <Filter>mtap_common</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\mayatocommon\cpp\mayarendernodes\standinlocatornode.h">
+    <ClInclude Include="..\mayatocommon\cpp\mayarendernodes\standinlocatornode.h">
       <Filter>common\mayarendernodes</Filter>
     </ClInclude>
     <ClInclude Include="..\src\mtap_common\mtap_standinlocator.h">
@@ -361,34 +361,34 @@
     <ClInclude Include="..\src\mtap_common\mtap_standinmeshnode.h">
       <Filter>mtap_common</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\mayatocommon\cpp\shadingtools\shaderdefs.h">
+    <ClInclude Include="..\mayatocommon\cpp\shadingtools\shaderdefs.h">
       <Filter>common\shadingtools</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\mayatocommon\cpp\mayascenefactory.h">
+    <ClInclude Include="..\mayatocommon\cpp\mayascenefactory.h">
       <Filter>common</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\mayatocommon\cpp\osl\oslutils.h">
+    <ClInclude Include="..\mayatocommon\cpp\osl\oslutils.h">
       <Filter>common\osl</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\mayatocommon\cpp\world.h">
+    <ClInclude Include="..\mayatocommon\cpp\world.h">
       <Filter>common</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\mayatocommon\cpp\mayaobjectfactory.h">
+    <ClInclude Include="..\mayatocommon\cpp\mayaobjectfactory.h">
       <Filter>common</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\mayatocommon\cpp\renderglobalsfactory.h">
+    <ClInclude Include="..\mayatocommon\cpp\renderglobalsfactory.h">
       <Filter>common</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\mayatocommon\cpp\renderprocess.h">
+    <ClInclude Include="..\mayatocommon\cpp\renderprocess.h">
       <Filter>common</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\mayatocommon\cpp\rendering\rendererfactory.h">
+    <ClInclude Include="..\mayatocommon\cpp\rendering\rendererfactory.h">
       <Filter>common\rendering</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\mayatocommon\cpp\threads\compute.h">
+    <ClInclude Include="..\mayatocommon\cpp\threads\compute.h">
       <Filter>common\threads</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\mayatocommon\cpp\rendering\mayarenderer.h">
+    <ClInclude Include="..\mayatocommon\cpp\rendering\mayarenderer.h">
       <Filter>common\rendering</Filter>
     </ClInclude>
     <ClInclude Include="..\src\appleseed\testrender.h">
@@ -412,22 +412,22 @@
     <ClInclude Include="..\src\mtap_common\mtap_material.h">
       <Filter>mtap_common</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\mayatocommon\cpp\swatchesrenderer\swatchgeometry.h">
+    <ClInclude Include="..\mayatocommon\cpp\swatchesrenderer\swatchgeometry.h">
       <Filter>common\swatchesrenderer</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\mayatocommon\cpp\swatchesrenderer\swatchrenderer.h">
+    <ClInclude Include="..\mayatocommon\cpp\swatchesrenderer\swatchrenderer.h">
       <Filter>common\swatchesrenderer</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\mayatocommon\cpp\swatchesrenderer\swatchrendererinterface.h">
+    <ClInclude Include="..\mayatocommon\cpp\swatchesrenderer\swatchrendererinterface.h">
       <Filter>common\swatchesrenderer</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\mayatocommon\cpp\swatchesrenderer\swatchrendererinterfacefactory.h">
+    <ClInclude Include="..\mayatocommon\cpp\swatchesrenderer\swatchrendererinterfacefactory.h">
       <Filter>common\swatchesrenderer</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\mayatocommon\cpp\swatchesrenderer\swatchesqueue.h">
+    <ClInclude Include="..\mayatocommon\cpp\swatchesrenderer\swatchesqueue.h">
       <Filter>common\swatchesrenderer</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\mayatocommon\cpp\swatchesrenderer\newswatchrenderer.h">
+    <ClInclude Include="..\mayatocommon\cpp\swatchesrenderer\newswatchrenderer.h">
       <Filter>common\swatchesrenderer</Filter>
     </ClInclude>
     <ClInclude Include="..\src\appleseed\swatchesrenderer\appleseedswatchrenderer.h">
@@ -439,7 +439,7 @@
     <ClInclude Include="..\src\appleseed\appleseedgeometry.h">
       <Filter>Source Files\appleseed</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\mayatocommon\cpp\utilities\meshtools.h">
+    <ClInclude Include="..\mayatocommon\cpp\utilities\meshtools.h">
       <Filter>common\utilities</Filter>
     </ClInclude>
     <ClInclude Include="..\src\shaders\aslayeredshader.h">

@@ -205,41 +205,41 @@
 <PostBuildEvent />
 </ItemDefinitionGroup>
 <ItemGroup>
-<ClCompile Include="..\..\mayatocommon\cpp\mayaobject.cpp" />
-<ClCompile Include="..\..\mayatocommon\cpp\mayarendernodes\rendercmd.cpp" />
-<ClCompile Include="..\..\mayatocommon\cpp\mayarendernodes\renderglobalsnode.cpp" />
-<ClCompile Include="..\..\mayatocommon\cpp\mayarendernodes\standinlocatornode.cpp" />
-<ClCompile Include="..\..\mayatocommon\cpp\mayascene.cpp" />
-<ClCompile Include="..\..\mayatocommon\cpp\mayascenefactory.cpp" />
-<ClCompile Include="..\..\mayatocommon\cpp\mayasceneparsing.cpp" />
-<ClCompile Include="..\..\mayatocommon\cpp\mayasceneutils.cpp" />
-<ClCompile Include="..\..\mayatocommon\cpp\memory\memoryinfo.cpp" />
-<ClCompile Include="..\..\mayatocommon\cpp\osl\oslutils.cpp">
+<ClCompile Include="..\mayatocommon\cpp\mayaobject.cpp" />
+<ClCompile Include="..\mayatocommon\cpp\mayarendernodes\rendercmd.cpp" />
+<ClCompile Include="..\mayatocommon\cpp\mayarendernodes\renderglobalsnode.cpp" />
+<ClCompile Include="..\mayatocommon\cpp\mayarendernodes\standinlocatornode.cpp" />
+<ClCompile Include="..\mayatocommon\cpp\mayascene.cpp" />
+<ClCompile Include="..\mayatocommon\cpp\mayascenefactory.cpp" />
+<ClCompile Include="..\mayatocommon\cpp\mayasceneparsing.cpp" />
+<ClCompile Include="..\mayatocommon\cpp\mayasceneutils.cpp" />
+<ClCompile Include="..\mayatocommon\cpp\memory\memoryinfo.cpp" />
+<ClCompile Include="..\mayatocommon\cpp\osl\oslutils.cpp">
 <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug2017|x64'">true</ExcludedFromBuild>
 <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release2015|x64'">true</ExcludedFromBuild>
 <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release2016|x64'">false</ExcludedFromBuild>
 </ClCompile>
-<ClCompile Include="..\..\mayatocommon\cpp\renderglobals.cpp" />
-<ClCompile Include="..\..\mayatocommon\cpp\renderglobalsfactory.cpp" />
-<ClCompile Include="..\..\mayatocommon\cpp\rendering\mayarenderer.cpp" />
-<ClCompile Include="..\..\mayatocommon\cpp\rendering\renderer.cpp" />
-<ClCompile Include="..\..\mayatocommon\cpp\renderprocess.cpp" />
-<ClCompile Include="..\..\mayatocommon\cpp\shadingtools\material.cpp" />
-<ClCompile Include="..\..\mayatocommon\cpp\shadingtools\shaderdefs.cpp" />
-<ClCompile Include="..\..\mayatocommon\cpp\shadingtools\shadingnode.cpp" />
-<ClCompile Include="..\..\mayatocommon\cpp\shadingtools\shadingutils.cpp" />
-<ClCompile Include="..\..\mayatocommon\cpp\swatchesrenderer\swatchrenderer.cpp" />
-<ClCompile Include="..\..\mayatocommon\cpp\threads\compute.cpp" />
-<ClCompile Include="..\..\mayatocommon\cpp\threads\queue.cpp" />
-<ClCompile Include="..\..\mayatocommon\cpp\threads\renderqueueworker.cpp" />
-<ClCompile Include="..\..\mayatocommon\cpp\threads\threads.cpp" />
-<ClCompile Include="..\..\mayatocommon\cpp\utilities\attrtools.cpp" />
-<ClCompile Include="..\..\mayatocommon\cpp\utilities\logging.cpp" />
-<ClCompile Include="..\..\mayatocommon\cpp\utilities\meshtools.cpp" />
-<ClCompile Include="..\..\mayatocommon\cpp\utilities\minimap.cpp" />
-<ClCompile Include="..\..\mayatocommon\cpp\utilities\pystring.cpp" />
-<ClCompile Include="..\..\mayatocommon\cpp\utilities\tools.cpp" />
-<ClCompile Include="..\..\mayatocommon\cpp\world.cpp" />
+<ClCompile Include="..\mayatocommon\cpp\renderglobals.cpp" />
+<ClCompile Include="..\mayatocommon\cpp\renderglobalsfactory.cpp" />
+<ClCompile Include="..\mayatocommon\cpp\rendering\mayarenderer.cpp" />
+<ClCompile Include="..\mayatocommon\cpp\rendering\renderer.cpp" />
+<ClCompile Include="..\mayatocommon\cpp\renderprocess.cpp" />
+<ClCompile Include="..\mayatocommon\cpp\shadingtools\material.cpp" />
+<ClCompile Include="..\mayatocommon\cpp\shadingtools\shaderdefs.cpp" />
+<ClCompile Include="..\mayatocommon\cpp\shadingtools\shadingnode.cpp" />
+<ClCompile Include="..\mayatocommon\cpp\shadingtools\shadingutils.cpp" />
+<ClCompile Include="..\mayatocommon\cpp\swatchesrenderer\swatchrenderer.cpp" />
+<ClCompile Include="..\mayatocommon\cpp\threads\compute.cpp" />
+<ClCompile Include="..\mayatocommon\cpp\threads\queue.cpp" />
+<ClCompile Include="..\mayatocommon\cpp\threads\renderqueueworker.cpp" />
+<ClCompile Include="..\mayatocommon\cpp\threads\threads.cpp" />
+<ClCompile Include="..\mayatocommon\cpp\utilities\attrtools.cpp" />
+<ClCompile Include="..\mayatocommon\cpp\utilities\logging.cpp" />
+<ClCompile Include="..\mayatocommon\cpp\utilities\meshtools.cpp" />
+<ClCompile Include="..\mayatocommon\cpp\utilities\minimap.cpp" />
+<ClCompile Include="..\mayatocommon\cpp\utilities\pystring.cpp" />
+<ClCompile Include="..\mayatocommon\cpp\utilities\tools.cpp" />
+<ClCompile Include="..\mayatocommon\cpp\world.cpp" />
 <ClCompile Include="..\src\appleseed\appleseed.cpp" />
 <ClCompile Include="..\src\appleseed\appleseedcamera.cpp">
 <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug2016|x64'">false</ExcludedFromBuild>
@@ -386,46 +386,46 @@
 <ClCompile Include="..\src\shaders\aslayeredshader.cpp" />
 </ItemGroup>
 <ItemGroup>
-<ClInclude Include="..\..\mayatocommon\cpp\mayaobject.h" />
-<ClInclude Include="..\..\mayatocommon\cpp\mayaobjectfactory.h" />
-<ClInclude Include="..\..\mayatocommon\cpp\mayarendernodes\rendercmd.h" />
-<ClInclude Include="..\..\mayatocommon\cpp\mayarendernodes\renderglobalsnode.h" />
-<ClInclude Include="..\..\mayatocommon\cpp\mayarendernodes\standinlocatornode.h" />
-<ClInclude Include="..\..\mayatocommon\cpp\mayascene.h" />
-<ClInclude Include="..\..\mayatocommon\cpp\mayascenefactory.h" />
-<ClInclude Include="..\..\mayatocommon\cpp\memory\memoryinfo.h" />
-<ClInclude Include="..\..\mayatocommon\cpp\osl\oslutils.h">
+<ClInclude Include="..\mayatocommon\cpp\mayaobject.h" />
+<ClInclude Include="..\mayatocommon\cpp\mayaobjectfactory.h" />
+<ClInclude Include="..\mayatocommon\cpp\mayarendernodes\rendercmd.h" />
+<ClInclude Include="..\mayatocommon\cpp\mayarendernodes\renderglobalsnode.h" />
+<ClInclude Include="..\mayatocommon\cpp\mayarendernodes\standinlocatornode.h" />
+<ClInclude Include="..\mayatocommon\cpp\mayascene.h" />
+<ClInclude Include="..\mayatocommon\cpp\mayascenefactory.h" />
+<ClInclude Include="..\mayatocommon\cpp\memory\memoryinfo.h" />
+<ClInclude Include="..\mayatocommon\cpp\osl\oslutils.h">
 <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug2017|x64'">true</ExcludedFromBuild>
 <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release2015|x64'">true</ExcludedFromBuild>
 <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release2016|x64'">false</ExcludedFromBuild>
 </ClInclude>
-<ClInclude Include="..\..\mayatocommon\cpp\renderglobals.h" />
-<ClInclude Include="..\..\mayatocommon\cpp\renderglobalsfactory.h" />
-<ClInclude Include="..\..\mayatocommon\cpp\rendering\mayarenderer.h" />
-<ClInclude Include="..\..\mayatocommon\cpp\rendering\renderer.h" />
-<ClInclude Include="..\..\mayatocommon\cpp\rendering\rendererfactory.h" />
-<ClInclude Include="..\..\mayatocommon\cpp\renderprocess.h" />
-<ClInclude Include="..\..\mayatocommon\cpp\shadingtools\material.h" />
-<ClInclude Include="..\..\mayatocommon\cpp\shadingtools\shaderdefs.h" />
-<ClInclude Include="..\..\mayatocommon\cpp\shadingtools\shadingnode.h" />
-<ClInclude Include="..\..\mayatocommon\cpp\shadingtools\shadingutils.h" />
-<ClInclude Include="..\..\mayatocommon\cpp\swatchesrenderer\newswatchrenderer.h" />
-<ClInclude Include="..\..\mayatocommon\cpp\swatchesrenderer\swatchesqueue.h" />
-<ClInclude Include="..\..\mayatocommon\cpp\swatchesrenderer\swatchgeometry.h" />
-<ClInclude Include="..\..\mayatocommon\cpp\swatchesrenderer\swatchrenderer.h" />
-<ClInclude Include="..\..\mayatocommon\cpp\swatchesrenderer\swatchrendererinterface.h" />
-<ClInclude Include="..\..\mayatocommon\cpp\swatchesrenderer\swatchrendererinterfacefactory.h" />
-<ClInclude Include="..\..\mayatocommon\cpp\threads\compute.h" />
-<ClInclude Include="..\..\mayatocommon\cpp\threads\queue.h" />
-<ClInclude Include="..\..\mayatocommon\cpp\threads\renderqueueworker.h" />
-<ClInclude Include="..\..\mayatocommon\cpp\threads\threads.h" />
-<ClInclude Include="..\..\mayatocommon\cpp\utilities\attrtools.h" />
-<ClInclude Include="..\..\mayatocommon\cpp\utilities\logging.h" />
-<ClInclude Include="..\..\mayatocommon\cpp\utilities\meshtools.h" />
-<ClInclude Include="..\..\mayatocommon\cpp\utilities\minimap.h" />
-<ClInclude Include="..\..\mayatocommon\cpp\utilities\pystring.h" />
-<ClInclude Include="..\..\mayatocommon\cpp\utilities\tools.h" />
-<ClInclude Include="..\..\mayatocommon\cpp\world.h" />
+<ClInclude Include="..\mayatocommon\cpp\renderglobals.h" />
+<ClInclude Include="..\mayatocommon\cpp\renderglobalsfactory.h" />
+<ClInclude Include="..\mayatocommon\cpp\rendering\mayarenderer.h" />
+<ClInclude Include="..\mayatocommon\cpp\rendering\renderer.h" />
+<ClInclude Include="..\mayatocommon\cpp\rendering\rendererfactory.h" />
+<ClInclude Include="..\mayatocommon\cpp\renderprocess.h" />
+<ClInclude Include="..\mayatocommon\cpp\shadingtools\material.h" />
+<ClInclude Include="..\mayatocommon\cpp\shadingtools\shaderdefs.h" />
+<ClInclude Include="..\mayatocommon\cpp\shadingtools\shadingnode.h" />
+<ClInclude Include="..\mayatocommon\cpp\shadingtools\shadingutils.h" />
+<ClInclude Include="..\mayatocommon\cpp\swatchesrenderer\newswatchrenderer.h" />
+<ClInclude Include="..\mayatocommon\cpp\swatchesrenderer\swatchesqueue.h" />
+<ClInclude Include="..\mayatocommon\cpp\swatchesrenderer\swatchgeometry.h" />
+<ClInclude Include="..\mayatocommon\cpp\swatchesrenderer\swatchrenderer.h" />
+<ClInclude Include="..\mayatocommon\cpp\swatchesrenderer\swatchrendererinterface.h" />
+<ClInclude Include="..\mayatocommon\cpp\swatchesrenderer\swatchrendererinterfacefactory.h" />
+<ClInclude Include="..\mayatocommon\cpp\threads\compute.h" />
+<ClInclude Include="..\mayatocommon\cpp\threads\queue.h" />
+<ClInclude Include="..\mayatocommon\cpp\threads\renderqueueworker.h" />
+<ClInclude Include="..\mayatocommon\cpp\threads\threads.h" />
+<ClInclude Include="..\mayatocommon\cpp\utilities\attrtools.h" />
+<ClInclude Include="..\mayatocommon\cpp\utilities\logging.h" />
+<ClInclude Include="..\mayatocommon\cpp\utilities\meshtools.h" />
+<ClInclude Include="..\mayatocommon\cpp\utilities\minimap.h" />
+<ClInclude Include="..\mayatocommon\cpp\utilities\pystring.h" />
+<ClInclude Include="..\mayatocommon\cpp\utilities\tools.h" />
+<ClInclude Include="..\mayatocommon\cpp\world.h" />
 <ClInclude Include="..\src\appleseed\appleseed.h" />
 <ClInclude Include="..\src\appleseed\appleseedgeometry.h">
 <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release2017|x64'">false</ExcludedFromBuild>
