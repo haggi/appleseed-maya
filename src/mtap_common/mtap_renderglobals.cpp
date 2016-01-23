@@ -1,6 +1,6 @@
 #include "renderglobals.h"
-#include "maya/mselectionlist.h"
-#include "maya/mfndependencynode.h"
+#include "maya/MSelectionList.h"
+#include "maya/MFnDependencyNode.h"
 
 #include "utilities/logging.h"
 #include "utilities/attrtools.h"
