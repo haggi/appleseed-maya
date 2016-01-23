@@ -7,10 +7,10 @@
 
 #include "foundation/math/matrix.h"
 
-#include "maya/mfndependencynode.h"
+#include "maya/MFnDependencyNode.h"
 
 #include "../mtap_common/mtap_mayaobject.h"
-#include "maya/mmatrix.h"
+#include "maya/MMatrix.h"
 
 namespace asr = renderer;
 namespace asf = foundation;

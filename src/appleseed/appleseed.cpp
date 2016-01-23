@@ -10,9 +10,9 @@
 
 #include "renderer/modeling/environmentedf/sphericalcoordinates.h"
 
-#include "maya/mfndependencynode.h"
-#include "maya/mfnmesh.h"
-#include "maya/mitmeshpolygon.h"
+#include "maya/MFnDependencyNode.h"
+#include "maya/MFnMesh.h"
+#include "maya/MItMeshPolygon.h"
 #include <maya/MPointArray.h>
 #include <maya/MFloatPointArray.h>
 #include <maya/MFloatArray.h>
@@ -116,7 +116,7 @@ void AppleseedRenderer::postFrame()
 	renderGlobals->getImageName();
 	MString filename = renderGlobals->imageOutputFile.asChar();
 	Logging::debug(MString("Saving image as ") + renderGlobals->imageOutputFile);
-	project->get_frame()->write_main_image(renderGlobals->imageOutputFile.asChar());	
+	project->get_frame()->write_main_image(renderGlobals->imageOutputFile.asChar());
 
 	// if we render the very last frame or if we are in UI where the last frame == first frame, then delete the master renderer before
 	// the deletion of the assembly because otherwise it will be deleted automatically if the renderer instance is deleted what results in a crash
@@ -132,7 +132,7 @@ void AppleseedRenderer::postFrame()
 	project->get_scene()->assembly_instances().remove(aiuid);
 	project->get_scene()->assemblies().remove(auid);
 	asr::Assembly *worldass = project->get_scene()->assemblies().get_by_name("world");
-	
+
 }
 
 void AppleseedRenderer::render()

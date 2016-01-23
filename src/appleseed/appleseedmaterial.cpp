@@ -9,7 +9,7 @@
 #include "utilities/tools.h"
 #include "utilities/attrtools.h"
 #include "osl/oslutils.h"
-#include "maya/mfndependencynode.h"
+#include "maya/MFnDependencyNode.h"
 #include "world.h"
 #include "mayascene.h"
 #include "threads/renderqueueworker.h"
@@ -204,7 +204,7 @@ asf::StringArray AppleRender::AppleseedRenderer::defineMaterial(std::shared_ptr<
 			objInstance->get_back_material_mappings().insert("slot0", "default");
 			continue;
 		}
-		
+
 		// if we are in IPR mode, save all translated shading nodes to the interactive update list
 		if (MayaTo::getWorldPtr()->renderType == MayaTo::MayaToWorld::WorldRenderType::IPRRENDER)
 		{
@@ -224,7 +224,7 @@ asf::StringArray AppleRender::AppleseedRenderer::defineMaterial(std::shared_ptr<
 			}
 		}
 
-		updateMaterial(materialNode);		
+		updateMaterial(materialNode);
 
 		MString objectInstanceName = getObjectInstanceName(obj.get());
 		asr::Assembly *ass = getCreateObjectAssembly(obj);
