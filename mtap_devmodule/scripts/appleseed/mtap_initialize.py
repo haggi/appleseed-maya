@@ -4,11 +4,11 @@ import renderer as renderer
 import traceback
 import sys
 import os
-import mtap_optimizetextures
+from appleseed import mtap_optimizetextures
 import appleseed.aenodetemplates as aet
 import appleseed.appleseedmenu as appleseedmenu
 import appleseed.appleseedshadertools as shadertools
-import path
+from appleseed import path
 import tempfile
 import maya.cmds as cmds
 import renderer.osltools as osltools
@@ -17,28 +17,13 @@ reload(renderer)
 
 log = logging.getLogger("mtapLogger")
 
-#    parentForm = pm.setParent(query = True)
-#    pm.setUITemplate( "attributeEditorTemplate", pushTemplate = True)
-#    pm.scrollLayout( "MantraScrollLayout", horizontalScrollBarThickness = 0)
-#    pm.columnLayout("MantraColumnLayout", adjustableColumn = True)
-#
-#    mantraAttributes.mantraGlobalsATList.createUi(mrg)
-#    
-#    pm.setUITemplate( "attributeEditorTemplate", popTemplate = True)
-#    pm.formLayout(parentForm, edit = True, attachForm = [ ("MantraScrollLayout", "top", 0),
-#                                                          ("MantraScrollLayout", "bottom", 0),
-#                                                          ("MantraScrollLayout", "left", 0),
-#                                                          ("MantraScrollLayout", "right", 0)
-#                                                        ])
-
-
 RENDERER_NAME = "Appleseed"
 
 class AppleseedRenderer(renderer.MayaToRenderer):
     theRendererInstance = None
     @staticmethod
     def theRenderer(arg=None):
-        if not Appleseedrenderer.theRendererInstance:
+        if not AppleseedRenderer.theRendererInstance:
             AppleseedRenderer.theRendererInstance = AppleseedRenderer(RENDERER_NAME , __name__)
             # AppleseedRenderer.theRendererInstance = AppleseedRenderer(RENDERER_NAME , "mtap_initialize")
         return AppleseedRenderer.theRendererInstance
@@ -625,19 +610,19 @@ class AppleseedRenderer(renderer.MayaToRenderer):
                 try:
                     optimizedPath = pm.workspace.path / pm.workspace.fileRules['renderData'] / "optimizedTextures"
                 except:
-                    optimizedPath = path.path(tempfile.gettempdir()) / "optimizedTextures"
+                    optimizedPath = appleseed.path.path(tempfile.gettempdir()) / "optimizedTextures"
                 if not os.path.exists(optimizedPath):
                     optimizedPath.makedirs()
                 self.renderGlobalsNode.optimizedTexturePath.set(str(optimizedPath))
     
             # craete optimized exr textures
-            mtap_optimizetextures.preRenderOptimizeTextures(optimizedFilePath=self.renderGlobalsNode.optimizedTexturePath.get())
+            appleseed.mtap_optimizetextures.preRenderOptimizeTextures(optimizedFilePath=self.renderGlobalsNode.optimizedTexturePath.get())
             shadertools.createAutoShaderNodes()
         
         osltools.compileAllShaders()
         
     def postRenderProcedure(self):
-        mtap_optimizetextures.postRenderOptimizeTextures()
+        appleseed.mtap_optimizetextures.postRenderOptimizeTextures()
         shadertools.removeAutoShaderNodes()
 
     def afterGlobalsNodeReplacement(self):
@@ -695,7 +680,7 @@ AETemplates directory, the automatic loading will not work. So I replace it with
 
 def loadAETemplates():    
     rendererName = "Appleseed"
-    aeDir = path.path(__file__).dirname() + "/" + rendererName + "/AETemplate/"
+    aeDir = appleseed.path.path(__file__).dirname() + "/" + rendererName + "/AETemplate/"
     for d in aeDir.listdir("*.py"):
         if d.endswith("Template.py"):
             templateName = d.basename().replace(".py", "")
@@ -705,7 +690,7 @@ def loadAETemplates():
             pm.mel.eval(melCommand)
 
 def loadPlugins():
-    plugins = ["LoadShadersPlugin"]
+    plugins = ["loadshadersplugin"]
     osltools.compileAllShaders() # compile shaders and update shader info on demand
     for plugin in plugins:
         try:

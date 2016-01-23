@@ -1,6 +1,6 @@
 import shutil
 import os
-import path
+from appleseed import path
 import zipfile
 import sys
 
@@ -27,8 +27,8 @@ class Deployment:
     def setRenderer(self, renderer):
         self.renderer = renderer
         self.shortCut = Deployment.rendererDict[renderer]['shortcut']
-        self.sourceBaseDir = path.path("{0}/mayaTo{1}/{2}_devmodule".format(Deployment.mayaToBaseDir, self.renderer, self.shortCut)) 
-        self.destBaseDir = path.path("{0}/mayaTo{1}/deployment/mayaTo{1}".format(Deployment.mayaToBaseDir, self.renderer.capitalize())) 
+        self.sourceBaseDir = appleseed.path.path("{0}/mayaTo{1}/{2}_devmodule".format(Deployment.mayaToBaseDir, self.renderer, self.shortCut)) 
+        self.destBaseDir = appleseed.path.path("{0}/mayaTo{1}/deployment/mayaTo{1}".format(Deployment.mayaToBaseDir, self.renderer.capitalize())) 
         print self.sourceBaseDir, self.destBaseDir
         
         if self.destBaseDir.exists():
@@ -41,7 +41,7 @@ class Deployment:
         self.mayaReleases = versions
 
     def fileOkay(self, fileName):
-        if path.path(fileName).basename().startswith("."):
+        if appleseed.path.path(fileName).basename().startswith("."):
             return False
         if fileName.startswith("."):
             return False
@@ -73,7 +73,7 @@ class Deployment:
             fh.close()
 
     def copyDir(self, directory, destDirExtension = None):
-        for element in path.path(directory).listdir():
+        for element in appleseed.path.path(directory).listdir():
             if not self.fileOkay(element):
                 continue            
             if element.isdir():
@@ -85,7 +85,7 @@ class Deployment:
                     destDir += "/" + destDirExtension
                 destFile = sourceFile.replace(self.sourceBaseDir, destDir)
                 destFile = destFile.replace(Deployment.mayaToPythonBaseDir, destDir)
-                destDir = path.path(destFile).dirname()
+                destDir = appleseed.path.path(destFile).dirname()
                 if not destDir.exists():
                     destDir.makedirs()
                 destFile = self.filterFileNames(destFile)
@@ -161,15 +161,15 @@ def zipdir(p, zipf):
 def createDeployment(renderer, shortCut, mayaRelease):
     
     if os.name == 'nt':
-        basePath = path.path("C:/users/haggi/coding/OpenMaya/src/mayaTo" + renderer.capitalize())
+        basePath = appleseed.path.path("C:/users/haggi/coding/OpenMaya/src/mayaTo" + renderer.capitalize())
     else:
         pass
     if not basePath:
         print "No base path"
         return
     
-    sourceDir = path.path(basePath + "/" +  shortCut + "_devmodule")
-    destDir = path.path(basePath + "/deployment/mayaTo" + renderer.capitalize())
+    sourceDir = appleseed.path.path(basePath + "/" +  shortCut + "_devmodule")
+    destDir = appleseed.path.path(basePath + "/deployment/mayaTo" + renderer.capitalize())
     if destDir.exists():
         print "rm old dir"
         shutil.rmtree(destDir)
@@ -201,12 +201,12 @@ def createDeployment(renderer, shortCut, mayaRelease):
 
     #bin
     if renderer == "appleseed":
-        dkDir = path.path(sourceDir.parent + "/devkit/appleseed_devkit_win64/bin/Release")
+        dkDir = appleseed.path.path(sourceDir.parent + "/devkit/appleseed_devkit_win64/bin/Release")
         for f in dkDir.listdir():
             shutil.copy(f, destDir + "/bin")
 
     #scripts
-    scDir = path.path(sourceDir.parent.parent + "/common/python/")
+    scDir = appleseed.path.path(sourceDir.parent.parent + "/common/python/")
     shutil.copytree(scDir, destDir + "/scripts/")
     scDir = destDir + "/scripts/"
     files = scDir.listdir(".*")
@@ -215,14 +215,14 @@ def createDeployment(renderer, shortCut, mayaRelease):
             f.rmtree()
         else:
             f.remove()
-    scDir = path.path(scDir + "Renderer")
+    scDir = appleseed.path.path(scDir + "Renderer")
     files = scDir.listdir("*.pyc")
     for f in files:
         f.remove()
 
     for root, dirs, files in os.walk(sourceDir + "/scripts/"):
             for file in files:
-                ff = path.path(os.path.join(root, file))
+                ff = appleseed.path.path(os.path.join(root, file))
                 if ff.endswith(".pyc"):
                     continue
                 if file.startswith("."):
@@ -231,7 +231,7 @@ def createDeployment(renderer, shortCut, mayaRelease):
                 print "copy", ff, "to", dst
                 shutil.copy(ff, dst)
             for d in dirs:
-                dd = path.path(os.path.join(root, d))
+                dd = appleseed.path.path(os.path.join(root, d))
                 dst = dd.replace(sourceDir, destDir)
                 print "mkdir", dst
                 os.makedirs(dst)
