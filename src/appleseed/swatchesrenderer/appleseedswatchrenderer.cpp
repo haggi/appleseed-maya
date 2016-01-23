@@ -43,7 +43,6 @@
 #include <maya/MFnDependencyNode.h>
 #include "utilities/logging.h"
 #include "utilities/tools.h"
-#include <thread>
 #include "osl/oslutils.h"
 #include "shadingtools/material.h"
 #include "../appleseedmaterial.h"
@@ -102,7 +101,6 @@ void AppleseedSwatchRenderer::renderSwatch(NewSwatchRenderer *sr)
 	if (!mrenderer.get())
 		return;
 
-	//std::this_thread::sleep_for(std::chrono::milliseconds(3000));
 	int res(sr->resolution());
 	this->setSize(res);
 	this->setShader(sr->dNode);
@@ -261,6 +259,6 @@ void AppleseedSwatchRenderer::terminateAppleseedSwatchRender(AppleseedSwatchRend
 	SQueue::SEvent swatchEvent;
 	SQueue::SwatchesQueue.push(swatchEvent);
 	swRend->terminateLoop = true;
-	while (!swRend->loopDone)
-		std::this_thread::sleep_for(std::chrono::milliseconds(20));
+	//while (!swRend->loopDone)
+	//	std::this_thread::sleep_for(std::chrono::milliseconds(20));
 }

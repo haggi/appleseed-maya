@@ -41,8 +41,10 @@ MStatus initializePlugin( MObject obj )
 {
 	const MString	UserClassify( "shader/surface" );
 
-	for (auto versionElement : getFullVersionString())
-		MGlobal::displayInfo(versionElement.c_str());
+	std::vector<std::string>::iterator it;
+	std::vector<std::string> versions = getFullVersionString();
+	for (it = versions.begin(); it != versions.end(); it++)
+		MGlobal::displayInfo(it->c_str());
 
 	MStatus   status;
 	MFnPlugin plugin( obj, VENDOR, getFullVersionString()[0].c_str(), "Any");

@@ -1,6 +1,6 @@
 #include "renderglobals.h"
-#include "maya/MSelectionList.h"
-#include "maya/MFnDependencyNode.h"
+#include <maya/MSelectionList.h>
+#include <maya/MFnDependencyNode.h>
 
 #include "utilities/logging.h"
 #include "utilities/attrtools.h"
@@ -19,13 +19,6 @@ void RenderGlobals::setRendererAxis()
 }
 
 
-
-//#include "mtap_renderGlobals.h"
-//#include "maya/MSelectionList.h"
-//#include "maya/MFnDependencyNode.h"
-//#include "utilities/logging.h"
-//#include "utilities/attrTools.h"
-//
 //static Logging logger;
 //
 //mtap_RenderGlobals::mtap_RenderGlobals()
