@@ -529,7 +529,6 @@ class AppleseedRenderer(renderer.MayaToRenderer):
             
     def renderProcedure(self, width, height, doShadows, doGlow, camera, options):
         log.debug("renderProcedure")
-        self.removeLogFile()
         print "renderProcedure", width, height, doShadows, doGlow, camera, options
         self.createGlobalsNode()    
         self.preRenderProcedure()
