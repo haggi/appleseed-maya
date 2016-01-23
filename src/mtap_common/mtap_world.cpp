@@ -28,7 +28,7 @@ namespace MayaTo{
 	{
 		std::string oslShaderPath = (getRendererHome() + "shaders").asChar();
 		Logging::debug(MString("setting osl shader search path to: ") + oslShaderPath.c_str());
-		MString cmd = MString("import Renderer.OSLTools as osl;osl.getOSODirs();");
+		MString cmd = MString("import renderer.osltools as osl;osl.getOSODirs();");
 		MStringArray oslDirs;
 		MGlobal::executePythonCommand(cmd, oslDirs, false, false);
 		MGlobal::displayInfo(MString("found ") + oslDirs.length() + " osl dirs.");

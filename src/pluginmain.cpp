@@ -86,7 +86,7 @@ MStatus initializePlugin( MObject obj )
 	setRendererShortCutName("mtap");
 	setRendererHome(getenv("MTAP_HOME"));
 
-	MString cmd = MString("import mtap_initialize as minit; minit.initRenderer()");
+	MString cmd = MString("import appleseed.mtap_initialize as minit; minit.initRenderer()");
 	MGlobal::displayInfo("try to register...");
 	status = MGlobal::executePythonCommand(cmd, true, false);
 	if(!status)
@@ -173,7 +173,7 @@ MStatus uninitializePlugin( MObject obj)
 	CHECK_MSTATUS( MGlobal::executeCommand( command ) );
 
 	std::cout << "minit.unregister()\n";
-	MString cmd = MString("import mtap_initialize as minit; minit.unregister()");
+	MString cmd = MString("import appleseed.mtap_initialize as minit; minit.unregister()");
 	status = MGlobal::executePythonCommand(cmd);
 	if(!status)
 	{

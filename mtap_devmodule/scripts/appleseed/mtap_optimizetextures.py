@@ -1,5 +1,5 @@
 import pymel.core as pm
-from appleseed import path
+import path
 import logging
 import os
 import subprocess
@@ -8,10 +8,10 @@ import shutil
 log = logging.getLogger("mtapLogger")
 
 def isOlderThan(fileA, fileB):
-    return appleseed.path.path(fileA).mtime < appleseed.path.path(fileB).mtime
+    return path.path(fileA).mtime < path.path(fileB).mtime
 
 def makeExrTiled(sourceFile):
-    tiledPath = appleseed.path.path(sourceFile.replace(".exr", ".t_exr"))
+    tiledPath = path.path(sourceFile.replace(".exr", ".t_exr"))
     cmd = "maketiledexr {0} {1}".format(sourceFile, tiledPath)    
     try:
         log.debug(cmd)
@@ -56,7 +56,7 @@ def makeDestFile( sourceFile, destFile ):
 def preRenderOptimizeTextures(destFormat = "exr", optimizedFilePath = ""):
     
     for fileTexture in pm.ls(type="file"):
-        fileNamePath = appleseed.path.path(fileTexture.fileTextureName.get())
+        fileNamePath = path.path(fileTexture.fileTextureName.get())
         log.debug("Check file texture:" + fileNamePath)
     
         if not fileNamePath.exists():
@@ -79,7 +79,7 @@ def preRenderOptimizeTextures(destFormat = "exr", optimizedFilePath = ""):
         # unix /server/textures/file.exr
         # or a drive in windows like c:
         # or a dfs name like //server/textures.... 
-        optimizedFilePath = appleseed.path.path(optimizedFilePath)
+        optimizedFilePath = path.path(optimizedFilePath)
         localPath = optimizedFilePath
         if fileNamePath[1] == ":":
             localPath = optimizedFilePath / fileNamePath[3:]
@@ -87,7 +87,7 @@ def preRenderOptimizeTextures(destFormat = "exr", optimizedFilePath = ""):
             localPath = optimizedFilePath / fileNamePath[2:]
         elif fileNamePath.startswith("/"):
             localPath = optimizedFilePath / fileNamePath[1:]
-        localPath = appleseed.path.path("{0}.{1}".format(localPath, destFormat))
+        localPath = path.path("{0}.{1}".format(localPath, destFormat))
         log.debug("Local destination path {0}".format(localPath.realpath()))
         localPath = localPath.realpath()
         
@@ -98,7 +98,7 @@ def preRenderOptimizeTextures(destFormat = "exr", optimizedFilePath = ""):
                 doConvert = False
         
         if doConvert:
-            if not makeDestFile(fileNamePath.realpath(), appleseed.path.path(localPath.replace(".exr", "_t.exr")).realpath()):
+            if not makeDestFile(fileNamePath.realpath(), path.path(localPath.replace(".exr", "_t.exr")).realpath()):
                 log.debug("Problem converting {0}".format(fileNamePath))
                 continue
                     

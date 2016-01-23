@@ -7,12 +7,12 @@ I used Boost 1.55. There is a VisualStudio props file which contains some macros
 
 To run the debug plugin from maya, maya needs some env variables:<br>
 
-MAYA_MODULE_PATH should point to the module path of mayaToAppleseed. e.g.<br>
+MAYA_MODULE_PATH should point to the module path of mayaToAppleseed. That's the directory where the mayatoappleseed.mod file is located. e.g.<br>
 MAYA_MODULE_PATH=c:/SomeDir/mayaToAppleseed/mtap_devmodule<br>
 
-The maya script path should contain the common scripts:
+The maya script path or the pythonpath should contain the common scripts because in a module file only paths below a module can be defined:
 
 MAYA_SCRIPT_PATH=c:/SomeDir/mayaToCommon/python<br>
 
 This can be done via Maya.env file or with a batch script (my preferred way).<br>
-Then it should work. This is only necessary for the debug version. In the final deployment the common scripts will be copied to the module script path.
+Then it should work. The mayaToCommon python path is only necessary for the debug version. In the final deployment the common scripts will be copied to the module script path.

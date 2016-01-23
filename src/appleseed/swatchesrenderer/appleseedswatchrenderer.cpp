@@ -74,7 +74,7 @@ AppleseedSwatchRenderer::AppleseedSwatchRenderer()
 	else{
 		Logging::info(MString("Successfully loaded swatch render file."));
 	}
-	MString cmd = MString("import Renderer.OSLTools as osl;osl.getOSODirs();");
+	MString cmd = MString("import renderer.osltools as osl;osl.getOSODirs();");
 	MStringArray oslDirs;
 	MGlobal::executePythonCommand(cmd, oslDirs, false, false);
 	for (uint i = 0; i < oslDirs.length(); i++)

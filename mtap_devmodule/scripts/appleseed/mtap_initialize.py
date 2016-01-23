@@ -4,13 +4,12 @@ import renderer as renderer
 import traceback
 import sys
 import os
-from appleseed import mtap_optimizetextures
-import appleseed.aenodetemplates as aet
-import appleseed.appleseedmenu as appleseedmenu
-import appleseed.appleseedshadertools as shadertools
-from appleseed import path
+import path
+import mtap_optimizetextures
+import aenodetemplates as aet
+import appleseedmenu as appleseedmenu
+import appleseedshadertools as shadertools
 import tempfile
-import maya.cmds as cmds
 import renderer.osltools as osltools
 
 reload(renderer)
@@ -527,42 +526,6 @@ class AppleseedRenderer(renderer.MayaToRenderer):
         pm.addExtension(nodeType="areaLight", longName="mtap_visibleSpecular", attributeType="bool", defaultValue=True)
         pm.addExtension(nodeType="areaLight", longName="mtap_visibleDiffuse", attributeType="bool", defaultValue=True)
         pm.addExtension(nodeType="areaLight", longName="mtap_visibleTransparency", attributeType="bool", defaultValue=True)
-        
-        # shading group
-#        pm.addExtension(nodeType="shadingEngine", longName="mtap_mat_bsdf", attributeType="message")
-#        pm.addExtension(nodeType="shadingEngine", longName="mtap_mat_surfaceShader", attributeType="message")
-#        pm.addExtension(nodeType="shadingEngine", longName="mtap_mat_edf", attributeType="message")
-#        pm.addExtension(nodeType="shadingEngine", longName="mtap_mat_alphaMap", usedAsColor=True, attributeType="float3")
-#        pm.addExtension(nodeType="shadingEngine", longName="mtap_mat_alphaMapR",attributeType = "float", parent="mtap_mat_alphaMap")
-#        pm.addExtension(nodeType="shadingEngine", longName="mtap_mat_alphaMapG",attributeType = "float", parent="mtap_mat_alphaMap")
-#        pm.addExtension(nodeType="shadingEngine", longName="mtap_mat_alphaMapB",attributeType = "float", parent="mtap_mat_alphaMap")
-#        pm.addExtension(nodeType="shadingEngine", longName="mtap_mat_normalMap", usedAsColor=True, attributeType="float3")
-#        pm.addExtension(nodeType="shadingEngine", longName="mtap_mat_normalMapR",attributeType = "float", parent="mtap_mat_normalMap")
-#        pm.addExtension(nodeType="shadingEngine", longName="mtap_mat_normalMapG",attributeType = "float", parent="mtap_mat_normalMap")
-#        pm.addExtension(nodeType="shadingEngine", longName="mtap_mat_normalMapB",attributeType = "float", parent="mtap_mat_normalMap")
-
-
-        # 
-            
-    def removeLogFile(self):
-        logfile = pm.workspace.path + "/applelog.log"
-        try:
-            if os.path.exists(logfile):
-                os.remove(logfile)
-        except:
-            pass
-
-    # this method only exists because I was unable to write the logfile during rendering
-    # it will be called from the plugin
-    def showLogFile(self, logfile):
-        log.debug("Trying to open logfile: {0}".format(logfile))
-        if os.path.exists(logfile):
-            lh = open(logfile, 'r')
-            rl = lh.readlines()
-            for l in rl:
-                sys.__stdout__.write(l)
-        else:
-            print "Logfile", logfile, "not found"
             
     def renderProcedure(self, width, height, doShadows, doGlow, camera, options):
         log.debug("renderProcedure")
@@ -610,19 +573,19 @@ class AppleseedRenderer(renderer.MayaToRenderer):
                 try:
                     optimizedPath = pm.workspace.path / pm.workspace.fileRules['renderData'] / "optimizedTextures"
                 except:
-                    optimizedPath = appleseed.path.path(tempfile.gettempdir()) / "optimizedTextures"
+                    optimizedPath = path.path(tempfile.gettempdir()) / "optimizedTextures"
                 if not os.path.exists(optimizedPath):
                     optimizedPath.makedirs()
                 self.renderGlobalsNode.optimizedTexturePath.set(str(optimizedPath))
     
             # craete optimized exr textures
-            appleseed.mtap_optimizetextures.preRenderOptimizeTextures(optimizedFilePath=self.renderGlobalsNode.optimizedTexturePath.get())
+            mtap_optimizetextures.preRenderOptimizeTextures(optimizedFilePath=self.renderGlobalsNode.optimizedTexturePath.get())
             shadertools.createAutoShaderNodes()
         
         osltools.compileAllShaders()
         
     def postRenderProcedure(self):
-        appleseed.mtap_optimizetextures.postRenderOptimizeTextures()
+        mtap_optimizetextures.postRenderOptimizeTextures()
         shadertools.removeAutoShaderNodes()
 
     def afterGlobalsNodeReplacement(self):
@@ -680,11 +643,11 @@ AETemplates directory, the automatic loading will not work. So I replace it with
 
 def loadAETemplates():    
     rendererName = "Appleseed"
-    aeDir = appleseed.path.path(__file__).dirname() + "/" + rendererName + "/AETemplate/"
+    aeDir = path.path(__file__).dirname() + "/aetemplate/"
     for d in aeDir.listdir("*.py"):
-        if d.endswith("Template.py"):
+        if d.endswith("template.py"):
             templateName = d.basename().replace(".py", "")
-            pythonCommand = "import {1}.AETemplate.{0}".format(templateName, rendererName)
+            pythonCommand = "import {1}.aetemplate.{0}".format(templateName, rendererName.lower())
             melCommand = 'python("{0}");'.format(pythonCommand)
             # log.debug("load aeTemplate: " + templateName + " : " + melCommand)
             pm.mel.eval(melCommand)

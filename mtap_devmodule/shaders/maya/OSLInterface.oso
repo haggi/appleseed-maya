@@ -22,39 +22,39 @@ temp	int	$tmp11	%read{17,17} %write{16,16}
 temp	color	$tmp12	%read{19,19} %write{18,18}
 temp	color	$tmp13	%read{20,20} %write{19,19}
 code ___main___
-# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\OSLInterface.osl:4
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\oslInterface.osl:4
 # 	{
-	isconnected	$tmp1 inColor 	%filename{"H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\OSLInterface.osl"} %line{4} %argrw{"wr"}
+	isconnected	$tmp1 inColor 	%filename{"H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\oslInterface.osl"} %line{4} %argrw{"wr"}
 	if		$tmp1 5 5 	%argrw{"r"}
-# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\OSLInterface.osl:6
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\oslInterface.osl:6
 # 	}
 	assign		$tmp2 inColor 	%line{6} %argrw{"wr"}
 	mul		$tmp3 $tmp2 multiplier 	%argrw{"wrr"}
 	add		Cout $tmp3 offset 	%argrw{"wrr"}
-# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\OSLInterface.osl:8
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\oslInterface.osl:8
 # 	{
 	isconnected	$tmp4 inFloat 	%line{8} %argrw{"wr"}
 	if		$tmp4 10 10 	%argrw{"r"}
-# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\OSLInterface.osl:10
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\oslInterface.osl:10
 # 	}
 	mul		$tmp5 inFloat multiplier 	%line{10} %argrw{"wrr"}
 	add		$tmp6 $tmp5 offset 	%argrw{"wrr"}
 	assign		Cout $tmp6 	%argrw{"wr"}
-# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\OSLInterface.osl:12
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\oslInterface.osl:12
 # 	{
 	isconnected	$tmp7 inInt 	%line{12} %argrw{"wr"}
 	if		$tmp7 16 16 	%argrw{"r"}
-# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\OSLInterface.osl:14
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\oslInterface.osl:14
 # 	}
 	assign		$tmp9 inInt 	%line{14} %argrw{"wr"}
 	mul		$tmp8 $tmp9 multiplier 	%argrw{"wrr"}
 	add		$tmp10 $tmp8 offset 	%argrw{"wrr"}
 	assign		Cout $tmp10 	%argrw{"wr"}
-# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\OSLInterface.osl:16
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\oslInterface.osl:16
 # 	{
 	isconnected	$tmp11 inVector 	%line{16} %argrw{"wr"}
 	if		$tmp11 21 21 	%argrw{"r"}
-# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\OSLInterface.osl:18
+# H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/shaders\\src\\maya\\oslInterface.osl:18
 # 	}	
 	assign		$tmp12 inVector 	%line{18} %argrw{"wr"}
 	mul		$tmp13 $tmp12 multiplier 	%argrw{"wrr"}

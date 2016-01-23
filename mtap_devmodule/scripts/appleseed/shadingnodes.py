@@ -3,7 +3,7 @@ import sys
 import maya.OpenMaya as om
 import maya.OpenMayaMPx as OpenMayaMPx
 import renderer.osltools as osltools
-import appleseed.metashadernode as meta
+import metashadernode as meta
 
 # to get a unused id for on-the-fly nodes,  try to find an unused id
 # the LAST_ID is the official last ID (0x0 - 0x7FFFF) for site internal plugins
