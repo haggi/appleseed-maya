@@ -6,9 +6,6 @@ INCLUDE_DIRECTORIES(${PROJECT_SOURCE_DIR}/mayatocommon/cpp
                     ${PROJECT_SOURCE_DIR}/src/appleseed)
 
 ADD_LIBRARY(appleseedTools SHARED
-    #${PROJECT_SOURCE_DIR}/extern/TinyThread++-1.1/source/fast_mutex.h
-    #${PROJECT_SOURCE_DIR}/extern/TinyThread++-1.1/source/tinythread.h
-    #${PROJECT_SOURCE_DIR}/extern/TinyThread++-1.1/source/tinythread.cpp
     ${PROJECT_SOURCE_DIR}/mayatocommon/cpp/memory/memoryinfo.cpp
     ${PROJECT_SOURCE_DIR}/mayatocommon/cpp/shadingtools/shadingutils.cpp
     ${PROJECT_SOURCE_DIR}/mayatocommon/cpp/utilities/attrtools.cpp
@@ -23,9 +20,10 @@ ADD_LIBRARY(appleseedTools SHARED
     toolspluginmain.cpp)
 
 TARGET_LINK_LIBRARIES(appleseedTools ${MAYA_Foundation_LIBRARY}
-                                      ${MAYA_OpenMaya_LIBRARY}
-                                      ${MAYA_OpenMayaAnim_LIBRARY}
-                                      )
+                                     ${MAYA_OpenMaya_LIBRARY}
+                                     ${MAYA_OpenMayaAnim_LIBRARY}
+                                     ${APPLESEED_LIBRARIES}
+                                     ${Boost_LIBRARIES})
 
 SET_TARGET_PROPERTIES(appleseedTools PROPERTIES PREFIX "")
 

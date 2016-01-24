@@ -29,6 +29,8 @@ ENDIF()
 ######################################################
 # options
 
+option(USE_CPP11 "Enable C++11" ON)
+
 ######################################################
 # platform specific
 
@@ -47,6 +49,7 @@ ENDIF()
 
 IF(CMAKE_COMPILER_IS_GNUCXX)
     # ...
+    # todo: enable C++11 here if needed...
 ELSE()
     #MESSAGE( FATAL_ERROR "unknown compiler is not supported yet")
 ENDIF()
@@ -56,7 +59,12 @@ ENDIF()
 
 FIND_PACKAGE(Maya REQUIRED)
 FIND_PACKAGE(Appleseed REQUIRED)
-FIND_PACKAGE(Boost REQUIRED)
+
+IF(NOT USE_CPP11)
+    SET(BOOST_COMPONENTS thread system)
+ENDIF()
+
+FIND_PACKAGE(Boost REQUIRED ${BOOST_COMPONENTS})
 
 ######################################################
 # optional dependencies
@@ -66,6 +74,12 @@ FIND_PACKAGE(Boost REQUIRED)
 
 ADD_DEFINITIONS(-D_BOOL)
 ADD_DEFINITIONS(-DREQUIRE_IOSTREAM)
+ADD_DEFINITIONS(-DAPPLESEED_WITH_OIIO)
+ADD_DEFINITIONS(-DAPPLESEED_WITH_OSL)
+
+IF(NOT USE_CPP11)
+    ADD_DEFINITIONS(-DNOCPP11)
+ENDIF()
 
 ######################################################
 # includes
