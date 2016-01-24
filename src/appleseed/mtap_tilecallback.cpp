@@ -19,7 +19,7 @@ void mtap_ITileCallback::pre_render(
 	return; // do not do anything
 
 	size_t numPixels = width * height;
-	std::shared_ptr<RV_PIXEL> pixelsPtr(new RV_PIXEL[numPixels]);
+	sharedPtr<RV_PIXEL> pixelsPtr(new RV_PIXEL[numPixels]);
 	RV_PIXEL *pixels = pixelsPtr.get();
 	
 	for( size_t yy = 0; yy < height; yy++)
@@ -128,7 +128,7 @@ void mtap_ITileCallback::post_render(
 	const asf::CanvasProperties& frame_props = img.properties();
 	size_t numPixels = frame_props.m_canvas_width * frame_props.m_canvas_height;
 	
-	std::shared_ptr<RV_PIXEL> pixelsPtr(new RV_PIXEL[numPixels]);
+	sharedPtr<RV_PIXEL> pixelsPtr(new RV_PIXEL[numPixels]);
 	RV_PIXEL *pixels = pixelsPtr.get();
 
 	for( int x = 0; x < numPixels; x++)
@@ -223,7 +223,7 @@ void mtap_ITileCallback::post_render_tile(
 	size_t tw =  tile.get_width();
 	size_t th =  tile.get_height();
 	size_t numPixels = tw * th;
-	std::shared_ptr<RV_PIXEL> pixelsPtr(new RV_PIXEL[numPixels]);
+	sharedPtr<RV_PIXEL> pixelsPtr(new RV_PIXEL[numPixels]);
 	RV_PIXEL *pixels = pixelsPtr.get();
 	for (size_t yy = 0; yy < th; yy++)
 	{

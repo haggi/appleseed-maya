@@ -308,7 +308,7 @@ void AppleseedRenderer::createAppleseedShadingNode(ShadingNode& sn, asr::Assembl
 
 }
 
-void AppleseedRenderer::defineShadingNodes(std::shared_ptr<MayaObject> obj)
+void AppleseedRenderer::defineShadingNodes(sharedPtr<MayaObject> obj)
 {
 	for( size_t sgId = 0; sgId < obj->shadingGroups.length(); sgId++)
 	{

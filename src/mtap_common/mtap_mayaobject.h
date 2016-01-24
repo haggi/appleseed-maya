@@ -4,6 +4,7 @@
 #include <maya/MMatrix.h>
 
 #include "mayaobject.h"
+#include "definitions.h"
 #include "renderer/api/scene.h"
 
 namespace asr = renderer;
@@ -15,7 +16,7 @@ class mtap_ObjectAttributes : public ObjectAttributes
 {
 public:
 	mtap_ObjectAttributes();
-	mtap_ObjectAttributes(std::shared_ptr<ObjectAttributes>);
+	mtap_ObjectAttributes(sharedPtr<ObjectAttributes>);
 	bool needsOwnAssembly;
 	MMatrix objectMatrix;
 	MayaObject *assemblyObject; // mayaObject above for which an assembly will be created
@@ -29,15 +30,9 @@ public:
 	~mtap_MayaObject();
 
 	virtual bool geometryShapeSupported();
-	virtual std::shared_ptr<ObjectAttributes> getObjectAttributes(std::shared_ptr<ObjectAttributes> parentAttributes = nullptr);
-	//MayaObject *getAssemblyMayaObject();
-	//MString getAssemblyInstName();
-	//MString getAssemblyName();
-	//MString getObjectName();
+	virtual sharedPtr<ObjectAttributes> getObjectAttributes(sharedPtr<ObjectAttributes> parentAttributes = nullptr);
 	bool needsAssembly();
 	void createAssembly();
-	//asr::Assembly *getObjectAssembly();
-	//asr::Assembly *objectAssembly;
 };
 
 #endif

@@ -11,8 +11,10 @@ void AppleseedRenderer::doInteractiveUpdate()
 	Logging::debug("AppleseedRenderer::doInteractiveUpdate");
 	if (interactiveUpdateList.empty())
 		return;
-	for (auto iElement : interactiveUpdateList)
+	std::vector<InteractiveElement *>::iterator iaIt;
+	for (iaIt = interactiveUpdateList.begin(); iaIt != interactiveUpdateList.end(); iaIt++)
 	{
+		InteractiveElement *iElement = *iaIt;
 		if (iElement->node.hasFn(MFn::kShadingEngine))
 		{
 			if (iElement->obj)
@@ -41,11 +43,11 @@ void AppleseedRenderer::doInteractiveUpdate()
 			MFnDependencyNode depFn(iElement->node);
 			std::vector<MString> shaderNames = { "asLayeredShader", "uberShader", "asDisneyMaterial" };
 			MString typeName = depFn.typeName();
-			for (auto shaderName : shaderNames)
+			for (uint si = 0; si < shaderNames.size(); si++)
 			{
-				if (typeName == shaderName)
+				if (typeName == shaderNames[si])
 				{
-					std::shared_ptr<mtap_MayaObject> obj = std::static_pointer_cast<mtap_MayaObject>(iElement->obj);
+					sharedPtr<mtap_MayaObject> obj = staticPtrCast<mtap_MayaObject>(iElement->obj);
 					Logging::debug(MString("AppleseedRenderer::doInteractiveUpdate - found shader.") + iElement->name);
 					this->defineMaterial(obj);
 				}
@@ -53,7 +55,7 @@ void AppleseedRenderer::doInteractiveUpdate()
 		}
 		if (iElement->node.hasFn(MFn::kMesh))
 		{
-			std::shared_ptr<mtap_MayaObject> obj = std::static_pointer_cast<mtap_MayaObject>(iElement->obj);
+			sharedPtr<mtap_MayaObject> obj = staticPtrCast<mtap_MayaObject>(iElement->obj);
 			if (obj->removed)
 			{
 				continue;

@@ -5,10 +5,10 @@
 
 #include "utilities/logging.h"
 #include "utilities/tools.h"
-//#include "mtap_mayaScene.h"
 #include "../appleseed/appleseedutils.h"
-
+#include "definitions.h"
 #include "world.h"
+
 
 static Logging logger;
 
@@ -19,9 +19,9 @@ mtap_ObjectAttributes::mtap_ObjectAttributes()
 	this->assemblyObject = nullptr;
 }
 
-mtap_ObjectAttributes::mtap_ObjectAttributes(std::shared_ptr<ObjectAttributes> otherAttr)
+mtap_ObjectAttributes::mtap_ObjectAttributes(sharedPtr<ObjectAttributes> otherAttr)
 {
-	std::shared_ptr<mtap_ObjectAttributes> other = std::static_pointer_cast<mtap_ObjectAttributes>(otherAttr);
+	sharedPtr<mtap_ObjectAttributes> other = staticPtrCast<mtap_ObjectAttributes>(otherAttr);
 
 	this->hasInstancerConnection = false;
 	objectMatrix.setToIdentity();
@@ -50,7 +50,7 @@ mtap_ObjectAttributes::mtap_ObjectAttributes(std::shared_ptr<ObjectAttributes> o
 //	{
 //		if( this->origObject)
 //		{
-//			std::shared_ptr<mtap_MayaObject> orig = std::static_pointer_cast<mtap_MayaObject>(this->origObject);
+//			sharedPtr<mtap_MayaObject> orig = staticPtrCast<mtap_MayaObject>(this->origObject);
 //			return orig->getAssemblyName();
 //		}
 //	}
@@ -90,7 +90,7 @@ mtap_ObjectAttributes::mtap_ObjectAttributes(std::shared_ptr<ObjectAttributes> o
 //{
 //	if (this->attributes)
 //	{
-//		std::shared_ptr<mtap_ObjectAttributes> att = std::static_pointer_cast<mtap_ObjectAttributes>(this->attributes);
+//		sharedPtr<mtap_ObjectAttributes> att = staticPtrCast<mtap_ObjectAttributes>(this->attributes);
 //		return att->assemblyObject;
 //	}
 //	return nullptr; // only happens if obj is world
@@ -100,7 +100,7 @@ mtap_ObjectAttributes::mtap_ObjectAttributes(std::shared_ptr<ObjectAttributes> o
 //{
 //	if( this->attributes != nullptr )
 //	{
-//		std::shared_ptr<mtap_ObjectAttributes> att = std::static_pointer_cast<mtap_ObjectAttributes>(this->attributes);
+//		sharedPtr<mtap_ObjectAttributes> att = staticPtrCast<mtap_ObjectAttributes>(this->attributes);
 //		if( att != nullptr )
 //		{
 //			if( att->assemblyObject != nullptr )
@@ -113,7 +113,7 @@ mtap_ObjectAttributes::mtap_ObjectAttributes(std::shared_ptr<ObjectAttributes> o
 //
 //	if (this->origObject != nullptr)
 //	{
-//		std::shared_ptr<mtap_MayaObject> mtapo = std::static_pointer_cast<mtap_MayaObject>(this->origObject);
+//		sharedPtr<mtap_MayaObject> mtapo = staticPtrCast<mtap_MayaObject>(this->origObject);
 //		return mtapo->objectAssembly;
 //	}
 //
@@ -155,9 +155,9 @@ bool mtap_MayaObject::geometryShapeSupported()
 //	e.g. lets say we assign a color to the top node of a hierarchy. Then all child nodes will be
 //	called and this method is used. 
 //
-std::shared_ptr<ObjectAttributes>mtap_MayaObject::getObjectAttributes(std::shared_ptr<ObjectAttributes> parentAttributes)
+sharedPtr<ObjectAttributes>mtap_MayaObject::getObjectAttributes(sharedPtr<ObjectAttributes> parentAttributes)
 {
-	std::shared_ptr<mtap_ObjectAttributes> myAttributes = std::shared_ptr<mtap_ObjectAttributes>(new mtap_ObjectAttributes(parentAttributes));
+	sharedPtr<mtap_ObjectAttributes> myAttributes = sharedPtr<mtap_ObjectAttributes>(new mtap_ObjectAttributes(parentAttributes));
 
 	if( this->hasInstancerConnection)
 	{
@@ -244,7 +244,7 @@ void mtap_MayaObject::createAssembly()
 	//	//	{
 	//	//		if( obj->parent != nullptr)
 	//	//		{
-	//	//			std::shared_ptr<MayaObject> parent = (std::shared_ptr<MayaObject> )obj->parent;
+	//	//			sharedPtr<MayaObject> parent = (sharedPtr<MayaObject> )obj->parent;
 	//	//			if( parent->objectAssembly != nullptr)
 	//	//			{
 	//	//				Logging::debug(MString("Insert assembly instance ") + obj->shortName + " into parent " + parent->shortName);

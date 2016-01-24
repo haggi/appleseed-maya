@@ -44,17 +44,17 @@
 #include "renderer/api/environmentshader.h"
 #include "renderer/api/edf.h"
 
-#include "renderer/modeling/shadergroup/shadergroup.h"
-#include "../appleseed/appleseedutils.h"
-
 #include <thread>
 #include <vector>
 #include <maya/MGlobal.h>
 #include <maya/MStringArray.h>
 #include <maya/MFnDependencyNode.h>
-
 #include <boost/thread/locks.hpp>
 #include <boost/thread/mutex.hpp>
+
+#include "renderer/modeling/shadergroup/shadergroup.h"
+#include "../appleseed/appleseedutils.h"
+#include "definitions.h"
 
 
 #if MAYA_API_VERSION >= 201600
@@ -65,7 +65,7 @@
 
 mtap_MayaRenderer::mtap_MayaRenderer()
 {
-	//log_target = std::auto_ptr<asf::ILogTarget>(asf::create_console_log_target(stdout));
+	//log_target = autoPtr<asf::ILogTarget>(asf::create_console_log_target(stdout));
 	//asr::global_logger().add_target(log_target.get());
 	initProject();
 	width = height = initialSize;
@@ -76,7 +76,7 @@ mtap_MayaRenderer::~mtap_MayaRenderer()
 {
 	Logging::debug("~mtap_MayaRenderer");
 	asr::global_logger().remove_target(log_target.get());
-	mrenderer.release();
+	releasePtr(mrenderer);
 	project.release();
 	objectArray.clear();
 }
@@ -192,12 +192,12 @@ void mtap_MayaRenderer::initProject()
 
 	this->tileCallbackFac.reset(new TileCallbackFactory(this));
 
-	mrenderer = std::auto_ptr<asr::MasterRenderer>(new asr::MasterRenderer(
+	mrenderer = autoPtr<asr::MasterRenderer>(new asr::MasterRenderer(
 		this->project.ref(),
 		this->project->configurations().get_by_name("interactive")->get_inherited_parameters(),
 		&controller,
 		this->tileCallbackFac.get()));
-	//mrenderer = std::auto_ptr<asr::MasterRenderer>(new asr::MasterRenderer(
+	//mrenderer = autoPtr<asr::MasterRenderer>(new asr::MasterRenderer(
 	//	this->project.ref(),
 	//	this->project->configurations().get_by_name("final")->get_inherited_parameters(),
 	//	&controller,
@@ -432,13 +432,14 @@ MStatus mtap_MayaRenderer::translateTransform(const MUuid& id, const MUuid& chil
 	Logging::debug(MString("translateTransform id: ") + id + " childId " + childId);
 	MObject shapeNode;
 	IdNameStruct idNameObj;
-	for (auto idobj : objectArray)
+	std::vector<IdNameStruct>::iterator nsIt;
+	for (nsIt = objectArray.begin(); nsIt != objectArray.end(); nsIt++)
 	{
-		if (idobj.id == lastShapeId)
+		if (nsIt->id == lastShapeId)
 		{
-			Logging::debug(MString("Found id object for transform: ") + idobj.name);
-			shapeNode = idobj.mobject;
-			idNameObj = idobj;
+			Logging::debug(MString("Found id object for transform: ") + nsIt->name);
+			shapeNode = nsIt->mobject;
+			idNameObj = *nsIt;
 		}
 	}
 	MString elementInstName = idNameObj.name + "_instance";
@@ -645,12 +646,13 @@ MStatus mtap_MayaRenderer::setProperty(const MUuid& id, const MString& name, con
 	Logging::debug(MString("setProperty string: ") + name + " " + value);
 
 	IdNameStruct idNameObj;
-	for (auto idobj : objectArray)
+	std::vector<IdNameStruct>::iterator nsIt;
+	for (nsIt = objectArray.begin(); nsIt != objectArray.end(); nsIt++)
 	{
-		if (idobj.id == id)
+		if (nsIt->id == id)
 		{
-			Logging::debug(MString("Found id object for string property: ") + idobj.name);
-			if (idobj.name == "Environment")
+			Logging::debug(MString("Found id object for string property: ") + nsIt->name);
+			if (nsIt->name == "Environment")
 			{
 				if (name == "imageFile")
 				{
@@ -706,21 +708,22 @@ MStatus mtap_MayaRenderer::setShader(const MUuid& id, const MUuid& shaderId)
 {
 	Logging::debug("setShader");
 	IdNameStruct objElement, shaderElement;
-	for (auto element : objectArray)
+	std::vector<IdNameStruct>::iterator nsIt;
+	for (nsIt = objectArray.begin(); nsIt != objectArray.end(); nsIt++)
 	{
-		Logging::debug(MString("Search for obj id: ") + id + " in " + element.id + " name: " + element.name);
-		if (element.id == id)
+		Logging::debug(MString("Search for obj id: ") + id + " in " + nsIt->id + " name: " + nsIt->name);
+		if (nsIt->id == id)
 		{
-			objElement = element;
+			objElement = *nsIt;
 			break;
 		}
 	}
-	for (auto element : objectArray)
+	for (nsIt = objectArray.begin(); nsIt != objectArray.end(); nsIt++)
 	{
-		Logging::debug(MString("Search for shader id: ") + shaderId + " in " + element.id + " name: " + element.name);
-		if (element.id == shaderId)
+		Logging::debug(MString("Search for shader id: ") + shaderId + " in " + nsIt->id + " name: " + nsIt->name);
+		if (nsIt->id == shaderId)
 		{
-			shaderElement = element;
+			shaderElement = *nsIt;
 			break;
 		}
 	}
@@ -908,7 +911,7 @@ void TileCallback::post_render(const asr::Frame* frame)
 
 	Logging::debug(MString("TileCallback:: wh ") + width + " " + height + " tileSize " + tileSize);
 
-	std::shared_ptr<float> buffer = std::shared_ptr<float>(new float[numPixels * kNumChannels]);
+	sharedPtr<float> buffer = sharedPtr<float>(new float[numPixels * kNumChannels]);
 	float *rb = buffer.get();
 
 	for (int tile_x = 0; tile_x < frame_props.m_tile_count_x; tile_x++)

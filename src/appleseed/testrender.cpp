@@ -1,11 +1,12 @@
 #include "testrender.h"
+#include "definitions.h"
 
 namespace asf = foundation;
 namespace asr = renderer;
 
 void doTestRender()
 {
-	std::auto_ptr<asf::ILogTarget> log_target = std::auto_ptr<asf::ILogTarget>(asf::create_console_log_target(stdout));
+	autoPtr<asf::ILogTarget> log_target = autoPtr<asf::ILogTarget>(asf::create_console_log_target(stdout));
 	asr::global_logger().add_target(log_target.get());
 	RENDERER_LOG_INFO("%s", asf::Appleseed::get_synthetic_version_string());
 

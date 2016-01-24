@@ -9,7 +9,7 @@
 #include "utilities/tools.h"
 #include "utilities/attrtools.h"
 #include "osl/oslutils.h"
-#include "maya/MFnDependencyNode.h"
+#include <maya/MFnDependencyNode.h>
 #include "world.h"
 #include "mayascene.h"
 #include "threads/renderqueueworker.h"
@@ -176,12 +176,12 @@ void AppleRender::AppleseedRenderer::updateMaterial(MObject materialNode)
 }
 
 
-asf::StringArray AppleRender::AppleseedRenderer::defineMaterial(std::shared_ptr<mtap_MayaObject> obj)
+asf::StringArray AppleRender::AppleseedRenderer::defineMaterial(sharedPtr<mtap_MayaObject> obj)
 {
 	MStatus status;
 	asf::StringArray materialNames;
 	getObjectShadingGroups(obj->dagPath, obj->perFaceAssignments, obj->shadingGroups, false);
-	std::shared_ptr<MayaScene> mayaScene = MayaTo::getWorldPtr()->worldScenePtr;
+	sharedPtr<MayaScene> mayaScene = MayaTo::getWorldPtr()->worldScenePtr;
 
 	for (uint sgId = 0; sgId < obj->shadingGroups.length(); sgId++)
 	{

@@ -57,7 +57,7 @@ AppleseedSwatchRenderer::AppleseedSwatchRenderer()
 {
 	Logging::debug(MString("Initialze appleseed swatch renderer."));
 #if _DEBUG
-	log_target = std::auto_ptr<asf::ILogTarget>(asf::create_console_log_target(stdout));
+	log_target = autoPtr<asf::ILogTarget>(asf::create_console_log_target(stdout));
 	asr::global_logger().add_target(log_target.get());
 	RENDERER_LOG_INFO("loading project file %s...", "This is a test");
 #endif
@@ -81,7 +81,7 @@ AppleseedSwatchRenderer::AppleseedSwatchRenderer()
 		project->search_paths().push_back(oslDirs[i].asChar());
 	}
 
-	mrenderer = std::auto_ptr<asr::MasterRenderer>(new asr::MasterRenderer(
+	mrenderer = autoPtr<asr::MasterRenderer>(new asr::MasterRenderer(
 		project.ref(),
 		project->configurations().get_by_name("final")->get_inherited_parameters(),
 		&renderer_controller));

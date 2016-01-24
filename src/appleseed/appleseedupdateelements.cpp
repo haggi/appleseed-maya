@@ -13,12 +13,12 @@ static Logging logger;
 
 using namespace AppleRender;
 
-void AppleseedRenderer::updateTransform(std::shared_ptr<MayaObject> obj)
+void AppleseedRenderer::updateTransform(sharedPtr<MayaObject> obj)
 {
 	Logging::debug(MString("AppleseedRenderer::updateTransform: ") + obj->shortName);
 }
 
-void AppleseedRenderer::updateShape(std::shared_ptr<MayaObject> obj)
+void AppleseedRenderer::updateShape(sharedPtr<MayaObject> obj)
 {
 	Logging::debug(MString("AppleseedRenderer::updateShape: ") + obj->shortName);
 	//updateGeometry(obj);

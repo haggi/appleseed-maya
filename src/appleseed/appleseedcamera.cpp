@@ -13,11 +13,11 @@ using namespace AppleRender;
 //	Cameras are more a mixture between assembly and object. They have a transformation like an assembly but 
 //	attributes like an object.
 
-void AppleseedRenderer::defineCamera(std::shared_ptr<MayaObject> cam)
+void AppleseedRenderer::defineCamera(sharedPtr<MayaObject> cam)
 {
 	MStatus stat;
-	std::shared_ptr<MayaScene> mayaScene = MayaTo::getWorldPtr()->worldScenePtr;
-	std::shared_ptr<RenderGlobals> renderGlobals = MayaTo::getWorldPtr()->worldRenderGlobalsPtr;
+	sharedPtr<MayaScene> mayaScene = MayaTo::getWorldPtr()->worldScenePtr;
+	sharedPtr<RenderGlobals> renderGlobals = MayaTo::getWorldPtr()->worldRenderGlobalsPtr;
 
 	asr::Camera *camera = project->get_scene()->get_camera();
 	if (camera != nullptr)
@@ -86,11 +86,13 @@ void AppleseedRenderer::defineCamera(std::shared_ptr<MayaObject> cam)
 void AppleseedRenderer::defineCamera()
 {
 	MStatus stat;
-	std::shared_ptr<MayaScene> mayaScene = MayaTo::getWorldPtr()->worldScenePtr;
-	std::shared_ptr<RenderGlobals> renderGlobals = MayaTo::getWorldPtr()->worldRenderGlobalsPtr;
+	sharedPtr<MayaScene> mayaScene = MayaTo::getWorldPtr()->worldScenePtr;
+	sharedPtr<RenderGlobals> renderGlobals = MayaTo::getWorldPtr()->worldRenderGlobalsPtr;
 
-	for (auto cam : mayaScene->camList)
+	std::vector<sharedPtr<MayaObject>>::iterator oIt;
+	for (oIt = mayaScene->camList.begin(); oIt != mayaScene->camList.end(); oIt++)
 	{
+		sharedPtr<MayaObject> cam = *oIt;
 		if (!isCameraRenderable(cam->mobject) && (!(cam->dagPath == mayaScene->uiCamera)))
 		{
 			continue;

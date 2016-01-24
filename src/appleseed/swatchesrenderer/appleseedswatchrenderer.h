@@ -5,6 +5,7 @@
 #include "renderer/api/project.h"
 #include "renderer/global/globallogger.h"
 #include "renderer/api/rendering.h"
+#include "definitions.h"
 
 #include <maya/MObject.h>
 
@@ -30,8 +31,8 @@ public:
 	
 	asf::auto_release_ptr<asr::Scene> scene;
 	asf::auto_release_ptr<asr::Project> project;
-	std::auto_ptr<asf::ILogTarget> log_target;
-	std::auto_ptr<asr::MasterRenderer> mrenderer;
+	autoPtr<asf::ILogTarget> log_target;
+	autoPtr<asr::MasterRenderer> mrenderer;
 	asr::DefaultRendererController renderer_controller;
 
 	static void startAppleseedSwatchRender(AppleseedSwatchRenderer *swRend);

@@ -12,6 +12,8 @@
 #include <thread>
 #include <mutex>
 
+#include "definitions.h"
+
 namespace asf = foundation;
 namespace asr = renderer;
 
@@ -128,8 +130,8 @@ private:
 	//Render output buffer, it is R32G32B32A32_FLOAT format.
 	std::thread renderThread;
 	asf::auto_release_ptr<asr::Project> project;
-	std::auto_ptr<asf::ILogTarget> log_target;
-	std::auto_ptr<asr::MasterRenderer> mrenderer;
+	autoPtr<asf::ILogTarget> log_target;
+	autoPtr<asr::MasterRenderer> mrenderer;
 	asf::auto_release_ptr<TileCallbackFactory> tileCallbackFac;
 	RenderController controller;
 	MUuid lastShapeId; // save the last shape id, needed by translateTransform

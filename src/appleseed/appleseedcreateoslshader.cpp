@@ -54,12 +54,13 @@ MString oslTypeToMString(MAYATO_OSL::OSLParameter param)
 
 void MAYATO_OSLUTIL::OSLUtilClass::connectOSLShaders(MAYATO_OSL::ConnectionArray& ca)
 {
-	for (auto connection : ca)
+	std::vector<MAYATO_OSL::Connection>::iterator cIt;
+	for (cIt = ca.begin(); cIt != ca.end(); cIt++)
 	{
-		const char *srcLayer = connection.sourceNode.asChar();
-		const char *srcAttr = connection.sourceAttribute.asChar();
-		const char *destLayer = connection.destNode.asChar();
-		MString destAttr = connection.destAttribute;
+		const char *srcLayer = cIt->sourceNode.asChar();
+		const char *srcAttr = cIt->sourceAttribute.asChar();
+		const char *destLayer = cIt->destNode.asChar();
+		MString destAttr = cIt->destAttribute;
 		if (destAttr == "color")
 			destAttr = "inColor";
 		Logging::debug(MString("MAYATO_OSL::connectOSLShaders ") + srcLayer + "." + srcAttr + " -> " + destLayer + "." + destAttr);
@@ -73,16 +74,16 @@ void MAYATO_OSLUTIL::OSLUtilClass::createOSLShader(MString& shaderNodeType, MStr
 {
 	Logging::debug(MString("MAYATO_OSL::createOSLShader ") + shaderName);
 	asr::ParamArray asParamArray;
-	for (auto param : paramArray)
+	std::vector<MAYATO_OSL::OSLParameter>::iterator pIt;
+	for (pIt = paramArray.begin(); pIt != paramArray.end(); pIt++)
 	{
-
-		MString pname = param.name;
+		MString pname = pIt->name;
 		if (pname == "color")
 			pname = "inColor";
 
-		MString paramString = oslTypeToMString(param);
+		MString paramString = oslTypeToMString(*pIt);
 		asParamArray.insert(pname.asChar(), paramString);
-		Logging::debug(MString("\tParam ") + param.name + " " + paramString);
+		Logging::debug(MString("\tParam ") + pIt->name + " " + paramString);
 	}
 
 	Logging::debug(MString("MAYATO_OSL::createOSLShader creating shader node "));

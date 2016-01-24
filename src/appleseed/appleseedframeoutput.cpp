@@ -12,7 +12,7 @@ void AppleseedRenderer::defineOutput()
 	if (frame == nullptr)
 	{
 		MFnDependencyNode depFn(getRenderGlobalsNode());
-		std::shared_ptr<RenderGlobals> renderGlobals = MayaTo::getWorldPtr()->worldRenderGlobalsPtr;
+		sharedPtr<RenderGlobals> renderGlobals = MayaTo::getWorldPtr()->worldRenderGlobalsPtr;
 		Logging::debug("AppleseedRenderer::defineOutput");
 		int width, height;
 		renderGlobals->getWidthHeight(width, height);

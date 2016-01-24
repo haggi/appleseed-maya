@@ -40,12 +40,12 @@
 //	void mobjectListToMayaObjectList(std::vector<MObject>& mObjectList, std::vector<MayaObject *>& mtapObjectList);
 //	//virtual bool postParseCallback();
 //	void makeMayaObjectMObjMap(); // fill with maya objects and dag nodes for later fast access
-//	std::shared_ptr<MayaObject> getMayaObjectFromMap(MObject& mobj);
+//	sharedPtr<MayaObject> getMayaObjectFromMap(MObject& mobj);
 //	//bool parseScene();
-//	//void createObjAssembly(std::shared_ptr<MayaObject> obj);
-//	//void createObjAssemblyInstances(std::shared_ptr<MayaObject> obj);
-//	//asr::Assembly *createAssembly(std::shared_ptr<MayaObject> obj);
-//	//asr::Assembly *getAssembly(std::shared_ptr<MayaObject> obj);
+//	//void createObjAssembly(sharedPtr<MayaObject> obj);
+//	//void createObjAssemblyInstances(sharedPtr<MayaObject> obj);
+//	//asr::Assembly *createAssembly(sharedPtr<MayaObject> obj);
+//	//asr::Assembly *getAssembly(sharedPtr<MayaObject> obj);
 //	mtap_MayaScene();
 //	~mtap_MayaScene();
 //};

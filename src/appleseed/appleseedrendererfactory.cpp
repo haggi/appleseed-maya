@@ -7,9 +7,9 @@ namespace MayaTo
 {
 	void MayaRendererFactory::createRenderer()
 	{
-		getWorldPtr()->worldRendererPtr = std::shared_ptr<Renderer>(new AppleRender::AppleseedRenderer());
+		getWorldPtr()->worldRendererPtr = sharedPtr<Renderer>(new AppleRender::AppleseedRenderer());
 	}
-	std::shared_ptr<Renderer> MayaRendererFactory::getRenderer()
+	sharedPtr<Renderer> MayaRendererFactory::getRenderer()
 	{
 		return getWorldPtr()->worldRendererPtr;
 	}

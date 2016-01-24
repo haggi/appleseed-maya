@@ -32,7 +32,7 @@
 //
 //void mtap_MayaScene::transformUpdateCallback(MayaObject *mobj)
 //{
-//	std::shared_ptr<MayaObject> obj = (std::shared_ptr<MayaObject> )mobj;
+//	sharedPtr<MayaObject> obj = (sharedPtr<MayaObject> )mobj;
 //
 //	// instancer elements are a special case. They contain a shape node, but they are updated as a transform
 //	if( !obj->mobject.hasFn(MFn::kTransform) && (obj->instancerParticleId < 0))
@@ -55,7 +55,7 @@
 //
 //void mtap_MayaScene::shapeUpdateCallback(MayaObject *mobj)
 //{
-//	std::shared_ptr<MayaObject> obj = (std::shared_ptr<MayaObject> )mobj;
+//	sharedPtr<MayaObject> obj = (sharedPtr<MayaObject> )mobj;
 //	Logging::debug(MString("mtap_MayaScene::shapeUpdateCallback"));
 //
 //	if( !obj->mobject.hasFn(MFn::kShape))
@@ -72,7 +72,7 @@
 //
 ////void mtap_MayaScene::deformUpdateCallback(MayaObject *mobj)
 ////{
-////	std::shared_ptr<MayaObject> obj = (std::shared_ptr<MayaObject> )mobj;
+////	sharedPtr<MayaObject> obj = (sharedPtr<MayaObject> )mobj;
 ////	Logging::debug(MString("mtap_MayaScene::deformUpdateCallback"));
 ////
 ////	if( obj->instanceNumber > 0)
@@ -92,8 +92,8 @@
 ////					//MString meshFullName = makeGoodString(meshFn.fullPathName());
 ////					//// if obj was visible, delete it from memory.
 ////					//MString meshInst = meshFullName + "_inst";
-////					//std::shared_ptr<ObjectAttributes>att = (std::shared_ptr<ObjectAttributes>)obj->attributes;
-////					//std::shared_ptr<MayaObject> assObject = att->assemblyObject;
+////					//sharedPtr<ObjectAttributes>att = (sharedPtr<ObjectAttributes>)obj->attributes;
+////					//sharedPtr<MayaObject> assObject = att->assemblyObject;
 ////					//if( assObject != nullptr)
 ////					//{
 ////					//
@@ -134,21 +134,21 @@
 //
 //MayaObject *mtap_MayaScene::mayaObjectCreator(MObject& mobject)
 //{
-//	std::shared_ptr<MayaObject> mobj = new mtap_MayaObject(mobject);
+//	sharedPtr<MayaObject> mobj = new mtap_MayaObject(mobject);
 //	mobj->scenePtr = this;
 //	return mobj;
 //}
 //
 //MayaObject *mtap_MayaScene::mayaObjectCreator(MDagPath& objDagPath)
 //{
-//	std::shared_ptr<MayaObject> mobj = new mtap_MayaObject(objDagPath);
+//	sharedPtr<MayaObject> mobj = new mtap_MayaObject(objDagPath);
 //	mobj->scenePtr = this;
 //	return mobj;
 //}
 //
 //void mtap_MayaScene::mayaObjectDeleter(MayaObject *obj)
 //{
-//	std::shared_ptr<MayaObject> mtap_obj = (std::shared_ptr<MayaObject> )obj;
+//	sharedPtr<MayaObject> mtap_obj = (sharedPtr<MayaObject> )obj;
 //	delete mtap_obj;
 //	obj = nullptr;
 //}
@@ -217,9 +217,9 @@
 //	}
 //}
 //
-//std::shared_ptr<MayaObject> mtap_MayaScene::getMayaObjectFromMap(MObject& obj)
+//sharedPtr<MayaObject> mtap_MayaScene::getMayaObjectFromMap(MObject& obj)
 //{
-//	std::shared_ptr<MayaObject> mobj = (std::shared_ptr<MayaObject> )*mayaObjMObjMap.find(obj);
+//	sharedPtr<MayaObject> mobj = (sharedPtr<MayaObject> )*mayaObjMObjMap.find(obj);
 //	return mobj;
 //}
 //
@@ -329,7 +329,7 @@
 //	// the interactiveUpdateMOList below, e.g. shaders, colors, globals, etc.
 //	for( mIter = mayaObjectList.begin(); mIter != mayaObjectList.end(); mIter++)
 //	{
-//		std::shared_ptr<MayaObject> mo = (std::shared_ptr<MayaObject> )*mIter;
+//		sharedPtr<MayaObject> mo = (sharedPtr<MayaObject> )*mIter;
 //		Logging::debug(MString("updateInteraciveRenderScene: obj: ") + mo->shortName);
 //		mo->updateObject(); // update transforms
 //		this->mtap_renderer.interactiveUpdateList.push_back(mo);
@@ -379,9 +379,9 @@
 ////  Because all assemblies will need an assembly instance, the 
 ////	instances are defined as well.
 //// 
-////void mtap_MayaScene::createObjAssembly(std::shared_ptr<MayaObject> obj)
+////void mtap_MayaScene::createObjAssembly(sharedPtr<MayaObject> obj)
 ////{
-////	//std::shared_ptr<ObjectAttributes>att = (std::shared_ptr<ObjectAttributes>)obj->attributes;
+////	//sharedPtr<ObjectAttributes>att = (sharedPtr<ObjectAttributes>)obj->attributes;
 ////
 ////	//if( !obj->visible )
 ////	//	if( !obj->isVisiblityAnimated() && (!obj->isInstanced()) )
@@ -392,9 +392,9 @@
 ////	//	obj->objectAssembly = createAssembly(obj);
 ////}
 //
-////void mtap_MayaScene::createObjAssemblyInstances(std::shared_ptr<MayaObject> obj)
+////void mtap_MayaScene::createObjAssemblyInstances(sharedPtr<MayaObject> obj)
 ////{
-//	//std::shared_ptr<ObjectAttributes>att = (std::shared_ptr<ObjectAttributes>)obj->attributes;
+//	//sharedPtr<ObjectAttributes>att = (sharedPtr<ObjectAttributes>)obj->attributes;
 //
 //	//// instances will be added below only for the original object
 //	//if( obj->instanceNumber > 0)
@@ -447,7 +447,7 @@
 //	//	{
 //	//		if( obj->parent != nullptr)
 //	//		{
-//	//			std::shared_ptr<MayaObject> parent = (std::shared_ptr<MayaObject> )obj->parent;
+//	//			sharedPtr<MayaObject> parent = (sharedPtr<MayaObject> )obj->parent;
 //	//			if( parent->objectAssembly != nullptr)
 //	//			{
 //	//				Logging::debug(MString("Insert assembly instance ") + obj->shortName + " into parent " + parent->shortName);
@@ -474,7 +474,7 @@
 //	//std::vector<MayaObject *>::iterator mIter = this->objectList.begin();
 //	//for(;mIter!=this->objectList.end(); mIter++)
 //	//{
-//	//	std::shared_ptr<MayaObject> obj = (std::shared_ptr<MayaObject> )*mIter;
+//	//	sharedPtr<MayaObject> obj = (sharedPtr<MayaObject> )*mIter;
 //	//	this->createObjAssembly(obj);
 //	//}
 //
@@ -486,7 +486,7 @@
 //	//mIter = this->objectList.begin();
 //	//for(;mIter!=this->objectList.end(); mIter++)
 //	//{
-//	//	std::shared_ptr<MayaObject> obj = (std::shared_ptr<MayaObject> )*mIter;
+//	//	sharedPtr<MayaObject> obj = (sharedPtr<MayaObject> )*mIter;
 //	//	createObjAssemblyInstances(obj);		
 //	//}
 //	//
@@ -494,15 +494,15 @@
 //	//mIter  = this->instancerNodeElements.begin();
 //	//for(;mIter!=this->instancerNodeElements.end(); mIter++)
 //	//{
-//	//	std::shared_ptr<MayaObject> obj = (std::shared_ptr<MayaObject> )*mIter;
+//	//	sharedPtr<MayaObject> obj = (sharedPtr<MayaObject> )*mIter;
 //
-//	//	std::shared_ptr<ObjectAttributes>att = (std::shared_ptr<ObjectAttributes>)obj->attributes;
+//	//	sharedPtr<ObjectAttributes>att = (sharedPtr<ObjectAttributes>)obj->attributes;
 //	//	MString objname = obj->fullName;
 //	//	if( obj->instancerParticleId < 0)
 //	//		continue;
 //	//	if( obj->origObject == nullptr)
 //	//		continue;
-//	//	if( ((std::shared_ptr<MayaObject> )(obj->origObject))->objectAssembly == nullptr)
+//	//	if( ((sharedPtr<MayaObject> )(obj->origObject))->objectAssembly == nullptr)
 //	//		continue;
 //
 //	//	Logging::debug(MString("instancer node element: ") + obj->shortName + " path " + obj->fullName);
@@ -510,7 +510,7 @@
 //	//	asf::auto_release_ptr<asr::AssemblyInstance> ai = asr::AssemblyInstanceFactory::create(
 //	//	instancerElementName.asChar(),
 //	//	asr::ParamArray(),
-//	//	((std::shared_ptr<MayaObject> )(obj->origObject))->objectAssembly->get_name());
+//	//	((sharedPtr<MayaObject> )(obj->origObject))->objectAssembly->get_name());
 //	//	this->mtap_renderer.masterAssembly->assembly_instances().insert(ai);
 //	//}
 //
@@ -518,12 +518,12 @@
 ////}
 //
 //
-////asr::Assembly *mtap_MayaScene::getAssembly(std::shared_ptr<MayaObject> obj)
+////asr::Assembly *mtap_MayaScene::getAssembly(sharedPtr<MayaObject> obj)
 ////{
 ////	return this->mtap_renderer.scenePtr->assemblies().get_by_name(obj->fullName.asChar());
 ////}
 ////
-////asr::Assembly *mtap_MayaScene::createAssembly(std::shared_ptr<MayaObject> obj)
+////asr::Assembly *mtap_MayaScene::createAssembly(sharedPtr<MayaObject> obj)
 ////{
 ////	
 ////	Logging::debug(MString("Creating new assembly for: ") + obj->fullName);
@@ -536,7 +536,7 @@
 ////	{
 ////		if( obj->parent != nullptr)
 ////		{
-////			std::shared_ptr<MayaObject> parent = (std::shared_ptr<MayaObject> )obj->parent;
+////			sharedPtr<MayaObject> parent = (sharedPtr<MayaObject> )obj->parent;
 ////			parentAssembly = this->getAssembly(parent);
 ////			if( parentAssembly != nullptr)
 ////			{

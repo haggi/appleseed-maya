@@ -63,7 +63,7 @@ MString getAssemblyName(MayaObject *obj)
 	{
 		if (obj->origObject)
 		{
-			std::shared_ptr<mtap_MayaObject> orig = std::static_pointer_cast<mtap_MayaObject>(obj->origObject);
+			sharedPtr<mtap_MayaObject> orig = staticPtrCast<mtap_MayaObject>(obj->origObject);
 			return getAssemblyName(orig.get());
 		}
 		else{
@@ -150,15 +150,15 @@ MayaObject *getAssemblyMayaObject(MayaObject *mobj)
 
 	if (obj->attributes)
 	{
-		std::shared_ptr<mtap_ObjectAttributes> att = std::static_pointer_cast<mtap_ObjectAttributes>(obj->attributes);
+		sharedPtr<mtap_ObjectAttributes> att = staticPtrCast<mtap_ObjectAttributes>(obj->attributes);
 		return att->assemblyObject;
 	}
 	return nullptr; // only happens if obj is world
 }
 
-asr::Assembly *getCreateObjectAssembly(std::shared_ptr<MayaObject> obj)
+asr::Assembly *getCreateObjectAssembly(sharedPtr<MayaObject> obj)
 {
-	std::shared_ptr<AppleRender::AppleseedRenderer> appleRenderer = std::static_pointer_cast<AppleRender::AppleseedRenderer>(MayaTo::getWorldPtr()->worldRendererPtr);
+	sharedPtr<AppleRender::AppleseedRenderer> appleRenderer = staticPtrCast<AppleRender::AppleseedRenderer>(MayaTo::getWorldPtr()->worldRendererPtr);
 
 	MayaObject *assemblyObject = getAssemblyMayaObject(obj.get());
 	if (assemblyObject == nullptr)
@@ -194,7 +194,7 @@ asr::Assembly *getCreateObjectAssembly(std::shared_ptr<MayaObject> obj)
 
 asr::AssemblyInstance *getExistingObjectAssemblyInstance(MayaObject *obj)
 {
-	std::shared_ptr<AppleRender::AppleseedRenderer> appleRenderer = std::static_pointer_cast<AppleRender::AppleseedRenderer>(MayaTo::getWorldPtr()->worldRendererPtr);
+	sharedPtr<AppleRender::AppleseedRenderer> appleRenderer = staticPtrCast<AppleRender::AppleseedRenderer>(MayaTo::getWorldPtr()->worldRendererPtr);
 	MayaObject *assemblyObject = getAssemblyMayaObject(obj);
 	if (assemblyObject == nullptr)
 	{
@@ -226,7 +226,7 @@ void mayaColorToFloat(const MColor col, float *floatCol, float *alpha)
 
 void removeColorEntityIfItExists(const MString colorName)
 {
-	std::shared_ptr<AppleRender::AppleseedRenderer> appleRenderer = std::static_pointer_cast<AppleRender::AppleseedRenderer>(MayaTo::getWorldPtr()->worldRendererPtr);
+	sharedPtr<AppleRender::AppleseedRenderer> appleRenderer = staticPtrCast<AppleRender::AppleseedRenderer>(MayaTo::getWorldPtr()->worldRendererPtr);
 	assert(appleRenderer != nullptr);
 	asr::Scene *scene = getSceneFromProject(appleRenderer->getProjectPtr());
 	asr::ColorEntity *entity = scene->colors().get_by_name(colorName.asChar());
@@ -238,7 +238,7 @@ void removeColorEntityIfItExists(const MString colorName)
 
 //void defineColor(const MString name, const MColor color, const float intensity, MString colorSpace)
 //{
-//	std::shared_ptr<AppleRender::AppleseedRenderer> appleRenderer = std::static_pointer_cast<AppleRender::AppleseedRenderer>(MayaTo::getWorldPtr()->worldRendererPtr);
+//	sharedPtr<AppleRender::AppleseedRenderer> appleRenderer = staticPtrCast<AppleRender::AppleseedRenderer>(MayaTo::getWorldPtr()->worldRendererPtr);
 //	assert(appleRenderer != nullptr);
 //
 //	float colorDef[3];
@@ -294,7 +294,7 @@ MString colorOrMap(asr::Project *project, MFnDependencyNode& shaderNode, MString
 
 void removeTextureEntityIfItExists(MString& textureName)
 {
-	std::shared_ptr<AppleRender::AppleseedRenderer> appleRenderer = std::static_pointer_cast<AppleRender::AppleseedRenderer>(MayaTo::getWorldPtr()->worldRendererPtr);
+	sharedPtr<AppleRender::AppleseedRenderer> appleRenderer = staticPtrCast<AppleRender::AppleseedRenderer>(MayaTo::getWorldPtr()->worldRendererPtr);
 	assert(appleRenderer != nullptr);
 	asr::Scene *scene = getSceneFromProject(appleRenderer->getProjectPtr());
 
@@ -310,7 +310,7 @@ void removeTextureEntityIfItExists(MString& textureName)
 
 MString defineTexture(MFnDependencyNode& shader, MString& attributeName)
 {
-	std::shared_ptr<AppleRender::AppleseedRenderer> appleRenderer = std::static_pointer_cast<AppleRender::AppleseedRenderer>(MayaTo::getWorldPtr()->worldRendererPtr);
+	sharedPtr<AppleRender::AppleseedRenderer> appleRenderer = staticPtrCast<AppleRender::AppleseedRenderer>(MayaTo::getWorldPtr()->worldRendererPtr);
 	assert(appleRenderer != nullptr);
 	asr::Scene *scene = getSceneFromProject(appleRenderer->getProjectPtr());
 	asf::SearchPaths &searchPaths = appleRenderer->getProjectPtr()->search_paths();
@@ -388,7 +388,7 @@ void fillTransformMatrices(MMatrix matrix, asr::AssemblyInstance *assInstance)
 			asf::Transformd::from_local_to_parent(appMatrix));
 }
 
-void fillMatrices(std::shared_ptr<MayaObject> obj, asr::TransformSequence& transformSequence)
+void fillMatrices(sharedPtr<MayaObject> obj, asr::TransformSequence& transformSequence)
 {
 	MMatrix conversionMatrix = MayaTo::getWorldPtr()->worldRenderGlobalsPtr->globalConversionMatrix;
 	float scaleFactor = MayaTo::getWorldPtr()->worldRenderGlobalsPtr->scaleFactor;
@@ -426,7 +426,7 @@ void fillMatrices(std::shared_ptr<MayaObject> obj, asr::TransformSequence& trans
 			asf::Transformd::from_local_to_parent(appMatrix));
 	}
 }
-void fillTransformMatrices(std::shared_ptr<MayaObject> obj, asr::Light *light)
+void fillTransformMatrices(sharedPtr<MayaObject> obj, asr::Light *light)
 {
 	// in ipr mode we have to update the matrix manually
 	if (MayaTo::getWorldPtr()->getRenderType() == MayaTo::MayaToWorld::WorldRenderType::IPRRENDER)
@@ -527,7 +527,7 @@ void addVisibilityFlags(MObject& obj, asr::ParamArray& paramArray)
 	}
 }
 
-void addVisibilityFlags(std::shared_ptr<MayaObject> obj, asr::ParamArray& paramArray)
+void addVisibilityFlags(sharedPtr<MayaObject> obj, asr::ParamArray& paramArray)
 {
 	addVisibilityFlags(obj->mobject, paramArray);
 }

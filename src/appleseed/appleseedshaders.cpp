@@ -703,7 +703,7 @@ bool AppleseedRenderer::defineAOVShaders(asr::Assembly *assembly, MString& physS
 }
 
 // translate shaders here, will be seperated later if we have a real shading language
-void AppleseedRenderer::defineObjectMaterial(mtap_RenderGlobals *renderGlobals, std::shared_ptr<MayaObject> obj, asf::StringArray& materialNames)
+void AppleseedRenderer::defineObjectMaterial(mtap_RenderGlobals *renderGlobals, sharedPtr<MayaObject> obj, asf::StringArray& materialNames)
 {
 	asr::Assembly *assembly = getObjectAssembly(obj);
 

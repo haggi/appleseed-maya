@@ -10,9 +10,9 @@
 
 #include "renderer/modeling/environmentedf/sphericalcoordinates.h"
 
-#include "maya/MFnDependencyNode.h"
-#include "maya/MFnMesh.h"
-#include "maya/MItMeshPolygon.h"
+#include <maya/MFnDependencyNode.h>
+#include <maya/MFnMesh.h>
+#include <maya/MItMeshPolygon.h>
 #include <maya/MPointArray.h>
 #include <maya/MFloatPointArray.h>
 #include <maya/MFloatArray.h>
@@ -50,7 +50,7 @@ std::vector<asr::Entity *> definedEntities;
 AppleseedRenderer::AppleseedRenderer()
 {
 	asr::global_logger().set_format(asf::LogMessage::Debug, "");
-	log_target = std::auto_ptr<asf::ILogTarget>(asf::create_console_log_target(stdout));
+	log_target = autoPtr<asf::ILogTarget>(asf::create_console_log_target(stdout));
 	asr::global_logger().add_target(log_target.get());
 }
 
@@ -112,7 +112,7 @@ void AppleseedRenderer::postFrame()
 {
 	Logging::debug("AppleseedRenderer::postFrame");
 	// Save the frame to disk.
-	std::shared_ptr<RenderGlobals> renderGlobals = MayaTo::getWorldPtr()->worldRenderGlobalsPtr;
+	sharedPtr<RenderGlobals> renderGlobals = MayaTo::getWorldPtr()->worldRenderGlobalsPtr;
 	renderGlobals->getImageName();
 	MString filename = renderGlobals->imageOutputFile.asChar();
 	Logging::debug(MString("Saving image as ") + renderGlobals->imageOutputFile);
@@ -124,7 +124,8 @@ void AppleseedRenderer::postFrame()
 	// AFTER the assembly it tries to access non existent shadingGroups.
 	if (renderGlobals->currentFrameNumber == renderGlobals->frameList.back())
 	{
-		masterRenderer.release();
+		//masterRenderer.reset();
+		releasePtr(masterRenderer);
 	}
 
 	asf::UniqueID aiuid = project->get_scene()->assembly_instances().get_by_name("world_Inst")->get_uid();
@@ -147,14 +148,14 @@ void AppleseedRenderer::render()
 
 		if (MayaTo::getWorldPtr()->getRenderType() == MayaTo::MayaToWorld::IPRRENDER)
 		{
-			masterRenderer = std::auto_ptr<asr::MasterRenderer>( new asr::MasterRenderer(
+			masterRenderer = autoPtr<asr::MasterRenderer>( new asr::MasterRenderer(
 				this->project.ref(),
 				this->project->configurations().get_by_name("interactive")->get_inherited_parameters(),
 				&mtap_controller,
 				this->tileCallbackFac.get()));
 		}
 		else{
-			masterRenderer = std::auto_ptr<asr::MasterRenderer>(new asr::MasterRenderer(
+			masterRenderer = autoPtr<asr::MasterRenderer>(new asr::MasterRenderer(
 				this->project.ref(),
 				this->project->configurations().get_by_name("final")->get_inherited_parameters(),
 				&mtap_controller,

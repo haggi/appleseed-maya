@@ -13,6 +13,7 @@
 #include "utilities/logging.h"
 #include "appleseedutils.h"
 #include "world.h"
+#include "definitions.h"
 
 #include "renderer/modeling/object/meshobjectreader.h"
 using namespace AppleRender;
@@ -21,7 +22,7 @@ using namespace AppleRender;
 
 #define MPointToAppleseed(pt) asr::GVector3((float)pt.x, (float)pt.y, (float)pt.z)
 
-//void AppleseedRenderer::createMeshFromFile(std::shared_ptr<MayaObject> obj, MString fileName, asr::MeshObjectArray& meshArray)
+//void AppleseedRenderer::createMeshFromFile(sharedPtr<MayaObject> obj, MString fileName, asr::MeshObjectArray& meshArray)
 //{
 //	asr::MeshObjectReader reader;
 //	asf::SearchPaths searchPaths;
@@ -32,7 +33,7 @@ using namespace AppleRender;
 //	reader.read(searchPaths, objName.asChar(), params, meshArray);
 //}
 //
-//void AppleseedRenderer::createMeshFromFile(std::shared_ptr<MayaObject> obj, asr::MeshObjectArray& meshArray)
+//void AppleseedRenderer::createMeshFromFile(sharedPtr<MayaObject> obj, asr::MeshObjectArray& meshArray)
 //{	
 //	MFnDependencyNode depFn(obj->mobject);
 //	MString proxyFile("");
@@ -80,7 +81,7 @@ asf::auto_release_ptr<asr::MeshObject> AppleseedRenderer::defineStandardPlane(bo
 
 }
 
-void AppleseedRenderer::createMesh(std::shared_ptr<mtap_MayaObject> obj)
+void AppleseedRenderer::createMesh(sharedPtr<mtap_MayaObject> obj)
 {
 
 	// If the mesh has an attribute called "mtap_standin_path" and it contains a valid entry, then try to read the
@@ -211,9 +212,9 @@ void AppleseedRenderer::createMesh(std::shared_ptr<mtap_MayaObject> obj)
 
 }
 
-void AppleseedRenderer::updateGeometry(std::shared_ptr<MayaObject> mobj)
+void AppleseedRenderer::updateGeometry(sharedPtr<MayaObject> mobj)
 {
-	std::shared_ptr<mtap_MayaObject> obj = std::static_pointer_cast<mtap_MayaObject>(mobj);
+	sharedPtr<mtap_MayaObject> obj = staticPtrCast<mtap_MayaObject>(mobj);
 
 	if (!obj->isObjVisible())
 		return;
@@ -229,9 +230,9 @@ void AppleseedRenderer::updateGeometry(std::shared_ptr<MayaObject> mobj)
 	}
 }
 
-void AppleseedRenderer::updateInstance(std::shared_ptr<MayaObject> mobj)
+void AppleseedRenderer::updateInstance(sharedPtr<MayaObject> mobj)
 {
-	std::shared_ptr<mtap_MayaObject> obj = std::static_pointer_cast<mtap_MayaObject>(mobj);
+	sharedPtr<mtap_MayaObject> obj = staticPtrCast<mtap_MayaObject>(mobj);
 	if (obj->dagPath.node().hasFn(MFn::kWorld))
 		return;
 
@@ -262,55 +263,26 @@ void AppleseedRenderer::updateInstance(std::shared_ptr<MayaObject> mobj)
 
 void AppleseedRenderer::defineGeometry()
 {
-	std::shared_ptr<MayaScene> mayaScene = MayaTo::getWorldPtr()->worldScenePtr;
-	std::shared_ptr<RenderGlobals> renderGlobals = MayaTo::getWorldPtr()->worldRenderGlobalsPtr;
-	for (auto mobj : mayaScene->objectList)
+	sharedPtr<MayaScene> mayaScene = MayaTo::getWorldPtr()->worldScenePtr;
+	sharedPtr<RenderGlobals> renderGlobals = MayaTo::getWorldPtr()->worldRenderGlobalsPtr;
+	std::vector<sharedPtr<MayaObject>>::iterator oIt;
+	for (oIt = mayaScene->objectList.begin(); oIt != mayaScene->objectList.end(); oIt++)
 	{
+		sharedPtr<MayaObject> mobj = *oIt;
 		updateGeometry(mobj);
-		//std::shared_ptr<mtap_MayaObject> obj = std::static_pointer_cast<mtap_MayaObject>(mobj);
-
-		//if (!mobj->mobject.hasFn(MFn::kMesh))
-		//	continue;
-
-		//if (mobj->instanceNumber > 0)
-		//	continue;
-
-		//createMesh(obj);
-		//defineMaterial(obj);
 	}
 
 	// create assembly instances
-	for (auto mobj : mayaScene->objectList)
+	for (oIt = mayaScene->objectList.begin(); oIt != mayaScene->objectList.end(); oIt++)
 	{
-		//std::shared_ptr<mtap_MayaObject> obj = std::static_pointer_cast<mtap_MayaObject>(mobj);
-		//if (obj->dagPath.node().hasFn(MFn::kWorld))
-		//	continue;
-		//if (obj->instanceNumber == 0)
-		//	continue;
+		sharedPtr<MayaObject> mobj = *oIt;
 		updateInstance(mobj);
-
-		//MayaObject *assemblyObject = getAssemblyMayaObject(obj.get());
-		//if (assemblyObject == nullptr)
-		//{
-		//	Logging::debug("create mesh assemblyPtr == null");
-		//	continue;
-		//}
-		//MString assemblyName = getAssemblyName(assemblyObject);
-		//MString assemblyInstanceName = getAssemblyInstanceName(obj.get());
-
-		//asf::auto_release_ptr<asr::AssemblyInstance> assemblyInstance(
-		//		asr::AssemblyInstanceFactory::create(
-		//		assemblyInstanceName.asChar(),
-		//		asr::ParamArray(),
-		//		assemblyName.asChar()));
-		//asr::TransformSequence &ts = assemblyInstance->transform_sequence();
-		//fillMatrices(obj, ts);
-		//getMasterAssemblyFromProject(this->project.get())->assembly_instances().insert(assemblyInstance);
 	}
 
-	for (auto mobj : mayaScene->instancerNodeElements)
+	for (oIt = mayaScene->instancerNodeElements.begin(); oIt != mayaScene->instancerNodeElements.end(); oIt++)
 	{
-		std::shared_ptr<mtap_MayaObject> obj = std::static_pointer_cast<mtap_MayaObject>(mobj);
+		sharedPtr<MayaObject> mobj = *oIt;
+		sharedPtr<mtap_MayaObject> obj = staticPtrCast<mtap_MayaObject>(mobj);
 		if (obj->dagPath.node().hasFn(MFn::kWorld))
 			continue;
 		if (obj->instanceNumber == 0)
