@@ -116,9 +116,6 @@
     <ClCompile Include="..\src\mtap_common\mtap_mayaobject.cpp">
       <Filter>mtap_common</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\mtap_common\mtap_mayascene.cpp">
-      <Filter>mtap_common</Filter>
-    </ClCompile>
     <ClCompile Include="..\src\mtap_common\mtap_renderglobals.cpp">
       <Filter>mtap_common</Filter>
     </ClCompile>
@@ -175,9 +172,6 @@
     </ClCompile>
     <ClCompile Include="..\src\appleseed\appleseedshadingnodes.cpp">
       <Filter>Source Files\appleseed</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\mtap_common\mtap_mayascenefactory.cpp">
-      <Filter>mtap_common</Filter>
     </ClCompile>
     <ClCompile Include="..\mayatocommon\cpp\osl\oslutils.cpp">
       <Filter>common\osl</Filter>
@@ -324,12 +318,6 @@
     </ClInclude>
     <ClInclude Include="..\src\mayatoappleseed.h">
       <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\mtap_common\mtap_mayascene.h">
-      <Filter>mtap_common</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\mtap_common\mtap_renderglobals.h">
-      <Filter>mtap_common</Filter>
     </ClInclude>
     <ClInclude Include="..\src\mtap_common\mtap_renderglobalsnode.h">
       <Filter>mtap_common</Filter>

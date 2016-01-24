@@ -9,8 +9,7 @@
 
 #include <maya/MTypes.h>
 #include <map>
-#include <thread>
-#include <mutex>
+//#include <mutex>
 
 #include "definitions.h"
 
@@ -128,7 +127,7 @@ public:
 private:
 	int width, height;
 	//Render output buffer, it is R32G32B32A32_FLOAT format.
-	std::thread renderThread;
+	threadObject renderThread;
 	asf::auto_release_ptr<asr::Project> project;
 	autoPtr<asf::ILogTarget> log_target;
 	autoPtr<asr::MasterRenderer> mrenderer;

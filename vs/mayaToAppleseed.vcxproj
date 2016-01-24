@@ -346,8 +346,6 @@
     <ClCompile Include="..\src\mtap_common\mtap_mayaobject.cpp" />
     <ClCompile Include="..\src\mtap_common\mtap_mayaobjectfactory.cpp" />
     <ClCompile Include="..\src\mtap_common\mtap_mayarenderer.cpp" />
-    <ClCompile Include="..\src\mtap_common\mtap_mayascene.cpp" />
-    <ClCompile Include="..\src\mtap_common\mtap_mayascenefactory.cpp" />
     <ClCompile Include="..\src\mtap_common\mtap_renderglobals.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug2015|x64'">false</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug2016|x64'">false</ExcludedFromBuild>
@@ -464,16 +462,6 @@
     <ClInclude Include="..\src\mtap_common\mtap_material.h" />
     <ClInclude Include="..\src\mtap_common\mtap_mayaobject.h" />
     <ClInclude Include="..\src\mtap_common\mtap_mayarenderer.h" />
-    <ClInclude Include="..\src\mtap_common\mtap_mayascene.h" />
-    <ClInclude Include="..\src\mtap_common\mtap_renderglobals.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug2015|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug2016|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug2017|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release2015|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release2016|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release2017|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release2017|x64'">true</ExcludedFromBuild>
-    </ClInclude>
     <ClInclude Include="..\src\mtap_common\mtap_renderglobalsnode.h" />
     <ClInclude Include="..\src\mtap_common\mtap_standinlocator.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug2015|x64'">true</ExcludedFromBuild>

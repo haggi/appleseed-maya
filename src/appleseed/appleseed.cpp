@@ -170,7 +170,7 @@ void AppleseedRenderer::render()
 			e.type = EventQueue::Event::ADDIPRCALLBACKS;
 			theRenderEventQueue()->push(e);
 			while (!RenderQueueWorker::iprCallbacksDone())
-				std::this_thread::sleep_for(std::chrono::milliseconds(10));
+				sleepFor(10);
 		}
 		sceneBuilt = true;
 	}

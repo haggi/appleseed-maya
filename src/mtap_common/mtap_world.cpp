@@ -5,7 +5,6 @@
 #include <maya/MGlobal.h>
 #include "../appleseed/swatchesrenderer/appleseedswatchrenderer.h"
 #include "../appleseed/swatchesrenderer/swatchesevent.h"
-#include <thread>
 
 static Logging logger;
 namespace MayaTo{
@@ -39,7 +38,7 @@ namespace MayaTo{
 		AppleseedSwatchRenderer *appleSwRndr = new AppleseedSwatchRenderer();
 
 		this->addObjectPtr("appleseedSwatchesRenderer", appleSwRndr);
-		std::thread swatchRenderThread(AppleseedSwatchRenderer::startAppleseedSwatchRender, appleSwRndr);
+		threadObject swatchRenderThread(AppleseedSwatchRenderer::startAppleseedSwatchRender, appleSwRndr);
 		swatchRenderThread.detach();
 	}
 

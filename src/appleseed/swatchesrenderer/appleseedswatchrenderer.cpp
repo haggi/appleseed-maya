@@ -197,11 +197,6 @@ void AppleseedSwatchRenderer::mainLoop()
 			terminateLoop = true;
 		}
 		else{
-			//this->setShader(swatchEvent.shadingNode);
-			//this->setSize(swatchEvent.height);
-			//std::this_thread::sleep_for(std::chrono::milliseconds(3000));
-			//this->renderSwatch();
-			//this->fillSwatch(swatchEvent.pixels);
 			swatchEvent.swatchRenderer->finishParallelRender();
 			*swatchEvent.renderDone = true;
 		}

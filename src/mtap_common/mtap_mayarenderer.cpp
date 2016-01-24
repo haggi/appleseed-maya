@@ -44,7 +44,6 @@
 #include "renderer/api/environmentshader.h"
 #include "renderer/api/edf.h"
 
-#include <thread>
 #include <vector>
 #include <maya/MGlobal.h>
 #include <maya/MStringArray.h>
@@ -251,7 +250,7 @@ MStatus mtap_MayaRenderer::startAsync(const JobParams& params)
 {
 	Logging::debug("startAsync:");
 	Logging::debug(MString("\tJobDescr: ") + params.description + " max threads: " + params.maxThreads);
-	//renderThread = std::thread(startRenderThread, this);
+	//renderThread = threadObject(startRenderThread, this);
 	Logging::debug(MString("started async"));
 	asyncStarted = true;
 	return MStatus::kSuccess;
@@ -805,7 +804,7 @@ MStatus mtap_MayaRenderer::endSceneUpdate()
 
 	if (asyncStarted)
 	{
-		renderThread = std::thread(startRenderThread, this);
+		renderThread = threadObject(startRenderThread, this);
 	}
 	else{
 		ProgressParams progressParams;
@@ -889,8 +888,6 @@ void mtap_MayaRenderer::copyFrameToBuffer(float *frame, int w, int h)
 	refresh(refreshParams);
 
 }
-
-std::mutex tile_mutex;
 
 void TileCallback::post_render_tile(const asr::Frame* frame, const size_t tile_x, const size_t tile_y)
 {
