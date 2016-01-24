@@ -88,7 +88,9 @@ ADD_LIBRARY(mayaToAppleseed SHARED
 
 TARGET_LINK_LIBRARIES(mayaToAppleseed ${MAYA_Foundation_LIBRARY}
                                       ${MAYA_OpenMaya_LIBRARY}
-                                      ${MAYA_OpenMayaAnim_LIBRARY})
+                                      ${MAYA_OpenMayaAnim_LIBRARY}
+                                      ${APPLESEED_LIBRARIES}
+                                      ${Boost_LIBRARIES})
 
 SET_TARGET_PROPERTIES(mayaToAppleseed PROPERTIES PREFIX "")
 

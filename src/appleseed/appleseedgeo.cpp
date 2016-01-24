@@ -1,7 +1,7 @@
 #include "appleseed.h"
-#include <maya/mfnmesh.h>
-#include <maya/mglobal.h>
-#include <maya/mitmeshpolygon.h>
+#include <maya/MFnMesh.h>
+#include <maya/MGlobal.h>
+#include <maya/MItMeshPolygon.h>
 #include <maya/MPointArray.h>
 #include <maya/MFloatPointArray.h>
 #include <maya/MFloatArray.h>
