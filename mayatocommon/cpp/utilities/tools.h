@@ -9,12 +9,15 @@
 #include <maya/MMatrix.h>
 #include <maya/MPlug.h>
 #include <maya/MObjectArray.h>
-#include <direct.h>
-#include <io.h>
 #include <fstream>
 #include <math.h>
 #include <memory>
 #include <vector>
+
+#ifdef _WIN32
+#include <direct.h>
+#include <io.h>
+#endif
 
 static MString RendererName;
 static MString RendererShortCut;
@@ -73,21 +76,21 @@ bool CheckVisibility( MDagPath& dagPath );
 
 MString matrixToString(MMatrix& matrix);
 
-MObject getOtherSideNode(MString& plugName, MObject& thisObject);
+MObject getOtherSideNode(const MString& plugName, MObject& thisObject);
 
-MObject getOtherSideSourceNode(MString& plugName, MObject& thisObject, bool checkChildren, MString& outPlugName);
+MObject getOtherSideSourceNode(const MString& plugName, MObject& thisObject, bool checkChildren, MString& outPlugName);
 
-MObject getOtherSideNode(MString& plugName, MObject& thisObject, MString& otherSidePlugName);
+MObject getOtherSideNode(const MString& plugName, MObject& thisObject, MString& otherSidePlugName);
 
-MObject getOtherSideNode(MString& plugName, MObject& thisObject, MStringArray& otherSidePlugNames);
+MObject getOtherSideNode(const MString& plugName, MObject& thisObject, MStringArray& otherSidePlugNames);
 
-MObject getOtherSideNode(MPlug& plug);
+MObject getOtherSideNode(const MPlug& plug);
 
 MPlug getDirectConnectedPlug(const char *attrName, MFnDependencyNode& depFn, bool dest);
 
-MPlug getDirectConnectedPlug(MPlug& plug, bool dest);
+MPlug getDirectConnectedPlug(const MPlug& plug, bool dest);
 
-void getConnectedChildPlugs(MPlug& plug, bool dest, MPlugArray& thisNodePlugs, MPlugArray& otherSidePlugs);
+void getConnectedChildPlugs(const MPlug& plug, bool dest, MPlugArray& thisNodePlugs, MPlugArray& otherSidePlugs);
 
 void getConnectedChildPlugs(const char *attrName, MFnDependencyNode& depFn, bool dest, MPlugArray& thisNodePlugs, MPlugArray& otherSidePlugs);
 
@@ -101,9 +104,9 @@ bool isConnected(const char *attrName, MObject& node, bool dest);
 
 int physicalIndex(MPlug& p);
 
-bool getOtherSidePlugName(MString& plugName, MObject& thisObject, MString& otherSidePlugName);
+bool getOtherSidePlugName(const MString& plugName, MObject& thisObject, MString& otherSidePlugName);
 
-bool getConnectedPlugs(MString& plugName, MObject& thisObject, MPlug& inPlug, MPlug& outPlug);
+bool getConnectedPlugs(const MString& plugName, MObject& thisObject, MPlug& inPlug, MPlug& outPlug);
 
 bool getConnectedInPlugs(MObject& thisObject, MPlugArray& inPlugs);
 
@@ -119,9 +122,9 @@ MObject getConnectedInNode(MPlug& inPlug);
 
 void getConnectedInNodes(MPlug& plug, MObjectArray& nodeList);
 
-void getConnectedInNodes(MString attribute, MObject& thisObject, MObjectArray& nodeList);
+void getConnectedInNodes(const MString& attribute, const MObject& thisObject, MObjectArray& nodeList);
 
-bool hasPlug(MObject& thisObject, MString& plugName);
+bool hasPlug(MObject& thisObject, const MString& plugName);
 
 MString getObjectName(MObject& mobject);
 
@@ -153,11 +156,11 @@ void posRotSclFromMatrix(MMatrix& matrix, MPoint& pos, MVector& rot, MVector& sc
 
 void posRotSclFromMatrix(MMatrix& matrix, MPoint& pos, MPoint& rot, MPoint& scl);
 
-bool getConnectedFileTexturePath(MString& plugName, MString& nodeName, MString& value, MObject& outFileNode);
+bool getConnectedFileTexturePath(const MString& plugName, MString& nodeName, MString& value, MObject& outFileNode);
 
-MString getConnectedFileTexturePath(MString& plugName, MFnDependencyNode& node);
+MString getConnectedFileTexturePath(const MString& plugName, MFnDependencyNode& node);
 
-MObject getConnectedFileTextureObject(MString& plugName, MFnDependencyNode& depFn);
+MObject getConnectedFileTextureObject(const MString& plugName, MFnDependencyNode& depFn);
 
 bool findCamera(MDagPath& dagPath);
 
@@ -185,7 +188,7 @@ bool isPlugInList(MObject obj, MPlugArray& plugArray);
 void findConnectedNodeTypes(uint nodeId, MObject thisObject, MObjectArray& connecedElements, bool upstream);
 void findConnectedNodeTypes(uint nodeId, MObject thisObject, MObjectArray& connecedElements, MPlugArray& completeList, bool upstream);
 
-MString getAttributeNameFromPlug(MPlug& plug);
+MString getAttributeNameFromPlug(const MPlug& plug);
 
 MObject getConnectedShadingEngine(MObject node);
 
