@@ -497,8 +497,6 @@ namespace MAYATO_OSLUTIL{
                     }
                     return result;
                 }
-                else{
-                }
             }
         }
         return false;
@@ -515,7 +513,6 @@ namespace MAYATO_OSLUTIL{
         {
             if (depFn.typeName() == "bump2d")
             {
-                bool result;
                 int bumpType = getEnumInt("bumpInterp", depFn);
                 if (bumpType > 0)
                 {

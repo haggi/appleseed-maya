@@ -44,83 +44,12 @@ void mtap_ITileCallback::pre_render(
         const size_t width,
         const size_t height)
 {
-    return; // do not do anything
-
-    size_t numPixels = width * height;
-    sharedPtr<RV_PIXEL> pixelsPtr(new RV_PIXEL[numPixels]);
-    RV_PIXEL *pixels = pixelsPtr.get();
-
-    for( size_t yy = 0; yy < height; yy++)
-    {
-        for( size_t xx = 0; xx < width; xx++)
-        {
-            size_t pid = yy * width + xx;
-            pixels[pid].r = pixels[pid].g = pixels[pid].b = pixels[pid].a = 0.0f;
-            pixels[pid].r = 255.0;
-            //if((xx < 1) || (xx > width-2) )
-            //{
-            //  pixels[pid].r = pixels[pid].g = pixels[pid].b = pixels[pid].a = 180.0f;
-            //  pixels[pid].b = 255.0f;
-            //}
-            //if((yy < 1) || (yy > height-2))
-            //{
-            //  pixels[pid].r = pixels[pid].g = pixels[pid].b = pixels[pid].a = 180.0f;
-            //  pixels[pid].b = 255.0f;
-            //}
-
-        }
-    }
-
-    size_t x1 = x + width - 1;
-    size_t y1 = y + height;
-
-    EventQueue::Event e;
-    e.pixelData = pixelsPtr;
-    e.type = EventQueue::Event::PRETILE;
-    e.tile_xmin = x;
-    e.tile_xmax = x1;
-    e.tile_ymin = y;
-    e.tile_ymax = y1;
-
-    theRenderEventQueue()->push(e);
-}
-
-void mtap_ITileCallback::copyASImageToMayaImage(RV_PIXEL* pixels, const asr::Frame* frame)
-{
-    const asf::CanvasProperties& frame_props = frame->image().properties();
-    double rgba[4];
-    //asf::Color4f col;
-    for( size_t x = 0; x < frame_props.m_canvas_width; x++)
-    {
-        for( size_t y = 0; y < frame_props.m_canvas_height; y++)
-        {
-            size_t pixelId = y * frame_props.m_canvas_width + x;
-            //frame->image().get_pixel(x, y, col);
-        }
-    }
 }
 
 #define kNumChannels 4
 
 void mtap_ITileCallback::copyTileToImage(RV_PIXEL* pixels, asf::Tile& tile, int tile_x, int tile_y, const asr::Frame* frame)
 {
-    //size_t tw = tile.get_width();
-    //size_t th = tile.get_height();
-    //
-    //for (int y = 0; y < th; y++)
-    //{
-    //  for (int x = 0; x < tw; x++)
-    //  {
-    //      int index = ((height - 1) - (tile_y * tileSize + y)) * width + (tile_x * tileSize) + x;
-    //      index *= kNumChannels;
-
-    //      rb[index] = tile.get_component<float>(x, y, 0);
-    //      rb[index + 1] = tile.get_component<float>(x, y, 1);
-    //      rb[index + 2] = tile.get_component<float>(x, y, 2);
-    //      rb[index + 3] = tile.get_component<float>(x, y, 3);
-    //  }
-    //}
-
     const asf::CanvasProperties& frame_props = frame->image().properties();
     size_t tw =  tile.get_width();
     size_t th =  tile.get_height();
@@ -166,8 +95,6 @@ void mtap_ITileCallback::post_render(
         pixels[x].b = .0f;
         pixels[x].a = .0f;
     }
-
-    //copyASImageToMayaImage(pixels, frame);
 
     for( int tile_x = 0; tile_x < frame_props.m_tile_count_x; tile_x++)
     {
@@ -283,7 +210,6 @@ void mtap_ITileCallback::post_render_tile(
     e.tile_ymax = maxy;
     theRenderEventQueue()->push(e);
 }
-
 
 asr::ITileCallback* mtap_ITileCallbackFactory::create()
 {

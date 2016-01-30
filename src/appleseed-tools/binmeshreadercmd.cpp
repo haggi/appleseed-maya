@@ -75,14 +75,13 @@ void BinMeshReaderCmd::printUsage()
 
 bool BinMeshReaderCmd::importBinMeshes()
 {
-    asr::MeshObjectReader reader;
     asf::SearchPaths searchPaths;
 
     asr::MeshObjectArray meshArray;
 
     asr::ParamArray params;
     params.insert("filename", path.asChar());
-    if( !reader.read(searchPaths, path.asChar(), params, meshArray) )
+    if( !asr::MeshObjectReader::read(searchPaths, path.asChar(), params, meshArray) )
     {
         logger.error(MString("Unable to read meshes from ") + path);
         return false;

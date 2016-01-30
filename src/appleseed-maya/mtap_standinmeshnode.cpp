@@ -126,7 +126,6 @@ MObject mtap_standinMeshNode::createMesh(const MTime& time,
 
 {
     int                 numVertices;
-    float               cubeSize;
     MFloatPointArray    points;
     MFnMesh             meshFS;
 

@@ -118,8 +118,7 @@ MObject standinMeshNode::createMesh(const MTime& time,
                               MStatus& stat)
 
 {
-    int                 numVertices, frame;
-    float               cubeSize;
+    int                 numVertices;
     MFloatPointArray    points;
     MFnMesh             meshFS;
 
