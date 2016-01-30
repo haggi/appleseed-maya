@@ -1,18 +1,7 @@
-Appleseed renderer plugin for Maya
+appleseed-maya
+==============
 
-mayaToAppleseed relies on a sumodule called mayaToCommon and is a seperate repository.
+appleseed-maya is an appleseed plugin for [Autodesk Maya](http://www.autodesk.com/products/maya/overview).
 
-You will need the Appleseed dependencies. Have a look here for a detailed description how tho get them: https://github.com/appleseedhq/appleseed/wiki/Building-appleseed-on-Windows
-I used Boost 1.55. There is a VisualStudio props file which contains some macros with the API/Boost locations, these should be set appropriatly.
-
-To run the debug plugin from maya, maya needs some env variables:<br>
-
-MAYA_MODULE_PATH should point to the module path of mayaToAppleseed. That's the directory where the mayatoappleseed.mod file is located. e.g.<br>
-MAYA_MODULE_PATH=c:/SomeDir/mayaToAppleseed/mtap_devmodule<br>
-
-The maya script path or the pythonpath should contain the common scripts because in a module file only paths below a module can be defined:
-
-MAYA_SCRIPT_PATH=c:/SomeDir/mayaToCommon/python<br>
-
-This can be done via Maya.env file or with a batch script (my preferred way).<br>
-Then it should work. The mayaToCommon python path is only necessary for the debug version. In the final deployment the common scripts will be copied to the module script path.
+* [**Download** the latest release](https://github.com/appleseedhq/appleseed-maya/releases/latest/)
+* [**Report** bugs and suggest features](https://github.com/appleseedhq/appleseed-maya/issues)
