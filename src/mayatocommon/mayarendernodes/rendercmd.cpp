@@ -7,21 +7,21 @@ static Logging logger;
 
 void* MayaToRendererCmd::creator()
 {
-	return new MayaToRendererCmd();
+    return new MayaToRendererCmd();
 }
 
 MayaToRendererCmd::~MayaToRendererCmd() {}
 
 MSyntax MayaToRendererCmd::newSyntax()
 {
-	MSyntax				syntax;
+    MSyntax             syntax;
 
-	return syntax;
+    return syntax;
 }
 
 MStatus MayaToRendererCmd::doIt( const MArgList& args)
 {
-	MStatus stat = MStatus::kSuccess;
-	
-	return MStatus::kSuccess;
+    MStatus stat = MStatus::kSuccess;
+
+    return MStatus::kSuccess;
 }

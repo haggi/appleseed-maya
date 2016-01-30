@@ -107,7 +107,7 @@ global proc addOneTabToGlobalsWindow(
 
         // get the content of the tab from the createTabProc
         //
-        
+
         print("create proc " + $createProc + "\\n");
         // Most create procs are now deferred till the tab is selected
         // These two are the default tabs, so we don't defer them

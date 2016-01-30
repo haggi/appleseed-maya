@@ -36,16 +36,16 @@ public:
     //    const size_t tile_x,
     //    const size_t tile_y);
 
-	void copyTileToImage(RV_PIXEL* pixels, asf::Tile& tile, int tile_x, int tile_y, const asr::Frame* frame);
+    void copyTileToImage(RV_PIXEL* pixels, asf::Tile& tile, int tile_x, int tile_y, const asr::Frame* frame);
 
-	void copyASImageToMayaImage(RV_PIXEL* pixels, const asr::Frame* frame);
+    void copyASImageToMayaImage(RV_PIXEL* pixels, const asr::Frame* frame);
 };
 
 class mtap_ITileCallbackFactory : public asr::ITileCallbackFactory
 {
 public:
-	virtual asr::ITileCallback* create();
-	virtual void release(){delete this;};
+    virtual asr::ITileCallback* create();
+    virtual void release(){delete this;};
 };
 
 #endif

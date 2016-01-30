@@ -9,8 +9,8 @@ namespace asr = renderer;
 
 namespace MTAP_GEOMETRY{
 
-	asf::auto_release_ptr<asr::MeshObject> defineStandardPlane(bool area = false);
-	asf::auto_release_ptr<asr::MeshObject> createMesh(MObject& mobject);
+    asf::auto_release_ptr<asr::MeshObject> defineStandardPlane(bool area = false);
+    asf::auto_release_ptr<asr::MeshObject> createMesh(MObject& mobject);
 
 };
 

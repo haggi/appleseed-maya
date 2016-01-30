@@ -204,4 +204,3 @@ bool isChildOf(MPlug& parent, MPlug& child);
 
 bool isSunLight(MObject& obj);
 #endif
-

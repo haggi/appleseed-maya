@@ -14,25 +14,25 @@ static Logging logger;
 
 mtap_ObjectAttributes::mtap_ObjectAttributes()
 {
-	needsOwnAssembly = false;
-	objectMatrix.setToIdentity();
-	this->assemblyObject = nullptr;
+    needsOwnAssembly = false;
+    objectMatrix.setToIdentity();
+    this->assemblyObject = nullptr;
 }
 
 mtap_ObjectAttributes::mtap_ObjectAttributes(sharedPtr<ObjectAttributes> otherAttr)
 {
-	sharedPtr<mtap_ObjectAttributes> other = staticPtrCast<mtap_ObjectAttributes>(otherAttr);
+    sharedPtr<mtap_ObjectAttributes> other = staticPtrCast<mtap_ObjectAttributes>(otherAttr);
 
-	this->hasInstancerConnection = false;
-	objectMatrix.setToIdentity();
-	this->assemblyObject = nullptr;
+    this->hasInstancerConnection = false;
+    objectMatrix.setToIdentity();
+    this->assemblyObject = nullptr;
 
-	if (other)
-	{
-		hasInstancerConnection = other->hasInstancerConnection;
-		objectMatrix = other->objectMatrix;
-		assemblyObject = other->assemblyObject;
-	}
+    if (other)
+    {
+        hasInstancerConnection = other->hasInstancerConnection;
+        objectMatrix = other->objectMatrix;
+        assemblyObject = other->assemblyObject;
+    }
 };
 
 mtap_MayaObject::mtap_MayaObject(MObject& mobject) : MayaObject(mobject)
@@ -49,116 +49,116 @@ mtap_MayaObject::~mtap_MayaObject()
 
 bool mtap_MayaObject::geometryShapeSupported()
 {
-	MFn::Type type = this->mobject.apiType();
-	if(this->mobject.hasFn(MFn::kMesh))
-		return true;
+    MFn::Type type = this->mobject.apiType();
+    if(this->mobject.hasFn(MFn::kMesh))
+        return true;
 
-	if(this->isLight())
-		return true;
+    if(this->isLight())
+        return true;
 
-	if(this->isCamera())
-		return true;
+    if(this->isCamera())
+        return true;
 
-	return false;
+    return false;
 }
 
 //
-//	The purpose of this method is to compare object attributes and inherit them if appropriate.
-//	e.g. lets say we assign a color to the top node of a hierarchy. Then all child nodes will be
-//	called and this method is used. 
+//  The purpose of this method is to compare object attributes and inherit them if appropriate.
+//  e.g. lets say we assign a color to the top node of a hierarchy. Then all child nodes will be
+//  called and this method is used.
 //
 sharedPtr<ObjectAttributes>mtap_MayaObject::getObjectAttributes(sharedPtr<ObjectAttributes> parentAttributes)
 {
-	sharedPtr<mtap_ObjectAttributes> myAttributes = sharedPtr<mtap_ObjectAttributes>(new mtap_ObjectAttributes(parentAttributes));
+    sharedPtr<mtap_ObjectAttributes> myAttributes = sharedPtr<mtap_ObjectAttributes>(new mtap_ObjectAttributes(parentAttributes));
 
-	if( this->hasInstancerConnection)
-	{
-		myAttributes->hasInstancerConnection = true;
-	}
+    if( this->hasInstancerConnection)
+    {
+        myAttributes->hasInstancerConnection = true;
+    }
 
-	if( this->isGeo())
-	{
-	}
-	
-	if( this->isTransform())
-	{
-		MFnDagNode objNode(this->mobject);
-		myAttributes->objectMatrix = objNode.transformationMatrix() * myAttributes->objectMatrix;
-	}
+    if( this->isGeo())
+    {
+    }
 
-	if( this->needsAssembly() || myAttributes->hasInstancerConnection)
-	{
-		myAttributes->needsOwnAssembly = true;
-		myAttributes->assemblyObject = this;
-		myAttributes->objectMatrix.setToIdentity();
-	}
+    if( this->isTransform())
+    {
+        MFnDagNode objNode(this->mobject);
+        myAttributes->objectMatrix = objNode.transformationMatrix() * myAttributes->objectMatrix;
+    }
 
-	this->attributes = myAttributes;
-	return myAttributes;
+    if( this->needsAssembly() || myAttributes->hasInstancerConnection)
+    {
+        myAttributes->needsOwnAssembly = true;
+        myAttributes->assemblyObject = this;
+        myAttributes->objectMatrix.setToIdentity();
+    }
+
+    this->attributes = myAttributes;
+    return myAttributes;
 }
 
 
 void mtap_MayaObject::createAssembly()
 {
-	// instances do not need own assembly.
-	if( this->instanceNumber > 0)
-		return;
+    // instances do not need own assembly.
+    if( this->instanceNumber > 0)
+        return;
 
-	asf::auto_release_ptr<asr::Assembly> assembly(asr::AssemblyFactory().create(this->fullName.asChar(),asr::ParamArray()));
+    asf::auto_release_ptr<asr::Assembly> assembly(asr::AssemblyFactory().create(this->fullName.asChar(),asr::ParamArray()));
 }
 //
 // objects needs own assembly if:
-//		- it is instanced
-//		- it is an animated transform
-//		- its polysize is large (not yet implemented)
+//      - it is instanced
+//      - it is an animated transform
+//      - its polysize is large (not yet implemented)
 //
 
 bool mtap_MayaObject::needsAssembly()
 {
-	// Normally only a few nodes would need a own assembly.
-	// In IPR we have an update problem: If in a hierarchy a transform node is manipulated,
-	// there is no way to find out that a geometry node below has to be updated, at least I don't know any.
-	// Maybe I have to parse the hierarchy below and check the nodes for a geometry/camera/light node.
-	// So at the moment I let all transform nodes receive their own transforms. This will result in a 
-	// translation of the complete hierarchy as assemblies/assembly instances.	
-	if (MayaTo::getWorldPtr()->renderType == MayaTo::MayaToWorld::IPRRENDER)
-	{
-		if( this->isTransform())
-		{
-			return true;
-		}
-	}
-	
-	// this is the root of all assemblies
-	if( this->mobject.hasFn(MFn::kWorld))
-		return true;
+    // Normally only a few nodes would need a own assembly.
+    // In IPR we have an update problem: If in a hierarchy a transform node is manipulated,
+    // there is no way to find out that a geometry node below has to be updated, at least I don't know any.
+    // Maybe I have to parse the hierarchy below and check the nodes for a geometry/camera/light node.
+    // So at the moment I let all transform nodes receive their own transforms. This will result in a
+    // translation of the complete hierarchy as assemblies/assembly instances.
+    if (MayaTo::getWorldPtr()->renderType == MayaTo::MayaToWorld::IPRRENDER)
+    {
+        if( this->isTransform())
+        {
+            return true;
+        }
+    }
 
-	if( this->instanceNumber > 0)
-		return false;
+    // this is the root of all assemblies
+    if( this->mobject.hasFn(MFn::kWorld))
+        return true;
 
-	if( this->hasInstancerConnection)
-	{
-		Logging::debug(MString("obj has instancer connection -> needs assembly."));
-		return true;
-	}
+    if( this->instanceNumber > 0)
+        return false;
 
-	if( this->isInstanced() )
-	{
-		Logging::debug(MString("obj has more than 1 parent -> needs assembly."));
-		return true;
-	}
+    if( this->hasInstancerConnection)
+    {
+        Logging::debug(MString("obj has instancer connection -> needs assembly."));
+        return true;
+    }
 
-	if( this->isObjAnimated())
-	{
-		Logging::debug(MString("Object is animated -> needs assembly."));
-		return true;
-	}
+    if( this->isInstanced() )
+    {
+        Logging::debug(MString("obj has more than 1 parent -> needs assembly."));
+        return true;
+    }
 
-	if(isLightTransform(this->dagPath))
-	{
-		Logging::debug(MString("Object is light transform -> needs assembly."));
-		return true;
-	}
+    if( this->isObjAnimated())
+    {
+        Logging::debug(MString("Object is animated -> needs assembly."));
+        return true;
+    }
 
-	return false;
+    if(isLightTransform(this->dagPath))
+    {
+        Logging::debug(MString("Object is light transform -> needs assembly."));
+        return true;
+    }
+
+    return false;
 }

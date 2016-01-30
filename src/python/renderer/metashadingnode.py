@@ -25,11 +25,11 @@ class MetaClass(OpenMayaMPx.MPxNode):
         cls.addAttribute( cls.input )
         cls.addAttribute( cls.output )
         cls.attributeAffects( cls.input, cls.output )
-    
+
     def __init__(self):
         OpenMayaMPx.MPxNode.__init__(self)
-        
-    
+
+
 # # Node definition
 # class sineNode(OpenMayaMPx.MPxNode):
 #     # class variables
@@ -40,19 +40,19 @@ class MetaClass(OpenMayaMPx.MPxNode):
 #     def compute(self,plug,dataBlock):
 #         if ( plug == sineNode.output ):
 #             dataHandle = dataBlock.inputValue( sineNode.input )
-#             
+#
 #             inputFloat = dataHandle.asFloat()
 #             result = math.sin( inputFloat ) * 10.0
 #             outputHandle = dataBlock.outputValue( sineNode.output )
 #             outputHandle.setFloat( result )
 #             dataBlock.setClean( plug )
-# 
+#
 #         return OpenMaya.kUnknownParameter
-# 
+#
 # # creator
 # def nodeCreator():
 #     return OpenMayaMPx.asMPxPtr( sineNode() )
-# 
+#
 # # initializer
 # def nodeInitializer():
 #     # input
@@ -68,13 +68,13 @@ class MetaClass(OpenMayaMPx.MPxNode):
 #     sineNode.addAttribute( sineNode.input )
 #     sineNode.addAttribute( sineNode.output )
 #     sineNode.attributeAffects( sineNode.input, sineNode.output )
-    
+
 # initialize the script plug-in
 def initializePlugin(mobject):
-    
-    for index, nodeName in enumerate(NODENAMES):    
+
+    for index, nodeName in enumerate(NODENAMES):
         X = type(nodeName, (MetaClass,), {})
-        
+
         mplugin = OpenMayaMPx.MFnPlugin(mobject)
         try:
             mplugin.registerNode( X.__name__, OpenMaya.MTypeId(0x87000 + index), X.nodeCreator, X.nodeInitializer )
@@ -91,4 +91,3 @@ def uninitializePlugin(mobject):
     except:
         sys.stderr.write( "Failed to deregister node: %s" % X.__name__ )
         raise
-    

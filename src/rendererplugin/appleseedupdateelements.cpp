@@ -15,12 +15,11 @@ using namespace AppleRender;
 
 void AppleseedRenderer::updateTransform(sharedPtr<MayaObject> obj)
 {
-	Logging::debug(MString("AppleseedRenderer::updateTransform: ") + obj->shortName);
+    Logging::debug(MString("AppleseedRenderer::updateTransform: ") + obj->shortName);
 }
 
 void AppleseedRenderer::updateShape(sharedPtr<MayaObject> obj)
 {
-	Logging::debug(MString("AppleseedRenderer::updateShape: ") + obj->shortName);
-	//updateGeometry(obj);
+    Logging::debug(MString("AppleseedRenderer::updateShape: ") + obj->shortName);
+    //updateGeometry(obj);
 }
-

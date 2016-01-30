@@ -11,13 +11,13 @@
 class  MayaToAppleseed: public MPxCommand
 {
 public:
-					MayaToAppleseed();
-	virtual			~MayaToAppleseed(); 
-	static MSyntax	newSyntax();
+                    MayaToAppleseed();
+    virtual         ~MayaToAppleseed();
+    static MSyntax  newSyntax();
 
-	MStatus     	doIt( const MArgList& args );
-	static void*	creator();
-	void setLogLevel();
+    MStatus         doIt( const MArgList& args );
+    static void*    creator();
+    void setLogLevel();
 
 private:
 };

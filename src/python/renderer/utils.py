@@ -5,7 +5,7 @@ def luxMatTextFile():
     file = open(r"C:\Users\haggi\coding\OpenMaya\src\mayaToLux\vs2010\sourceCodeDocs\Textures.txt", "r")
     content = file.readlines()
     file.close()
-    
+
     for line in content:
         line = line.strip()
         erg = line.split("::")
@@ -16,15 +16,15 @@ def luxMatTextFile():
         erg = l.split()
         pname = ""
         ptype = ""
-        
+
         if len(erg) > 1:
             pname = erg[0]
             ptype = erg[1]
-        print line    
+        print line
         print pname, ptype
 
 def getElements(elementList, child):
-    
+
     elementList[child.attrib['model']] = {}
     for parameter in child:
         #print "\t", parameter.tag, parameter.attrib['name']
@@ -46,7 +46,7 @@ def getElements(elementList, child):
                     elementList[child.attrib['model']][parameter.attrib['name']]['type'] =  'message'
                     elementList[child.attrib['model']][parameter.attrib['name']]['default'] =  ""
                 if paramElements.attrib['value'] == 'colormap':
-                    #print "\t\t\t", "Varying value"                        
+                    #print "\t\t\t", "Varying value"
                     elementList[child.attrib['model']][parameter.attrib['name']]['type'] =  'varying'
                 if paramElements.attrib['value'] == 'enumeration':
                     elementList[child.attrib['model']][parameter.attrib['name']]['type'] =  'enum'
@@ -57,15 +57,15 @@ def getElements(elementList, child):
                     #print "\t\t\t", "Enum type"
                 #bsdfs[child.attrib['model']][parameter.attrib['name']]['default'] =  paramElements.attrib['value']
                 #print "\t\t\t--", paramElements.attrib['name'], paramElements.attrib['value']
-                
+
             if paramElements.attrib['name'] == 'items':
                 # print "Items found"
                 items = []
                 for et in paramElements:
                     #print "Enum", et.attrib['name'], et.attrib['value']
                     items.append(et.attrib['value'])
-                elementList[child.attrib['model']][parameter.attrib['name']]['data'] = items 
-    
+                elementList[child.attrib['model']][parameter.attrib['name']]['data'] = items
+
             else:
                 for et in paramElements:
                     if "color" in et.attrib['name']:
@@ -75,15 +75,15 @@ def getElements(elementList, child):
                     if "texture_instance" in et.attrib['name']:
                         #print "\t\t\t", "Type scalar"
                         elementList[child.attrib['model']][parameter.attrib['name']]['type'] +=  '_scalar'
-            #bsdfs[child.attrib['model']][parameter.attrib['name']] 
-    
+            #bsdfs[child.attrib['model']][parameter.attrib['name']]
+
 
 def getShadersFromXML():
     p = "D:/install/3d/Appleseed/inputMeta.xml"
     #p = "D:/install/3d/Appleseed/inputMetaTst.xml"
     tree = ET.parse(p)
     root = tree.getroot()
-    
+
     bsdfs = {}
     surfaceShaders = {}
     textures = {}
@@ -101,11 +101,11 @@ def getShadersFromXML():
         if "texture" in child.attrib['type']:
             getElements(textures, child)
 
-    fh = open(r"C:\Users\haggi\coding\OpenMaya\src\mayaToAppleseed\vs2010\sourceCodeDocs\Surfaces.txt", "w")    
+    fh = open(r"C:\Users\haggi\coding\OpenMaya\src\mayaToAppleseed\vs2010\sourceCodeDocs\Surfaces.txt", "w")
     for key, value in bsdfs.iteritems():
         fh.write("\n#{0}\n".format(key))
         for paramKey, paramValue in bsdfs[key].iteritems():
-            #print paramValue        
+            #print paramValue
             print ",".join([paramKey, paramValue['type'], paramValue['label'], paramValue['default']]),
             fh.write(",".join([paramKey, paramValue['type'], paramValue['label'], paramValue['default']]))
             if paramValue.has_key('data'):
@@ -117,7 +117,7 @@ def getShadersFromXML():
     for key, value in surfaceShaders.iteritems():
         fh.write("\n#{0}\n".format(key))
         for paramKey, paramValue in surfaceShaders[key].iteritems():
-            #print paramValue        
+            #print paramValue
             print ",".join([paramKey, paramValue['type'], paramValue['label'], paramValue['default']]),
             fh.write(",".join([paramKey, paramValue['type'], paramValue['label'], paramValue['default']]))
             if paramValue.has_key('data'):
@@ -129,7 +129,7 @@ def getShadersFromXML():
     for key, value in edfs.iteritems():
         fh.write("\n#{0}\n".format(key))
         for paramKey, paramValue in edfs[key].iteritems():
-            print paramValue        
+            print paramValue
             print ",".join([paramKey, paramValue['type'], paramValue['label'], paramValue['default']]),
             fh.write(",".join([paramKey, paramValue['type'], paramValue['label'], paramValue['default']]))
             if paramValue.has_key('data'):
@@ -141,7 +141,7 @@ def getShadersFromXML():
     for key, value in textures.iteritems():
         fh.write("\n#{0}\n".format(key))
         for paramKey, paramValue in textures[key].iteritems():
-            print paramValue        
+            print paramValue
             print ",".join([paramKey, paramValue['type'], paramValue['label'], paramValue['default']]),
             fh.write(",".join([paramKey, paramValue['type'], paramValue['label'], paramValue['default']]))
             if paramValue.has_key('data'):
@@ -152,9 +152,7 @@ def getShadersFromXML():
                 print
     fh.close()
     #print bsdfs
-    
+
 if __name__ == "__main__":
     getShadersFromXML()
     #luxMatTextFile()
-    
-    

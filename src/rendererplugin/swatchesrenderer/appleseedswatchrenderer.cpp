@@ -245,5 +245,5 @@ void AppleseedSwatchRenderer::terminateAppleseedSwatchRender(AppleseedSwatchRend
     SQueue::SwatchesQueue.push(swatchEvent);
     swRend->terminateLoop = true;
     //while (!swRend->loopDone)
-    //	std::this_thread::sleep_for(std::chrono::milliseconds(20));
+    //  std::this_thread::sleep_for(std::chrono::milliseconds(20));
 }

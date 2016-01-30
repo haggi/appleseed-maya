@@ -148,4 +148,3 @@ MStatus BinMeshReaderCmd::doIt( const MArgList& args)
     MGlobal::displayInfo("BinMeshReaderCmd done.\n");
     return MStatus::kSuccess;
 }
-

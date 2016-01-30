@@ -8,11 +8,11 @@
 class mtap_StandinLocator : public StandinLocatorNode
 {
 public:
-	mtap_StandinLocator();
-	virtual ~mtap_StandinLocator();
+    mtap_StandinLocator();
+    virtual ~mtap_StandinLocator();
 
     virtual MStatus   compute( const MPlug&, MDataBlock& );
-	virtual void      postConstructor();
+    virtual void      postConstructor();
     static void *     creator();
     static MStatus    initialize();
 

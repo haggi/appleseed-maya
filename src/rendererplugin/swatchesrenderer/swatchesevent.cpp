@@ -2,9 +2,8 @@
 
 namespace SQueue
 {
-	concurrent_queue<SEvent> *getQueue()
-	{
-		return &SwatchesQueue;
-	}
+    concurrent_queue<SEvent> *getQueue()
+    {
+        return &SwatchesQueue;
+    }
 };
-

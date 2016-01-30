@@ -26,12 +26,12 @@ def compileOSLShaders(renderer="Corona"):
         if osoFile.exists():
             continue
         oslShadersToCompile.append(oslFile)
-        
+
     for oslShader in oslShadersToCompile:
         cmd = "{compiler} -v -o {output} {oslFile}".format(compiler="oslc.exe", output=oslShader.replace(".osl", ".oso"), oslFile=oslShader)
         log.debug("Compiling osl shader: {0}".format(oslShader))
         log.debug("Command: {0}".format(cmd))
-        
+
         IDLE_PRIORITY_CLASS = 64
         process = subprocess.Popen(cmd, bufsize=1, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, creationflags=IDLE_PRIORITY_CLASS)
 
@@ -42,11 +42,11 @@ def compileOSLShaders(renderer="Corona"):
             pm.mel.trace(line.strip())
 
 def getShaderInfo(shaderPath):
-    print "Getting shader info for path", shaderPath    
+    print "Getting shader info for path", shaderPath
     osoFiles = getOSOFiles(shaderPath)
     return osoFiles
 
-def getOSODirs(renderer = "appleseed"):    
+def getOSODirs(renderer = "appleseed"):
     try:
         shaderDir = os.environ['{0}_OSL_SHADERS_LOCATION'.format(renderer.upper())]
     except KeyError:
@@ -203,7 +203,7 @@ def readShadersXMLDescription():
             if findElement is not None:
                 inpp['options'] = findElement.text
             shDict['inputs'].append(inpp)
-            
+
         for inp in shader.find('outputs'):
             inpp = {}
             inpp['name'] = inp.find('name').text
@@ -211,9 +211,9 @@ def readShadersXMLDescription():
             inpp['help'] = ""
             shDict['outputs'].append(inpp)
         shaderDict[shDict['name']] = shDict
-    
+
     global SHADER_DICT
-    SHADER_DICT = shaderDict   
+    SHADER_DICT = shaderDict
     return shaderDict
 
 def addSubElementList(listEntry, parentElement, subName = "input"):
@@ -221,7 +221,7 @@ def addSubElementList(listEntry, parentElement, subName = "input"):
         inElement = ET.SubElement(parentElement,subName)
         for ikey, ivalue in element.iteritems():
             subElement = ET.SubElement(inElement,ikey)
-            subElement.text = str(ivalue)                    
+            subElement.text = str(ivalue)
 
 def writeXMLShaderDescription(shaderDict=None):
     global SHADER_DICT
@@ -241,11 +241,11 @@ def writeXMLShaderDescription(shaderDict=None):
         sh = ET.SubElement(root,"shader")
         for key, value in shader.iteritems():
             if key == "inputs":
-                ins = ET.SubElement(sh,"inputs")   
-                addSubElementList(value, ins, subName="input")     
+                ins = ET.SubElement(sh,"inputs")
+                addSubElementList(value, ins, subName="input")
             elif key == "outputs":
-                ins = ET.SubElement(sh,"outputs")   
-                addSubElementList(value, ins, subName="output")              
+                ins = ET.SubElement(sh,"outputs")
+                addSubElementList(value, ins, subName="output")
             else:
                 subElement = ET.SubElement(sh,key)
                 subElement.text = str(value)
@@ -254,12 +254,12 @@ def writeXMLShaderDescription(shaderDict=None):
     log.debug("Writing shader info file: {0}".format(xmlFile))
     # just make it nice to read
     xml = minidom.parse(xmlFile)
-    pretty_xml_as_string = xml.toprettyxml()    
+    pretty_xml_as_string = xml.toprettyxml()
     root = ET.fromstring(pretty_xml_as_string)
     tree = ET.ElementTree(root)
-    tree.write(xmlFile)    
-    
-    
+    tree.write(xmlFile)
+
+
 def updateOSLShaderInfo(force=False, osoFiles=[]):
     pp = pprint.PrettyPrinter(indent=4)
     IDLE_PRIORITY_CLASS = 64
@@ -268,12 +268,12 @@ def updateOSLShaderInfo(force=False, osoFiles=[]):
     # if we have updates we need to update the xml file as well.
     # first read the xml file
     readShadersXMLDescription()
-    global SHADER_DICT    
-    for osoFile in osoFiles:        
+    global SHADER_DICT
+    for osoFile in osoFiles:
         infoCmd = cmd + " " + osoFile
         shaderName = path.path(osoFile).basename().replace(".oso", "")
         log.info("Updating shader info for shader {1}. cmd: {0}".format(infoCmd, shaderName))
-        process = subprocess.Popen(infoCmd, bufsize=1, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, creationflags=IDLE_PRIORITY_CLASS)               
+        process = subprocess.Popen(infoCmd, bufsize=1, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, creationflags=IDLE_PRIORITY_CLASS)
         content = []
         while 1:
             line = process.stdout.readline()
@@ -286,7 +286,7 @@ def updateOSLShaderInfo(force=False, osoFiles=[]):
     writeXMLShaderDescription()
     return infoDict
 
-    
+
 def compileAllShaders(renderer = "appleseed"):
     print "cas"
     try:
@@ -298,7 +298,7 @@ def compileAllShaders(renderer = "appleseed"):
         shaderDir = path.path(__file__).parent / "shaders"
         if shaderDir.exists():
             log.info("Using found shaders directory {0}".format(shaderDir))
-            
+
     include_dir = os.path.join(shaderDir, "src/include")
     log.info("reading shaders from {0}".format(shaderDir))
     oslc_cmd = "oslc"
@@ -311,10 +311,10 @@ def compileAllShaders(renderer = "appleseed"):
                 dest_dir = root.replace("\\", "/").replace("shaders/src", "shaders") + "/"
                 if not os.path.exists(dest_dir):
                     os.makedirs(dest_dir)
-                osoOutputPath = dest_dir + filename.replace(".osl", ".oso")                
+                osoOutputPath = dest_dir + filename.replace(".osl", ".oso")
                 osoOutputFile = path.path(osoOutputPath)
                 oslInputFile = path.path(oslPath)
-                
+
                 if osoOutputFile.exists():
                     if osoOutputFile.mtime > oslInputFile.mtime:
                         log.debug("oso file {0} up to date, no compilation needed.".format(osoOutputFile.basename()))
@@ -323,15 +323,15 @@ def compileAllShaders(renderer = "appleseed"):
                         osoOutputFile.remove()
 
                 log.debug("compiling shader: {0}".format(oslInputFile))
-    
+
                 saved_wd = os.getcwd()
                 os.chdir(root)
                 compileCmd = oslc_cmd + " -v -I" + include_dir + ' -o '+ osoOutputPath + ' ' + oslInputFile
                 log.debug("compile command: {0}".format(compileCmd))
-                
+
                 IDLE_PRIORITY_CLASS = 64
                 process = subprocess.Popen(compileCmd, bufsize=1, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, creationflags=IDLE_PRIORITY_CLASS)
-                
+
                 progress = []
                 fail = False
                 while 1:
@@ -349,7 +349,7 @@ def compileAllShaders(renderer = "appleseed"):
                 else:
                     osoInfoShaders.append(osoOutputPath)
                 os.chdir(saved_wd)
-    
+
     if len(failureDict.keys()) > 0:
         log.info("\n\nShader compilation failed for:")
         for key, content in failureDict.iteritems():
@@ -359,5 +359,3 @@ def compileAllShaders(renderer = "appleseed"):
         if len(osoInfoShaders) > 0:
             log.info("Updating shaderInfoFile.")
             updateOSLShaderInfo(force=False, osoFiles=osoInfoShaders)
-            
-

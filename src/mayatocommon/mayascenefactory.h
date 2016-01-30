@@ -7,13 +7,13 @@ class MayaScene;
 
 namespace MayaTo
 {
-	class MayaSceneFactory
-	{
-	public:
-		void createMayaScene();
-		sharedPtr<MayaScene> getMayaScene();
-		void deleteMayaScene();
-	};
+    class MayaSceneFactory
+    {
+    public:
+        void createMayaScene();
+        sharedPtr<MayaScene> getMayaScene();
+        void deleteMayaScene();
+    };
 }
 
 #endif

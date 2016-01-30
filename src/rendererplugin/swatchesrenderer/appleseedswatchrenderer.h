@@ -17,28 +17,28 @@ class NewSwatchRenderer;
 class AppleseedSwatchRenderer
 {
 public:
-	AppleseedSwatchRenderer();
-	~AppleseedSwatchRenderer();
-	void mainLoop();
-	void setSize(int size);
-	void setShader(MObject shader);
-	void renderSwatch();
-	void renderSwatch(NewSwatchRenderer *sr);
-	void fillSwatch(float *pixels);
-	bool terminateLoop = false;
-	bool enableSwatchRenderer = true;
-	bool loopDone = false;
-	
-	asf::auto_release_ptr<asr::Scene> scene;
-	asf::auto_release_ptr<asr::Project> project;
-	autoPtr<asf::ILogTarget> log_target;
-	autoPtr<asr::MasterRenderer> mrenderer;
-	asr::DefaultRendererController renderer_controller;
+    AppleseedSwatchRenderer();
+    ~AppleseedSwatchRenderer();
+    void mainLoop();
+    void setSize(int size);
+    void setShader(MObject shader);
+    void renderSwatch();
+    void renderSwatch(NewSwatchRenderer *sr);
+    void fillSwatch(float *pixels);
+    bool terminateLoop = false;
+    bool enableSwatchRenderer = true;
+    bool loopDone = false;
 
-	static void startAppleseedSwatchRender(AppleseedSwatchRenderer *swRend);
-	static void terminateAppleseedSwatchRender(AppleseedSwatchRenderer *swRend);
+    asf::auto_release_ptr<asr::Scene> scene;
+    asf::auto_release_ptr<asr::Project> project;
+    autoPtr<asf::ILogTarget> log_target;
+    autoPtr<asr::MasterRenderer> mrenderer;
+    asr::DefaultRendererController renderer_controller;
 
-	void defineMaterial(MObject shadingNode);
+    static void startAppleseedSwatchRender(AppleseedSwatchRenderer *swRend);
+    static void terminateAppleseedSwatchRender(AppleseedSwatchRenderer *swRend);
+
+    void defineMaterial(MObject shadingNode);
 
 };
 

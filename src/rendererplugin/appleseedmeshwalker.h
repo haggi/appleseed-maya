@@ -20,34 +20,34 @@
 namespace asf = foundation;
 
 struct Face{
-	MIntArray vtxIds;
-	MIntArray normalIds;
-	MIntArray uvIds;
+    MIntArray vtxIds;
+    MIntArray normalIds;
+    MIntArray uvIds;
 };
 
 class MeshWalker : public asf::IMeshWalker
 {
 public:
-	MeshWalker(MDagPath& dagPath);
-	MFnMesh			meshFn;
-	
-	MDagPath meshDagPath;
-	MObject meshObject;
-	MFnMeshData smoothMeshData;
+    MeshWalker(MDagPath& dagPath);
+    MFnMesh         meshFn;
 
-	// mesh data
-	MFloatArray		u,v;
-	MPointArray		points;
-	MFloatVectorArray normals;
+    MDagPath meshDagPath;
+    MObject meshObject;
+    MFnMeshData smoothMeshData;
 
-	MObjectArray shadingGroups;
-	MIntArray perFaceAssignments;
-	MIntArray perTriangleAssignments;
-	std::vector<Face> faceList;
+    // mesh data
+    MFloatArray     u,v;
+    MPointArray     points;
+    MFloatVectorArray normals;
 
-	MObject checkSmoothMesh();
-	bool	useSmoothMesh;
-	void setTransform();
+    MObjectArray shadingGroups;
+    MIntArray perFaceAssignments;
+    MIntArray perTriangleAssignments;
+    std::vector<Face> faceList;
+
+    MObject checkSmoothMesh();
+    bool    useSmoothMesh;
+    void setTransform();
     // Return the name of the mesh.
     virtual const char* get_name() const;
 

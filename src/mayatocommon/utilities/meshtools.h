@@ -9,8 +9,8 @@
 
 void getMeshData(MObject& meshObject, MPointArray& points, MFloatVectorArray& normals);
 void getMeshData(MObject& meshObject, MPointArray& points, MFloatVectorArray& normals, MFloatArray& uArray,
-	MFloatArray& vArray, MIntArray& triPointIndices, MIntArray& triNormalIndices,
-	MIntArray& triUvIndices, MIntArray& triMatIndices, MIntArray& perFaceAssignments);
+    MFloatArray& vArray, MIntArray& triPointIndices, MIntArray& triNormalIndices,
+    MIntArray& triUvIndices, MIntArray& triMatIndices, MIntArray& perFaceAssignments);
 
 
 #endif

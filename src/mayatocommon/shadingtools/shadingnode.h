@@ -10,23 +10,23 @@
 
 struct ShaderAttribute
 {
-	ShaderAttribute()
-	{}
-	enum AttributeType {
-		NONE=0,
-		MESSAGE,
-		FLOAT,
-		COLOR,
-		VECTOR,
-		STRING,
-		BOOL,
-		MATRIX
-	};
-	std::string name;
-	std::string type;
-	std::string hint;
-	bool optionMenu = false;
-	AttributeType atype;
+    ShaderAttribute()
+    {}
+    enum AttributeType {
+        NONE=0,
+        MESSAGE,
+        FLOAT,
+        COLOR,
+        VECTOR,
+        STRING,
+        BOOL,
+        MATRIX
+    };
+    std::string name;
+    std::string type;
+    std::string hint;
+    bool optionMenu = false;
+    AttributeType atype;
 };
 
 #define SPLUG_LIST std::vector<ShadingPlug>
@@ -34,36 +34,36 @@ struct ShaderAttribute
 class ShadingNode
 {
 public:
-	MString typeName; //Lambert, MultiplyDivide
-	MString fullName; //myLambert1, mdivi_number_123
-	MObject mobject;
-	std::vector<ShaderAttribute> inputAttributes;
-	std::vector<ShaderAttribute> outputAttributes;
+    MString typeName; //Lambert, MultiplyDivide
+    MString fullName; //myLambert1, mdivi_number_123
+    MObject mobject;
+    std::vector<ShaderAttribute> inputAttributes;
+    std::vector<ShaderAttribute> outputAttributes;
 
-	ShadingNode(MObject& object);
-	ShadingNode(const ShadingNode &other);
-	ShadingNode();
-	~ShadingNode();
+    ShadingNode(MObject& object);
+    ShadingNode(const ShadingNode &other);
+    ShadingNode();
+    ~ShadingNode();
 
-	bool operator==(ShadingNode const& otherOne)
-	{
-		return mobject == otherOne.mobject;
-	}
+    bool operator==(ShadingNode const& otherOne)
+    {
+        return mobject == otherOne.mobject;
+    }
 
-	void setMObject(MObject object);
-	bool isAttributeValid(MString attributeName);
-	bool isInPlugValid(MPlug plug);
-	bool isOutPlugValid(MPlug plug);
-	void getConnectedInputObjects(MObjectArray& objectArray);
-	void getConnectedOutputObjects(MObjectArray& objectArray);
-	void addInputAttribute(ShaderAttribute att)
-	{
-		inputAttributes.push_back(att);
-	}
-	void addOutputAttribute(ShaderAttribute att)
-	{
-		outputAttributes.push_back(att);
-	}
+    void setMObject(MObject object);
+    bool isAttributeValid(MString attributeName);
+    bool isInPlugValid(MPlug plug);
+    bool isOutPlugValid(MPlug plug);
+    void getConnectedInputObjects(MObjectArray& objectArray);
+    void getConnectedOutputObjects(MObjectArray& objectArray);
+    void addInputAttribute(ShaderAttribute att)
+    {
+        inputAttributes.push_back(att);
+    }
+    void addOutputAttribute(ShaderAttribute att)
+    {
+        outputAttributes.push_back(att);
+    }
 private:
 };
 

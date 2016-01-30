@@ -59,14 +59,14 @@ def zipdir(p, zipf):
     pass
 
 def createDeployment(renderer, shortCut, mayaRelease):
-    
+
     projectName = "mayaTo{0}".format(renderer.capitalize())
     if os.name == 'nt':
         basePath = path.path("H:/UserDatenHaggi/Documents/coding/OpenMaya/src/{0}".format(projectName))
     else:
         print "Os not supported"
         return
-    
+
     sourceDir = path.path(basePath + "/" +  shortCut + "_devmodule")
     devDestDir = path.path("{0}/deployment/{1}_{2}".format(basePath, projectName, mayaRelease))
     if devDestDir.exists():
@@ -74,7 +74,7 @@ def createDeployment(renderer, shortCut, mayaRelease):
         shutil.rmtree(devDestDir)
 
     deploymentDir =  path.path("{0}/deployment".format(basePath))
-    # dev destination directories                
+    # dev destination directories
     try:
         print "Creating destination directory", devDestDir
         os.makedirs(devDestDir)
@@ -84,11 +84,11 @@ def createDeployment(renderer, shortCut, mayaRelease):
 
     # get folders from dev module
     devFolders = ['plug-ins', 'shaders']
-    
+
     for folder in devFolders:
         print "Creating destination directory", devDestDir + "/" + folder
         os.makedirs(devDestDir + "/" + folder)
-    
+
     #module file
     shutil.copy(sourceDir+"/mayaTo" + renderer.capitalize() + ".mod", devDestDir)
     mfh = open(devDestDir+"/mayaTo" + renderer.capitalize() + ".mod", "r")
@@ -99,7 +99,7 @@ def createDeployment(renderer, shortCut, mayaRelease):
         mfh.write(c.replace(shortCut +"_devmodule", "mayaTo" + renderer.capitalize() + "_{0}".format(mayaRelease)))
     mfh.close()
 
-    
+
     #mll
     print "copy ", sourceDir + "/plug-ins/mayato" + renderer + "_maya"+ mayaRelease + ".mll"
     shutil.copy(sourceDir + "/plug-ins/mayato" + renderer + "_maya"+ mayaRelease + ".mll", devDestDir + "/plug-ins/mayato" + renderer + ".mll")
@@ -109,11 +109,11 @@ def createDeployment(renderer, shortCut, mayaRelease):
     for xmlFile in files:
         print "Copy xml file", xmlFile
         shutil.copy(xmlFile, devDestDir + "/plug-ins/")
-    
+
     #ressources
     scDir = path.path(sourceDir + "/ressources")
     shutil.copytree(scDir, devDestDir + "/ressources")
-    
+
     manuapPdf = None
     #bin
     if renderer == "appleseed":
@@ -121,7 +121,7 @@ def createDeployment(renderer, shortCut, mayaRelease):
         for f in dkDir.listdir():
             shutil.copy(f, devDestDir + "/bin")
 
-    
+
     manualPdf = path.path("C:/daten/web/openmaya/manuals/{0}/{0}.pdf".format(projectName))
     if renderer == "corona":
         binDir = sourceDir + "/bin"
@@ -133,12 +133,12 @@ def createDeployment(renderer, shortCut, mayaRelease):
             destFile =   destBinDir + f
             print "Copy ", sourceFile, "to", destFile
             shutil.copy(sourceFile, devDestDir + "/bin")
-            
+
         shaderDir = sourceDir + "/shaders"
         shaderDestDir = devDestDir + "/shaders"
         shutil.rmtree(shaderDestDir)
         shutil.copytree(shaderDir, shaderDestDir)
-                
+
     if renderer == "indigo":
         binDir = sourceDir + "/bin"
         destDir = devDestDir + "/bin"
@@ -147,7 +147,7 @@ def createDeployment(renderer, shortCut, mayaRelease):
             os.remove(destDir + "/licence.sig")
         except:
             pass
-        
+
     if manualPdf is not None:
         docsDir = deploymentDir + "/docs"
         print "Check", docsDir
@@ -155,7 +155,7 @@ def createDeployment(renderer, shortCut, mayaRelease):
             print "Create docs dir"
             docsDir.makedirs()
         manualPdf.copy2(docsDir)
-        
+
     iconsSourceDir = "{0}/icons/".format(sourceDir)
     iconsDestDir = "{0}/icons/".format(devDestDir)
     shutil.copytree(iconsSourceDir, iconsDestDir)
@@ -196,10 +196,10 @@ def createDeployment(renderer, shortCut, mayaRelease):
                 dst = dd.replace(sourceDir, devDestDir)
                 print "mkdir", dst
                 os.makedirs(dst)
-                
-    # get external folders 
+
+    # get external folders
     extFolders = ['{0}Examples'.format(projectName)]
-        
+
     for folder in extFolders:
         deployDir = devDestDir.parent
         try:
@@ -209,14 +209,14 @@ def createDeployment(renderer, shortCut, mayaRelease):
         shutil.copytree(basePath + "/" + folder, deployDir + "/" + folder)
 
 def createDeploymentCombined(renderer, shortCut):
-    
+
     projectName = "mayaTo{0}".format(renderer.capitalize())
     if os.name == 'nt':
         basePath = path.path("H:/UserDatenHaggi/Documents/coding/OpenMaya/src/{0}".format(projectName))
     else:
         print "Os not supported"
         return
-    
+
     sourceDir = path.path(basePath + "/" +  shortCut + "_devmodule")
     devDestDir = path.path("{0}/deployment/{1}".format(basePath, projectName))
     if devDestDir.exists():
@@ -224,7 +224,7 @@ def createDeploymentCombined(renderer, shortCut):
         shutil.rmtree(devDestDir)
 
     deploymentDir =  path.path("{0}/deployment".format(basePath))
-    # dev destination directories                
+    # dev destination directories
     try:
         print "Creating destination directory", devDestDir
         os.makedirs(devDestDir)
@@ -241,11 +241,11 @@ def createDeploymentCombined(renderer, shortCut):
         shutil.copy2(pluginFile, pluginDestFile)
     # get folders from dev module
     devFolders = ['shaders']
-    
+
     for folder in devFolders:
         print "Creating destination directory", devDestDir + "/" + folder
         os.makedirs(devDestDir + "/" + folder)
-    
+
     #module file
     shutil.copy(sourceDir+"/mayaTo" + renderer.capitalize() + ".mod", devDestDir)
     mfh = open(devDestDir+"/mayaTo" + renderer.capitalize() + ".mod", "r")
@@ -256,20 +256,20 @@ def createDeploymentCombined(renderer, shortCut):
         mfh.write(c.replace(shortCut +"_devmodule", "mayaTo" + renderer.capitalize()))
     mfh.close()
 
-    
+
     #mll
     pluginsDir = path.path(sourceDir + "/plug-ins/")
-    xmlFiles = pluginsDir.listdir("*.xml")    
+    xmlFiles = pluginsDir.listdir("*.xml")
     for destMayaVersion in ["2014", "2015", "2016"]:
         plugInDestDir = devDestDir + "/" + destMayaVersion + "/plug-ins"
         for xmlFile in xmlFiles:
             print "Copy xml file", xmlFile
             shutil.copy(xmlFile, plugInDestDir)
-            
+
     #ressources
     scDir = path.path(sourceDir + "/resources")
     shutil.copytree(scDir, devDestDir + "/resources")
-    
+
     manuapPdf = None
     #bin
     if renderer == "appleseed":
@@ -277,7 +277,7 @@ def createDeploymentCombined(renderer, shortCut):
         for f in dkDir.listdir():
             shutil.copy(f, devDestDir + "/bin")
 
-    
+
     manualPdf = path.path("C:/daten/web/openmaya/manuals/{0}/{0}.pdf".format(projectName))
     if renderer == "corona":
         binDir = sourceDir + "/bin"
@@ -289,12 +289,12 @@ def createDeploymentCombined(renderer, shortCut):
             destFile =   destBinDir + f
             print "Copy ", sourceFile, "to", destFile
             shutil.copy(sourceFile, devDestDir + "/bin")
-            
+
         shaderDir = sourceDir + "/shaders"
         shaderDestDir = devDestDir + "/shaders"
         shutil.rmtree(shaderDestDir)
         shutil.copytree(shaderDir, shaderDestDir)
-                
+
     if renderer == "indigo":
         binDir = sourceDir + "/bin"
         destDir = devDestDir + "/bin"
@@ -303,7 +303,7 @@ def createDeploymentCombined(renderer, shortCut):
             os.remove(destDir + "/licence.sig")
         except:
             pass
-        
+
     if manualPdf is not None:
         docsDir = deploymentDir + "/docs"
         print "Check", docsDir
@@ -311,7 +311,7 @@ def createDeploymentCombined(renderer, shortCut):
             print "Create docs dir"
             docsDir.makedirs()
         manualPdf.copy2(docsDir)
-        
+
     iconsSourceDir = "{0}/icons/".format(sourceDir)
     iconsDestDir = "{0}/icons/".format(devDestDir)
     shutil.copytree(iconsSourceDir, iconsDestDir)
@@ -347,10 +347,10 @@ def createDeploymentCombined(renderer, shortCut):
                 dst = dd.replace(sourceDir, devDestDir)
                 print "mkdir", dst
                 os.makedirs(dst)
-                
-    # get external folders 
+
+    # get external folders
     extFolders = ['{0}Examples'.format(projectName)]
-        
+
     for folder in extFolders:
         deployDir = devDestDir.parent
         try:
@@ -358,9 +358,9 @@ def createDeploymentCombined(renderer, shortCut):
         except:
             pass
         shutil.copytree(basePath + "/" + folder, deployDir + "/" + folder)
-    
+
 if __name__ == "__main__":
-    #createDeployment("appleseed", "mtap")    
+    #createDeployment("appleseed", "mtap")
     createDeploymentCombined("corona", "mtco")
     #createDeploymentCombined("indigo", "mtin")
     print "Deployment creation done"

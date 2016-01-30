@@ -21,7 +21,7 @@ def makeEnum(att):
         default = att[4].split(":").index(default)
     string = "\t{0} = eAttr.create(\"{0}\", \"{0}\", {1}, &stat);\n".format(att[0], default)
     for index, v in enumerate(att[4].split(":")):
-        string += "\tstat = eAttr.addField( \"{0}\", {1} );\n".format(v, index) 
+        string += "\tstat = eAttr.addField( \"{0}\", {1} );\n".format(v, index)
     string += "\tCHECK_MSTATUS(addAttribute( {0} ));\n\n".format(att[0])
     return string
 
@@ -34,7 +34,7 @@ def makeInt(att):
     string = "\t{0} = nAttr.create(\"{0}\", \"{0}\",  MFnNumericData::kInt, {1});\n".format(att[0], att[3])
     string += "\tCHECK_MSTATUS(addAttribute( {0} ));\n\n".format(att[0])
     return string
-    
+
 def makeFloat(att):
     string = "\t{0} = nAttr.create(\"{0}\", \"{0}\",  MFnNumericData::kFloat, {1});\n".format(att[0], att[3])
     if len(att) > 4:
@@ -54,7 +54,7 @@ def makeString(att):
 #    exportXMLFileName = tAttr.create("exportXMLFileName", "exportXMLFileName",  MFnNumericData::kString);
 #    tAttr.setUsedAsFilename(true);
 #    CHECK_MSTATUS(addAttribute( exportXMLFileName ));
-#        
+#
     string = "\t{0} = tAttr.create(\"{0}\", \"{0}\",  MFnNumericData::kString);\n".format(att[0])
     string += "\tCHECK_MSTATUS(addAttribute( {0} ));\n\n".format(att[0])
     return string
@@ -89,15 +89,15 @@ def fillNodeCPP(renderer, fileName, attArray):
     fh.close()
 
     newContent = []
-    
-    start_id_found = False  
+
+    start_id_found = False
     staticDefToDo = True
     initDefToDo = True
-    
+
     globalsName = "MayaTo" + renderer.capitalize() + "Globals"
-    
+
     for index, value in enumerate(content):
-        
+
         #first search for static defs
         if START_ID in value:
             start_id_found = True
@@ -128,13 +128,13 @@ def fillNodeCPP(renderer, fileName, attArray):
                         attString = makeString(att)
                     if att[1] == "vector":
                         attString = makeVector(att)
-                    newContent.append(attString)                    
+                    newContent.append(attString)
             if staticDefToDo:
                 staticDefToDo = False
         else:
             if END_ID in value:
                 start_id_found = False
-            if not start_id_found: 
+            if not start_id_found:
                 newContent.append(value)
 
     fh = open(fileName, "w")
@@ -147,10 +147,10 @@ def fillNodeH(fileName, attArray):
     fh = open(fileName, "r")
     content = fh.readlines()
     fh.close()
-    
+
     newContent = []
-    #static      MObject environmentColor;  
-    start_id_found = False  
+    #static      MObject environmentColor;
+    start_id_found = False
     for index, value in enumerate(content):
         if START_ID in value:
             print "Start id found"
@@ -165,22 +165,22 @@ def fillNodeH(fileName, attArray):
         else:
             if END_ID in value:
                 start_id_found = False
-            if not start_id_found: 
+            if not start_id_found:
                 newContent.append(value)
 
     fh = open(fileName, "w")
     fh.writelines(newContent)
     fh.close()
-    
+
 def fillCPP(renderer, fileName, attArray):
     print "Fill cpp"
     fh = open(fileName, "r")
     content = fh.readlines()
     fh.close()
-    
+
     newContent = []
-    #static      MObject environmentColor;  
-    start_id_found = False  
+    #static      MObject environmentColor;
+    start_id_found = False
     for index, value in enumerate(content):
         if START_ID in value:
             start_id_found = True
@@ -189,7 +189,7 @@ def fillCPP(renderer, fileName, attArray):
                 if att[0].startswith("#"):
                     continue
                 attString = ""
-                
+
                 if att[1] == "enum":
                     attString = "\t\tif(!getEnum(MString(\"{1}\"), {0}Globals, this->{1}))\n".format(renderer.capitalize(), att[0])
                     attString += "\t\t\tthrow(\"problem reading {0}Globals.{1}\");\n\n".format(renderer.lower(), att[0])
@@ -211,26 +211,26 @@ def fillCPP(renderer, fileName, attArray):
                 if att[1] == "vector":
                     attString = "\t\tif(!getVector(MString(\"{1}\"), {0}Globals, this->{1}))\n".format(renderer.capitalize(), att[0])
                     attString += "\t\t\tthrow(\"problem reading {0}Globals.{1}\");\n\n".format(renderer.lower(), att[0])
-                newContent.append(attString)                    
+                newContent.append(attString)
         else:
             if END_ID in value:
                 start_id_found = False
-            if not start_id_found: 
+            if not start_id_found:
                 newContent.append(value)
 
     fh = open(fileName, "w")
     fh.writelines(newContent)
     fh.close()
-    
+
 def fillH(fileName, attArray):
     print "Fill h"
     fh = open(fileName, "r")
     content = fh.readlines()
     fh.close()
-    
+
     newContent = []
-    #static      MObject environmentColor;  
-    start_id_found = False  
+    #static      MObject environmentColor;
+    start_id_found = False
     for index, value in enumerate(content):
         if START_ID in value:
             start_id_found = True
@@ -253,11 +253,11 @@ def fillH(fileName, attArray):
                     attString = "\tMString {0};\n".format(att[0])
                 if att[1] == "vector":
                     attString = "\tMVector {0};\n".format(att[0])
-                newContent.append(attString)                    
+                newContent.append(attString)
         else:
             if END_ID in value:
                 start_id_found = False
-            if not start_id_found: 
+            if not start_id_found:
                 newContent.append(value)
 
     fh = open(fileName, "w")
@@ -266,10 +266,10 @@ def fillH(fileName, attArray):
 
 def pyRGCreator(pypath, attArray):
     print "pyRGCreator with file ", pypath
-    
+
     fh = open(pypath, "w")
     fh.write("UIList = []\n")
-    
+
     for att in attArray:
         if att[0].startswith("#"):
             if att[0].endswith("Tab"):
@@ -299,7 +299,7 @@ def pyRGCreator(pypath, attArray):
             if len(att) > 4:
                 fh.write("entry['addInfo'] = '{0}'\n".format(att[4]))
             fh.write("tab['entries'].append(entry)\n")
-            
+
     fh.close()
 
     for att in attArray:
@@ -319,7 +319,7 @@ def pyRGCreator(pypath, attArray):
                 print "self.addRenderGlobalsUIElement(attName = '{0}', uiType = '{1}', displayName = '{2}', default='{3}', uiDict=uiDict)".format(att[0],att[1],att[2],att[3])
             else:
                 print "self.addRenderGlobalsUIElement(attName = '{0}', uiType = '{1}', displayName = '{2}', default='', uiDict=uiDict)".format(att[0],att[1],att[2])
-    
+
 def attributeCreator(renderer, shortCut):
     log.debug("attribute creator for renderer " + renderer)
 
@@ -331,9 +331,9 @@ def attributeCreator(renderer, shortCut):
     if not basePath:
         print "No base path"
         return
-        
+
     attributesFile = basePath + "/vs2010/sourceCodeDocs/globalsNodeAttributes.txt"
-    
+
     globalsNodeCpp = basePath + "/src/" + shortCut + "_common/" + shortCut + "_renderGlobalsNode.cpp"
     globalsNodeH = basePath + "/src/" + shortCut + "_common/" + shortCut + "_renderGlobalsNode.h"
 
@@ -342,7 +342,7 @@ def attributeCreator(renderer, shortCut):
 
     pyGlobals = basePath + "/" + shortCut + "_devModule/scripts/renderGlobalsUIInfo.py"
 
-    
+
     fh = open(attributesFile, "r")
     attributes = fh.readlines()
     fh.close()
@@ -361,14 +361,12 @@ def attributeCreator(renderer, shortCut):
     fillNodeCPP(renderer, globalsNodeCpp, attArray)
     fillH(globalsH, attArray)
     fillCPP(renderer, globalsCpp, attArray)
-    
+
     pyRGCreator(pyGlobals, attArray)
-    
+
 if __name__ == "__main__":
     #attributeCreator("lux", "mtlu")
     #attributeCreator("fuji", "mtfu")
     #attributeCreator("indigo", "mtin")
     attributeCreator("corona", "mtco")
     #attributeCreator("thea", "mtth")
-    
-    

@@ -27,7 +27,7 @@
 // Autodesk Support. You will be assigned a unique range that you
 // can manage on your own.
 //
-MTypeId	asDisneyMaterial::id( 0x0011CF43 );
+MTypeId asDisneyMaterial::id( 0x0011CF43 );
 
 
 // the postConstructor() function is called immediately after the objects
@@ -117,70 +117,70 @@ void* asDisneyMaterial::creator()
 
 MStatus asDisneyMaterial::initialize()
 {
-	MFnNumericAttribute nAttr;
-	MFnLightDataAttribute lAttr;
-	MFnTypedAttribute tAttr;
-	MFnGenericAttribute gAttr;
-	MFnEnumAttribute eAttr;
-	MFnMessageAttribute mAttr;
+    MFnNumericAttribute nAttr;
+    MFnLightDataAttribute lAttr;
+    MFnTypedAttribute tAttr;
+    MFnGenericAttribute gAttr;
+    MFnEnumAttribute eAttr;
+    MFnMessageAttribute mAttr;
 
-    MStatus status; 
+    MStatus status;
 
-	BaseColor = nAttr.createColor("BaseColor", "BaseColor");
-	nAttr.setDefault(0.5, 0.5, 0.5);
-	CHECK_MSTATUS(addAttribute(BaseColor));
+    BaseColor = nAttr.createColor("BaseColor", "BaseColor");
+    nAttr.setDefault(0.5, 0.5, 0.5);
+    CHECK_MSTATUS(addAttribute(BaseColor));
 
-	Subsurface = nAttr.create("Subsurface", "Subsurface", MFnNumericData::kFloat, 0.0);
-	nAttr.setMin(0.0);
-	nAttr.setSoftMax(1.0);
-	CHECK_MSTATUS(addAttribute(Subsurface));
+    Subsurface = nAttr.create("Subsurface", "Subsurface", MFnNumericData::kFloat, 0.0);
+    nAttr.setMin(0.0);
+    nAttr.setSoftMax(1.0);
+    CHECK_MSTATUS(addAttribute(Subsurface));
 
-	Metallic = nAttr.create("Metallic", "Metallic", MFnNumericData::kFloat, 0.5);
-	nAttr.setMin(0.0);
-	nAttr.setSoftMax(1.0);
-	CHECK_MSTATUS(addAttribute(Metallic));
+    Metallic = nAttr.create("Metallic", "Metallic", MFnNumericData::kFloat, 0.5);
+    nAttr.setMin(0.0);
+    nAttr.setSoftMax(1.0);
+    CHECK_MSTATUS(addAttribute(Metallic));
 
-	Specular = nAttr.create("Specular", "Specular", MFnNumericData::kFloat, 0.5);
-	nAttr.setMin(0.0);
-	nAttr.setSoftMax(1.0);
-	CHECK_MSTATUS(addAttribute(Specular));
+    Specular = nAttr.create("Specular", "Specular", MFnNumericData::kFloat, 0.5);
+    nAttr.setMin(0.0);
+    nAttr.setSoftMax(1.0);
+    CHECK_MSTATUS(addAttribute(Specular));
 
-	SpecularTint = nAttr.create("SpecularTint", "SpecularTint", MFnNumericData::kFloat, 0.0);
-	nAttr.setMin(0.0);
-	nAttr.setSoftMax(1.0);
-	CHECK_MSTATUS(addAttribute(SpecularTint));
+    SpecularTint = nAttr.create("SpecularTint", "SpecularTint", MFnNumericData::kFloat, 0.0);
+    nAttr.setMin(0.0);
+    nAttr.setSoftMax(1.0);
+    CHECK_MSTATUS(addAttribute(SpecularTint));
 
-	Anisotropic = nAttr.create("Anisotropic", "Anisotropic", MFnNumericData::kFloat, 0.0);
-	nAttr.setMin(0.0);
-	nAttr.setSoftMax(1.0);
-	CHECK_MSTATUS(addAttribute(Anisotropic));
+    Anisotropic = nAttr.create("Anisotropic", "Anisotropic", MFnNumericData::kFloat, 0.0);
+    nAttr.setMin(0.0);
+    nAttr.setSoftMax(1.0);
+    CHECK_MSTATUS(addAttribute(Anisotropic));
 
-	Roughness = nAttr.create("Roughness", "Roughness", MFnNumericData::kFloat, 0.5);
-	nAttr.setMin(0.0);
-	nAttr.setSoftMax(1.0);
-	CHECK_MSTATUS(addAttribute(Roughness));
+    Roughness = nAttr.create("Roughness", "Roughness", MFnNumericData::kFloat, 0.5);
+    nAttr.setMin(0.0);
+    nAttr.setSoftMax(1.0);
+    CHECK_MSTATUS(addAttribute(Roughness));
 
-	Sheen = nAttr.create("Sheen", "Sheen", MFnNumericData::kFloat, 0.0);
-	nAttr.setMin(0.0);
-	nAttr.setSoftMax(1.0);
-	CHECK_MSTATUS(addAttribute(Sheen));
+    Sheen = nAttr.create("Sheen", "Sheen", MFnNumericData::kFloat, 0.0);
+    nAttr.setMin(0.0);
+    nAttr.setSoftMax(1.0);
+    CHECK_MSTATUS(addAttribute(Sheen));
 
-	SheenTint = nAttr.create("SheenTint", "SheenTint", MFnNumericData::kFloat, 0.5);
-	nAttr.setMin(0.0);
-	nAttr.setSoftMax(1.0);
-	CHECK_MSTATUS(addAttribute(SheenTint));
+    SheenTint = nAttr.create("SheenTint", "SheenTint", MFnNumericData::kFloat, 0.5);
+    nAttr.setMin(0.0);
+    nAttr.setSoftMax(1.0);
+    CHECK_MSTATUS(addAttribute(SheenTint));
 
-	Clearcoat = nAttr.create("Clearcoat", "Clearcoat", MFnNumericData::kFloat, 0.0);
-	nAttr.setMin(0.0);
-	nAttr.setSoftMax(1.0);
-	CHECK_MSTATUS(addAttribute(Clearcoat));
+    Clearcoat = nAttr.create("Clearcoat", "Clearcoat", MFnNumericData::kFloat, 0.0);
+    nAttr.setMin(0.0);
+    nAttr.setSoftMax(1.0);
+    CHECK_MSTATUS(addAttribute(Clearcoat));
 
-	ClearcoatGloss = nAttr.create("ClearcoatGloss", "ClearcoatGloss", MFnNumericData::kFloat, 1.0);
-	nAttr.setMin(0.0);
-	nAttr.setSoftMax(1.0);
-	CHECK_MSTATUS(addAttribute(ClearcoatGloss));
-	
-	aTranslucenceCoeff = nAttr.create( "translucenceCoeff", "tc", MFnNumericData::kFloat, 0, &status );
+    ClearcoatGloss = nAttr.create("ClearcoatGloss", "ClearcoatGloss", MFnNumericData::kFloat, 1.0);
+    nAttr.setMin(0.0);
+    nAttr.setSoftMax(1.0);
+    CHECK_MSTATUS(addAttribute(ClearcoatGloss));
+
+    aTranslucenceCoeff = nAttr.create( "translucenceCoeff", "tc", MFnNumericData::kFloat, 0, &status );
     CHECK_MSTATUS( status );
     CHECK_MSTATUS( nAttr.setKeyable( true ) );
     CHECK_MSTATUS( nAttr.setStorable( true ) );
@@ -461,7 +461,7 @@ MStatus asDisneyMaterial::compute( const MPlug& plug, MDataBlock& block )
     // The plug parameter will allow us to determine which output attribute
     // needs to be calculated.
     //
-	if( plug == aOutColor || plug == aOutTransparency || plug.parent() == aOutColor || plug.parent() == aOutTransparency  )
+    if( plug == aOutColor || plug == aOutTransparency || plug.parent() == aOutColor || plug.parent() == aOutTransparency  )
     {
         MStatus status;
         MFloatVector resultColor( 0.0, 0.0, 0.0 );
@@ -527,8 +527,8 @@ MStatus asDisneyMaterial::compute( const MPlug& plug, MDataBlock& block )
                 MFloatVector& lightDirection = currentLight.child( aLightDirection ).asFloatVector();
                 float cosln = lightDirection * surfaceNormal;
 
-               if ( cosln > 0.0f ) 
-			   {
+               if ( cosln > 0.0f )
+               {
                     resultColor += lightIntensity * ( cosln * diffuseReflectivity );
                }
             }
@@ -552,7 +552,7 @@ MStatus asDisneyMaterial::compute( const MPlug& plug, MDataBlock& block )
 
         // Set ouput color attribute
         //
-		if ( plug == aOutColor || plug.parent() == aOutColor )
+        if ( plug == aOutColor || plug.parent() == aOutColor )
         {
             // Get the handle to the attribute
             //
@@ -567,7 +567,7 @@ MStatus asDisneyMaterial::compute( const MPlug& plug, MDataBlock& block )
 
         // Set ouput transparency
         //
-		if ( plug == aOutTransparency || plug.parent() == aOutTransparency )
+        if ( plug == aOutTransparency || plug.parent() == aOutTransparency )
         {
             MFloatVector& transparency = block.inputValue( aInTransparency, &status ).asFloatVector();
             CHECK_MSTATUS( status );
@@ -590,5 +590,3 @@ MStatus asDisneyMaterial::compute( const MPlug& plug, MDataBlock& block )
 
     return( MS::kSuccess );
 }
-
-

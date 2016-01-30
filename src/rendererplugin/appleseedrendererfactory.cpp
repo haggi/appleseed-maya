@@ -5,16 +5,16 @@
 
 namespace MayaTo
 {
-	void MayaRendererFactory::createRenderer()
-	{
-		getWorldPtr()->worldRendererPtr = sharedPtr<Renderer>(new AppleRender::AppleseedRenderer());
-	}
-	sharedPtr<Renderer> MayaRendererFactory::getRenderer()
-	{
-		return getWorldPtr()->worldRendererPtr;
-	}
-	void MayaRendererFactory::deleteRenderer()
-	{
-		getWorldPtr()->worldRendererPtr.reset();
-	}
+    void MayaRendererFactory::createRenderer()
+    {
+        getWorldPtr()->worldRendererPtr = sharedPtr<Renderer>(new AppleRender::AppleseedRenderer());
+    }
+    sharedPtr<Renderer> MayaRendererFactory::getRenderer()
+    {
+        return getWorldPtr()->worldRendererPtr;
+    }
+    void MayaRendererFactory::deleteRenderer()
+    {
+        getWorldPtr()->worldRendererPtr.reset();
+    }
 };

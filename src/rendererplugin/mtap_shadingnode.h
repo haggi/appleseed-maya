@@ -6,10 +6,10 @@
 class mtap_ShadingNode : public ShadingNode
 {
 public:
-	mtap_ShadingNode();
-	mtap_ShadingNode(ShadingNode& other);
+    mtap_ShadingNode();
+    mtap_ShadingNode(ShadingNode& other);
 
-	void translate();
+    void translate();
 };
 
 #endif

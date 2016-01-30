@@ -4,11 +4,11 @@ namespace EventQueue
 {
 concurrent_queue<Event> *theQueue()
 {
-	return &EventList;
+    return &EventList;
 };
 concurrent_queue<Event> *theLogQueue()
 {
-	return &LogEventList;
+    return &LogEventList;
 };
 
 } // namespace EventQueue

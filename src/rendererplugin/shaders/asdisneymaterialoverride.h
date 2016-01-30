@@ -22,22 +22,22 @@
 class asDisneyMaterialOverride : public MHWRender::MPxSurfaceShadingNodeOverride
 {
 public:
-	static MHWRender::MPxSurfaceShadingNodeOverride* creator(const MObject& obj);
+    static MHWRender::MPxSurfaceShadingNodeOverride* creator(const MObject& obj);
 
-	virtual ~asDisneyMaterialOverride();
+    virtual ~asDisneyMaterialOverride();
 
-	virtual MHWRender::DrawAPI supportedDrawAPIs() const;
+    virtual MHWRender::DrawAPI supportedDrawAPIs() const;
 
-	virtual MString fragmentName() const;
-	virtual void getCustomMappings(
-		MHWRender::MAttributeParameterMappingList& mappings);
+    virtual MString fragmentName() const;
+    virtual void getCustomMappings(
+        MHWRender::MAttributeParameterMappingList& mappings);
 
-	virtual MString primaryColorParameter() const;
-	virtual MString transparencyParameter() const;
-	virtual MString bumpAttribute() const;
+    virtual MString primaryColorParameter() const;
+    virtual MString transparencyParameter() const;
+    virtual MString bumpAttribute() const;
 
 private:
-	asDisneyMaterialOverride(const MObject& obj);
+    asDisneyMaterialOverride(const MObject& obj);
 };
 
 #endif // _asDisneyMaterialOverride

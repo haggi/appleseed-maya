@@ -163,7 +163,6 @@ namespace MAYATO_OSLUTIL{
 
                     MString posName = MString("position") + i;
                     MString colName = MString("color") + i;
-                    //Logging::debug(MString("colorEntryList define pos ") + posName + " col " + colName);
                     paramArray.push_back(MAYATO_OSL::OSLParameter(colName, vec));
                     paramArray.push_back(MAYATO_OSL::OSLParameter(posName, position));
                 }else{
@@ -417,6 +416,7 @@ namespace MAYATO_OSLUTIL{
             }
         }
 
+        return true;
     }
 
     bool OSLUtilClass::handleSpecialPlugs(MString attributeName, MFnDependencyNode& depFn, MPlugArray& sourcePlugs, MPlugArray& destPlugs)
@@ -852,9 +852,6 @@ namespace MAYATO_OSLUTIL{
         const char *inAttributes[] = { "inX", "inY", "inZ" };
         const char *outAttributes[] = { "outX", "outY", "outZ" };
 
-        //MAYATO_OSL::ConnectionArray connectionList;
-        //std::vector<MAYATO_OSL::OSLNodeStruct> oslNodeArray;
-
         // we create all necessary nodes for input and output connections
         // the problem is that we have to create the nodes in the correct order,
         // e.g. create node A, create node B connect B->A is not valid, only A->B
@@ -894,138 +891,7 @@ namespace MAYATO_OSLUTIL{
                     createHelperNode(sourcePlugs[pId], destPlugs[pId], type, oslNodeArray, connectionList);
                 }
             }
-
-            //	MPlug thisPlug = depFn.findPlug(sa.name.c_str());
-            //	// isConnected checks if a plug or its primary children are connected as destination
-            //	if (!isConnected(sa.name.c_str(), snode.mobject, true))
-            //		continue;
-            //	// check if we have connected child plugs or not
-            //	MPlug directPlug = getDirectConnectedPlug(sa.name.c_str(), depFn, true);
-            //	MPlugArray thisNodePlugs, otherNodePlugs;
-            //	getDirectConnectedPlugs(sa.name.c_str(), depFn, true, thisNodePlugs, otherNodePlugs);
-            //	if (thisNodePlugs.length() > 0)
-            //	{
-            //		for (uint plId = 0; plId < thisNodePlugs.length(); plId++)
-            //		{
-            //			directPlug = otherNodePlugs[plId];
-            //			MPlug thisLocalPlug = thisNodePlugs[plId];
-            //			//Logging::debug(MString("directPlug ") + directPlug.name());
-            //			// we have a direct connection, if children and direct connections exist, the direct ones have priority
-            //			// find out if the other side is a valid node
-            //			ShadingNode otherSideNode = findShadingNode(directPlug.node());
-            //			if (otherSideNode.mobject != MObject::kNullObj)
-            //			{
-            //				// node seems to be valid, let's see if the plug itself is valid
-            //				if (otherSideNode.isOutPlugValid(directPlug))
-            //				{
-            //					MAYATO_OSL::Connection c;
-            //					c.destAttribute = getAttributeNameFromPlug(thisPlug);
-            //					if (c.destAttribute == MString("colorEntryList"))
-            //					{
-            //						int pi = physicalIndex(thisLocalPlug);
-            //						if (pi >= 0)
-            //							c.destAttribute = MString("col") + pi;
-            //					}
-            //					c.destNode = getObjectName(thisPlug.node());
-            //					if (directPlug.isChild())
-            //					{
-            //						// we have a child node so I suppose we have a vector/color connection
-            //						// if yes, we will have a helper node
-            //						MString helperNodeName = createPlugHelperNodeName(directPlug, true);
-            //						if (doesHelperNodeExist(helperNodeName))
-            //						{
-            //							c.sourceAttribute = outAttributes[getChildId(directPlug)];
-            //							c.sourceNode = helperNodeName;
-            //						}
-            //						else{
-            //						}
-            //					}
-            //					else{
-            //						c.sourceAttribute = getAttributeNameFromPlug(directPlug);
-            //						c.sourceNode = getObjectName(directPlug.node());
-            //					}
-            //					// the projection helper will not have normal inputs
-            //					if (pystring::endswith(snode.fullName.asChar(), "_ProjUtil"))
-            //					{
-            //						if (c.destAttribute != "uvCoord")
-            //							continue;
-            //					}
-            //					connectionList.push_back(c);
-            //				}
-            //			}
-            //		}
-            //	}
-            //	// direct plug is nullptr so we have one or more child connections
-            //	// if so, we need a helper node
-            //	else{
-            //		thisNodePlugs.clear();
-            //		otherNodePlugs.clear();
-            //		getConnectedChildPlugs(sa.name.c_str(), depFn, true, thisNodePlugs, otherNodePlugs);
-            //		for (uint chId = 0; chId < thisNodePlugs.length(); chId++)
-            //		{
-            //			MPlug connectedPlug = thisNodePlugs[chId];
-            //			MString thisPlugHelperNodeName = createPlugHelperNodeName(connectedPlug, false);
-            //			if (!doesHelperNodeExist(thisPlugHelperNodeName))
-            //				createPlugHelperNode(connectedPlug, false);
-            //			// first save helperNode -> currentNode connection
-            //			MAYATO_OSL::Connection c;
-            //			c.sourceNode = thisPlugHelperNodeName;
-            //			c.sourceAttribute = "outValue";
-            //			// thisPlug works if we have a normal connection
-            //			c.destAttribute = getAttributeNameFromPlug(thisPlug);
-            //			MPlug parent = connectedPlug;
-            //			while (parent.isChild())
-            //				parent = parent.parent();
-            //			if (parent.isElement())
-            //			{
-            //				if (getAttributeNameFromPlug(parent) == MString("colorEntryList"))
-            //				{
-            //					int pi = physicalIndex(parent);
-            //					if (pi >= 0)
-            //						c.destAttribute = MString("col") + pi;
-            //				}
-            //			}
-            //			c.destNode = getObjectName(connectedPlug.node());
-            //			Logging::debug(MString("AddConnection: ") + c.sourceNode + "." + c.sourceAttribute + " -> " + c.destNode + "." + c.destAttribute);
-            //			connectionList.push_back(c);
-            //			// we have a helper node, now we need to find out how the children are connected
-            //			for (uint chId = 0; chId < connectedPlug.numChildren(); chId++)
-            //			{
-            //				MAYATO_OSL::Connection c;
-            //				c.destNode = thisPlugHelperNodeName;
-            //				c.destAttribute = inAttributes[chId];
-            //				MPlug otherSidePlug = getDirectConnectedPlug(sa.name.c_str(), depFn, true);
-            //				if (otherSidePlug.isNull())
-            //					continue;
-            //				ShadingNode otherSideNode = findShadingNode(otherSidePlug.node());
-            //				// check for invalid connections
-            //				if ((otherSideNode.mobject == MObject::kNullObj) || (!otherSideNode.isOutPlugValid(otherSidePlug)))
-            //					continue;
-            //				// the other side plug can be either a direct connection or a child
-            //				// and we all know, childs will have helper nodes
-            //				if (otherSidePlug.isChild())
-            //				{
-            //					MString otherSidePlugHelperNodeName = createPlugHelperNodeName(otherSidePlug, false);
-            //					if (!doesHelperNodeExist(otherSidePlugHelperNodeName))
-            //					{
-            //						Logging::debug(MString("Problem: other side plug is child") + otherSidePlug.name() + " but no helper node exists");
-            //						continue;
-            //					}
-            //					c.sourceNode = otherSidePlugHelperNodeName;
-            //					c.sourceAttribute = outAttributes[getChildId(otherSidePlug)];
-            //				}
-            //				else{
-            //					c.sourceAttribute = getAttributeNameFromPlug(otherSidePlug);
-            //					c.sourceNode = getObjectName(otherSidePlug.node());
-            //				}
-            //				Logging::debug(MString("AddConnection: ") + c.sourceNode + "." + c.sourceAttribute + " -> " + c.destNode + "." + c.destAttribute);
-            //				connectionList.push_back(c);
-            //			}
-            //		}
-            //	}
-            //}
         }
-
 
         MAYATO_OSL::OSLParamArray paramArray;
         for (uint i = 0; i < snode.inputAttributes.size(); i++)
@@ -1038,7 +904,6 @@ namespace MAYATO_OSLUTIL{
         oslNode.nodeName = snode.fullName;
         oslNode.paramArray = paramArray;
         addNodeToList(oslNode);
-
     }
 
     void OSLUtilClass::initOSLUtil()
@@ -1068,27 +933,3 @@ namespace MAYATO_OSLUTIL{
         }
     }
 }
-
-
-//for (size_t cId = 0; cId < connectionList.size(); cId++)
-//{
-//	std::string sourceAttr = connectionList[cId].sourceAttribute.asChar();
-//	std::string sourceNode = connectionList[cId].sourceNode.asChar();
-//	std::string destAttr = connectionList[cId].destAttribute.asChar();
-//	std::string destNode = connectionList[cId].destNode.asChar();
-//	if (destAttr == "color")
-//		destAttr = "inColor";
-//	if (destAttr == "vector")
-//		destAttr = "inVector";
-//	if (sourceAttr == "output")
-//		sourceAttr = "outOutput";
-//	if (sourceAttr == "min")
-//		sourceAttr = "inMin";
-//	if (sourceAttr == "max")
-//		sourceAttr = "inMax";
-//
-//	Logging::debug(MString("createOSLRampShadingNode: Connect  ") + sourceNode.c_str() + "." + sourceAttr.c_str() + " --> " + destNode.c_str() + "." + destAttr.c_str());
-//	bool result = this->oslRenderer->shadingsys->ConnectShaders(sourceNode, sourceAttr, destNode, destAttr);
-//	if (!result)
-//		Logging::debug(MString("createOSLRampShadingNode: Connect FAILED ") + sourceNode.c_str() + "." + sourceAttr.c_str() + " --> " + destNode.c_str() + "." + destAttr.c_str());
-//}

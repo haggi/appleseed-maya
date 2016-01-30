@@ -83,13 +83,13 @@ public:
 
     bool animated;
     bool hasInstancerConnection; // if yes, then the objects below can be visible via instancer even if the original object is not
-    bool shapeConnected;		 // if shape connected, it can be used to determine if it has to be exported for every frame or not
-    bool visible;				 // important for instances: orig object can be invisible but must be exported
-    uint instanceNumber;		 // number of instance
-    int	 perObjectTransformSteps;// number of xform steps. Some renderers can use different xform/deform steps
-    int	 perObjectDeformSteps;   // number of deform steps.
-    bool motionBlurred;			 // possibility to turn off motionblur for this object
-    bool geometryMotionblur;	 // if object has vertex velocity informations, there is no need for real deformation blur
+    bool shapeConnected;         // if shape connected, it can be used to determine if it has to be exported for every frame or not
+    bool visible;                // important for instances: orig object can be invisible but must be exported
+    uint instanceNumber;         // number of instance
+    int  perObjectTransformSteps;// number of xform steps. Some renderers can use different xform/deform steps
+    int  perObjectDeformSteps;   // number of deform steps.
+    bool motionBlurred;          // possibility to turn off motionblur for this object
+    bool geometryMotionblur;     // if object has vertex velocity informations, there is no need for real deformation blur
     bool shadowMapCastingLight();// to know if I have to add a light to render passes
     bool isObjAnimated();
     bool isShapeConnected();

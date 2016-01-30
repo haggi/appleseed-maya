@@ -18,12 +18,12 @@
 #include <maya/MDrawRegistry.h>
 #include <maya/MDGModifier.h>
 
-MTypeId	asLayeredShader::id(0x0011CF44);
+MTypeId asLayeredShader::id(0x0011CF44);
 
 void asLayeredShader::postConstructor()
 {
-	setMPSafe(true);
-	this->setExistWithoutInConnections(true);
+    setMPSafe(true);
+    this->setExistWithoutInConnections(true);
 }
 
 MObject asLayeredShader::baseMaterial;
@@ -38,73 +38,71 @@ asLayeredShader::~asLayeredShader() { }
 
 void* asLayeredShader::creator()
 {
-	return new asLayeredShader();
+    return new asLayeredShader();
 }
 
 MStatus asLayeredShader::initialize()
 {
-	MFnNumericAttribute nAttr;
-	MFnLightDataAttribute lAttr;
-	MFnTypedAttribute tAttr;
-	MFnGenericAttribute gAttr;
-	MFnEnumAttribute eAttr;
-	//MFnMessageAttribute mAttr;
-	MFnCompoundAttribute cAttr;
+    MFnNumericAttribute nAttr;
+    MFnLightDataAttribute lAttr;
+    MFnTypedAttribute tAttr;
+    MFnGenericAttribute gAttr;
+    MFnEnumAttribute eAttr;
+    //MFnMessageAttribute mAttr;
+    MFnCompoundAttribute cAttr;
 
-	MStatus status;
+    MStatus status;
 
-	baseMaterial = nAttr.createColor("baseMaterial", "baseMaterial");
-	CHECK_MSTATUS(addAttribute(baseMaterial));
+    baseMaterial = nAttr.createColor("baseMaterial", "baseMaterial");
+    CHECK_MSTATUS(addAttribute(baseMaterial));
 
-	outColor = nAttr.createColor("outColor", "outColor");
-	CHECK_MSTATUS(addAttribute(outColor));
+    outColor = nAttr.createColor("outColor", "outColor");
+    CHECK_MSTATUS(addAttribute(outColor));
 
-	materialEntryMtl = nAttr.createColor("materialEntryMtl", "materialEntryMtl");
-	nAttr.setMin(0.0f);
-	nAttr.setSoftMax(1.0f);
-	nAttr.setKeyable(true);
-	nAttr.setArray(true);
-	CHECK_MSTATUS(addAttribute(materialEntryMtl));
+    materialEntryMtl = nAttr.createColor("materialEntryMtl", "materialEntryMtl");
+    nAttr.setMin(0.0f);
+    nAttr.setSoftMax(1.0f);
+    nAttr.setKeyable(true);
+    nAttr.setArray(true);
+    CHECK_MSTATUS(addAttribute(materialEntryMtl));
 
-	materialEntryMsk = nAttr.create("materialEntryMsk", "materialEntryMsk", MFnNumericData::kFloat, 0.0f);
-	nAttr.setMin(0.0f);
-	nAttr.setMax(1.0f);
-	nAttr.setKeyable(true);
-	nAttr.setArray(true);
-	CHECK_MSTATUS(addAttribute(materialEntryMsk));
+    materialEntryMsk = nAttr.create("materialEntryMsk", "materialEntryMsk", MFnNumericData::kFloat, 0.0f);
+    nAttr.setMin(0.0f);
+    nAttr.setMax(1.0f);
+    nAttr.setKeyable(true);
+    nAttr.setArray(true);
+    CHECK_MSTATUS(addAttribute(materialEntryMsk));
 
-	materialEntryMode = eAttr.create("materialEntryMode", "materialEntryMode", 0);
-	eAttr.setKeyable(true);
-	eAttr.addField("over", 0);
-	eAttr.addField("multiply", 1);
-	eAttr.setArray(true);
-	CHECK_MSTATUS(addAttribute(materialEntryMode));
+    materialEntryMode = eAttr.create("materialEntryMode", "materialEntryMode", 0);
+    eAttr.setKeyable(true);
+    eAttr.addField("over", 0);
+    eAttr.addField("multiply", 1);
+    eAttr.setArray(true);
+    CHECK_MSTATUS(addAttribute(materialEntryMode));
 
-	CHECK_MSTATUS(attributeAffects(baseMaterial, outColor));
-	return(MS::kSuccess);
+    CHECK_MSTATUS(attributeAffects(baseMaterial, outColor));
+    return(MS::kSuccess);
 }
 
 MStatus asLayeredShader::compute(const MPlug& plug, MDataBlock& block)
 {
-	if (plug == outColor || plug.parent() == outColor)
-	{
-		MStatus status;
-		MFloatVector resultColor(0.0, 0.0, 0.0);
+    if (plug == outColor || plug.parent() == outColor)
+    {
+        MStatus status;
+        MFloatVector resultColor(0.0, 0.0, 0.0);
 
-		MFloatVector& color = block.inputValue(baseMaterial, &status).asFloatVector();
-		resultColor = color;
+        MFloatVector& color = block.inputValue(baseMaterial, &status).asFloatVector();
+        resultColor = color;
 
-		MDataHandle outColorHandle = block.outputValue(outColor, &status);
-		MFloatVector& outColorValue = outColorHandle.asFloatVector();
-		outColorValue = resultColor;
-		outColorHandle.setClean();
-	}
-	else
-	{
-		return(MS::kUnknownParameter);
-	}
+        MDataHandle outColorHandle = block.outputValue(outColor, &status);
+        MFloatVector& outColorValue = outColorHandle.asFloatVector();
+        outColorValue = resultColor;
+        outColorHandle.setClean();
+    }
+    else
+    {
+        return(MS::kUnknownParameter);
+    }
 
-	return(MS::kSuccess);
+    return(MS::kSuccess);
 }
-
-

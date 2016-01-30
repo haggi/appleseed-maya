@@ -180,7 +180,7 @@ public:
     MString imagePath;
     MString imageName;
     MString imageOutputFile; // complete path to current image file
-    int		imageFormatId;
+    int     imageFormatId;
     MString imageFormatString;
 
     MString preFrameScript;
@@ -189,11 +189,11 @@ public:
     MString postRenderLayerScript;
 
 private:
-    bool	useRenderRegion;
-    int		regionLeft;
-    int		regionRight;
-    int		regionBottom;
-    int		regionTop;
+    bool    useRenderRegion;
+    int     regionLeft;
+    int     regionRight;
+    int     regionBottom;
+    int     regionTop;
 
 public:
     void checkRenderRegion();

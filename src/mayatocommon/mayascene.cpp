@@ -162,5 +162,3 @@ void MayaScene::getLightLinking()
 
 void MayaScene::getPasses()
 {}
-
-

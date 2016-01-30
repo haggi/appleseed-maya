@@ -7,13 +7,13 @@ class RenderGlobals;
 
 namespace MayaTo
 {
-	class RenderGlobalsFactory
-	{
-	public:
-		void createRenderGlobals();
-		sharedPtr<RenderGlobals> getRenderGlobals();
-		void deleteRenderGlobals();
-	};
+    class RenderGlobalsFactory
+    {
+    public:
+        void createRenderGlobals();
+        sharedPtr<RenderGlobals> getRenderGlobals();
+        void deleteRenderGlobals();
+    };
 };
 
 #endif

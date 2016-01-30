@@ -8,10 +8,10 @@ namespace asr = renderer;
 class mtap_IRendererController : public asr::IRendererController
 {
   public:
-	  mtap_IRendererController()
-	  {
-		  status =  asr::IRendererController::ContinueRendering;
-	  };
+      mtap_IRendererController()
+      {
+          status =  asr::IRendererController::ContinueRendering;
+      };
     // Destructor.
     ~mtap_IRendererController() {}
 
@@ -31,18 +31,18 @@ class mtap_IRendererController : public asr::IRendererController
     void on_frame_end();
 
     // This method is called continuously during rendering.
-	void on_progress();
+    void on_progress();
 
-	void release(){};
+    void release(){};
 
-	Status get_status() const
-	{
-		return this->status;
-	};
+    Status get_status() const
+    {
+        return this->status;
+    };
 
-	volatile Status status;
+    volatile Status status;
 
-	void (*entityUpdateProc)() = nullptr;
+    void (*entityUpdateProc)() = nullptr;
 };
 
 #endif

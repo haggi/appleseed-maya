@@ -14,73 +14,73 @@
 
 MStatus initializePlugin(MObject obj)
 {
-	MStatus status;
-	MFnPlugin plugin(obj, VENDOR, VERSION, "Any");
-	MGlobal::displayInfo(MString("Loading plugin appleseedTools version: ") + MString(VERSION));
+    MStatus status;
+    MFnPlugin plugin(obj, VENDOR, VERSION, "Any");
+    MGlobal::displayInfo(MString("Loading plugin appleseedTools version: ") + MString(VERSION));
 
-	status =  plugin.registerFileTranslator(TRANSLATORNAME,
-											"", // pixmap name
-											BinMeshTranslator::creator,
-											"binMeshTranslatorOpts", // options display script name
-											"", // default options which are passed to the display script
-											true); // can use MGlobal::executeCommand ?
+    status =  plugin.registerFileTranslator(TRANSLATORNAME,
+                                            "", // pixmap name
+                                            BinMeshTranslator::creator,
+                                            "binMeshTranslatorOpts", // options display script name
+                                            "", // default options which are passed to the display script
+                                            true); // can use MGlobal::executeCommand ?
 
-	// I try to avoid creating any mel scripts because I prefer python. Unfortunatly the options script seems only to work properly with
-	// mel scripts so I create this converter.
+    // I try to avoid creating any mel scripts because I prefer python. Unfortunatly the options script seems only to work properly with
+    // mel scripts so I create this converter.
 
-	MString melToPythonCmd = "global proc binMeshTranslatorOpts(string $a, string $b, string $c, string $d)\n \
-	{\n \
-	python(\"import binMeshTranslator; binMeshTranslator.binMeshTranslatorOpts('\" + $a + \"','\" + $b + \"','\" + $c + \"','\" + $d + \"')\");\n \
-	}\n";
+    MString melToPythonCmd = "global proc binMeshTranslatorOpts(string $a, string $b, string $c, string $d)\n \
+    {\n \
+    python(\"import binMeshTranslator; binMeshTranslator.binMeshTranslatorOpts('\" + $a + \"','\" + $b + \"','\" + $c + \"','\" + $d + \"')\");\n \
+    }\n";
 
-	MGlobal::displayInfo(MString(" mel to python cmd: ") + melToPythonCmd);
-	MGlobal::executeCommand(melToPythonCmd);
+    MGlobal::displayInfo(MString(" mel to python cmd: ") + melToPythonCmd);
+    MGlobal::executeCommand(melToPythonCmd);
 
-	if (!status) 
-	{
-		status.perror("registerFileTranslator");
-		return status;
-	}
+    if (!status)
+    {
+        status.perror("registerFileTranslator");
+        return status;
+    }
 
-	status = plugin.registerCommand(WRITERNAME, BinMeshWriterCmd::creator, BinMeshWriterCmd::newSyntax );
-	if (!status) {
-		status.perror("cannot register command: binMeshWriterCmd");
-		return status;
-	}
+    status = plugin.registerCommand(WRITERNAME, BinMeshWriterCmd::creator, BinMeshWriterCmd::newSyntax );
+    if (!status) {
+        status.perror("cannot register command: binMeshWriterCmd");
+        return status;
+    }
 
-	status = plugin.registerCommand(READERNAME, BinMeshReaderCmd::creator, BinMeshReaderCmd::newSyntax );
-	if (!status) {
-		status.perror("cannot register command: BinMeshReaderCmd");
-		return status;
-	}
+    status = plugin.registerCommand(READERNAME, BinMeshReaderCmd::creator, BinMeshReaderCmd::newSyntax );
+    if (!status) {
+        status.perror("cannot register command: BinMeshReaderCmd");
+        return status;
+    }
 
-	return status;
+    return status;
 }
 
 
-MStatus uninitializePlugin(MObject obj) 
+MStatus uninitializePlugin(MObject obj)
 {
-	MStatus   status;
-	MFnPlugin plugin( obj );
+    MStatus   status;
+    MFnPlugin plugin( obj );
 
-	status =  plugin.deregisterFileTranslator(TRANSLATORNAME);
-	if (!status) 
-	{
-		status.perror("deregisterFileTranslator");
-		return status;
-	}
+    status =  plugin.deregisterFileTranslator(TRANSLATORNAME);
+    if (!status)
+    {
+        status.perror("deregisterFileTranslator");
+        return status;
+    }
 
-	status = plugin.deregisterCommand(WRITERNAME);
-	if (!status) {
-		status.perror("cannot deregister command: binMeshWriterCmd");
-		return status;
-	}
+    status = plugin.deregisterCommand(WRITERNAME);
+    if (!status) {
+        status.perror("cannot deregister command: binMeshWriterCmd");
+        return status;
+    }
 
-	status = plugin.deregisterCommand( READERNAME );
-	if (!status) {
-		status.perror("cannot deregister command: binMeshReaderCmd");
-		return status;
-	}
+    status = plugin.deregisterCommand( READERNAME );
+    if (!status) {
+        status.perror("cannot deregister command: binMeshReaderCmd");
+        return status;
+    }
 
-	return status;
+    return status;
 }

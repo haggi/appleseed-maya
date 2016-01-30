@@ -42,17 +42,17 @@ public:
 
 protected:
 
-	static MObject  BaseColor;
-	static MObject  Subsurface;
-	static MObject  Metallic;
-	static MObject  Specular;
-	static MObject  SpecularTint;
-	static MObject  Anisotropic;
-	static MObject  Roughness;
-	static MObject  Sheen;
-	static MObject  SheenTint;
-	static MObject  Clearcoat;
-	static MObject  ClearcoatGloss;
+    static MObject  BaseColor;
+    static MObject  Subsurface;
+    static MObject  Metallic;
+    static MObject  Specular;
+    static MObject  SpecularTint;
+    static MObject  Anisotropic;
+    static MObject  Roughness;
+    static MObject  Sheen;
+    static MObject  SheenTint;
+    static MObject  Clearcoat;
+    static MObject  ClearcoatGloss;
 
    // Translucence coefficient
    static MObject  aTranslucenceCoeff;

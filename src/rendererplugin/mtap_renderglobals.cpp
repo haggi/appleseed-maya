@@ -10,11 +10,10 @@ static Logging logger;
 
 void RenderGlobals::setRendererUnit()
 {
-	this->rendererUnit = MDistance::kMeters;
+    this->rendererUnit = MDistance::kMeters;
 }
 
 void RenderGlobals::setRendererAxis()
 {
-	this->rendererAxis = YUp;
+    this->rendererAxis = YUp;
 }
-

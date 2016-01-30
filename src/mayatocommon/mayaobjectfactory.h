@@ -10,12 +10,12 @@ class MayaObject;
 
 namespace MayaTo
 {
-	class MayaObjectFactory
-	{
-	public:
-		sharedPtr<MayaObject> createMayaObject(MObject& mobject);
-		sharedPtr<MayaObject> createMayaObject(MDagPath& objPath);
-	};
+    class MayaObjectFactory
+    {
+    public:
+        sharedPtr<MayaObject> createMayaObject(MObject& mobject);
+        sharedPtr<MayaObject> createMayaObject(MDagPath& objPath);
+    };
 }
 
 #endif

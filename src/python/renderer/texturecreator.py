@@ -1,4 +1,3 @@
-
 import path
 import logging
 import shutil
@@ -27,16 +26,16 @@ CODINGROOT = "H:/userDatenHaggi/documents/coding/"
 # bgColor, color, Background Color, 0.4:0.5:0.7
 
 def aeTemplateCreator(attDict, renderer, shortCut):
-    
+
     sourceAEFile = baseSourcePath + "/mt@_devmodule/scripts/@/AETemplate/AE@shaderTemplate.py"
     destAEPath = path.path(baseDestPath + "/mt@_devmodule/scripts/@/AETemplate/".replace("mt@_", shortCut + "_").replace("@", renderer.capitalize()))
-    
+
     print "Sourcefile", sourceAEFile
     print "Destpath", destAEPath
 
     allContent = []
     allContent.append('        self.addSeparator()\n')
-    for key in attDict.keys():        
+    for key in attDict.keys():
         if key.lower() == "all":
             for attKey in attDict[key].keys():
                 if attKey == "out":
@@ -44,10 +43,10 @@ def aeTemplateCreator(attDict, renderer, shortCut):
                 attName = attKey
                 attDisplayName = attDict[key][attKey][1]
                 allContent.append('        self.addControl("{0}", label="{1}")\n'.format(attName, attDisplayName))
-    
+
     for key in attDict.keys():
         newContent = []
-        
+
         aeFileName = "AE" + renderer.lower() + key.capitalize() + "Template.py"
         destAEFile = path.path(destAEPath + aeFileName)
         #print "create AE for", key, destAEFile
@@ -60,7 +59,7 @@ def aeTemplateCreator(attDict, renderer, shortCut):
         sourceHandle = open(sourceAEFile, "r")
         content = sourceHandle.readlines()
         sourceHandle.close()
-        
+
         startIndex = 0
         endIndex = 0
         noColorOut = False
@@ -70,7 +69,7 @@ def aeTemplateCreator(attDict, renderer, shortCut):
                     noColorOut = True
         for index, line in enumerate(content):
             if "AE@shaderTemplate" in line:
-                content[index] = line.replace("AE@shaderTemplate", "AE" + renderer.lower() + key.capitalize() + "Template")                
+                content[index] = line.replace("AE@shaderTemplate", "AE" + renderer.lower() + key.capitalize() + "Template")
             #if noColorOut:
             #    if "pm.mel.AEswatchDisplay(nodeName)" in line:
             #        content[index] = "#"+line
@@ -82,7 +81,7 @@ def aeTemplateCreator(attDict, renderer, shortCut):
                 endIndex = index
 
         #print "Creating data for", key
-        #print attDict[key] 
+        #print attDict[key]
         for attKey in attDict[key].keys():
             if attKey == "out":
                 continue
@@ -90,18 +89,18 @@ def aeTemplateCreator(attDict, renderer, shortCut):
             attDisplayName = attDict[key][attKey][1]
             #print '        self.addControl("{0}", label="{1}")\n'.format(attName, attDisplayName)
             newContent.append('        self.addControl("{0}", label="{1}")\n'.format(attName, attDisplayName))
-        
+
         finalContent = []
-        finalContent.extend(content[:startIndex+1])   
-        finalContent.extend(newContent)    
-        finalContent.extend(allContent) 
-        finalContent.extend(content[endIndex:])    
+        finalContent.extend(content[:startIndex+1])
+        finalContent.extend(newContent)
+        finalContent.extend(allContent)
+        finalContent.extend(content[endIndex:])
         #print finalContent
         destHandle = open(destAEFile, "w")
         destHandle.writelines(finalContent)
         destHandle.close()
-        
-    
+
+
 class Attribute(object):
     def __init__(self, aName, aType, aDisplayName, default, data=None):
         self.name = aName
@@ -114,10 +113,10 @@ class Attribute(object):
 
     def getDefForDefFile(self):
         return "inAtt:{0}:{1}".format(self.name, self.type)
-    
+
     def getDefinition(self):
         return "\tstatic    MObject {0};".format(self.name)
-    
+
     def getAEDefinition(self):
         return '        self.addControl("{0}", label="{1}")'.format(self.name, self.displayName)
 
@@ -152,7 +151,7 @@ class Attribute(object):
         string += "\tnAttr.setDefault({0});\n".format(",".join(self.default.split(":")))
         string += "\tCHECK_MSTATUS(addAttribute( {0} ));\n\n".format(self.name)
         return string
-    
+
     def makeVector(self):
         string = "\tMObject {0}X = nAttr.create(\"{0}X\", \"{0}x\", MFnNumericData::kDouble, 0.0);\n".format(self.name)
         string += "\tMObject {0}Y = nAttr.create(\"{0}Y\", \"{0}y\", MFnNumericData::kDouble, 0.0);\n".format(self.name)
@@ -174,7 +173,7 @@ class ShaderNode(object):
         self.attributeList = []
         self.pluginId = 0
         self.path = None
-        
+
 class TextureCreator(object):
     def __init__(self, startId, name, shortcut):
         self.pluginStartId = startId
@@ -198,13 +197,13 @@ class TextureCreator(object):
         fh.close()
         fh = open(self.mayaToBaseTexCPP)
         self.mayaToBaseTexCPPContent = fh.readlines()
-        fh.close()        
+        fh.close()
         self.createTextureFiles()
         self.printIdInfo()
         self.printPluginLoadInfo()
         self.createAETemplates()
         self.printShaderDefinitions()
-        
+
     def printShaderDefinitions(self):
         for node in self.nodesToCreate:
             print "shader_start:{0}".format(node.name)
@@ -219,7 +218,7 @@ class TextureCreator(object):
         fh = open(sourceAEFile, "r")
         sourceContent = fh.readlines()
         fh.close()
-        
+
         for node in self.nodesToCreate:
             destAEPath = path.path(self.baseDestination + "/{0}_devmodule/scripts/{1}/AETemplate/AE{1}{2}Template.py".format(self.shortCut, self.rendererName.capitalize(), node.name.capitalize()))
             content = sourceContent
@@ -240,12 +239,12 @@ class TextureCreator(object):
                 if "#autoAddEnd" in line:
                     replaceInProgress = False
                     newContent.append(line)
-                    
+
             fh = open(destAEPath, "w")
             fh.writelines(newContent)
             fh.close()
-            
-            
+
+
     def printPluginLoadInfo(self):
         for node in self.nodesToCreate:
             includeString = '#include "textures/{0}.h"'.format(node.name)
@@ -262,21 +261,21 @@ class TextureCreator(object):
         for node in self.nodesToCreate:
             deregister = 'CHECK_MSTATUS( plugin.deregisterNode({0}::id));'.format(node.name.capitalize())
             print deregister
-        
+
     def printIdInfo(self):
         #0x0011EF55    0x0011EF55    mayaToLux    wrinkledTexture.cpp    H:/UserDatenHaggi/Documents/coding/OpenMaya/src/mayaToLux\src\textures\wrinkledTexture.cpp
         for node in self.nodesToCreate:
             print node.pluginId, "mayaTo"+self.rendererName.capitalize(), node.name+".cpp", node.path
-                
+
     def createTextureFiles(self):
         self.parseTextureDefinitions()
         self.createCPPFiles()
-        
+
     def createCPPFiles(self):
         for node in self.nodesToCreate:
             self.createHFile(node)
             self.createCPPFile(node)
-    
+
     def createHFile(self, node):
         print "Creating header file for node", node.name
         destinationHeaderFile = self.destinationDir + "/" + node.name + ".h"
@@ -286,7 +285,7 @@ class TextureCreator(object):
             fh = open(destinationHeaderFile)
             headerFileContent = fh.readlines()
             fh.close()
-            
+
         newHFileContent = []
         replaceInProgress = False
         for index, line in enumerate(headerFileContent):
@@ -304,17 +303,17 @@ class TextureCreator(object):
             if END_ID in line:
                 replaceInProgress = False
                 newHFileContent.append(line)
-        
+
         print "Writing file", destinationHeaderFile
         fh = open(destinationHeaderFile, "w")
         for line in newHFileContent:
-            fh.write(line + "\n")        
+            fh.write(line + "\n")
         fh.close()
-        
+
     def createCPPFile(self, node):
         print "Creating cpp file for node", node.name
         self.pluginStartId += 1
-        nodeId = "0x%08X" % self.pluginStartId            
+        nodeId = "0x%08X" % self.pluginStartId
         node.pluginId = nodeId
         destinationCppFile = self.destinationDir + "/" + node.name + ".cpp"
         node.path = destinationCppFile
@@ -324,7 +323,7 @@ class TextureCreator(object):
             fh = open(destinationCppFile)
             headerFileContent = fh.readlines()
             fh.close()
-            
+
         newCppFileContent = []
         replaceInProgress = False
         for index in range(len(cppFileContent)):
@@ -344,7 +343,7 @@ class TextureCreator(object):
                     index += 1
                     line = cppFileContent[index]
                 replaceInProgress = False
-                
+
             if START_ID in line:
                 replaceInProgress = True
                 for att in node.attributeList:
@@ -354,7 +353,7 @@ class TextureCreator(object):
             if END_ID in line:
                 replaceInProgress = False
                 newCppFileContent.append(line)
-        
+
         print "Writing file", destinationCppFile
         #print newCppFileContent
         fh = open(destinationCppFile, "w")
@@ -370,7 +369,7 @@ class TextureCreator(object):
         self.textureFileHandle = open(self.rendererMatDefs, "r")
         self.texFileContent = self.textureFileHandle.readlines()
         self.textureFileHandle.close()
-    
+
         currentTexture = None
         for line in self.texFileContent:
             line = line.strip()
@@ -394,11 +393,11 @@ class TextureCreator(object):
                 data = ":".join(values[4:])
             att = Attribute(values[0], values[1], values[2], values[3], data)
             currentTexture.attributeList.append(att)
-        
-        
+
+
 if __name__ == "__main__":
     tc = TextureCreator(0x0011EF5E, "thea", "mtth")
     print "LastID", "0x%08X" % tc.pluginStartId
-    
+
     #global START_NODE_ID
     #print "ID: --> 0x%08X" % START_NODE_ID

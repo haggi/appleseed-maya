@@ -4,16 +4,16 @@
 
 namespace MayaTo
 {
-	void RenderGlobalsFactory::createRenderGlobals()
-	{
-		getWorldPtr()->worldRenderGlobalsPtr = sharedPtr<RenderGlobals> (new RenderGlobals());
-	}
-	sharedPtr<RenderGlobals> RenderGlobalsFactory::getRenderGlobals()
-	{
-		return getWorldPtr()->worldRenderGlobalsPtr;
-	}
-	void RenderGlobalsFactory::deleteRenderGlobals()
-	{
-		getWorldPtr()->worldRenderGlobalsPtr.reset();
-	}
+    void RenderGlobalsFactory::createRenderGlobals()
+    {
+        getWorldPtr()->worldRenderGlobalsPtr = sharedPtr<RenderGlobals> (new RenderGlobals());
+    }
+    sharedPtr<RenderGlobals> RenderGlobalsFactory::getRenderGlobals()
+    {
+        return getWorldPtr()->worldRenderGlobalsPtr;
+    }
+    void RenderGlobalsFactory::deleteRenderGlobals()
+    {
+        getWorldPtr()->worldRenderGlobalsPtr.reset();
+    }
 };

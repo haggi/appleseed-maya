@@ -9,18 +9,17 @@
 class MayaToRendererCmd : public MPxCommand
 {
 public:
-					MayaToRendererCmd(){};
-	virtual			~MayaToRendererCmd(); 
-	static MSyntax	newSyntax();
+                    MayaToRendererCmd(){};
+    virtual         ~MayaToRendererCmd();
+    static MSyntax  newSyntax();
 
-	MStatus     	doIt( const MArgList& args );
-	static void*	creator();
+    MStatus         doIt( const MArgList& args );
+    static void*    creator();
 
 private:
-	MString basePath;
-	MString imagePath;
-	MString fileName;
+    MString basePath;
+    MString imagePath;
+    MString fileName;
 };
 
 #endif
-	

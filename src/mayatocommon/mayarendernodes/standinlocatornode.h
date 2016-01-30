@@ -1,7 +1,7 @@
 #ifndef MT_STANDIN_H
 #define MT_STANDIN_H
 
-#include <maya/MPxLocatorNode.h> 
+#include <maya/MPxLocatorNode.h>
 #include <maya/MIOStream.h>
 #include <maya/MString.h>
 #include <maya/MTypeId.h>
@@ -23,37 +23,37 @@
 
 class StandinLocatorNode : public MPxLocatorNode
 {
-	public:
+    public:
                       StandinLocatorNode();
     virtual           ~StandinLocatorNode();
 
-	virtual void            draw( M3dView & view, const MDagPath & path, 
-								  M3dView::DisplayStyle style,
-								  M3dView::DisplayStatus status );
+    virtual void            draw( M3dView & view, const MDagPath & path,
+                                  M3dView::DisplayStyle style,
+                                  M3dView::DisplayStatus status );
 
-	virtual bool            isBounded() const;
-	virtual MBoundingBox    boundingBox() const; 
+    virtual bool            isBounded() const;
+    virtual MBoundingBox    boundingBox() const;
 
     static MStatus    initialize();
 
-	private:
-	// Inputs
-    static MObject  bboxMin;	
-    static MObject  bboxMax;	
-    static MObject  proxyFile;	
-    static MObject  displayType;	
-    static MObject  percentDisplay;	
-    static MObject  elementSize;	
+    private:
+    // Inputs
+    static MObject  bboxMin;
+    static MObject  bboxMax;
+    static MObject  proxyFile;
+    static MObject  displayType;
+    static MObject  percentDisplay;
+    static MObject  elementSize;
 
-	MPoint		bboxmin, bboxmax;
-	MString		proxy_file;
-	float		percent_display;
-	int			element_size;
+    MPoint      bboxmin, bboxmax;
+    MString     proxy_file;
+    float       percent_display;
+    int         element_size;
 
-	// Outputs
-	static MObject  dummyOutput;
+    // Outputs
+    static MObject  dummyOutput;
 
-	MFloatVectorArray points;
+    MFloatVectorArray points;
 };
 
 #endif

@@ -311,11 +311,11 @@ bool CheckVisibility( MDagPath& dagPath )
 {
     MFnDagNode node(dagPath);
     //if( !IsVisible( node ))
-    //	return false;
+    //  return false;
     if( !IsPathVisible( dagPath ))
         return false;
     //if( IsTemplated( node ) )
-    //	return false;
+    //  return false;
     return true;
 }
 
@@ -405,17 +405,17 @@ MObject getUpstreamMesh(MString& outputPlugName, MObject thisObject)
     //int count = 0;
     //while( !(result.hasFn(MFn::kMesh)) && (count < 20))
     //{
-    //	MPlug plug = depFn.findPlug(outputPlugName, &stat);
-    //	if( stat != MStatus::kSuccess)
-    //		return result;
-    //	MPlugArray plugArray;
-    //	plug.connectedTo(plugArray, 0, 1, &stat);
-    //	if( stat != MStatus::kSuccess)
-    //		return result;
-    //	count++;
+    //  MPlug plug = depFn.findPlug(outputPlugName, &stat);
+    //  if( stat != MStatus::kSuccess)
+    //      return result;
+    //  MPlugArray plugArray;
+    //  plug.connectedTo(plugArray, 0, 1, &stat);
+    //  if( stat != MStatus::kSuccess)
+    //      return result;
+    //  count++;
     //}
     //if( plugArray.length() == 0)
-    //	return result;
+    //  return result;
     //MPlug otherSidePlug = plugArray[0];
     //result = otherSidePlug.node();
     return result;
@@ -429,8 +429,8 @@ MObject getOtherSideNode(const MString& plugName, MObject& thisObject)
 {
     MStatus stat;
     MObject result = MObject::kNullObj;
-    MFnDependencyNode depFn(thisObject, &stat);	if( stat != MStatus::kSuccess) return result;
-    MPlug plug = depFn.findPlug(plugName, &stat);	if( stat != MStatus::kSuccess) return result;
+    MFnDependencyNode depFn(thisObject, &stat); if( stat != MStatus::kSuccess) return result;
+    MPlug plug = depFn.findPlug(plugName, &stat);   if( stat != MStatus::kSuccess) return result;
     MPlugArray plugArray;
     plug.connectedTo(plugArray, 1, 0, &stat);if( stat != MStatus::kSuccess) return result;
     if( plugArray.length() == 0)
@@ -444,7 +444,7 @@ MObject getOtherSideSourceNode(const MString& plugName, MObject& thisObject, boo
 {
     MStatus stat;
     MObject result = MObject::kNullObj;
-    MFnDependencyNode depFn(thisObject, &stat);	if (stat != MStatus::kSuccess) return result;
+    MFnDependencyNode depFn(thisObject, &stat); if (stat != MStatus::kSuccess) return result;
     MPlugArray pa;
     depFn.getConnections(pa);
     MPlug connectedPlug;
@@ -479,8 +479,8 @@ MObject getOtherSideNode(const MString& plugName, MObject& thisObject, MStringAr
 {
     MStatus stat;
     MObject result = MObject::kNullObj;
-    MFnDependencyNode depFn(thisObject, &stat);	if( stat != MStatus::kSuccess) return result;
-    MPlug plug = depFn.findPlug(plugName, &stat);	if( stat != MStatus::kSuccess)return result;
+    MFnDependencyNode depFn(thisObject, &stat); if( stat != MStatus::kSuccess) return result;
+    MPlug plug = depFn.findPlug(plugName, &stat);   if( stat != MStatus::kSuccess)return result;
     if( !plug.isConnected() )
     {
         int numChildConnects = plug.numConnectedChildren();
@@ -823,8 +823,8 @@ MObject getOtherSideNode(const MString& plugName, MObject& thisObject, MString& 
 {
     MStatus stat;
     MObject result = MObject::kNullObj;
-    MFnDependencyNode depFn(thisObject, &stat);	if( stat != MStatus::kSuccess) return result;
-    MPlug plug = depFn.findPlug(plugName, &stat);	if( stat != MStatus::kSuccess)return result;
+    MFnDependencyNode depFn(thisObject, &stat); if( stat != MStatus::kSuccess) return result;
+    MPlug plug = depFn.findPlug(plugName, &stat);   if( stat != MStatus::kSuccess)return result;
     if( !plug.isConnected() )
         return result;
     MPlugArray plugArray;
@@ -842,8 +842,8 @@ bool getConnectedPlugs(const MString& plugName, MObject& thisObject, MPlug& inPl
 {
     MStatus stat;
     bool result = false;
-    MFnDependencyNode depFn(thisObject, &stat);	if( stat != MStatus::kSuccess) return result;
-    MPlug plug = depFn.findPlug(plugName, &stat);	if( stat != MStatus::kSuccess) return result;
+    MFnDependencyNode depFn(thisObject, &stat); if( stat != MStatus::kSuccess) return result;
+    MPlug plug = depFn.findPlug(plugName, &stat);   if( stat != MStatus::kSuccess) return result;
     MPlugArray plugArray;
     plug.connectedTo(plugArray, 1, 0, &stat);if( stat != MStatus::kSuccess) return result;
     if( plugArray.length() == 0)
@@ -858,7 +858,7 @@ bool getConnectedInPlugs(MObject& thisObject, MPlugArray& inPlugs, MPlugArray& o
 {
     MStatus stat;
     bool result = false;
-    MFnDependencyNode depFn(thisObject, &stat);	if (stat != MStatus::kSuccess) return result;
+    MFnDependencyNode depFn(thisObject, &stat); if (stat != MStatus::kSuccess) return result;
     MPlugArray pa;
     depFn.getConnections(pa);
     for (uint i = 0; i < pa.length(); i++)
@@ -879,7 +879,7 @@ bool getConnectedInPlugs(MObject& thisObject, MPlugArray& inPlugs)
 {
     MStatus stat;
     bool result = false;
-    MFnDependencyNode depFn(thisObject, &stat);	if( stat != MStatus::kSuccess) return result;
+    MFnDependencyNode depFn(thisObject, &stat); if( stat != MStatus::kSuccess) return result;
     MPlugArray pa;
     depFn.getConnections(pa);
     for( uint i = 0; i < pa.length(); i++)
@@ -893,7 +893,7 @@ bool getConnectedOutPlugs(MObject& thisObject, MPlugArray& outPlugs)
 {
     MStatus stat;
     bool result = false;
-    MFnDependencyNode depFn(thisObject, &stat);	if( stat != MStatus::kSuccess) return result;
+    MFnDependencyNode depFn(thisObject, &stat); if( stat != MStatus::kSuccess) return result;
     MPlugArray pa;
     depFn.getConnections(pa);
     for( uint i = 0; i < pa.length(); i++)
@@ -906,7 +906,7 @@ bool getConnectedOutPlugs(MObject& thisObject, MPlugArray& outPlugs)
 bool hasPlug(MObject& thisObject, const MString& plugName)
 {
     MStatus stat;
-    MFnDependencyNode depFn(thisObject, &stat);	if( stat != MStatus::kSuccess) return false;
+    MFnDependencyNode depFn(thisObject, &stat); if( stat != MStatus::kSuccess) return false;
     MPlug plug = depFn.findPlug(plugName, &stat);
     if( stat != MStatus::kSuccess)
         return false;
@@ -919,8 +919,8 @@ bool hasPlug(MObject& thisObject, const MString& plugName)
 bool getOtherSidePlugName(const MString& plugName, MObject& thisObject, MString& otherSidePlugName)
 {
     MStatus stat;
-    MFnDependencyNode depFn(thisObject, &stat);	if( stat != MStatus::kSuccess) return false;
-    MPlug plug = depFn.findPlug(plugName, &stat);	if( stat != MStatus::kSuccess) return false;
+    MFnDependencyNode depFn(thisObject, &stat); if( stat != MStatus::kSuccess) return false;
+    MPlug plug = depFn.findPlug(plugName, &stat);   if( stat != MStatus::kSuccess) return false;
     MPlugArray plugArray;
     plug.connectedTo(plugArray, 1, 0, &stat);if( stat != MStatus::kSuccess) return false;
     if( plugArray.length() == 0)
@@ -950,8 +950,8 @@ MString getObjectName(const MObject& mobject)
 
 //MString getDepNodeTypeName(const MObject& mobject)
 //{
-//	MFnDependencyNode depFn(mobject);
-//	return depFn.typeName();
+//  MFnDependencyNode depFn(mobject);
+//  return depFn.typeName();
 //}
 
 MString getDepNodeTypeName(MObject mobject)

@@ -23,14 +23,14 @@ NewSwatchRenderer::NewSwatchRenderer(MObject dependNode, MObject renderNode, int
     //int index = 0;
     //for (int y = 0; y < res; y++)
     //{
-    //	for (int x = 0; x < res; x++)
-    //	{
-    //		float fac = float(y) / res;
-    //		pixels[index++] = fac * rndR;
-    //		pixels[index++] = fac * rndG;
-    //		pixels[index++] = fac * rndB;
-    //		pixels[index++] = 1.0f;
-    //	}
+    //  for (int x = 0; x < res; x++)
+    //  {
+    //      float fac = float(y) / res;
+    //      pixels[index++] = fac * rndR;
+    //      pixels[index++] = fac * rndG;
+    //      pixels[index++] = fac * rndB;
+    //      pixels[index++] = 1.0f;
+    //  }
     //}
 
     //floatPixels = (float *)malloc(res * res * sizeof(float) * 4);
@@ -95,10 +95,10 @@ bool NewSwatchRenderer::doIteration()
 
     //if (swatchRenderingDone)
     //{
-    //	Logging::debug(MString("NewSwatchRenderer: doIteration -> swatchRenderingDone. swatchRenderingDoneAddress: ") + (int)&this->swatchRenderingDone);
+    //  Logging::debug(MString("NewSwatchRenderer: doIteration -> swatchRenderingDone. swatchRenderingDoneAddress: ") + (int)&this->swatchRenderingDone);
     //}
     //else
-    //	Logging::debug(MString("NewSwatchRenderer: doIteration -> swatchRendering NOT Done"));
+    //  Logging::debug(MString("NewSwatchRenderer: doIteration -> swatchRendering NOT Done"));
 
     if (MayaTo::getWorldPtr()->getRenderType() == MayaTo::MayaToWorld::IPRRENDER)
     {

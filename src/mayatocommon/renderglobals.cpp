@@ -233,11 +233,11 @@ bool RenderGlobals::getMbSteps()
     // if shadowmap then ignore motionblur steps
     //if(this->currentRenderPass->passType == RenderPass::ShadowMap)
     //{
-    //	MbElement mbel;
-    //	mbel.elementType = MbElement::Both;
-    //	mbel.time = 0.0;
-    //	this->mbElementList.push_back(mbel);
-    //	return true;
+    //  MbElement mbel;
+    //  mbel.elementType = MbElement::Both;
+    //  mbel.time = 0.0;
+    //  this->mbElementList.push_back(mbel);
+    //  return true;
     //}
 
 

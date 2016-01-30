@@ -100,13 +100,13 @@ void AppleseedRenderer::defineLight(sharedPtr<MayaObject> obj)
         {
             //Logging::debug(MString("Found sunlight."));
             //light = asf::auto_release_ptr<asr::Light>(
-            //	asr::SunLightFactory().create(
-            //	"sunLight",
-            //	asr::ParamArray()
-            //		.insert("environment_edf", "sky_edf")
-            //		.insert("turbidity", renderGlobals->sunTurbidity)
-            //		.insert("radiance_multiplier", renderGlobals->sunExitanceMultiplier * intensity / 30.0f)
-            //		));
+            //  asr::SunLightFactory().create(
+            //  "sunLight",
+            //  asr::ParamArray()
+            //      .insert("environment_edf", "sky_edf")
+            //      .insert("turbidity", renderGlobals->sunTurbidity)
+            //      .insert("radiance_multiplier", renderGlobals->sunExitanceMultiplier * intensity / 30.0f)
+            //      ));
         }
         else{
             if (light == nullptr)
@@ -219,4 +219,3 @@ void AppleseedRenderer::defineLights()
     }
 
 }
-

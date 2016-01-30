@@ -18,11 +18,11 @@ def addUIElement(uiType, attribute, uiLabel, callback, renderGlobalsNodeName):
         if callback is not None:
             pm.floatFieldGrp(ui, edit=True, cc= callback)
     if uiType == 'enum':
-        ui = pm.attrEnumOptionMenuGrp(label = uiLabel, at=attribute, ei = getEnumList(attribute)) 
+        ui = pm.attrEnumOptionMenuGrp(label = uiLabel, at=attribute, ei = getEnumList(attribute))
         # attrEnumOptionGrp has no cc callback, so I create a script job
         if callback is not None:
             attribute = pm.Attribute(renderGlobalsNodeName + "." + attribute)
-            pm.scriptJob(attributeChange=[attribute, callback], parent=ui)           
+            pm.scriptJob(attributeChange=[attribute, callback], parent=ui)
     if uiType == 'color':
         ui = pm.attrColorSliderGrp(label=uiLabel, at=attribute)
     if uiType == 'string':
@@ -36,13 +36,13 @@ def addUIElement(uiType, attribute, uiLabel, callback, renderGlobalsNodeName):
     return ui
 
 def connectUIElement(uiElement, attribute):
-    
+
     if attribute.type() == 'color':
         #color is automatically connnected via attrEnumOptionMenu
-        return        
+        return
     if attribute.type() == 'enum':
         #enum is automatically connnected via attrEnumOptionMenu
-        return        
+        return
     if attribute.type() == 'float3':
         #float3 == color is automatically connnected via attrColorSliderGrp
         return
@@ -55,7 +55,7 @@ def connectUIElement(uiElement, attribute):
     pm.connectControl(uiElement, attribute, index = 2)
 
 def addRenderGlobalsUIElement(renderGlobalsNodeName = None, attName = None, uiType = None, displayName = None, default=None, data=None, uiDict=None, callback=None, anno=None):
-    
+
     attribute = pm.Attribute(renderGlobalsNodeName + "." + attName)
     uiElement = addUIElement(uiType, attribute, displayName, callback, renderGlobalsNodeName)
     if anno:

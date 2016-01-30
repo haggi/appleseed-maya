@@ -6,7 +6,7 @@
 
 #include "mtap_renderglobalsnode.h"
 
-MTypeId	MayaToAppleseedGlobals::id(0x0011CF40);
+MTypeId MayaToAppleseedGlobals::id(0x0011CF40);
 
 MObject MayaToAppleseedGlobals::bitdepth;
 MObject MayaToAppleseedGlobals::colorSpace;
@@ -82,15 +82,15 @@ MObject MayaToAppleseedGlobals::photon_type;
 
 MayaToAppleseedGlobals::MayaToAppleseedGlobals()
 {
-	imageFormatList.append("Png");
-	imageFormatList.append("Exr");
+    imageFormatList.append("Png");
+    imageFormatList.append("Exr");
 
-	filterTypeList.append("Box");
-	filterTypeList.append("Blackman-Harris");
-	filterTypeList.append("Catmull-Rom");
-	filterTypeList.append("Mitchell");
-	filterTypeList.append("Gauss");
-	filterTypeList.append("Triangle");
+    filterTypeList.append("Box");
+    filterTypeList.append("Blackman-Harris");
+    filterTypeList.append("Catmull-Rom");
+    filterTypeList.append("Mitchell");
+    filterTypeList.append("Gauss");
+    filterTypeList.append("Triangle");
 }
 
 MayaToAppleseedGlobals::~MayaToAppleseedGlobals()
@@ -99,249 +99,248 @@ MayaToAppleseedGlobals::~MayaToAppleseedGlobals()
 
 void *MayaToAppleseedGlobals::creator()
 {
-	return new MayaToAppleseedGlobals();
+    return new MayaToAppleseedGlobals();
 }
 
-MStatus	MayaToAppleseedGlobals::initialize()
+MStatus MayaToAppleseedGlobals::initialize()
 {
-	MayaRenderGlobalsNode::initialize();
+    MayaRenderGlobalsNode::initialize();
 
-	MFnNumericAttribute nAttr;
-	MFnTypedAttribute tAttr;
-	MFnGenericAttribute gAttr;
-	MFnEnumAttribute eAttr;
-	MFnMessageAttribute mAttr;
-	MStatus stat = MStatus::kSuccess;
+    MFnNumericAttribute nAttr;
+    MFnTypedAttribute tAttr;
+    MFnGenericAttribute gAttr;
+    MFnEnumAttribute eAttr;
+    MFnMessageAttribute mAttr;
+    MStatus stat = MStatus::kSuccess;
 
-	sampling_mode = eAttr.create("sampling_mode", "sampling_mode", 0, &stat);
-	stat = eAttr.addField("qmc", 0);
-	stat = eAttr.addField("rng", 1);
-	CHECK_MSTATUS(addAttribute(sampling_mode));
+    sampling_mode = eAttr.create("sampling_mode", "sampling_mode", 0, &stat);
+    stat = eAttr.addField("qmc", 0);
+    stat = eAttr.addField("rng", 1);
+    CHECK_MSTATUS(addAttribute(sampling_mode));
 
-	tile_ordering = eAttr.create("tile_ordering", "tile_ordering", 2, &stat);
-	stat = eAttr.addField("linear", 0);
-	stat = eAttr.addField("spiral", 1);
-	stat = eAttr.addField("hilbert", 2);
-	stat = eAttr.addField("random", 3);
-	CHECK_MSTATUS(addAttribute(tile_ordering));
+    tile_ordering = eAttr.create("tile_ordering", "tile_ordering", 2, &stat);
+    stat = eAttr.addField("linear", 0);
+    stat = eAttr.addField("spiral", 1);
+    stat = eAttr.addField("hilbert", 2);
+    stat = eAttr.addField("random", 3);
+    CHECK_MSTATUS(addAttribute(tile_ordering));
 
-	bitdepth = eAttr.create( "bitdepth", "bitdepth", 3, &stat);
-	stat = eAttr.addField( "8bit  Integer", 0 );
-	stat = eAttr.addField( "16bit Integer", 1 );
-	stat = eAttr.addField( "32bit Integer", 2 );
-	stat = eAttr.addField( "16bit Float(Half)", 3 );
-	stat = eAttr.addField( "32bit Float", 4 );
-	stat = eAttr.addField( "64bit Double", 5 );
-	CHECK_MSTATUS(addAttribute( bitdepth ));
+    bitdepth = eAttr.create( "bitdepth", "bitdepth", 3, &stat);
+    stat = eAttr.addField( "8bit  Integer", 0 );
+    stat = eAttr.addField( "16bit Integer", 1 );
+    stat = eAttr.addField( "32bit Integer", 2 );
+    stat = eAttr.addField( "16bit Float(Half)", 3 );
+    stat = eAttr.addField( "32bit Float", 4 );
+    stat = eAttr.addField( "64bit Double", 5 );
+    CHECK_MSTATUS(addAttribute( bitdepth ));
 
-	pixel_renderer = eAttr.create( "pixel_renderer", "pixel_renderer", 0, &stat);
-	stat = eAttr.addField( "adaptive", 0 );
-	stat = eAttr.addField( "uniform", 1 );
-	CHECK_MSTATUS(addAttribute( pixel_renderer ));
+    pixel_renderer = eAttr.create( "pixel_renderer", "pixel_renderer", 0, &stat);
+    stat = eAttr.addField( "adaptive", 0 );
+    stat = eAttr.addField( "uniform", 1 );
+    CHECK_MSTATUS(addAttribute( pixel_renderer ));
 
-	colorSpace = eAttr.create( "colorSpace", "colorSpace", 0, &stat);
-	stat = eAttr.addField( "linear_rgb", 0 );
-	stat = eAttr.addField( "srgb", 1 );
-	stat = eAttr.addField( "ciexyz", 2 );
-	CHECK_MSTATUS(addAttribute( colorSpace ));
+    colorSpace = eAttr.create( "colorSpace", "colorSpace", 0, &stat);
+    stat = eAttr.addField( "linear_rgb", 0 );
+    stat = eAttr.addField( "srgb", 1 );
+    stat = eAttr.addField( "ciexyz", 2 );
+    CHECK_MSTATUS(addAttribute( colorSpace ));
 
-	lightingEngine = eAttr.create( "lightingEngine", "lightingEngine", 0, &stat);
-	stat = eAttr.addField( "Unidirectional Path tracing", 0 );
-	stat = eAttr.addField( "Stochastic Progressive Photon Mapping", 1);
-	CHECK_MSTATUS(addAttribute( lightingEngine ));
+    lightingEngine = eAttr.create( "lightingEngine", "lightingEngine", 0, &stat);
+    stat = eAttr.addField( "Unidirectional Path tracing", 0 );
+    stat = eAttr.addField( "Stochastic Progressive Photon Mapping", 1);
+    CHECK_MSTATUS(addAttribute( lightingEngine ));
 
-	clamping = nAttr.create("clamping", "clamping",  MFnNumericData::kBoolean, false);
-	CHECK_MSTATUS(addAttribute( clamping ));
+    clamping = nAttr.create("clamping", "clamping",  MFnNumericData::kBoolean, false);
+    CHECK_MSTATUS(addAttribute( clamping ));
 
-	maxError = nAttr.create("maxError", "maxError",  MFnNumericData::kFloat, 0.01f);
-	CHECK_MSTATUS(addAttribute( maxError ));
+    maxError = nAttr.create("maxError", "maxError",  MFnNumericData::kFloat, 0.01f);
+    CHECK_MSTATUS(addAttribute( maxError ));
 
-	adaptiveQuality = nAttr.create("adaptiveQuality", "adaptiveQuality",  MFnNumericData::kFloat, 3.0f);
-	CHECK_MSTATUS(addAttribute( adaptiveQuality ));
-	
-	enable_caustics = nAttr.create("enable_caustics", "enable_caustics",  MFnNumericData::kBoolean, false);
-	CHECK_MSTATUS(addAttribute( enable_caustics ));
+    adaptiveQuality = nAttr.create("adaptiveQuality", "adaptiveQuality",  MFnNumericData::kFloat, 3.0f);
+    CHECK_MSTATUS(addAttribute( adaptiveQuality ));
 
-	enable_dl = nAttr.create("enable_dl", "enable_ibl",  MFnNumericData::kBoolean, true);
-	CHECK_MSTATUS(addAttribute( enable_dl ));
+    enable_caustics = nAttr.create("enable_caustics", "enable_caustics",  MFnNumericData::kBoolean, false);
+    CHECK_MSTATUS(addAttribute( enable_caustics ));
 
-	enable_diagnostics = nAttr.create("enable_diagnostics", "enable_diagnostics",  MFnNumericData::kBoolean, false);
-	CHECK_MSTATUS(addAttribute( enable_diagnostics ));
+    enable_dl = nAttr.create("enable_dl", "enable_ibl",  MFnNumericData::kBoolean, true);
+    CHECK_MSTATUS(addAttribute( enable_dl ));
 
-	diffuseDepth = nAttr.create("diffuseDepth", "diffuseDepth",  MFnNumericData::kInt, 4);
-	CHECK_MSTATUS(addAttribute( diffuseDepth ));
+    enable_diagnostics = nAttr.create("enable_diagnostics", "enable_diagnostics",  MFnNumericData::kBoolean, false);
+    CHECK_MSTATUS(addAttribute( enable_diagnostics ));
 
-	texCacheSize = nAttr.create("texCacheSize", "texCacheSize",  MFnNumericData::kInt, 512);
-	CHECK_MSTATUS(addAttribute( texCacheSize ));
+    diffuseDepth = nAttr.create("diffuseDepth", "diffuseDepth",  MFnNumericData::kInt, 4);
+    CHECK_MSTATUS(addAttribute( diffuseDepth ));
 
-	frameRendererPasses = nAttr.create("frameRendererPasses", "frameRendererPasses",  MFnNumericData::kInt, 1);
-	CHECK_MSTATUS(addAttribute( frameRendererPasses ));
+    texCacheSize = nAttr.create("texCacheSize", "texCacheSize",  MFnNumericData::kInt, 512);
+    CHECK_MSTATUS(addAttribute( texCacheSize ));
 
-	glossyDepth = nAttr.create("glossyDepth", "glossyDepth",  MFnNumericData::kInt, 4);
-	CHECK_MSTATUS(addAttribute( glossyDepth ));
+    frameRendererPasses = nAttr.create("frameRendererPasses", "frameRendererPasses",  MFnNumericData::kInt, 1);
+    CHECK_MSTATUS(addAttribute( frameRendererPasses ));
 
-	environmentSamples = nAttr.create("environmentSamples", "environmentSamples",  MFnNumericData::kInt, 1);
-	CHECK_MSTATUS(addAttribute( environmentSamples ));
+    glossyDepth = nAttr.create("glossyDepth", "glossyDepth",  MFnNumericData::kInt, 4);
+    CHECK_MSTATUS(addAttribute( glossyDepth ));
 
-	bsdfSamples = nAttr.create("bsdfSamples", "bsdfSamples",  MFnNumericData::kInt, 1);
-	CHECK_MSTATUS(addAttribute( bsdfSamples ));
+    environmentSamples = nAttr.create("environmentSamples", "environmentSamples",  MFnNumericData::kInt, 1);
+    CHECK_MSTATUS(addAttribute( environmentSamples ));
 
-	next_event_estimation = nAttr.create("next_event_estimation", "next_event_estimation",  MFnNumericData::kBoolean, true);
-	CHECK_MSTATUS(addAttribute( next_event_estimation ));
+    bsdfSamples = nAttr.create("bsdfSamples", "bsdfSamples",  MFnNumericData::kInt, 1);
+    CHECK_MSTATUS(addAttribute( bsdfSamples ));
 
-	assemblySBVH = nAttr.create("assemblySBVH", "assemblySBVH",  MFnNumericData::kBoolean, false);
-	CHECK_MSTATUS(addAttribute( assemblySBVH ));
+    next_event_estimation = nAttr.create("next_event_estimation", "next_event_estimation",  MFnNumericData::kBoolean, true);
+    CHECK_MSTATUS(addAttribute( next_event_estimation ));
 
-	max_path_length = nAttr.create("max_path_length", "max_path_length", MFnNumericData::kFloat, 8.0f);
-	CHECK_MSTATUS(addAttribute(max_path_length));
+    assemblySBVH = nAttr.create("assemblySBVH", "assemblySBVH",  MFnNumericData::kBoolean, false);
+    CHECK_MSTATUS(addAttribute( assemblySBVH ));
 
-	rr_min_path_length = nAttr.create("rr_min_path_length", "rr_min_path_length",  MFnNumericData::kFloat, 3.0f);
-	CHECK_MSTATUS(addAttribute( rr_min_path_length ));
+    max_path_length = nAttr.create("max_path_length", "max_path_length", MFnNumericData::kFloat, 8.0f);
+    CHECK_MSTATUS(addAttribute(max_path_length));
 
-	path_tracing_max_path_length = nAttr.create("path_tracing_max_path_length", "path_tracing_max_path_length", MFnNumericData::kFloat, 0.0f);
-	CHECK_MSTATUS(addAttribute(path_tracing_max_path_length));
+    rr_min_path_length = nAttr.create("rr_min_path_length", "rr_min_path_length",  MFnNumericData::kFloat, 3.0f);
+    CHECK_MSTATUS(addAttribute( rr_min_path_length ));
 
-	path_tracing_rr_min_path_length = nAttr.create("path_tracing_rr_min_path_length", "path_tracing_rr_min_path_length", MFnNumericData::kFloat, 8.0f);
-	CHECK_MSTATUS(addAttribute(path_tracing_rr_min_path_length));
+    path_tracing_max_path_length = nAttr.create("path_tracing_max_path_length", "path_tracing_max_path_length", MFnNumericData::kFloat, 0.0f);
+    CHECK_MSTATUS(addAttribute(path_tracing_max_path_length));
 
-	photon_tracing_max_path_length = nAttr.create("photon_tracing_max_path_length", "photon_tracing_max_path_length", MFnNumericData::kFloat, 8.0f);
-	CHECK_MSTATUS(addAttribute(photon_tracing_max_path_length));
+    path_tracing_rr_min_path_length = nAttr.create("path_tracing_rr_min_path_length", "path_tracing_rr_min_path_length", MFnNumericData::kFloat, 8.0f);
+    CHECK_MSTATUS(addAttribute(path_tracing_rr_min_path_length));
 
-	photon_tracing_rr_min_path_length = nAttr.create("photon_tracing_rr_min_path_length", "photon_tracing_rr_min_path_length", MFnNumericData::kFloat, 3.0f);
-	CHECK_MSTATUS(addAttribute(photon_tracing_rr_min_path_length));
+    photon_tracing_max_path_length = nAttr.create("photon_tracing_max_path_length", "photon_tracing_max_path_length", MFnNumericData::kFloat, 8.0f);
+    CHECK_MSTATUS(addAttribute(photon_tracing_max_path_length));
 
-	max_ray_intensity = nAttr.create("max_ray_intensity", "max_ray_intensity",  MFnNumericData::kFloat, 0.0f);
-	CHECK_MSTATUS(addAttribute( max_ray_intensity ));
+    photon_tracing_rr_min_path_length = nAttr.create("photon_tracing_rr_min_path_length", "photon_tracing_rr_min_path_length", MFnNumericData::kFloat, 3.0f);
+    CHECK_MSTATUS(addAttribute(photon_tracing_rr_min_path_length));
 
-	// reduced to auto because we do not need the others (I hope) remove the whole attribute in the next release
-	assemblyExportType = eAttr.create( "assemblyExportType", "assemblyExportType", 0, &stat);
-	stat = eAttr.addField( "Auto", 0 );
-	CHECK_MSTATUS(addAttribute( assemblyExportType ));
+    max_ray_intensity = nAttr.create("max_ray_intensity", "max_ray_intensity",  MFnNumericData::kFloat, 0.0f);
+    CHECK_MSTATUS(addAttribute( max_ray_intensity ));
 
-	assemblyPolyTheshold = nAttr.create("assemblyPolyTheshold", "assemblyPolyTheshold",  MFnNumericData::kInt, 10000);
-	CHECK_MSTATUS(addAttribute( assemblyPolyTheshold ));
+    // reduced to auto because we do not need the others (I hope) remove the whole attribute in the next release
+    assemblyExportType = eAttr.create( "assemblyExportType", "assemblyExportType", 0, &stat);
+    stat = eAttr.addField( "Auto", 0 );
+    CHECK_MSTATUS(addAttribute( assemblyExportType ));
 
-	environmentType = eAttr.create( "environmentType", "environmentType", 0, &stat);
-	stat = eAttr.addField("Constant", 0);
-	stat = eAttr.addField("ConstantHemisphere", 1);
-	stat = eAttr.addField("Gradient", 2);
-	stat = eAttr.addField("Latitude Longitude", 3 );
-	stat = eAttr.addField("Mirror Ball", 4 );
-	stat = eAttr.addField("Physical Sky", 5);
-	stat = eAttr.addField("OSL Environment", 6);
-	CHECK_MSTATUS(addAttribute(environmentType));
+    assemblyPolyTheshold = nAttr.create("assemblyPolyTheshold", "assemblyPolyTheshold",  MFnNumericData::kInt, 10000);
+    CHECK_MSTATUS(addAttribute( assemblyPolyTheshold ));
 
-	environmentColor = nAttr.createColor("environmentColor", "environmentColor");
-	nAttr.setDefault(0.6f, 0.7f, 0.9f);
-	nAttr.setConnectable(false);
-	CHECK_MSTATUS(addAttribute( environmentColor ));
+    environmentType = eAttr.create( "environmentType", "environmentType", 0, &stat);
+    stat = eAttr.addField("Constant", 0);
+    stat = eAttr.addField("ConstantHemisphere", 1);
+    stat = eAttr.addField("Gradient", 2);
+    stat = eAttr.addField("Latitude Longitude", 3 );
+    stat = eAttr.addField("Mirror Ball", 4 );
+    stat = eAttr.addField("Physical Sky", 5);
+    stat = eAttr.addField("OSL Environment", 6);
+    CHECK_MSTATUS(addAttribute(environmentType));
 
-	gradientHorizon = nAttr.createColor("gradientHorizon", "gradientHorizon");
-	nAttr.setDefault(0.8f, 0.8f, 0.9f);
-	nAttr.setConnectable(false);
-	CHECK_MSTATUS(addAttribute( gradientHorizon ));
+    environmentColor = nAttr.createColor("environmentColor", "environmentColor");
+    nAttr.setDefault(0.6f, 0.7f, 0.9f);
+    nAttr.setConnectable(false);
+    CHECK_MSTATUS(addAttribute( environmentColor ));
 
-	gradientZenit = nAttr.createColor("gradientZenit", "gradientZenit");
-	nAttr.setDefault(0.2f, 0.3f, 0.6f);
-	nAttr.setConnectable(false);
-	CHECK_MSTATUS(addAttribute( gradientZenit ));
+    gradientHorizon = nAttr.createColor("gradientHorizon", "gradientHorizon");
+    nAttr.setDefault(0.8f, 0.8f, 0.9f);
+    nAttr.setConnectable(false);
+    CHECK_MSTATUS(addAttribute( gradientHorizon ));
 
-	environmentMap = nAttr.createColor("environmentMap", "environmentMap");
-	nAttr.setDefault(0.6f, 0.7f, 0.9f);
-	CHECK_MSTATUS(addAttribute( environmentMap ));
+    gradientZenit = nAttr.createColor("gradientZenit", "gradientZenit");
+    nAttr.setDefault(0.2f, 0.3f, 0.6f);
+    nAttr.setConnectable(false);
+    CHECK_MSTATUS(addAttribute( gradientZenit ));
 
-	environmentIntensity = nAttr.create("environmentIntensity", "environmentIntensity",  MFnNumericData::kFloat, 1.0f);
-	nAttr.setConnectable(false);
-	CHECK_MSTATUS(addAttribute( environmentIntensity ));
+    environmentMap = nAttr.createColor("environmentMap", "environmentMap");
+    nAttr.setDefault(0.6f, 0.7f, 0.9f);
+    CHECK_MSTATUS(addAttribute( environmentMap ));
 
-	directLightSamples = nAttr.create("directLightSamples", "directLightSamples",  MFnNumericData::kFloat, 1.0f);
-	CHECK_MSTATUS(addAttribute( directLightSamples ));
+    environmentIntensity = nAttr.create("environmentIntensity", "environmentIntensity",  MFnNumericData::kFloat, 1.0f);
+    nAttr.setConnectable(false);
+    CHECK_MSTATUS(addAttribute( environmentIntensity ));
 
-	latlongHoShift = nAttr.create("latlongHoShift", "latlongHoShift",  MFnNumericData::kFloat, .0f);
-	CHECK_MSTATUS(addAttribute( latlongHoShift ));
+    directLightSamples = nAttr.create("directLightSamples", "directLightSamples",  MFnNumericData::kFloat, 1.0f);
+    CHECK_MSTATUS(addAttribute( directLightSamples ));
 
-	latlongVeShift = nAttr.create("latlongVeShift", "latlongVeShift",  MFnNumericData::kFloat, .0f);
-	CHECK_MSTATUS(addAttribute( latlongVeShift ));
+    latlongHoShift = nAttr.create("latlongHoShift", "latlongHoShift",  MFnNumericData::kFloat, .0f);
+    CHECK_MSTATUS(addAttribute( latlongHoShift ));
 
-	AOVs = mAttr.create("AOVs", "AOVs");
-	mAttr.setArray(true);
-	mAttr.indexMatters(false);
-	CHECK_MSTATUS(addAttribute( AOVs ));
+    latlongVeShift = nAttr.create("latlongVeShift", "latlongVeShift",  MFnNumericData::kFloat, .0f);
+    CHECK_MSTATUS(addAttribute( latlongVeShift ));
 
-	ground_albedo = nAttr.create("ground_albedo", "ground_albedo",  MFnNumericData::kFloat, .0f);
-	CHECK_MSTATUS(addAttribute( ground_albedo ));
+    AOVs = mAttr.create("AOVs", "AOVs");
+    mAttr.setArray(true);
+    mAttr.indexMatters(false);
+    CHECK_MSTATUS(addAttribute( AOVs ));
 
-	horizon_shift = nAttr.create("horizon_shift", "horizon_shift",  MFnNumericData::kFloat, -0.05f);
-	CHECK_MSTATUS(addAttribute( horizon_shift ));
+    ground_albedo = nAttr.create("ground_albedo", "ground_albedo",  MFnNumericData::kFloat, .0f);
+    CHECK_MSTATUS(addAttribute( ground_albedo ));
 
-	luminance_multiplier = nAttr.create("luminance_multiplier", "luminance_multiplier",  MFnNumericData::kFloat, 1.0f);
-	CHECK_MSTATUS(addAttribute( luminance_multiplier ));
+    horizon_shift = nAttr.create("horizon_shift", "horizon_shift",  MFnNumericData::kFloat, -0.05f);
+    CHECK_MSTATUS(addAttribute( horizon_shift ));
 
-	saturation_multiplier = nAttr.create("saturation_multiplier", "saturation_multiplier",  MFnNumericData::kFloat, 1.0f);
-	CHECK_MSTATUS(addAttribute( saturation_multiplier ));
+    luminance_multiplier = nAttr.create("luminance_multiplier", "luminance_multiplier",  MFnNumericData::kFloat, 1.0f);
+    CHECK_MSTATUS(addAttribute( luminance_multiplier ));
 
-	sun_phi = nAttr.create("sun_phi", "sun_phi",  MFnNumericData::kFloat, .0f);
-	CHECK_MSTATUS(addAttribute( sun_phi ));
+    saturation_multiplier = nAttr.create("saturation_multiplier", "saturation_multiplier",  MFnNumericData::kFloat, 1.0f);
+    CHECK_MSTATUS(addAttribute( saturation_multiplier ));
 
-	sun_theta = nAttr.create("sun_theta", "sun_theta",  MFnNumericData::kFloat, 60.0f);
-	CHECK_MSTATUS(addAttribute( sun_theta ));
+    sun_phi = nAttr.create("sun_phi", "sun_phi",  MFnNumericData::kFloat, .0f);
+    CHECK_MSTATUS(addAttribute( sun_phi ));
 
-	turbidity = nAttr.create("turbidity", "turbidity",  MFnNumericData::kFloat, 3.0f);
-	CHECK_MSTATUS(addAttribute( turbidity ));
+    sun_theta = nAttr.create("sun_theta", "sun_theta",  MFnNumericData::kFloat, 60.0f);
+    CHECK_MSTATUS(addAttribute( sun_theta ));
 
-	turbidity_max = nAttr.create("turbidity_max", "turbidity_max",  MFnNumericData::kFloat, 3.0f);
-	CHECK_MSTATUS(addAttribute( turbidity_max ));
+    turbidity = nAttr.create("turbidity", "turbidity",  MFnNumericData::kFloat, 3.0f);
+    CHECK_MSTATUS(addAttribute( turbidity ));
 
-	turbidity_min = nAttr.create("turbidity_min", "turbidity_min",  MFnNumericData::kFloat, 3.0f);
-	CHECK_MSTATUS(addAttribute( turbidity_min ));
+    turbidity_max = nAttr.create("turbidity_max", "turbidity_max",  MFnNumericData::kFloat, 3.0f);
+    CHECK_MSTATUS(addAttribute( turbidity_max ));
 
-	skyModel = eAttr.create( "skyModel", "skyModel", 0, &stat);
-	stat = eAttr.addField( "Preetham", 0 );
-	stat = eAttr.addField( "Hosek", 1 );
-	CHECK_MSTATUS(addAttribute( skyModel ));
+    turbidity_min = nAttr.create("turbidity_min", "turbidity_min",  MFnNumericData::kFloat, 3.0f);
+    CHECK_MSTATUS(addAttribute( turbidity_min ));
 
-	physicalSun = nAttr.create("physicalSun", "physicalSun",  MFnNumericData::kBoolean, false);
-	CHECK_MSTATUS(addAttribute( physicalSun ));
+    skyModel = eAttr.create( "skyModel", "skyModel", 0, &stat);
+    stat = eAttr.addField( "Preetham", 0 );
+    stat = eAttr.addField( "Hosek", 1 );
+    CHECK_MSTATUS(addAttribute( skyModel ));
 
-	physicalSunConnection = mAttr.create("physicalSunConnection", "physicalSunConnection");
-	CHECK_MSTATUS(addAttribute( physicalSunConnection ));
+    physicalSun = nAttr.create("physicalSun", "physicalSun",  MFnNumericData::kBoolean, false);
+    CHECK_MSTATUS(addAttribute( physicalSun ));
 
-	sunTurbidity = nAttr.create("sunTurbidity", "sunTurbidity",  MFnNumericData::kFloat, 3.0f);
-	CHECK_MSTATUS(addAttribute( sunTurbidity ));
+    physicalSunConnection = mAttr.create("physicalSunConnection", "physicalSunConnection");
+    CHECK_MSTATUS(addAttribute( physicalSunConnection ));
 
-	sunExitanceMultiplier = nAttr.create("sunExitanceMultiplier", "sunExitanceMultiplier",  MFnNumericData::kFloat, 1.0f);
-	CHECK_MSTATUS(addAttribute( sunExitanceMultiplier ));
+    sunTurbidity = nAttr.create("sunTurbidity", "sunTurbidity",  MFnNumericData::kFloat, 3.0f);
+    CHECK_MSTATUS(addAttribute( sunTurbidity ));
 
-	sppmAlpha = nAttr.create("sppmAlpha", "sppmAlpha",  MFnNumericData::kFloat, .8f);
-	CHECK_MSTATUS(addAttribute( sppmAlpha ));
+    sunExitanceMultiplier = nAttr.create("sunExitanceMultiplier", "sunExitanceMultiplier",  MFnNumericData::kFloat, 1.0f);
+    CHECK_MSTATUS(addAttribute( sunExitanceMultiplier ));
 
-	dl_mode = eAttr.create("dl_mode", "dl_mode", 0, &stat);
-	stat = eAttr.addField("RT Direct Lighting", 0);
-	stat = eAttr.addField("SPPM Direct Lighting", 1);
-	stat = eAttr.addField("No Direct Lighting", 2);
-	CHECK_MSTATUS(addAttribute(dl_mode));
+    sppmAlpha = nAttr.create("sppmAlpha", "sppmAlpha",  MFnNumericData::kFloat, .8f);
+    CHECK_MSTATUS(addAttribute( sppmAlpha ));
 
-	env_photons_per_pass = nAttr.create("env_photons_per_pass", "env_photons_per_pass",  MFnNumericData::kInt, 100000);
-	CHECK_MSTATUS(addAttribute( env_photons_per_pass ));
+    dl_mode = eAttr.create("dl_mode", "dl_mode", 0, &stat);
+    stat = eAttr.addField("RT Direct Lighting", 0);
+    stat = eAttr.addField("SPPM Direct Lighting", 1);
+    stat = eAttr.addField("No Direct Lighting", 2);
+    CHECK_MSTATUS(addAttribute(dl_mode));
 
-	initial_radius = nAttr.create("initial_radius", "initial_radius",  MFnNumericData::kFloat, .5f);
-	CHECK_MSTATUS(addAttribute( initial_radius ));
+    env_photons_per_pass = nAttr.create("env_photons_per_pass", "env_photons_per_pass",  MFnNumericData::kInt, 100000);
+    CHECK_MSTATUS(addAttribute( env_photons_per_pass ));
 
-	light_photons_per_pass = nAttr.create("light_photons_per_pass", "light_photons_per_pass",  MFnNumericData::kInt, 100000);
-	CHECK_MSTATUS(addAttribute( light_photons_per_pass ));
+    initial_radius = nAttr.create("initial_radius", "initial_radius",  MFnNumericData::kFloat, .5f);
+    CHECK_MSTATUS(addAttribute( initial_radius ));
 
-	max_photons_per_estimate = nAttr.create("max_photons_per_estimate", "max_photons_per_estimate",  MFnNumericData::kInt, 100);
-	CHECK_MSTATUS(addAttribute( max_photons_per_estimate ));
+    light_photons_per_pass = nAttr.create("light_photons_per_pass", "light_photons_per_pass",  MFnNumericData::kInt, 100000);
+    CHECK_MSTATUS(addAttribute( light_photons_per_pass ));
 
-	photons_per_pass = nAttr.create("photons_per_pass", "photons_per_pass",  MFnNumericData::kInt, 100000);
-	CHECK_MSTATUS(addAttribute( photons_per_pass ));
+    max_photons_per_estimate = nAttr.create("max_photons_per_estimate", "max_photons_per_estimate",  MFnNumericData::kInt, 100);
+    CHECK_MSTATUS(addAttribute( max_photons_per_estimate ));
 
-	photon_type = eAttr.create("photon_type", "photon_type", 1, &stat);
-	stat = eAttr.addField("Monochromatic", 0);
-	stat = eAttr.addField("Polychromatic", 1);
-	CHECK_MSTATUS(addAttribute(photon_type));
+    photons_per_pass = nAttr.create("photons_per_pass", "photons_per_pass",  MFnNumericData::kInt, 100000);
+    CHECK_MSTATUS(addAttribute( photons_per_pass ));
 
-	return stat;
+    photon_type = eAttr.create("photon_type", "photon_type", 1, &stat);
+    stat = eAttr.addField("Monochromatic", 0);
+    stat = eAttr.addField("Polychromatic", 1);
+    CHECK_MSTATUS(addAttribute(photon_type));
+
+    return stat;
 
 }
-

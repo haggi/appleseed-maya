@@ -46,7 +46,7 @@ bool MayaScene::parseSceneHierarchy(MDagPath currentPath, int level, sharedPtr<O
         interactiveUpdateMap[interactiveUpdateMap.size()] = iel;
     }
     //
-    //	find the original mayaObject for instanced objects. Can be useful later.
+    //  find the original mayaObject for instanced objects. Can be useful later.
     //
 
     if (currentPath.instanceNumber() == 0)
@@ -152,7 +152,7 @@ bool MayaScene::updateScene(MFn::Type updateElement)
         //if( !MayaTo::getWorldPtr()->worldRenderGlobalsPtr->isMbStartStep )
         // non mb objects will be exported only above
         //if (!obj->motionBlurred)
-        //	continue;
+        //  continue;
 
         if (MayaTo::getWorldPtr()->worldRenderGlobalsPtr->isDeformStep())
             if (obj->mobject.hasFn(MFn::kShape))

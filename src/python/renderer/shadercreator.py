@@ -1,4 +1,3 @@
-
 import path
 import logging
 import shutil
@@ -29,7 +28,7 @@ def makeEnum(att):
         att[3] = att[4].split(":").index(att[3])
     string = "\t{0} = eAttr.create(\"{0}\", \"{0}\", {1}, &status);\n".format(att[0], att[3])
     for index, v in enumerate(att[4].split(":")):
-        string += "\tstatus = eAttr.addField( \"{0}\", {1} );\n".format(v, index) 
+        string += "\tstatus = eAttr.addField( \"{0}\", {1} );\n".format(v, index)
     string += "\tCHECK_MSTATUS(addAttribute( {0} ));\n\n".format(att[0])
     return string
 
@@ -37,7 +36,7 @@ def makeInt(att):
     string = "\t{0} = nAttr.create(\"{0}\", \"{0}\",  MFnNumericData::kInt, {1});\n".format(att[0], att[3])
     string += "\tCHECK_MSTATUS(addAttribute( {0} ));\n\n".format(att[0])
     return string
-    
+
 def makeFloat(att):
     string = "\t{0} = nAttr.create(\"{0}\", \"{0}\",  MFnNumericData::kFloat, {1});\n".format(att[0], att[3])
     string += "\tCHECK_MSTATUS(addAttribute( {0} ));\n\n".format(att[0])
@@ -53,7 +52,7 @@ def makeString(att):
 #    exportXMLFileName = tAttr.create("exportXMLFileName", "exportXMLFileName",  MFnNumericData::kString);
 #    tAttr.setUsedAsFilename(true);
 #    CHECK_MSTATUS(addAttribute( exportXMLFileName ));
-#        
+#
     string = "\t{0} = tAttr.create(\"{0}\", \"{0}\",  MFnNumericData::kString);\n".format(att[0])
     if len(att) > 4:
         if att[4] == "useAsFilename":
@@ -82,35 +81,35 @@ def makeMessage(att):
 
 def pluginLoaders(attDict, renderer):
     print "pluginLoaders"
-    
+
     for key in attDict.keys():
         if key == "all":
-            continue    
+            continue
         print '#include "shaders/{0}Material.h"'.format(key)
 
     for key in attDict.keys():
         if key == "all":
-            continue    
+            continue
         print 'static const MString {0}sRegistrantId("{0}Plugin");'.format(key)
         print 'static const MString {0}sDrawDBClassification("drawdb/shader/surface/{0}");'.format(key)
         print 'static const MString {0}sFullClassification("{1}/material:shader/surface:" + {0}sDrawDBClassification);'.format(key, renderer.lower())
-                
-    registerOver = []        
-    registerNormal = []        
+
+    registerOver = []
+    registerNormal = []
     for key in attDict.keys():
         if key == "all":
-            continue    
+            continue
         registerNormal.append('CHECK_MSTATUS( plugin.registerNode( "{0}", {0}::id, {0}::creator, {0}::initialize, MPxNode::kDependNode, &{0}sFullClassification ));'.format(key, renderer.lower(), key.capitalize()))
         registerOver.append('CHECK_MSTATUS( MHWRender::MDrawRegistry::registerSurfaceShadingNodeOverrideCreator( {0}sDrawDBClassification, {0}sRegistrantId,{0}Override::creator));'.format(key))
 
-    deregisterOver = []        
-    deregisterNormal = []        
+    deregisterOver = []
+    deregisterNormal = []
     for key in attDict.keys():
         if key == "all":
-            continue    
+            continue
         deregisterNormal.append('CHECK_MSTATUS( plugin.deregisterNode( {0}::id ) );'.format(key))
         deregisterOver.append('CHECK_MSTATUS(MHWRender::MDrawRegistry::deregisterSurfaceShadingNodeOverrideCreator({0}sDrawDBClassification, {0}sRegistrantId));'.format(key))
-    
+
     print "#ifdef HAS_OVERRIDE"
     for i in registerOver:
         print "\t"+i
@@ -127,82 +126,82 @@ def pluginLoaders(attDict, renderer):
 
 def createNode(sourceFile, destFile, materialName):
     print "Creating shader file for shader", materialName
-    
+
     global START_NODE_ID
-    
+
     sourceH = open(sourceFile, "r")
     source = sourceH.readlines()
     sourceH.close()
-    
+
     if destFile.endswith(".cpp") and not "materialBaseOverride" in sourceFile:
         START_NODE_ID += 1
     nodeId = "0x%08X" % START_NODE_ID
-    
+
     destH = open(destFile, "w")
     for line in source:
-        
+
         line = line.replace('#include "materialBase.h"', '#include "'+materialName + 'Material.h"')
         line = line.replace("MaterialBase", materialName)
         line = line.replace("materialBase", materialName)
-        
+
         #0x0011CF4D
-        
+
         if line.startswith("MTypeId"):
             line = line.replace("0x00000", nodeId)
-        
+
         destH.write(line)
     destH.close()
-    
 
-def insertAttributes(destFileName, attDict, nodeName):    
+
+def insertAttributes(destFileName, attDict, nodeName):
     destH = open(destFileName, "r")
     content = destH.readlines()
     destH.close()
-    
+
     newContent = []
-    newContentI = []          
+    newContentI = []
     isH = destFileName.endswith(".h")
-    
+
     start_index = -1
     end_index = -1
     start_indexI = -1
     end_indexI = -1
-    
+
     for index, value in enumerate(content):
         if START_ID in value:
             print "Start id found"
             start_index = index
-            
+
         if END_ID in value:
             end_index = index
             print "End id found"
             break
 
-    # for .h header files    
+    # for .h header files
     if isH:
         for key, v in attDict.iteritems():
             attString = "\tstatic    MObject " + key + ";\n"
-            newContent.append(attString)                    
+            newContent.append(attString)
             #print key, v
-    # and for .cpp files        
+    # and for .cpp files
     else:
-        
+
         for index in range(end_index, len(content)):
             value = content[index]
             #print value
             if START_ID in value:
                 print "Start id 2 found", index
                 start_indexI = index
-                
+
             if END_ID in value:
                 end_indexI = index
                 print "End id 2 found", index
-                
-          
+
+
         for key, v in attDict.iteritems():
             attString = "MObject " + nodeName + "::" + key + ";\n"
             newContent.append(attString)
-            
+
         for key, v in attDict.iteritems():
             att = [key]
             att.extend(v)
@@ -234,9 +233,9 @@ def insertAttributes(destFileName, attDict, nodeName):
                 attString = makeMessage(att)
             if att[1] == "string":
                 attString = makeString(att)
-            newContentI.append(attString)                    
-        
-                            
+            newContentI.append(attString)
+
+
     contentOut = content[:(start_index + 1)]
     contentOut.extend(newContent)
 
@@ -246,7 +245,7 @@ def insertAttributes(destFileName, attDict, nodeName):
         contentOut.extend(content[end_index:start_indexI+1])
         contentOut.extend(newContentI)
         contentOut.extend(content[end_indexI:])
-    
+
     destH = open(destFileName, "w")
     destH.writelines(contentOut)
     destH.close()
@@ -267,12 +266,12 @@ def getPType(att):
 
 def attrIncludeCreator(attDict, renderer, shortCut):
     global baseDestPath
-    
+
     destAEPath = path.path(baseDestPath + "/src/{0}/{0}ShaderInclude.h".format(renderer.capitalize()))
     fh = open(destAEPath, "r")
     content = fh.readlines()
     fh.close()
-    
+
     startIndex = 0
     endIndex = 0
     for index, line in enumerate(content):
@@ -282,22 +281,22 @@ def attrIncludeCreator(attDict, renderer, shortCut):
         if "automatically created attributes end" in line:
             print "End new content"
             endIndex = index
-    
+
     allContent = []
-    
-#    for key in attDict.keys():        
+
+#    for key in attDict.keys():
 #        if key.lower() == "all":
 #            for attKey in attDict[key].keys():
 #                attName = attKey
 #                attDisplayName = attDict[key][attKey][1]
 #                allContent.append('        self.addControl("{0}", label="{1}")\n'.format(attName, attDisplayName))
-    
+
     newContent = []
     for key in attDict.keys():
-        
+
         if key.lower() == "all":
             continue
-        
+
         attrs = attDict[key]
 
 #class GlassMaterial : public LuxMaterial
@@ -321,7 +320,7 @@ def attrIncludeCreator(attDict, renderer, shortCut):
 #        this->shaderParams->AddString("type", &type);
 #        this->lux->makeNamedMaterial(nodeName.asChar(),  boost::get_pointer(this->shaderParams));
 #    }
-#};        
+#};
         cls = "class\t{0}Material : public LuxMaterial\n".format(key.capitalize())
         cls += "{\npublic:\n"
         cls += "\t{0}Material(MObject mObject, Instance l) : LuxMaterial(mObject, l)\n".format(key.capitalize())
@@ -332,56 +331,56 @@ def attrIncludeCreator(attDict, renderer, shortCut):
             cls += "\t\t" + 'p.paramName = "{0}";\n'.format(attKey)
             cls += "\t\t" + 'p.ptype = AttrParam::{0};\n'.format(getPType(attrs[attKey][0]))
             cls += "\t\t" + 'this->params.push_back(p);\n'
-            
+
         cls += "\t" + "}\n"
         cls += "\t" + "virtual void defineParams()\n\t{\n\t\tcreateParamsFromMayaNode();\n\t}\n\n"
         cls += "\t" + "virtual void defineShader()\n\t{\n"
         cls += "\t\t" + 'const char *type = "{0}";\n'.format(key);
         cls += "\t\t" + 'this->shaderParams->AddString("type", &type);\n'
-        cls += "\t\t" + 'this->lux->makeNamedMaterial(nodeName.asChar(),  boost::get_pointer(this->shaderParams));\n\t}\n'        
+        cls += "\t\t" + 'this->lux->makeNamedMaterial(nodeName.asChar(),  boost::get_pointer(this->shaderParams));\n\t}\n'
         cls += "\n};\n"
-        
+
         newContent.append(cls)
         #for attKey in attDict[key].keys():
         #    attName = attKey
         #    attDisplayName = attDict[key][attKey][1]
         #    print '        self.addControl("{0}", label="{1}")\n'.format(attName, attDisplayName)
         #    newContent.append('        self.addControl("{0}", label="{1}")\n'.format(attName, attDisplayName))
-        
+
     finalContent = []
-    finalContent.extend(content[:startIndex+1])   
-    finalContent.extend(allContent) 
-    finalContent.extend(newContent)    
-    finalContent.extend(content[endIndex:])    
+    finalContent.extend(content[:startIndex+1])
+    finalContent.extend(allContent)
+    finalContent.extend(newContent)
+    finalContent.extend(content[endIndex:])
 
     print "Writing data to file", destAEPath
     fh = open(destAEPath, "w")
     content = fh.writelines(finalContent)
     fh.close()
-    
+
         #print finalContent
 
 def aeTemplateCreator(attDict, renderer, shortCut):
     global baseDestPath
-    
+
     sourceAEFile = baseSourcePath + "/mt@_devmodule/scripts/@/AETemplate/AE@shaderTemplate.py"
     destAEPath = path.path(baseDestPath + "/mt@_devmodule/scripts/@/AETemplate/".replace("mt@_", shortCut + "_").replace("@", renderer.capitalize()))
-    
+
     print "Sourcefile", sourceAEFile
     print "Destpath", destAEPath
 
     allContent = []
     allContent.append('        self.addSeparator()\n')
-    for key in attDict.keys():        
+    for key in attDict.keys():
         if key.lower() == "all":
             for attKey in attDict[key].keys():
                 attName = attKey
                 attDisplayName = attDict[key][attKey][1]
                 allContent.append('        self.addControl("{0}", label="{1}")\n'.format(attName, attDisplayName))
-    
+
     for key in attDict.keys():
         newContent = []
-        
+
         aeFileName = "AE" + key + "Template.py"
         destAEFile = path.path(destAEPath + aeFileName)
         #print "create AE for", key, destAEFile
@@ -394,12 +393,12 @@ def aeTemplateCreator(attDict, renderer, shortCut):
         sourceHandle = open(sourceAEFile, "r")
         content = sourceHandle.readlines()
         sourceHandle.close()
-        
+
         startIndex = 0
         endIndex = 0
         for index, line in enumerate(content):
             if "AE@shaderTemplate" in line:
-                content[index] = line.replace("AE@shaderTemplate", "AE" + key + "Template")                
+                content[index] = line.replace("AE@shaderTemplate", "AE" + key + "Template")
             if "#autoAddBegin" in line:
                 print "Start new content"
                 startIndex = index
@@ -408,29 +407,29 @@ def aeTemplateCreator(attDict, renderer, shortCut):
                 endIndex = index
 
         #print "Creating data for", key
-        #print attDict[key] 
+        #print attDict[key]
         for attKey in attDict[key].keys():
             attName = attKey
             attDisplayName = attDict[key][attKey][1]
             #print '        self.addControl("{0}", label="{1}")\n'.format(attName, attDisplayName)
             newContent.append('        self.addControl("{0}", label="{1}")\n'.format(attName, attDisplayName))
-        
+
         finalContent = []
-        finalContent.extend(content[:startIndex+1])   
-        finalContent.extend(newContent)    
-        finalContent.extend(allContent) 
-        finalContent.extend(content[endIndex:])    
+        finalContent.extend(content[:startIndex+1])
+        finalContent.extend(newContent)
+        finalContent.extend(allContent)
+        finalContent.extend(content[endIndex:])
         #print finalContent
         print "Write AETemplate file", destAEFile
         destHandle = open(destAEFile, "w")
         destHandle.writelines(finalContent)
         destHandle.close()
-        
+
 def fillNodes(attDict):
     print "Fill node h"
-    
+
     sourceFileNameH = baseSourcePath + "/src/shaders/materialBase.h"
-  
+
     allDict = {}
     for key in attDict.keys():
         if key == "all":
@@ -442,7 +441,7 @@ def fillNodes(attDict):
         sourceFileNameH = baseSourcePath + "/src/shaders/materialBase.h"
         destFileNameC = path.path(baseDestPath + "/src/shaders/" + key + "Material.cpp")
         sourceFileNameC = baseSourcePath + "/src/shaders/materialBase.cpp"
-        
+
         destFileNameO = path.path(baseDestPath + "/src/shaders/" + key + "MaterialOverride.cpp")
         sourceFileNameO = baseSourcePath + "/src/shaders/materialBaseOverride.cpp"
         destFileNameOH = path.path(baseDestPath + "/src/shaders/" + key + "MaterialOverride.h")
@@ -452,7 +451,7 @@ def fillNodes(attDict):
             createNode(sourceFileNameOH, destFileNameOH, key)
         if not destFileNameO.exists():
             createNode(sourceFileNameO, destFileNameO, key)
-        
+
         print "source", sourceFileNameH, "dest", destFileNameH
         print "source", sourceFileNameC, "dest", destFileNameC
         if not destFileNameH.exists():
@@ -465,15 +464,15 @@ def fillNodes(attDict):
             thisDict[k] = v
         insertAttributes(destFileNameH, thisDict, key)
         insertAttributes(destFileNameC, thisDict, key)
-    
-        
+
+
 
 def pyRGCreator(pypath, attArray):
     print "pyRGCreator with file ", pypath
-    
+
     fh = open(pypath, "w")
     fh.write("UIList = []\n")
-    
+
     for att in attArray:
         if att[0].startswith("#"):
             if att[0].endswith("Tab"):
@@ -503,7 +502,7 @@ def pyRGCreator(pypath, attArray):
             if len(att) > 4:
                 fh.write("entry['addInfo'] = '{0}'\n".format(att[4]))
             fh.write("tab['entries'].append(entry)\n")
-            
+
     fh.close()
 
     for att in attArray:
@@ -527,7 +526,7 @@ def createShaderDefinitionFile(attDict, renderer, shortcut, append):
     fh = open(destDefPath, "r")
     content = fh.readlines()
     fh.close()
-    
+
     startIndex = -1
     endIndex = -1
     oldContent = []
@@ -542,23 +541,23 @@ def createShaderDefinitionFile(attDict, renderer, shortcut, append):
             oldContent.append(line)
 
     if not append:
-        oldContent = [] 
-                   
+        oldContent = []
+
     allContent = []
-        
+
     newContent = []
     for key in attDict.keys():
-        
+
         if key.lower() == "all":
             continue
-        
+
         attrs = attDict[key]
-        
+
 #        shader_start:lambert
 #            inatt:color:color
 #            inatt:transparency:color
 #            outatt:outColor:color
-#        shader_end        
+#        shader_end
         print key, attrs
         cls = "shader_start:{0}\n".format(key)
         for param in attrs.keys():
@@ -566,36 +565,36 @@ def createShaderDefinitionFile(attDict, renderer, shortcut, append):
         cls += "\toutatt:{0}:{1}\n".format("outColor", "color")
         cls += "shader_end\n\n"
         newContent.append(cls)
-        
+
     finalContent = []
-    finalContent.extend(content[:startIndex+1])   
-    finalContent.extend(allContent) 
-    finalContent.extend(oldContent)     
-    finalContent.extend(newContent)    
-    finalContent.extend(content[endIndex:])    
+    finalContent.extend(content[:startIndex+1])
+    finalContent.extend(allContent)
+    finalContent.extend(oldContent)
+    finalContent.extend(newContent)
+    finalContent.extend(content[endIndex:])
 
     print "Writing data to file", destDefPath
     fh = open(destDefPath, "w")
     content = fh.writelines(finalContent)
     fh.close()
 
-    
+
 def shaderCreator(renderer, shortCut, mtype):
     log.debug("shaderCreator " + renderer)
 
     global baseSourcePath
     global baseDestPath
-    
+
     if os.name == 'nt':
         baseDestPath = path.path(CODINGROOT + "OpenMaya/src/mayaTo" + renderer.capitalize())
         baseSourcePath = path.path(CODINGROOT + "OpenMaya/src/mayaToBase")
     else:
         pass
-            
+
     materialsFile = baseDestPath + "/" + COMPILER_VERSION + "/sourceCodeDocs/Materials.txt"
     if mtype == "volumes":
         materialsFile = baseDestPath + "/" + COMPILER_VERSION + "/sourceCodeDocs/volumes.txt"
-    
+
 #    baseMaterialDestNodeCpp = basePath + "/src/" + shortCut + "_common/" + shortCut + "_baseMaterial.cpp"
     baseMaterialSourceNodeCpp = baseSourcePath + "/src/shaders/materialBase.cpp"
 
@@ -604,7 +603,7 @@ def shaderCreator(renderer, shortCut, mtype):
 
 #    pyGlobals = basePath + "/" + shortCut + "_devModule/scripts/renderGlobalsUIInfo.py"
 
-    
+
     fh = open(materialsFile, "r")
     attributes = fh.readlines()
     fh.close()
@@ -613,7 +612,7 @@ def shaderCreator(renderer, shortCut, mtype):
         if not a.startswith("//"):
             attClean.append(a)
     attributes = attClean
-    
+
     attArray = []
     for att in attributes:
         att = att.strip()
@@ -623,7 +622,7 @@ def shaderCreator(renderer, shortCut, mtype):
         if len(values) > 0:
             if len(values[0]) > 0:
                 attArray.append(values)
-    
+
     attrDict = {}
     newDict = None
     for att in attArray:
@@ -633,14 +632,14 @@ def shaderCreator(renderer, shortCut, mtype):
         else:
             if newDict is not None:
                 newDict[att[0]] = att[1:]
-    
+
     fillNodes(attrDict)
-    pluginLoaders(attrDict, renderer)    
+    pluginLoaders(attrDict, renderer)
     #pyRGCreator(pyGlobals, attArray)
     aeTemplateCreator(attrDict, renderer, shortCut)
     #attrIncludeCreator(attrDict, renderer, shortCut)
     createShaderDefinitionFile(attrDict, renderer, shortCut, mtype == "volumes")
-    
+
 if __name__ == "__main__":
     shaderCreator("Corona", "mtco", "materials")
     #shaderCreator("Indigo", "mtin", "materials")

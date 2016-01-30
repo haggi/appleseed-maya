@@ -51,15 +51,15 @@
 
 // shaderdefs
 
-#define RENDERGLOBALS_NODE		0x0011CF40
+#define RENDERGLOBALS_NODE      0x0011CF40
 #define PHYSICAL_SURFACE_SHADER 0x0011CF46
-#define AO_SHADER				0x0011CF41
-#define WIREFRAME_SHADER		0x00106EF6
-#define AOVOXEL_SHADER			0x0011CF42
-#define FASTSSS_SHADER			0x0011CF45
-#define CONST_SHADER			0x0011CF43
-#define DIAGNOSTIC_SHADER		0x0011CF44
-#define SMOKE_SHADER			0x0011CF47
+#define AO_SHADER               0x0011CF41
+#define WIREFRAME_SHADER        0x00106EF6
+#define AOVOXEL_SHADER          0x0011CF42
+#define FASTSSS_SHADER          0x0011CF45
+#define CONST_SHADER            0x0011CF43
+#define DIAGNOSTIC_SHADER       0x0011CF44
+#define SMOKE_SHADER            0x0011CF47
 
 
 class mtap_MayaScene;
@@ -76,57 +76,57 @@ namespace AppleRender
 class AppleseedRenderer : public MayaTo::Renderer
 {
 public:
-	AppleseedRenderer();
-	~AppleseedRenderer();
+    AppleseedRenderer();
+    ~AppleseedRenderer();
 
-	virtual void defineCamera();
-	void defineCamera(sharedPtr<MayaObject> obj);
-	virtual void defineEnvironment();
-	virtual void defineGeometry();
-	void updateGeometry(sharedPtr<MayaObject> obj);
-	void updateInstance(sharedPtr<MayaObject> obj);
-	virtual void defineLights();
-	void defineLight(sharedPtr<MayaObject> obj);
-	virtual void render();
-	// initializeRenderer is called before rendering starts
-	// it should prepare all data which can/should be reused during
-	// ipr/frame/sequence rendering
-	virtual void initializeRenderer();
-	// unInitializeRenderer is called at the end of rendering.
-	virtual void unInitializeRenderer();
-	// updateShape is called during scene updating. If a renderer can update motionblur steps on the fly,
-	// the geometry is defined at the very first step and later this definition will be updated for every motion step.
-	// Other renderers will need a complete definition of all motionblur steps at once, so the motion steps will be
-	// in the geometry e.g. with obj->addMeshData(); and at the very last step, everything is defined.
-	virtual void updateShape(sharedPtr<MayaObject> obj);
-	// This method is necessary only if the renderer is able to update the transform definition interactively.
-	// In other cases, the world space transform will be defined directly during the creation of the geometry.
-	virtual void updateTransform(sharedPtr<MayaObject> obj);
-	virtual void abortRendering();
-	virtual void interactiveFbCallback(){};
-	virtual void doInteractiveUpdate();
-	virtual void handleUserEvent(int event, MString strData, float floatData, int intData){};
+    virtual void defineCamera();
+    void defineCamera(sharedPtr<MayaObject> obj);
+    virtual void defineEnvironment();
+    virtual void defineGeometry();
+    void updateGeometry(sharedPtr<MayaObject> obj);
+    void updateInstance(sharedPtr<MayaObject> obj);
+    virtual void defineLights();
+    void defineLight(sharedPtr<MayaObject> obj);
+    virtual void render();
+    // initializeRenderer is called before rendering starts
+    // it should prepare all data which can/should be reused during
+    // ipr/frame/sequence rendering
+    virtual void initializeRenderer();
+    // unInitializeRenderer is called at the end of rendering.
+    virtual void unInitializeRenderer();
+    // updateShape is called during scene updating. If a renderer can update motionblur steps on the fly,
+    // the geometry is defined at the very first step and later this definition will be updated for every motion step.
+    // Other renderers will need a complete definition of all motionblur steps at once, so the motion steps will be
+    // in the geometry e.g. with obj->addMeshData(); and at the very last step, everything is defined.
+    virtual void updateShape(sharedPtr<MayaObject> obj);
+    // This method is necessary only if the renderer is able to update the transform definition interactively.
+    // In other cases, the world space transform will be defined directly during the creation of the geometry.
+    virtual void updateTransform(sharedPtr<MayaObject> obj);
+    virtual void abortRendering();
+    virtual void interactiveFbCallback(){};
+    virtual void doInteractiveUpdate();
+    virtual void handleUserEvent(int event, MString strData, float floatData, int intData){};
 
-	asf::auto_release_ptr<asr::MeshObject> defineStandardPlane(bool area = false);
-	void defineProject();
-	void addRenderParams(asr::ParamArray& paramArray);//add current render settings to all render configurations 
-	void defineConfig();
-	void defineOutput();
-	void createMesh(sharedPtr<MayaObject> obj, asr::MeshObjectArray& meshArray, bool& isProxyArray);
-	void createMesh(sharedPtr<mtap_MayaObject> obj);
-	asr::Project *getProjectPtr(){ return this->project.get(); };
-	asf::StringArray defineMaterial(sharedPtr<mtap_MayaObject> obj);
-	void updateMaterial(MObject sufaceShader);
-	virtual void preFrame();
-	virtual void postFrame();
+    asf::auto_release_ptr<asr::MeshObject> defineStandardPlane(bool area = false);
+    void defineProject();
+    void addRenderParams(asr::ParamArray& paramArray);//add current render settings to all render configurations
+    void defineConfig();
+    void defineOutput();
+    void createMesh(sharedPtr<MayaObject> obj, asr::MeshObjectArray& meshArray, bool& isProxyArray);
+    void createMesh(sharedPtr<mtap_MayaObject> obj);
+    asr::Project *getProjectPtr(){ return this->project.get(); };
+    asf::StringArray defineMaterial(sharedPtr<mtap_MayaObject> obj);
+    void updateMaterial(MObject sufaceShader);
+    virtual void preFrame();
+    virtual void postFrame();
 
 private:
-	asf::auto_release_ptr<asr::Project> project;
-	autoPtr<asr::MasterRenderer> masterRenderer;
-	autoPtr<asf::ILogTarget> log_target;
-	asf::auto_release_ptr<mtap_ITileCallbackFactory> tileCallbackFac;
-	mtap_IRendererController mtap_controller;
-	bool sceneBuilt = false;
+    asf::auto_release_ptr<asr::Project> project;
+    autoPtr<asr::MasterRenderer> masterRenderer;
+    autoPtr<asf::ILogTarget> log_target;
+    asf::auto_release_ptr<mtap_ITileCallbackFactory> tileCallbackFac;
+    mtap_IRendererController mtap_controller;
+    bool sceneBuilt = false;
 };
 
 } // namespace AppleRender

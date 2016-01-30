@@ -10,75 +10,75 @@
 class MayaRenderGlobalsNode : public MPxNode
 {
 public:
-						MayaRenderGlobalsNode();
-	virtual				~MayaRenderGlobalsNode(); 
+                        MayaRenderGlobalsNode();
+    virtual             ~MayaRenderGlobalsNode();
 
-	virtual MStatus		compute( const MPlug& plug, MDataBlock& data );
-	static  void*		creator();
-	virtual void		postConstructor();
-	static  MStatus		initialize();
+    virtual MStatus     compute( const MPlug& plug, MDataBlock& data );
+    static  void*       creator();
+    virtual void        postConstructor();
+    static  MStatus     initialize();
 
-	static	MTypeId		id;
-	MStringArray	imageFormatList;
-	MStringArray	filterTypeList;
+    static  MTypeId     id;
+    MStringArray    imageFormatList;
+    MStringArray    filterTypeList;
 
 private:
 
-	static    MObject adaptiveSampling;
-	// sampling adaptive
-	static    MObject minSamples;
-	static    MObject maxSamples;
+    static    MObject adaptiveSampling;
+    // sampling adaptive
+    static    MObject minSamples;
+    static    MObject maxSamples;
 
-	// sampling raster based
-	static    MObject samplesX;
-	static    MObject samplesY;
+    // sampling raster based
+    static    MObject samplesX;
+    static    MObject samplesY;
 
-	static    MObject doMotionBlur;
-	static    MObject doDof;
-	static	  MObject xftimesamples;
-	static	  MObject geotimesamples;
-	static	  MObject motionBlurRange;
-	static	  MObject motionBlurType;
-	// 
-	static    MObject threads;
-	static	  MObject translatorVerbosity;
-	static    MObject rendererVerbosity;
+    static    MObject doMotionBlur;
+    static    MObject doDof;
+    static    MObject xftimesamples;
+    static    MObject geotimesamples;
+    static    MObject motionBlurRange;
+    static    MObject motionBlurType;
+    //
+    static    MObject threads;
+    static    MObject translatorVerbosity;
+    static    MObject rendererVerbosity;
 
-	static    MObject detectShapeDeform;
+    static    MObject detectShapeDeform;
 
-	// pixel filtering
-	static    MObject filtertype;
-	static    MObject filtersize;
-	static    MObject tilesize;
+    // pixel filtering
+    static    MObject filtertype;
+    static    MObject filtersize;
+    static    MObject tilesize;
 
-	static	  MObject gamma;
+    static    MObject gamma;
 
 
-	static    MObject basePath;
-	static    MObject imagePath;
-	static    MObject imageName;
+    static    MObject basePath;
+    static    MObject imagePath;
+    static    MObject imageName;
 
-	static    MObject exrDataTypeHalf;
-	static    MObject exrMergeChannels;
+    static    MObject exrDataTypeHalf;
+    static    MObject exrMergeChannels;
 
-	// raytracing
-	static    MObject maxTraceDepth;
+    // raytracing
+    static    MObject maxTraceDepth;
 
-	// sun light
-	// if a renderer support physical sun or simply sun, 
-	// you always have only one sun which can be plugged in here.
-	static    MObject sunLightConnection;
-	static    MObject useSunLightConnection;
+    // sun light
+    // if a renderer support physical sun or simply sun,
+    // you always have only one sun which can be plugged in here.
+    static    MObject sunLightConnection;
+    static    MObject useSunLightConnection;
 
-	static	  MObject exportSceneFile;
-	static	  MObject exportSceneFileName;
-	static	  MObject sceneScale;
-	static	  MObject imageFormat;
-	static	  MObject optimizedTexturePath;
-	static	  MObject useOptimizedTextures;
+    static    MObject exportSceneFile;
+    static    MObject exportSceneFileName;
+    static    MObject sceneScale;
+    static    MObject imageFormat;
+    static    MObject optimizedTexturePath;
+    static    MObject useOptimizedTextures;
 
 public:
-	int		 defaultEnumFilterType;
+    int      defaultEnumFilterType;
 
 };
 

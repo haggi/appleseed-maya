@@ -686,4 +686,3 @@ int getChildId(const MPlug& plug)
     }
     return -1;
 }
-

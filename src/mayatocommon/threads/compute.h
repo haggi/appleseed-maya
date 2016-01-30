@@ -42,12 +42,12 @@ private:
                 //HWND handle = GetActiveWindow();
                 //if (Compute::windowHandle == GetActiveWindow())
                 //{
-                //	std::cout << "Current esc active window is init window.\n";
-                //	std::cout.flush();
+                //  std::cout << "Current esc active window is init window.\n";
+                //  std::cout.flush();
                 //}
                 //else{
-                //	std::cout << "Current esc active window is NOT init window - skipping.\n";
-                //	std::cout.flush();
+                //  std::cout << "Current esc active window is NOT init window - skipping.\n";
+                //  std::cout.flush();
                 //}
                 Compute::escPressed = true;
                 if (Compute::autoexit)

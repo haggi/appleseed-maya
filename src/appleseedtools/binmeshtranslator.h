@@ -11,29 +11,29 @@ class MFnDagNode;
 
 class BinMeshTranslator:public MPxFileTranslator {
 
-	public:
-								BinMeshTranslator();
-		virtual					~BinMeshTranslator();
+    public:
+                                BinMeshTranslator();
+        virtual                 ~BinMeshTranslator();
 
-		virtual MStatus			writer (const MFileObject& file,
-										const MString& optionsString,
-										MPxFileTranslator::FileAccessMode mode);
-		virtual MStatus			reader ( const MFileObject& file,
-										const MString& optionsString,
-										FileAccessMode mode);
-		virtual bool			haveWriteMethod () const;
-		virtual bool			haveReadMethod () const;
-		virtual	bool			canBeOpened () const;
-		static void*			creator(); 
+        virtual MStatus         writer (const MFileObject& file,
+                                        const MString& optionsString,
+                                        MPxFileTranslator::FileAccessMode mode);
+        virtual MStatus         reader ( const MFileObject& file,
+                                        const MString& optionsString,
+                                        FileAccessMode mode);
+        virtual bool            haveWriteMethod () const;
+        virtual bool            haveReadMethod () const;
+        virtual bool            canBeOpened () const;
+        static void*            creator();
 
-		virtual MString			defaultExtension () const;
+        virtual MString         defaultExtension () const;
 
 
-	protected:	
-		MStatus					exportObjects(MString mode);
-		MStatus					importObjects();
-		MString					fileName;
-		MString					options;
+    protected:
+        MStatus                 exportObjects(MString mode);
+        MStatus                 importObjects();
+        MString                 fileName;
+        MString                 options;
 };
 
 #endif
