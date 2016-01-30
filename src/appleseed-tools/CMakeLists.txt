@@ -1,6 +1,6 @@
 include_directories (
     ../mayatocommon
-    ../rendererplugin
+    ../appleseed-maya
 )
 
 set (sources
@@ -21,12 +21,12 @@ source_group ("" FILES
     ${sources}
 )
 
-add_library (appleseedtools SHARED
-    ../rendererplugin/appleseedmeshwalker.cpp
+add_library (appleseed-tools SHARED
+    ../appleseed-maya/appleseedmeshwalker.cpp
     ${appleseedtools_sources}
 )
 
-target_link_libraries (appleseedtools
+target_link_libraries (appleseed-tools
     mayatocommon
     ${MAYA_Foundation_LIBRARY}
     ${MAYA_OpenMaya_LIBRARY}
@@ -37,8 +37,8 @@ target_link_libraries (appleseedtools
     ${Boost_LIBRARIES}
 )
 
-set_target_properties (appleseedtools PROPERTIES PREFIX "")
+set_target_properties (appleseed-tools PROPERTIES PREFIX "")
 
 if (${CMAKE_SYSTEM_NAME} MATCHES "Windows")
-    set_target_properties (appleseedtools PROPERTIES SUFFIX ".mll")
+    set_target_properties (appleseed-tools PROPERTIES SUFFIX ".mll")
 endif ()

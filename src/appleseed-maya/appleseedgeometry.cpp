@@ -17,8 +17,9 @@ namespace asf = foundation;
 namespace asr = renderer;
 
 #define MPointToAppleseed(pt) asr::GVector3((float)pt.x, (float)pt.y, (float)pt.z)
-namespace MTAP_GEOMETRY{
 
+namespace MTAP_GEOMETRY
+{
     asf::auto_release_ptr<asr::MeshObject> defineStandardPlane(bool area)
     {
         asf::auto_release_ptr<asr::MeshObject> object(asr::MeshObjectFactory::create("standardPlane", asr::ParamArray()));
@@ -91,17 +92,9 @@ namespace MTAP_GEOMETRY{
             mesh->push_tex_coords(asr::GVector2((float)uArray[tId], (float)vArray[tId]));
         }
 
-        //getObjectShadingGroups()
-        //mesh->reserve_material_slots(obj->shadingGroups.length());
-        //for (uint sgId = 0; sgId < obj->shadingGroups.length(); sgId++)
-        //{
-        //  MString slotName = MString("slot_") + sgId;
-        //  mesh->push_material_slot(slotName.asChar());
-        //}
+        const unsigned int numTris = triPointIds.length() / 3;
 
-        int numTris = triPointIds.length() / 3;
-
-        for (uint triId = 0; triId < numTris; triId++)
+        for (unsigned int triId = 0; triId < numTris; triId++)
         {
             uint index = triId * 3;
             int perFaceShadingGroup = triMatIds[triId];
@@ -119,4 +112,4 @@ namespace MTAP_GEOMETRY{
 
         return mesh;
     }
-} //MTAP_GEOMETRY namespace
+}

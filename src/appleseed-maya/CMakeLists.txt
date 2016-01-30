@@ -88,7 +88,7 @@ source_group ("" FILES
     ${sources}
 )
 
-add_library (mayaToAppleseed SHARED
+add_library (appleseed-maya SHARED
     ../mayatocommon/mayaobject.cpp
     ../mayatocommon/mayaobject.h
     ../mayatocommon/mayaobjectfactory.h
@@ -127,7 +127,7 @@ add_library (mayaToAppleseed SHARED
     ${rendererplugin_sources}
 )
 
-target_link_libraries (mayaToAppleseed
+target_link_libraries (appleseed-maya
     ${MAYA_Foundation_LIBRARY}
     ${MAYA_OpenMaya_LIBRARY}
     ${MAYA_OpenMayaAnim_LIBRARY}
@@ -140,12 +140,12 @@ target_link_libraries (mayaToAppleseed
 )
 
 if (USE_EXTERNAL_EXR)
-    target_link_libraries (mayaToAppleseed
+    target_link_libraries (appleseed-maya
         ${IMATH_LIBRARIES}
         ${OPENEXR_LIBRARIES}
     )
 else ()
-    target_link_libraries (mayaToAppleseed
+    target_link_libraries (appleseed-maya
         debug       ${APPLESEED_DEPS_STAGE_DIR}/ilmbase-debug/lib/Half.lib
         debug       ${APPLESEED_DEPS_STAGE_DIR}/ilmbase-debug/lib/Iex-2_2.lib
         debug       ${APPLESEED_DEPS_STAGE_DIR}/ilmbase-debug/lib/IlmThread-2_2.lib
@@ -160,13 +160,13 @@ else ()
 endif ()
 
 if (USE_EXTERNAL_OIIO)
-    target_link_libraries (mayaToAppleseed
+    target_link_libraries (appleseed-maya
         ${OPENIMAGEIO_LIBRARIES}
         ${LIBJPEG_LIBRARY}
         ${LIBTIFF_LIBRARY}
     )
 else ()
-    target_link_libraries (mayaToAppleseed
+    target_link_libraries (appleseed-maya
         debug       ${APPLESEED_DEPS_STAGE_DIR}/oiio-debug/lib/OpenImageIO.lib
         debug       ${APPLESEED_DEPS_STAGE_DIR}/libjpeg-turbo-debug/lib/jpeg-static.lib
         debug       ${APPLESEED_DEPS_STAGE_DIR}/libtiff-debug/lib/libtiff.lib
@@ -176,8 +176,8 @@ else ()
     )
 endif ()
 
-set_target_properties (mayaToAppleseed PROPERTIES PREFIX "")
+set_target_properties (appleseed-maya PROPERTIES PREFIX "")
 
 if (${CMAKE_SYSTEM_NAME} MATCHES "Windows")
-    set_target_properties (mayaToAppleseed PROPERTIES SUFFIX ".mll")
+    set_target_properties (appleseed-maya PROPERTIES SUFFIX ".mll")
 endif ()
