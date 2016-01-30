@@ -80,8 +80,6 @@ set (sources
     mtap_tilecallback.h
     mtap_world.cpp
     pluginmain.cpp
-    testrender.cpp
-    testrender.h
     version.h
 )
 list (APPEND rendererplugin_sources
