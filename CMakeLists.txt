@@ -1,103 +1,174 @@
 
-CMAKE_MINIMUM_REQUIRED(VERSION 2.8.0 FATAL_ERROR)
-
-######################################################
-# project
-
-PROJECT(mayaToAppleseed)
-
-######################################################
-# cmake stuff
-
-SET(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
-    ${PROJECT_SOURCE_DIR}/mayatocommon/cmake/Modules
-    ${PROJECT_SOURCE_DIR}/cmake/Modules)
-
-#disable in source builds
-IF(${CMAKE_SOURCE_DIR} STREQUAL ${CMAKE_BINARY_DIR})
-    MESSAGE(FATAL_ERROR "CMake generation for mayaToAppleseed is not allowed within the source directory!")
-ENDIF()
-
-# Set the default built type
-IF(NOT CMAKE_BUILD_TYPE)
-    SET(CMAKE_BUILD_TYPE Debug CACHE STRING "Choose the type of build, options are: None Debug Release RelWithDebInfo MinSizeRel." FORCE)
-ENDIF()
-
-######################################################
-# version
-
-
-######################################################
-# options
+#
+# This source file is part of appleseed.
+# Visit http://appleseedhq.net/ for additional information and resources.
+#
+# This software is released under the MIT license.
+#
+# Copyright (c) 2015 Haggi Krey
+# Copyright (c) 2016 Francois Beaune, The appleseedhq Organization
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in
+# all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+# THE SOFTWARE.
+#
 
 
-######################################################
-# platform specific
+#--------------------------------------------------------------------------------------------------
+# CMake configuration.
+#--------------------------------------------------------------------------------------------------
 
-IF(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
-    # ...
-ELSEIF(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
-    ADD_DEFINITIONS( -DLINUX)
-ELSEIF(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
-    # ...
-ELSE()
-    MESSAGE(FATAL_ERROR "Platform ${CMAKE_SYSTEM_NAME} not supported yet")
-ENDIF()
+cmake_minimum_required (VERSION 2.8 FATAL_ERROR)
 
-######################################################
-# compiler flags
+project (appleseed-maya)
 
-IF(CMAKE_COMPILER_IS_GNUCXX)
-    # ...
-    # todo: enable C++11 here if needed...
-ELSE()
-    #MESSAGE( FATAL_ERROR "unknown compiler is not supported yet")
-ENDIF()
+set (CMAKE_MODULE_PATH
+    ${CMAKE_MODULE_PATH}
+    ${PROJECT_SOURCE_DIR}/cmake/Modules
+    ${APPLESEED_INCLUDE_DIR}/../cmake/Modules
+)
 
-######################################################
-# dependencies
 
-FIND_PACKAGE(Appleseed REQUIRED)
+#--------------------------------------------------------------------------------------------------
+# Build options.
+#--------------------------------------------------------------------------------------------------
 
-FIND_PACKAGE(Maya REQUIRED)
-MESSAGE("MAYA_API_VERSION = ${MAYA_API_VERSION}")
+option (USE_EXTERNAL_OIIO                   "Use external OpenImageIO library"                      OFF)
+option (USE_EXTERNAL_OSL                    "Use external OpenShadingLanguage library"              OFF)
+            
+option (WITH_OSL                            "Build OSL support"                                     OFF)
 
-IF(${MAYA_API_VERSION} GREATER OR EQUAL 201600)
-    SET(MAYA2016 TRUE)
-ELSE()
-    SET(MAYA2016 FALSE)
-ENDIF()
+option (USE_STATIC_BOOST                    "Use static Boost libraries"                            ON)
+option (USE_STATIC_OIIO                     "Use static OpenImageIO libraries"                      ON)
+option (USE_STATIC_OSL                      "Use static OpenShadingLanguage libraries"              ON)
 
-IF(NOT USE_CPP11)
-    SET(BOOST_COMPONENTS thread system)
-ENDIF()
 
-FIND_PACKAGE(Boost REQUIRED ${BOOST_COMPONENTS})
+#--------------------------------------------------------------------------------------------------
+# Boost libraries.
+#--------------------------------------------------------------------------------------------------
 
-######################################################
-# optional dependencies
+set (Boost_MULTITHREADED TRUE)
 
-######################################################
-# definitions
+if (USE_STATIC_BOOST)
+    set (Boost_USE_STATIC_LIBS TRUE)
+endif ()
 
-ADD_DEFINITIONS(-D_BOOL)
-ADD_DEFINITIONS(-DREQUIRE_IOSTREAM)
-ADD_DEFINITIONS(-DAPPLESEED_WITH_OIIO)
-ADD_DEFINITIONS(-DAPPLESEED_WITH_OSL)
+set (BOOST_NEEDED_LIBS system thread)
 
-IF(NOT MAYA2016)
-    ADD_DEFINITIONS(-DNOCPP11)
-ENDIF()
+find_package (Boost 1.47 REQUIRED ${BOOST_NEEDED_LIBS})
 
-######################################################
-# includes
+add_definitions (-DBOOST_FILESYSTEM_VERSION=3 -DBOOST_FILESYSTEM_NO_DEPRECATED)
 
-INCLUDE_DIRECTORIES(${MAYA_INCLUDE_DIRS}
-                    ${APPLESEED_INCLUDE_DIRS}
-                    ${Boost_INCLUDE_DIRS})
+include_directories (SYSTEM ${Boost_INCLUDE_DIRS})
+link_directories (${Boost_LIBRARY_DIRS})
 
-######################################################
-# subdirs
 
-#ADD_SUBDIRECTORY(src)
-ADD_SUBDIRECTORY(src/appleseedtools)
+#--------------------------------------------------------------------------------------------------
+# Find external packages.
+#--------------------------------------------------------------------------------------------------
+
+find_package (Appleseed)
+find_package (Imath)
+find_package (OpenEXR)
+find_package (Maya)
+find_package (OpenGL)
+
+if (${MAYA_API_VERSION} GREATER OR EQUAL 201600)
+    set (MAYA2016 TRUE)
+else ()
+    set (MAYA2016 FALSE)
+endif ()
+
+if (WITH_OSL)
+    set (WITH_OIIO TRUE)
+endif ()
+
+if (WITH_OIIO)
+    add_definitions (-DAPPLESEED_WITH_OIIO)
+    if (USE_STATIC_OIIO)
+        add_definitions (-DOIIO_STATIC_BUILD)
+    endif ()
+    if (USE_EXTERNAL_OIIO)
+        find_package (OpenImageIO REQUIRED)
+    endif ()
+endif ()
+
+if (WITH_OSL)
+    add_definitions (-DAPPLESEED_WITH_OSL)
+    if (USE_STATIC_OSL)
+        add_definitions (-DOSL_STATIC_LIBRARY)
+    endif ()
+    if (USE_EXTERNAL_OSL)
+        find_package (OSL REQUIRED)
+    endif ()
+endif ()
+
+
+#--------------------------------------------------------------------------------------------------
+# Include paths.
+#--------------------------------------------------------------------------------------------------
+
+include_directories (${APPLESEED_INCLUDE_DIRS})
+include_directories (${IMATH_INCLUDE_DIRS})
+include_directories (${OPENEXR_INCLUDE_DIRS})
+include_directories (${MAYA_INCLUDE_DIRS})
+
+if (WITH_OIIO)
+    if (USE_EXTERNAL_OIIO)
+        include_directories (${OPENIMAGEIO_INCLUDE_DIRS})
+    else ()
+        include_directories (${APPLESEED_DEPS_STAGE_DIR}/oiio-debug/include)
+    endif ()
+endif ()
+
+if (WITH_OSL)
+    if (USE_EXTERNAL_OSL)
+        include_directories (${OSL_INCLUDE_DIRS})
+    else ()
+        include_directories (${APPLESEED_DEPS_STAGE_DIR}/osl-debug/include)
+    endif ()
+endif ()
+
+
+#--------------------------------------------------------------------------------------------------
+# Preprocessor definitions.
+#--------------------------------------------------------------------------------------------------
+
+add_definitions (-D_BOOL)
+add_definitions (-DREQUIRE_IOSTREAM)
+
+if (MSVC)
+    add_definitions (-D_CRT_SECURE_NO_WARNINGS)
+    add_definitions (-D_SCL_SECURE_NO_WARNINGS)
+    add_definitions (-DWINDOWS_LEAN_AND_MEAN)
+    add_definitions (-DNOMINMAX)
+    add_definitions (-DNT_PLUGIN)
+    add_definitions (-DBits64_)
+    add_definitions (-DARCH64)
+endif ()
+
+if (CMAKE_SYSTEM_NAME STREQUAL "Linux")
+    add_definitions (-DLINUX)
+endif ()
+
+
+#--------------------------------------------------------------------------------------------------
+# Product.
+#--------------------------------------------------------------------------------------------------
+
+add_subdirectory (src)
+add_subdirectory (src/appleseedtools)

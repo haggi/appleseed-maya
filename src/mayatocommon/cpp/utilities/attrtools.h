@@ -1,12 +1,13 @@
 #ifndef MTM_ATTR_TOOLS_H
 #define MTM_ATTR_TOOLS_H
 
-#include <maya/MPlug.h>
-#include <maya/MFnDependencyNode.h>
-#include <maya/MString.h>
 #include <maya/MColor.h>
-#include <maya/MVector.h>
+#include <maya/MFnDependencyNode.h>
+#include <maya/MPlug.h>
 #include <maya/MPoint.h>
+#include <maya/MString.h>
+#include <maya/MTypes.h>
+#include <maya/MVector.h>
 
 enum ATTR_TYPE
 {

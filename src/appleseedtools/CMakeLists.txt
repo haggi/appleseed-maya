@@ -1,32 +1,37 @@
 
-######################################################
-# plug-in
+include_directories (
+    ../mayatocommon/cpp
+    ../appleseed
+    ..
+)
 
-INCLUDE_DIRECTORIES(${PROJECT_SOURCE_DIR}/mayatocommon/cpp
-                    ${PROJECT_SOURCE_DIR}/src/appleseed)
+add_library (appleseedTools SHARED
+    ../mayatocommon/cpp/memory/memoryinfo.cpp
+    ../mayatocommon/cpp/shadingtools/shadingutils.cpp
+    ../mayatocommon/cpp/utilities/attrtools.cpp
+    ../mayatocommon/cpp/utilities/logging.cpp
+    ../mayatocommon/cpp/utilities/pystring.cpp
+    ../mayatocommon/cpp/utilities/tools.cpp
+    ../appleseed/appleseedmeshwalker.cpp
+    binmeshtools/binmeshreadercmd.cpp
+    binmeshtools/binmeshtranslator.cpp
+    binmeshtools/binmeshwritercmd.cpp
+    binmeshtools/proxymesh.cpp
+    toolspluginmain.cpp
+)
 
-ADD_LIBRARY(appleseedTools SHARED
-    ${PROJECT_SOURCE_DIR}/mayatocommon/cpp/memory/memoryinfo.cpp
-    ${PROJECT_SOURCE_DIR}/mayatocommon/cpp/shadingtools/shadingutils.cpp
-    ${PROJECT_SOURCE_DIR}/mayatocommon/cpp/utilities/attrtools.cpp
-    ${PROJECT_SOURCE_DIR}/mayatocommon/cpp/utilities/logging.cpp
-    ${PROJECT_SOURCE_DIR}/mayatocommon/cpp/utilities/pystring.cpp
-    ${PROJECT_SOURCE_DIR}/mayatocommon/cpp/utilities/tools.cpp
-    ${PROJECT_SOURCE_DIR}/src/appleseedtools/binmeshtools/binmeshreadercmd.cpp
-    ${PROJECT_SOURCE_DIR}/src/appleseedtools/binmeshtools/binmeshtranslator.cpp
-    ${PROJECT_SOURCE_DIR}/src/appleseedtools/binmeshtools/binmeshwritercmd.cpp
-    ${PROJECT_SOURCE_DIR}/src/appleseedtools/binmeshtools/proxymesh.cpp
-    ${PROJECT_SOURCE_DIR}/src/appleseed/appleseedmeshwalker.cpp
-    toolspluginmain.cpp)
+target_link_libraries (appleseedTools
+    ${MAYA_Foundation_LIBRARY}
+    ${MAYA_OpenMaya_LIBRARY}
+    ${MAYA_OpenMayaAnim_LIBRARY}
+    ${MAYA_OpenMayaFX_LIBRARY}
+    ${MAYA_OpenMayaRender_LIBRARY}
+    ${APPLESEED_LIBRARIES}
+    ${Boost_LIBRARIES}
+)
 
-TARGET_LINK_LIBRARIES(appleseedTools ${MAYA_Foundation_LIBRARY}
-                                     ${MAYA_OpenMaya_LIBRARY}
-                                     ${MAYA_OpenMayaAnim_LIBRARY}
-                                     ${APPLESEED_LIBRARIES}
-                                     ${Boost_LIBRARIES})
+set_target_properties (appleseedTools PROPERTIES PREFIX "")
 
-SET_TARGET_PROPERTIES(appleseedTools PROPERTIES PREFIX "")
-
-IF(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
-    SET_TARGET_PROPERTIES(appleseedTools PROPERTIES SUFFIX ".mll")
-ENDIF()
+if (${CMAKE_SYSTEM_NAME} MATCHES "Windows")
+    set_target_properties (appleseedTools PROPERTIES SUFFIX ".mll")
+endif ()

@@ -11,6 +11,7 @@
 #include <maya/MFloatArray.h>
 #include <maya/MObjectArray.h>
 #include <maya/MDagPathArray.h>
+
 #include <fstream>
 
 class  BinMeshReaderCmd: public MPxCommand

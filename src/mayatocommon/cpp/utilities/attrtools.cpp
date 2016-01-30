@@ -25,7 +25,6 @@ float getRadians(const char* plugName, const MFnDependencyNode& dn)
     return plug.asMAngle().asRadians();
 }
 
-
 float getFloatAttr(const char* plugName, const MFnDependencyNode& dn, float defaultValue)
 {
     MStatus stat = MS::kSuccess;
