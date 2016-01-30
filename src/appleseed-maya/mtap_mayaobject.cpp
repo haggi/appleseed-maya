@@ -78,13 +78,13 @@ mtap_MayaObject::~mtap_MayaObject()
 bool mtap_MayaObject::geometryShapeSupported()
 {
     MFn::Type type = this->mobject.apiType();
-    if(this->mobject.hasFn(MFn::kMesh))
+    if (this->mobject.hasFn(MFn::kMesh))
         return true;
 
-    if(this->isLight())
+    if (this->isLight())
         return true;
 
-    if(this->isCamera())
+    if (this->isCamera())
         return true;
 
     return false;
@@ -170,7 +170,7 @@ bool mtap_MayaObject::needsAssembly()
         return true;
     }
 
-    if (this->isInstanced() )
+    if (this->isInstanced())
     {
         Logging::debug(MString("obj has more than 1 parent -> needs assembly."));
         return true;
@@ -182,7 +182,7 @@ bool mtap_MayaObject::needsAssembly()
         return true;
     }
 
-    if(isLightTransform(this->dagPath))
+    if (isLightTransform(this->dagPath))
     {
         Logging::debug(MString("Object is light transform -> needs assembly."));
         return true;

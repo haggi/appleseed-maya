@@ -48,7 +48,7 @@ public:
     virtual         ~asDisneyMaterial();
 
     static  void *  creator();
-    virtual MStatus compute( const MPlug&, MDataBlock& );
+    virtual MStatus compute(const MPlug&, MDataBlock&);
     static  MStatus initialize();
 
 

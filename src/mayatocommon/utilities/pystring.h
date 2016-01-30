@@ -1,31 +1,3 @@
-
-//
-// This source file is part of appleseed.
-// Visit http://appleseedhq.net/ for additional information and resources.
-//
-// This software is released under the MIT license.
-//
-// Copyright (c) 2016 Haggi Krey, The appleseedhq Organization
-//
-// Permission is hereby granted, free of charge, to any person obtaining a copy
-// of this software and associated documentation files (the "Software"), to deal
-// in the Software without restriction, including without limitation the rights
-// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-// copies of the Software, and to permit persons to whom the Software is
-// furnished to do so, subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included in
-// all copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-// THE SOFTWARE.
-//
-
 ///////////////////////////////////////////////////////////////////////////////
 // Copyright (c) 2008-2010, Sony Pictures Imageworks Inc
 // All rights reserved.
@@ -194,6 +166,12 @@ namespace pystring
     std::string lstrip( const std::string & str, const std::string & chars = "" );
 
     //////////////////////////////////////////////////////////////////////////////////////////////
+    /// @brief Return a copy of the string, concatenated N times, together.
+    /// Corresponds to the __mul__ operator.
+    /// 
+    std::string mul( const std::string & str, int n);
+    
+    //////////////////////////////////////////////////////////////////////////////////////////////
     /// @brief Split the string around first occurance of sep.
     /// Three strings will always placed into result. If sep is found, the strings will
     /// be the text before sep, sep itself, and the remaining text. If sep is
@@ -314,6 +292,138 @@ namespace pystring
     ///
     /// @ }
     ///
-}
+
+
+namespace os
+{
+namespace path
+{
+    // All of the function below have three versions.
+    // Example:
+    //   join(...)
+    //   join_nt(...)
+    //   join_posix(...)
+    //
+    // The regular function dispatches to the other versions - based on the OS
+    // at compile time - to match the result you'd get from the python
+    // interepreter on the same operating system
+    // 
+    // Should you want to 'lock off' to a particular version of the string
+    // manipulation across *all* operating systems, use the version with the
+    // _OS you are interested in.  I.e., you can use posix style path joining,
+    // even on Windows, with join_posix.
+    //
+    // The naming, (nt, posix) matches the cpython source implementation.
+    
+    //////////////////////////////////////////////////////////////////////////////////////////////
+    /// @defgroup functions pystring::os::path
+    /// @{
+    
+    //////////////////////////////////////////////////////////////////////////////////////////////
+    /// @brief Return the base name of pathname path. This is the second half of the pair returned
+    /// by split(path). Note that the result of this function is different from the Unix basename
+    /// program; where basename for '/foo/bar/' returns 'bar', the basename() function returns an
+    /// empty string ('').
+    
+    std::string basename(const std::string & path);
+    std::string basename_nt(const std::string & path);
+    std::string basename_posix(const std::string & path);
+
+    //////////////////////////////////////////////////////////////////////////////////////////////
+    /// @brief Return the directory name of pathname path. This is the first half of the pair
+    /// returned by split(path).
+    
+    std::string dirname(const std::string & path);
+    std::string dirname_nt(const std::string & path);
+    std::string dirname_posix(const std::string & path);
+
+    //////////////////////////////////////////////////////////////////////////////////////////////
+    /// @brief Return True if path is an absolute pathname. On Unix, that means it begins with a
+    /// slash, on Windows that it begins with a (back)slash after chopping off a potential drive
+    /// letter.
+
+    bool isabs(const std::string & path);
+    bool isabs_nt(const std::string & path);
+    bool isabs_posix(const std::string & s);
+
+    //////////////////////////////////////////////////////////////////////////////////////////////
+    /// @brief Return a normalized absolutized version of the pathname path.
+    /// 
+    /// NOTE: This differs from the interface of the python equivalent in that it requires you
+    /// to pass in the current working directory as an argument.
+    
+    std::string abspath(const std::string & path, const std::string & cwd);
+    std::string abspath_nt(const std::string & path, const std::string & cwd);
+    std::string abspath_posix(const std::string & path, const std::string & cwd);
+    
+
+    //////////////////////////////////////////////////////////////////////////////////////////////
+    /// @brief Join one or more path components intelligently. If any component is an absolute
+    /// path, all previous components (on Windows, including the previous drive letter, if there
+    /// was one) are thrown away, and joining continues. The return value is the concatenation of
+    /// path1, and optionally path2, etc., with exactly one directory separator (os.sep) inserted
+    /// between components, unless path2 is empty. Note that on Windows, since there is a current
+    /// directory for each drive, os.path.join("c:", "foo") represents a path relative to the
+    /// current directory on drive C: (c:foo), not c:\foo.
+    
+    /// This dispatches based on the compilation OS
+    std::string join(const std::string & path1, const std::string & path2);
+    std::string join_nt(const std::string & path1, const std::string & path2);
+    std::string join_posix(const std::string & path1, const std::string & path2);
+    
+    std::string join(const std::vector< std::string > & paths);
+    std::string join_nt(const std::vector< std::string > & paths);
+    std::string join_posix(const std::vector< std::string > & paths);
+
+    //////////////////////////////////////////////////////////////////////////////////////////////
+    /// @brief Normalize a pathname. This collapses redundant separators and up-level references
+    /// so that A//B, A/B/, A/./B and A/foo/../B all become A/B. It does not normalize the case
+    /// (use normcase() for that). On Windows, it converts forward slashes to backward slashes.
+    /// It should be understood that this may change the meaning of the path if it contains
+    /// symbolic links!
+
+    std::string normpath(const std::string & path);
+    std::string normpath_nt(const std::string & path);
+    std::string normpath_posix(const std::string & path);
+
+    //////////////////////////////////////////////////////////////////////////////////////////////
+    /// @brief Split the pathname path into a pair, (head, tail) where tail is the last pathname
+    /// component and head is everything leading up to that. The tail part will never contain a
+    /// slash; if path ends in a slash, tail will be empty. If there is no slash in path, head
+    /// will be empty. If path is empty, both head and tail are empty. Trailing slashes are
+    /// stripped from head unless it is the root (one or more slashes only). In all cases,
+    /// join(head, tail) returns a path to the same location as path (but the strings may
+    /// differ).
+
+    void split(std::string & head, std::string & tail, const std::string & path);
+    void split_nt(std::string & head, std::string & tail, const std::string & path);
+    void split_posix(std::string & head, std::string & tail, const std::string & path);
+
+    //////////////////////////////////////////////////////////////////////////////////////////////
+    /// @brief Split the pathname path into a pair (drive, tail) where drive is either a drive
+    /// specification or the empty string. On systems which do not use drive specifications,
+    /// drive will always be the empty string. In all cases, drive + tail will be the same as
+    /// path.
+    
+    void splitdrive(std::string & drivespec, std::string & pathspec, const std::string & path);
+    void splitdrive_nt(std::string & drivespec, std::string & pathspec, const std::string & p);
+    void splitdrive_posix(std::string & drivespec, std::string & pathspec, const std::string & path);
+    
+    //////////////////////////////////////////////////////////////////////////////////////////////
+    /// @brief Split the pathname path into a pair (root, ext) such that root + ext == path, and
+    /// ext is empty or begins with a period and contains at most one period. Leading periods on
+    /// the basename are ignored; splitext('.cshrc') returns ('.cshrc', '').
+
+    void splitext(std::string & root, std::string & ext, const std::string & path);
+    void splitext_nt(std::string & root, std::string & ext, const std::string & path);
+    void splitext_posix(std::string & root, std::string & ext, const std::string & path);
+    
+    ///
+    /// @ }
+    ///
+} // namespace path
+} // namespace os
+
+} // namespace pystring
 
 #endif

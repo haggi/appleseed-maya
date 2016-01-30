@@ -53,12 +53,14 @@ bool getObjectShadingGroups(MObject& geoObject, MObject& sGroup, int instId)
     if (connections.length() > 0)
     {
         MObject shadingGroup(connections[0].node());
-        if (shadingGroup.apiType() == MFn::kShadingEngine )
+        if (shadingGroup.apiType() == MFn::kShadingEngine)
         {
             sGroup = shadingGroup;
             return true;
         }
-    }else{
+    }
+    else
+    {
         Logging::debug(MString("Object-instObjGroups has no connection to shading group."));
     }
     return false;
@@ -67,10 +69,10 @@ bool getObjectShadingGroups(MObject& geoObject, MObject& sGroup, int instId)
 bool getObjectShadingGroups(MDagPath& shapeObjectDP, MObject& shadingGroup)
 {
     // if obj is a light, simply return the mobject
-    if(shapeObjectDP.hasFn(MFn::kLight))
+    if (shapeObjectDP.hasFn(MFn::kLight))
         shadingGroup = shapeObjectDP.node();
 
-    if(shapeObjectDP.hasFn(MFn::kMesh))
+    if (shapeObjectDP.hasFn(MFn::kMesh))
     {
         // Find the Shading Engines Connected to the SourceNode
         MFnMesh fnMesh(shapeObjectDP.node());
@@ -88,7 +90,7 @@ bool getObjectShadingGroups(MDagPath& shapeObjectDP, MObject& shadingGroup)
         }
     }
 
-    if(shapeObjectDP.hasFn(MFn::kNurbsSurface)||shapeObjectDP.hasFn(MFn::kParticle)||shapeObjectDP.hasFn(MFn::kNParticle))
+    if (shapeObjectDP.hasFn(MFn::kNurbsSurface)||shapeObjectDP.hasFn(MFn::kParticle)||shapeObjectDP.hasFn(MFn::kNParticle))
     {
 
         MObject instObjGroupsAttr;
@@ -134,7 +136,7 @@ bool getObjectShadingGroups(MDagPath& shapeObjectDP, MObject& shadingGroup)
 bool getObjectShadingGroups(MDagPath& shapeObjectDP, MIntArray& perFaceAssignments, MObjectArray& shadingGroups, bool needsPerFaceInfo=true)
 {
     // if obj is a light, simply return the mobject
-    if(shapeObjectDP.node().hasFn(MFn::kLight))
+    if (shapeObjectDP.node().hasFn(MFn::kLight))
     {
         perFaceAssignments.clear();
         shadingGroups.clear();
@@ -142,7 +144,7 @@ bool getObjectShadingGroups(MDagPath& shapeObjectDP, MIntArray& perFaceAssignmen
         return true;
     }
 
-    if(shapeObjectDP.node().hasFn(MFn::kMesh))
+    if (shapeObjectDP.node().hasFn(MFn::kMesh))
     {
         // Find the Shading Engines Connected to the SourceNode
         MFnMesh meshFn(shapeObjectDP.node());
@@ -207,7 +209,7 @@ bool getObjectShadingGroups(MDagPath& shapeObjectDP, MIntArray& perFaceAssignmen
         return true;
     }
 
-    if(shapeObjectDP.node().hasFn(MFn::kNurbsSurface)||shapeObjectDP.hasFn(MFn::kParticle)||shapeObjectDP.hasFn(MFn::kNParticle))
+    if (shapeObjectDP.node().hasFn(MFn::kNurbsSurface)||shapeObjectDP.hasFn(MFn::kParticle)||shapeObjectDP.hasFn(MFn::kNParticle))
     {
 
         MObject instObjGroupsAttr;

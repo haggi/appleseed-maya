@@ -46,7 +46,7 @@ class BinMeshTranslator:public MPxFileTranslator {
         virtual MStatus         writer (const MFileObject& file,
                                         const MString& optionsString,
                                         MPxFileTranslator::FileAccessMode mode);
-        virtual MStatus         reader ( const MFileObject& file,
+        virtual MStatus         reader (const MFileObject& file,
                                         const MString& optionsString,
                                         FileAccessMode mode);
         virtual bool            haveWriteMethod () const;

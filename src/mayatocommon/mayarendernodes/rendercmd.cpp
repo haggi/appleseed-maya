@@ -47,7 +47,7 @@ MSyntax MayaToRendererCmd::newSyntax()
     return syntax;
 }
 
-MStatus MayaToRendererCmd::doIt( const MArgList& args)
+MStatus MayaToRendererCmd::doIt(const MArgList& args)
 {
     MStatus stat = MStatus::kSuccess;
 

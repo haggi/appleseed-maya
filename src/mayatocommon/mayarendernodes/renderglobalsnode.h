@@ -41,7 +41,7 @@ public:
                         MayaRenderGlobalsNode();
     virtual             ~MayaRenderGlobalsNode();
 
-    virtual MStatus     compute( const MPlug& plug, MDataBlock& data );
+    virtual MStatus     compute(const MPlug& plug, MDataBlock& data);
     static  void*       creator();
     virtual void        postConstructor();
     static  MStatus     initialize();

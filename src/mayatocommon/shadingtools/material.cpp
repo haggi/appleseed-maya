@@ -146,7 +146,7 @@ void ShadingNetwork::checkNodeList(MObjectArray& mobjectArray)
     for (uint oId = 0; oId < mobjectArray.length(); oId++)
     {
         ShadingNode sn;
-        if(ShaderDefinitions::findShadingNode(mobjectArray[oId], sn))
+        if (ShaderDefinitions::findShadingNode(mobjectArray[oId], sn))
             cleanArray.append(mobjectArray[oId]);
     }
     mobjectArray = cleanArray;
@@ -229,7 +229,7 @@ void Material::parseNetwork(MObject& shaderNode, ShadingNetwork& network)
 
 
     // to avoid any dg node cycles
-    if(alreadyDefined(sn, network))
+    if (alreadyDefined(sn, network))
     {
         Logging::debug("Node is already defined, skipping.");
         return;
@@ -306,9 +306,9 @@ void Material::parseNetworks()
 
     // read surface shader hierarchy
     // if mr node is defined, use it, if not use the normal one
-    if ((miMaterialShaderNode != MObject::kNullObj) || (surfaceShaderNode != MObject::kNullObj) )
+    if ((miMaterialShaderNode != MObject::kNullObj) || (surfaceShaderNode != MObject::kNullObj))
     {
-        if(miMaterialShaderNode != MObject::kNullObj)
+        if (miMaterialShaderNode != MObject::kNullObj)
             surfaceShaderNode = miMaterialShaderNode;
 
         ShadingNode *sn = nullptr;
@@ -317,9 +317,9 @@ void Material::parseNetworks()
 
     // read volume shader hierarchy
     // if mr node is defined, use it, if not use the normal one
-    if ((miVolumeShaderNode != MObject::kNullObj) || (volumeShaderNode != MObject::kNullObj) )
+    if ((miVolumeShaderNode != MObject::kNullObj) || (volumeShaderNode != MObject::kNullObj))
     {
-        if(miVolumeShaderNode != MObject::kNullObj)
+        if (miVolumeShaderNode != MObject::kNullObj)
             volumeShaderNode = miVolumeShaderNode;
         ShadingNode *sn = nullptr;
         this->parseNetwork(miVolumeShaderNode, this->volumeShaderNet);
@@ -327,9 +327,9 @@ void Material::parseNetworks()
 
     // read displacement shader hierarchy
     // if mr node is defined, use it, if not use the normal one
-    if ((miDisplacementShaderNode != MObject::kNullObj) || (displacementShaderNode != MObject::kNullObj) )
+    if ((miDisplacementShaderNode != MObject::kNullObj) || (displacementShaderNode != MObject::kNullObj))
     {
-        if(miDisplacementShaderNode != MObject::kNullObj)
+        if (miDisplacementShaderNode != MObject::kNullObj)
             displacementShaderNode = miDisplacementShaderNode;
 
         ShadingNode *sn = nullptr;
@@ -337,7 +337,7 @@ void Material::parseNetworks()
     }
 
     // read light shader hierarchy
-    if ((this->shadingEngineNode != MObject::kNullObj) && (this->shadingEngineNode.hasFn(MFn::kLight)) )
+    if ((this->shadingEngineNode != MObject::kNullObj) && (this->shadingEngineNode.hasFn(MFn::kLight)))
     {
         ShadingNode *sn = nullptr;
         this->parseNetwork(this->shadingEngineNode, this->lightShaderNet);

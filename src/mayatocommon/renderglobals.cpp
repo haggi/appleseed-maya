@@ -127,7 +127,7 @@ void RenderGlobals::defineGlobalConversionMatrix()
 
     this->scaleFactor = 1.0f;
 
-    switch( this->internalUnit )
+    switch (this->internalUnit)
     {
     case MDistance::kCentimeters:
         internalScaleFactor = 10.0f;
@@ -155,7 +155,7 @@ void RenderGlobals::defineGlobalConversionMatrix()
         break;
     };
 
-    switch( this->rendererUnit )
+    switch (this->rendererUnit)
     {
     case MDistance::kCentimeters:
         rendererScaleFactor = 10.0f;
@@ -211,7 +211,7 @@ void RenderGlobals::defineGlobalConversionMatrix()
     YtoZ[3][3] = 1;
 
 
-    if ((this->internalAxis == YUp) && (this->rendererAxis == ZUp) )
+    if ((this->internalAxis == YUp) && (this->rendererAxis == ZUp))
     {
         globalConversionMatrix = YtoZ;
     }
@@ -259,7 +259,7 @@ bool RenderGlobals::getMbSteps()
     this->mbElementList.clear();
 
     // if no motionblur, I add 0.0 to the list as dummy
-    if (!this->doMb )
+    if (!this->doMb)
     {
         MbElement mbel;
         mbel.elementType = MbElement::MotionBlurBoth;
@@ -279,7 +279,7 @@ bool RenderGlobals::getMbSteps()
 
     // get mb type
     // 0 = leading blur --> blur ends at frame
-    switch(this->motionBlurType)
+    switch (this->motionBlurType)
     {
     case 0: // center blur
         startStep = -shutterDist/2.0;
@@ -319,7 +319,7 @@ bool RenderGlobals::getMbSteps()
         }
     }
 
-    if(this->geotimesamples > 1)
+    if (this->geotimesamples > 1)
     {
         float geoStepSize =  (float)(shutterDist/(float)(this->geotimesamples - 1));
         double mbStepValue = startStep;
@@ -362,7 +362,7 @@ bool RenderGlobals::getDefaultGlobals()
     MSelectionList defaultGlobals;
     defaultGlobals.add("defaultRenderGlobals");
 
-    if (defaultGlobals.length() == 0 )
+    if (defaultGlobals.length() == 0)
     {
         Logging::debug("defaultRenderGlobals not found. Stopping.");
         return false;
@@ -383,25 +383,29 @@ bool RenderGlobals::getDefaultGlobals()
     this->byFrame = data.frameBy;
 
     // check if we are in a batch render mode or if we are rendering from UI
-    if (MGlobal::mayaState() == MGlobal::kBatch )
+    if (MGlobal::mayaState() == MGlobal::kBatch)
     {
         this->inBatch = true;
-        if (data.isAnimated() )
+        if (data.isAnimated())
         {
             Logging::debug(MString("animation on, rendering frame sequence from ") + this->startFrame + " to " + this->endFrame + " by " + this->byFrame);
             // these are the frames that are supposed to be rendered in batch mode
             this->doAnimation = true;
             for (double frame = this->startFrame; frame <= this->endFrame; frame += this->byFrame)
                 this->frameList.push_back((float)frame);
-        }else{
+        }
+        else
+        {
             Logging::debug(MString("animation off, rendering current frame"));
-            this->frameList.push_back(this->currentFrameNumber );
+            this->frameList.push_back(this->currentFrameNumber);
             this->doAnimation = false;
         }
-    }else{
+    }
+    else
+    {
         // we are rendering from the UI so only render the current frame
         this->inBatch = false;
-        this->frameList.push_back(this->currentFrameNumber );
+        this->frameList.push_back(this->currentFrameNumber);
         this->doAnimation = false; // at the moment, if rendering comes from UI dont do animation
     }
 

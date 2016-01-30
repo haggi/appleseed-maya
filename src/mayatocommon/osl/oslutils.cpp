@@ -192,7 +192,9 @@ namespace MAYATO_OSLUTIL{
                     MString colName = MString("color") + i;
                     paramArray.push_back(MAYATO_OSL::OSLParameter(colName, vec));
                     paramArray.push_back(MAYATO_OSL::OSLParameter(posName, position));
-                }else{
+                }
+                else
+                {
                     // array index becomes nr, e.g. layeredShader.materialEntry[3] becomes materialEntry3
                     // color closures cannot be set with color value
                     int found = pystring::find(sa.type, "Closure");
@@ -328,7 +330,7 @@ namespace MAYATO_OSLUTIL{
             if (stat)
                 multiplier = multiplierPlug.asFloat();
             MVector v;
-            if(sa.hint == "useAsColor")
+            if (sa.hint == "useAsColor")
             {
                 MColor c = getColorAttr(sa.name.c_str(), depFn);
                 v = MVector(c.r, c.g, c.b);

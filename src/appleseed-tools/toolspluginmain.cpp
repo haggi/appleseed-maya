@@ -70,13 +70,13 @@ MStatus initializePlugin(MObject obj)
         return status;
     }
 
-    status = plugin.registerCommand(WRITERNAME, BinMeshWriterCmd::creator, BinMeshWriterCmd::newSyntax );
+    status = plugin.registerCommand(WRITERNAME, BinMeshWriterCmd::creator, BinMeshWriterCmd::newSyntax);
     if (!status) {
         status.perror("cannot register command: binMeshWriterCmd");
         return status;
     }
 
-    status = plugin.registerCommand(READERNAME, BinMeshReaderCmd::creator, BinMeshReaderCmd::newSyntax );
+    status = plugin.registerCommand(READERNAME, BinMeshReaderCmd::creator, BinMeshReaderCmd::newSyntax);
     if (!status) {
         status.perror("cannot register command: BinMeshReaderCmd");
         return status;
@@ -89,7 +89,7 @@ MStatus initializePlugin(MObject obj)
 MStatus uninitializePlugin(MObject obj)
 {
     MStatus   status;
-    MFnPlugin plugin( obj );
+    MFnPlugin plugin(obj);
 
     status =  plugin.deregisterFileTranslator(TRANSLATORNAME);
     if (!status)
@@ -104,7 +104,7 @@ MStatus uninitializePlugin(MObject obj)
         return status;
     }
 
-    status = plugin.deregisterCommand( READERNAME );
+    status = plugin.deregisterCommand(READERNAME);
     if (!status) {
         status.perror("cannot deregister command: binMeshReaderCmd");
         return status;

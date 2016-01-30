@@ -137,9 +137,6 @@ void AppleseedSwatchRenderer::renderSwatch(NewSwatchRenderer *sr)
 void AppleseedSwatchRenderer::fillSwatch(float *pixels)
 {
     asf::Image& image = project->get_frame()->image();
-    Logging::info(MString("m_canvas_height:") + image.properties().m_canvas_height);
-    Logging::info(MString("m_rcp_canvas_height:") + image.properties().m_rcp_canvas_height);
-    Logging::info(MString("m_tile_height:") + image.properties().m_tile_height);
     int res = image.properties().m_canvas_height;
     int chCount = image.properties().m_channel_count;
 
@@ -152,8 +149,9 @@ void AppleseedSwatchRenderer::fillSwatch(float *pixels)
             for (int x = 0; x < res; x++)
                 for (int c = 0; c < 4; c++)
                     pixels[index++] = tile.get_component<float>(x, y, c);
-    }else{
-
+    }
+    else
+    {
         for (int y = 0; y < res; y++)
         {
             for (int x = 0; x < res; x++)

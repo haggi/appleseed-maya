@@ -51,7 +51,7 @@ public:
         OutputWindow
     };
 
-    static void setLogLevel( Logging::LogLevel level);
+    static void setLogLevel(Logging::LogLevel level);
     static void info(MString logString);
     static void warning(MString logString);
     static void error(MString logString);

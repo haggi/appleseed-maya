@@ -129,7 +129,7 @@ void MayaObject::getShadingGroups()
 {
     // get shading groups only for allowed shapes
 
-    if (this->geometryShapeSupported() )
+    if (this->geometryShapeSupported())
     {
         Logging::debug(MString("getShadingGroups::Supported geo ") + this->shortName);
         // only makes sense if we have a geometry shape.
@@ -150,7 +150,7 @@ bool  MayaObject::isVisiblityAnimated()
     {
         MFnDependencyNode depFn(dp.node());
         MPlug vplug = depFn.findPlug("visibility");
-        if(vplug.isConnected())
+        if (vplug.isConnected())
         {
             Logging::debug(MString("Object: ") + vplug.name() + " has animated visibility");
             return true;
@@ -177,16 +177,16 @@ bool MayaObject::geometryShapeSupported()
 
 bool MayaObject::shadowMapCastingLight()
 {
-    if(!this->mobject.hasFn(MFn::kLight))
+    if (!this->mobject.hasFn(MFn::kLight))
         return false;
 
     MFnDependencyNode lightFn(this->mobject);
 
     bool useDepthMapShadows = false;
-    if(!getBool(MString("useDepthMapShadows"), lightFn,  useDepthMapShadows))
+    if (!getBool(MString("useDepthMapShadows"), lightFn,  useDepthMapShadows))
         return false;
 
-    if(!useDepthMapShadows)
+    if (!useDepthMapShadows)
         return false;
 
     return true;
@@ -213,7 +213,7 @@ void MayaObject::initialize()
     this->motionBlurred = true;
     this->geometryMotionblur = false;
     bool mb = true;
-    if (getBool(MString("motionBlur"), depFn, mb) )
+    if (getBool(MString("motionBlur"), depFn, mb))
         this->motionBlurred = mb;
     // cameras have motionBlur attribute but it is set to false by default and it is not accessible via UI
     // but we want to have a blurred camera by default.
@@ -293,7 +293,7 @@ bool MayaObject::isObjAnimated()
     if (this->mobject.hasFn(MFn::kTransform))
     {
         MFnDependencyNode depFn(this->mobject, &stat);
-        if(stat)
+        if (stat)
         {
             MPlugArray connections;
             depFn.getConnections(connections);
@@ -321,10 +321,10 @@ bool MayaObject::isShapeConnected()
     bool returnValue = false;
     MPlug inPlug;
     MFnDependencyNode depFn(this->mobject, &stat);
-    if(stat)
+    if (stat)
     {
         MFn::Type type = this->mobject.apiType();
-        switch(type)
+        switch (type)
         {
         case MFn::kMesh:
             inPlug = depFn.findPlug(MString("inMesh"), &stat);
@@ -414,7 +414,9 @@ void MayaObject::addMeshData()
                 }
                 this->meshDataList.push_back(mdata);
             }
-        }else{
+        }
+        else
+        {
             Logging::debug("Bifrost mesh has no velocity data, no motionblur.");
             if (this->meshDataList.size() == 0)
                 this->meshDataList.push_back(mdata);

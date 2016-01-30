@@ -75,7 +75,7 @@ namespace EventQueue
         MString message;
         // i use shared ptr here because if I push it into a queue, I make a copy
         // of the original what means I would have to move the move the unique_ptr<>
-        // of a const object because it is automatically created Event( const & Event ) and const
+        // of a const object because it is automatically created Event(const & Event) and const
         // elements cannot be modified so I have to use another way here
         sharedPtr<RV_PIXEL> pixelData;
         sharedPtr<MayaTo::CmdArgs> cmdArgsData;
@@ -123,7 +123,7 @@ public:
     bool try_pop(Data& popped_value)
     {
         boost::mutex::scoped_lock lock(the_mutex);
-        if(the_queue.empty())
+        if (the_queue.empty())
         {
             return false;
         }
@@ -136,7 +136,7 @@ public:
     void wait_and_pop(Data& popped_value)
     {
         boost::mutex::scoped_lock lock(the_mutex);
-        while(the_queue.empty())
+        while (the_queue.empty())
         {
             the_condition_variable.wait(lock);
         }

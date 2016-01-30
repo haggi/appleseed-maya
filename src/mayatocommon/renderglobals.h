@@ -94,12 +94,12 @@ public:
     // these are for sorting the mb steps
     bool operator>(const MbElement& other) const
     {
-        return ( m_time > other.m_time );
+        return (m_time > other.m_time);
     }
 
     bool operator<(const MbElement& other) const
     {
-        return( m_time < other.m_time );
+        return(m_time < other.m_time);
     }
 
     MbElement::Type elementType;

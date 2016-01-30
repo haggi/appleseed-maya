@@ -42,7 +42,7 @@
     The mesh walker is used by the binary mesh writer to export data.
     I implement a possibility to write a proxy file for the same object.
     If proxy is turned on, a file with extension .proxyMesh will be saved.
-    The proxyMesh does not need ( at the moment ) any complicated data structures, it is for
+    The proxyMesh does not need (at the moment) any complicated data structures, it is for
     preview only. So I simply store plain triangle points. This is an array of points, 3 for every triangle.
     Later in the mtap_standinMeshNode.cpp this triangle file is read and the triangles are recreated.
     Of course there is a bit overhead because we have no shared points, but because the proxymesh will be reduced,
@@ -55,32 +55,34 @@ MObject MeshWalker::checkSmoothMesh()
     MObject object = MObject::kNullObj;
 
     MFnMesh mesh(this->meshObject, &stat);
-    if(!stat)
+    if (!stat)
     {
         MGlobal::displayError(MString("checkSmoothMesh : could not get mesh: ") + stat.errorString());
         return object;
     }
 
     bool displaySmoothMesh = false;
-    if (getBool("displaySmoothMesh", mesh, displaySmoothMesh) )
+    if (getBool("displaySmoothMesh", mesh, displaySmoothMesh))
     {
-        if (!displaySmoothMesh )
+        if (!displaySmoothMesh)
             return object;
-    }else{
+    }
+    else
+    {
         MGlobal::displayError(MString("generateSmoothMesh : could not get displaySmoothMesh attr "));
         return object;
     }
 
     MObject meshDataObj = smoothMeshData.create();
     MObject smoothMeshObj = mesh.generateSmoothMesh(meshDataObj, &stat);
-    if(!stat)
+    if (!stat)
     {
         MGlobal::displayError(MString("generateSmoothMesh : failed"));
         return object;
     }
 
     MFnMesh smoothMeshDn(smoothMeshObj, &stat);
-    if(!stat)
+    if (!stat)
     {
         MGlobal::displayError(MString("generateSmoothMesh : could not create smoothMeshDn: ") + stat.errorString());
         return object;
@@ -88,7 +90,7 @@ MObject MeshWalker::checkSmoothMesh()
 
     MPointArray points;
     stat = smoothMeshDn.getPoints(points);
-    if (!stat )
+    if (!stat)
     {
         MGlobal::displayError(MString("generateSmoothMesh : could not get points"));
     }
@@ -119,13 +121,13 @@ MeshWalker::MeshWalker(MDagPath& dagPath)
     CHECK_MSTATUS(stat);
 
     stat = meshFn.getPoints(points);
-    if(!stat)
+    if (!stat)
         MGlobal::displayError(MString("MeshWalker : getPoints: ") + stat.errorString());
-    stat = meshFn.getNormals( normals, MSpace::kObject );
-    if(!stat)
+    stat = meshFn.getNormals(normals, MSpace::kObject);
+    if (!stat)
         MGlobal::displayError(MString("MeshWalker : normals: ") + stat.errorString());
     stat = meshFn.getUVs(u, v);
-    if(!stat)
+    if (!stat)
         MGlobal::displayError(MString("MeshWalker : getUvs: ") + stat.errorString());
 
     MGlobal::displayInfo(MString("MeshWalker : numU: ") + u.length() + " numV:" + v.length());

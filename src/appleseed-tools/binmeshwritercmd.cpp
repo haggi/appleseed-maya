@@ -65,13 +65,13 @@ MSyntax BinMeshWriterCmd::newSyntax()
     MSyntax syntax;
     MStatus stat;
 
-    stat = syntax.addFlag( "-pa", "-path", MSyntax::kString);
-    stat = syntax.addFlag( "-dp", "-doProxy", MSyntax::kBoolean);
-    stat = syntax.addFlag( "-p", "-percentage", MSyntax::kDouble);
-    stat = syntax.addFlag( "-all", "-exportAll", MSyntax::kBoolean);
-    stat = syntax.addFlag( "-fpm", "-oneFilePerMesh", MSyntax::kBoolean);
-    stat = syntax.addFlag( "-dt", "-doTransform", MSyntax::kBoolean);
-    stat = syntax.addFlag( "-sp", "-useSmoothPreview", MSyntax::kBoolean);
+    stat = syntax.addFlag("-pa", "-path", MSyntax::kString);
+    stat = syntax.addFlag("-dp", "-doProxy", MSyntax::kBoolean);
+    stat = syntax.addFlag("-p", "-percentage", MSyntax::kDouble);
+    stat = syntax.addFlag("-all", "-exportAll", MSyntax::kBoolean);
+    stat = syntax.addFlag("-fpm", "-oneFilePerMesh", MSyntax::kBoolean);
+    stat = syntax.addFlag("-dt", "-doTransform", MSyntax::kBoolean);
+    stat = syntax.addFlag("-sp", "-useSmoothPreview", MSyntax::kBoolean);
     syntax.setObjectType(MSyntax::kSelectionList);
     syntax.useSelectionAsDefault(true);
 
@@ -87,7 +87,7 @@ void BinMeshWriterCmd::removeSmoothMesh(MDagPath& dagPath)
 {
     MObject node = dagPath.node();
     MStatus stat = MGlobal::deleteNode(node);
-    if (!stat )
+    if (!stat)
     {
         MGlobal::displayError(MString("removeSmoothMesh : could not delete smooth node: ") + dagPath.fullPathName());
     }
@@ -111,10 +111,10 @@ bool BinMeshWriterCmd::exportBinMeshes()
 
         MeshWalker walker(dagPath);
 
-        if (this->doTransform )
+        if (this->doTransform)
             walker.setTransform();
 
-        if (this->oneFilePerMesh )
+        if (this->oneFilePerMesh)
         {
             // replace filename.binaraymesh with filename_objname.binarymesh
             MString perFileMeshPath = pystring::replace(this->path.asChar(), ".binarymesh", "").c_str();
@@ -122,16 +122,18 @@ bool BinMeshWriterCmd::exportBinMeshes()
             logger.debug(MString("BinMeshWriterCmd::exportBinMeshes - exporting ") + partialPathName + " to  " + perFileMeshPath);
             asf::GenericMeshFileWriter writer(perFileMeshPath.asChar());
             writer.write(walker);
-            if (this->doProxy )
+            if (this->doProxy)
             {
                 ProxyMesh proxyMesh(this->percentage);
                 proxyMesh.addMesh(walker);
                 MString proxyFileName = pystring::replace(perFileMeshPath.asChar(), ".binarymesh" , ".proxymesh").c_str();
                 proxyMesh.writeFile(proxyFileName);
             }
-        }else{
+        }
+        else
+        {
             globalWriter.write(walker);
-            if (this->doProxy )
+            if (this->doProxy)
                 globalProxyMesh.addMesh(walker);
         }
     }
@@ -144,7 +146,7 @@ bool BinMeshWriterCmd::exportBinMeshes()
     return true;
 }
 
-MStatus BinMeshWriterCmd::doIt( const MArgList& args)
+MStatus BinMeshWriterCmd::doIt(const MArgList& args)
 {
     MStatus stat = MStatus::kSuccess;
     MGlobal::displayInfo("Executing BinMeshWriterCmd...");
@@ -206,7 +208,7 @@ MStatus BinMeshWriterCmd::doIt( const MArgList& args)
     }
 
     getObjectsForExport(args);
-    if(this->exportObjects.length() == 0)
+    if (this->exportObjects.length() == 0)
     {
         logger.error("No mesh objects for export found.");
         return MStatus::kFailure;
@@ -237,7 +239,7 @@ void BinMeshWriterCmd::getObjectsForExport(const MArgList& args)
 {
     MStatus status;
 
-    if (exportAll )
+    if (exportAll)
     {
         MStatus status;
 
@@ -258,25 +260,29 @@ void BinMeshWriterCmd::getObjectsForExport(const MArgList& args)
                 continue;
             }
 
-            if (IsVisible(dagPath) )
+            if (IsVisible(dagPath))
             {
                 if (dagPath.node().hasFn(MFn::kMesh))
                     this->exportObjects.append(dagPath);
-            }else{
+            }
+            else
+            {
                 logger.debug(MString("Node ") + dagPath.partialPathName() + " is not visible and will not be exported");
             }
         }
 
-    }else{
+    }
+    else
+    {
         MSelectionList list;
         MArgDatabase argData(syntax(), args);
         if (argData.getObjects(list) == MS::kSuccess)
         {
-            for (MItSelectionList listIter( list ); !listIter.isDone(); listIter.next() )
+            for (MItSelectionList listIter(list); !listIter.isDone(); listIter.next())
             {
                 MDagPath dagPath;
                 MObject component;
-                listIter.getDagPath( dagPath, component );
+                listIter.getDagPath(dagPath, component);
                 MFnDependencyNode nodeFn;
                 nodeFn.setObject(dagPath.node());
                 MGlobal::displayInfo(MString("Selected object: ") + nodeFn.name());
@@ -288,7 +294,9 @@ void BinMeshWriterCmd::getObjectsForExport(const MArgList& args)
                 logger.error("Not mesh objects selected for export.");
                 return;
             }
-        }else{
+        }
+        else
+        {
             logger.error("Nothing selected for export.");
             return;
         }

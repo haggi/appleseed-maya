@@ -96,7 +96,7 @@ void ProxyMesh::addMesh(asf::IMeshWalker& walker)
     for (size_t faceId = 0; faceId < numFaces; faceId++)
     {
         float r = rnd();
-        if (r < percentage )
+        if (r < percentage)
         {
             size_t firstFaceVertex = points.length();
             size_t numVertices = walker.get_face_vertex_count(faceId); // at the moment its always 3
@@ -139,7 +139,7 @@ void ProxyMesh::writeFile(MString fileName)
 {
     proxyFile.open(fileName.asChar(),  std::ios_base::out | std::ios_base::binary);
 
-    if (proxyFile.good() )
+    if (proxyFile.good())
     {
         // numshaders
         this->write((int)this->shadingGroupNames.length());
@@ -154,7 +154,7 @@ void ProxyMesh::writeFile(MString fileName)
         this->write((int)this->polyShaderIds.length());
         for (size_t pId = 0; pId < this->polyShaderIds.length(); pId++)
         {
-            this->write( this->polyShaderIds[pId]);
+            this->write(this->polyShaderIds[pId]);
         }
         MGlobal::displayInfo(MString("Written num polyShaderIds: ") + this->polyShaderIds.length() + " faces " + ((points.length() - 2)/3));
 
@@ -165,7 +165,9 @@ void ProxyMesh::writeFile(MString fileName)
             this->write(points[i]);
         MGlobal::displayInfo(MString("Written ") + ((int)(points.length() - 2)) + " points == " + ((points.length() - 2)/3) + " triangles");
         proxyFile.close();
-    }else{
+    }
+    else
+    {
         MGlobal::displayError(MString("ProxyMesh::write: Could not open ") + fileName + " for output");
     }
 }

@@ -64,7 +64,7 @@ MSyntax BinMeshReaderCmd::newSyntax()
 {
     MSyntax syntax;
     MStatus stat;
-    stat = syntax.addFlag( "-pa", "-path", MSyntax::kString);
+    stat = syntax.addFlag("-pa", "-path", MSyntax::kString);
     return syntax;
 }
 
@@ -81,7 +81,7 @@ bool BinMeshReaderCmd::importBinMeshes()
 
     asr::ParamArray params;
     params.insert("filename", path.asChar());
-    if (!asr::MeshObjectReader::read(searchPaths, path.asChar(), params, meshArray) )
+    if (!asr::MeshObjectReader::read(searchPaths, path.asChar(), params, meshArray))
     {
         logger.error(MString("Unable to read meshes from ") + path);
         return false;
@@ -145,7 +145,7 @@ bool BinMeshReaderCmd::importBinMeshes()
     return true;
 }
 
-MStatus BinMeshReaderCmd::doIt( const MArgList& args)
+MStatus BinMeshReaderCmd::doIt(const MArgList& args)
 {
     MStatus stat = MStatus::kSuccess;
     MGlobal::displayInfo("Executing BinMeshReaderCmd...");

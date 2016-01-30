@@ -74,7 +74,7 @@ MObject getRenderGlobalsNode();
 
 MDagPath getDagPathFromName(MString name);
 
-bool checkDirectory( MString& path);
+bool checkDirectory(MString& path);
 
 MString makeGoodString(const MString& oldString);
 
@@ -96,9 +96,9 @@ bool IsInRenderLayer(MDagPath& dagPath);
 
 bool IsLayerVisible(MDagPath& dagPath);
 
-bool IsPathVisible( MDagPath& dagPath );
+bool IsPathVisible(MDagPath& dagPath);
 
-bool CheckVisibility( MDagPath& dagPath );
+bool CheckVisibility(MDagPath& dagPath);
 
 MString matrixToString(MMatrix& matrix);
 
@@ -160,9 +160,9 @@ MString getDepNodeTypeName(MObject mobject);
 
 MString pointToUnderscore(MString& string);
 
-void writeTMatrixList( std::ofstream& outFile, std::vector<MMatrix>& transformMatrices, bool inverse = false, float scaleFactor = 1.0);
+void writeTMatrixList(std::ofstream& outFile, std::vector<MMatrix>& transformMatrices, bool inverse = false, float scaleFactor = 1.0);
 
-void writeTMatrixList( std::ofstream *outFile, std::vector<MMatrix>& transformMatrices, bool inverse = false, float scaleFactor = 1.0);
+void writeTMatrixList(std::ofstream *outFile, std::vector<MMatrix>& transformMatrices, bool inverse = false, float scaleFactor = 1.0);
 
 MString lightColorAsString(MFnDependencyNode& depFn);
 
@@ -200,7 +200,7 @@ MObject getConnectedObjSet(MDagPath& dagPath);
 
 bool isCameraRenderable(MObject obj);
 
-void makeUniqueArray( MObjectArray& );
+void makeUniqueArray(MObjectArray&);
 
 float rnd();
 

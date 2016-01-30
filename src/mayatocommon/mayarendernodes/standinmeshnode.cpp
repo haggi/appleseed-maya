@@ -55,7 +55,7 @@ static Logging logger;
 MStatus returnStatus;
 
 #define McheckErr(stat,msg)         \
-    if (MS::kSuccess != stat ) {   \
+    if (MS::kSuccess != stat) {   \
         cerr << msg;                \
         return MS::kFailure;        \
     }
@@ -79,26 +79,26 @@ MStatus standinMeshNode::initialize()
 
     MStatus returnStatus;
 
-    time = unitAttr.create( "time", "tm", MFnUnitAttribute::kTime, 0.0, &returnStatus );
-    CHECK_MSTATUS(addAttribute( time ));
+    time = unitAttr.create("time", "tm", MFnUnitAttribute::kTime, 0.0, &returnStatus);
+    CHECK_MSTATUS(addAttribute(time));
 
-    outputMesh = tAttr.create( "outputMesh", "out", MFnData::kMesh, &returnStatus );
+    outputMesh = tAttr.create("outputMesh", "out", MFnData::kMesh, &returnStatus);
     tAttr.setStorable(false);
-    CHECK_MSTATUS(addAttribute( outputMesh ));
+    CHECK_MSTATUS(addAttribute(outputMesh));
 
-    binMeshFile = tAttr.create( "binMeshFile", "binMeshFile", MFnNumericData::kString);
+    binMeshFile = tAttr.create("binMeshFile", "binMeshFile", MFnNumericData::kString);
     tAttr.setUsedAsFilename(true);
-    CHECK_MSTATUS(addAttribute( binMeshFile ));
+    CHECK_MSTATUS(addAttribute(binMeshFile));
 
-    percentDisplay = nAttr.create( "percentDisplay", "percentDisplay", MFnNumericData::kFloat, 0.1f);
+    percentDisplay = nAttr.create("percentDisplay", "percentDisplay", MFnNumericData::kFloat, 0.1f);
     nAttr.setMin(0.01);
     nAttr.setSoftMax(1.0);
-    CHECK_MSTATUS(addAttribute( percentDisplay ));
+    CHECK_MSTATUS(addAttribute(percentDisplay));
 
-    polySizeMultiplier = nAttr.create( "polySizeMultiplier", "polySizeMultiplier", MFnNumericData::kFloat, 1.0f);
+    polySizeMultiplier = nAttr.create("polySizeMultiplier", "polySizeMultiplier", MFnNumericData::kFloat, 1.0f);
     nAttr.setMin(0.01);
     nAttr.setSoftMax(10.0);
-    CHECK_MSTATUS(addAttribute( polySizeMultiplier ));
+    CHECK_MSTATUS(addAttribute(polySizeMultiplier));
 
     returnStatus = attributeAffects(polySizeMultiplier, outputMesh);
     returnStatus = attributeAffects(binMeshFile, outputMesh);
@@ -126,7 +126,7 @@ MObject standinMeshNode::createMesh(const MTime& time,
     MObject newMesh;
 
 
-    if (pFile.good() )
+    if (pFile.good())
     {
         int numPoints = 0;
         MBoundingBox box;
@@ -164,7 +164,7 @@ MObject standinMeshNode::createMesh(const MTime& time,
         for (uint i = 0; i < numPoints; i++)
             faceConnects[i] = i;
         newMesh = meshFS.create(numVertices, numFaces, points, faceCounts, faceConnects, outData, &stat);
-        if (!stat )
+        if (!stat)
             MGlobal::displayError("Mesh creation failure.");
     }
 
@@ -175,7 +175,7 @@ bool standinMeshNode::checkMeshFileName(MString meshFileName)
 {
     // do we have content
     // we need at least .binarymesh == 11 characters
-    if (meshFileName.length() < 11 )
+    if (meshFileName.length() < 11)
     {
         cerr << "mesh file name has less than 11 characters, what means it has no .binarymesh ending.\n";
         return false;
@@ -191,15 +191,15 @@ MStatus standinMeshNode::compute(const MPlug& plug, MDataBlock& data)
 
     if (plug == outputMesh) {
         /* Get time */
-        MDataHandle dataHandle = data.inputValue( time, &returnStatus );
+        MDataHandle dataHandle = data.inputValue(time, &returnStatus);
         McheckErr(returnStatus, "Error getting time data handle\n");
         MTime time = dataHandle.asTime();
 
-        dataHandle = data.inputValue( polySizeMultiplier, &returnStatus );
+        dataHandle = data.inputValue(polySizeMultiplier, &returnStatus);
         McheckErr(returnStatus, "Error getting polySizeMultiplier data handle\n");
         this->poly_size_multiplier = dataHandle.asFloat();
 
-        dataHandle = data.inputValue( binMeshFile, &returnStatus );
+        dataHandle = data.inputValue(binMeshFile, &returnStatus);
         McheckErr(returnStatus, "Error getting binMeshFile handle\n");
         MString fileName = dataHandle.asString();
 
@@ -222,7 +222,7 @@ MStatus standinMeshNode::compute(const MPlug& plug, MDataBlock& data)
         McheckErr(returnStatus, "ERROR creating new geo");
 
         outputHandle.set(newOutputData);
-        data.setClean( plug );
+        data.setClean(plug);
     } else
         return MS::kUnknownParameter;
 

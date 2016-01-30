@@ -39,7 +39,7 @@ public:
     mtap_StandinLocator();
     virtual ~mtap_StandinLocator();
 
-    virtual MStatus   compute( const MPlug&, MDataBlock& );
+    virtual MStatus   compute(const MPlug&, MDataBlock&);
     virtual void      postConstructor();
     static void *     creator();
     static MStatus    initialize();

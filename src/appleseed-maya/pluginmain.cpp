@@ -60,9 +60,9 @@ static const MString asDisneyMaterialIdFullClassification("shader/surface:Apples
 static const MString asLayeredId("asLayeredId");
 static const MString asLayeredIdFullClassification("shader/surface:Appleseed/material:" + swatchFullName);
 
-MStatus initializePlugin( MObject obj )
+MStatus initializePlugin(MObject obj)
 {
-    const MString   UserClassify( "shader/surface" );
+    const MString   UserClassify("shader/surface");
 
     std::vector<std::string>::iterator it;
     std::vector<std::string> versions = getFullVersionString();
@@ -70,15 +70,15 @@ MStatus initializePlugin( MObject obj )
         MGlobal::displayInfo(it->c_str());
 
     MStatus   status;
-    MFnPlugin plugin( obj, VENDOR, getFullVersionString()[0].c_str(), "Any");
+    MFnPlugin plugin(obj, VENDOR, getFullVersionString()[0].c_str(), "Any");
 
-    status = plugin.registerCommand(MAYATOCMDNAME, MayaToAppleseed::creator, MayaToAppleseed::newSyntax );
+    status = plugin.registerCommand(MAYATOCMDNAME, MayaToAppleseed::creator, MayaToAppleseed::newSyntax);
     if (!status) {
         status.perror("cannot register command: mayatoappleseed");
         return status;
     }
 
-    status = plugin.registerNode(MayaToAppleseedGlobalsName, MayaToAppleseedGlobals::id, MayaToAppleseedGlobals::creator, MayaToAppleseedGlobals::initialize );
+    status = plugin.registerNode(MayaToAppleseedGlobalsName, MayaToAppleseedGlobals::id, MayaToAppleseedGlobals::creator, MayaToAppleseedGlobals::initialize);
     if (!status) {
         status.perror("cannot register node: MayaToAppleseedGlobals");
         return status;
@@ -90,10 +90,10 @@ MStatus initializePlugin( MObject obj )
     status = plugin.registerNode("asLayeredShader", asLayeredShader::id, asLayeredShader::creator, asLayeredShader::initialize, MPxNode::kDependNode, &asLayeredIdFullClassification);
     CHECK_MSTATUS(status);
 
-    MString command( "if (`window -exists createRenderNodeWindow` ) {refreshCreateRenderNodeWindow(\"" );
+    MString command("if (`window -exists createRenderNodeWindow`) {refreshCreateRenderNodeWindow(\"");
     command += UserClassify;
     command += "\");}\n";
-    MGlobal::executeCommand( command );
+    MGlobal::executeCommand(command);
 
     setRendererName("Appleseed");
     setRendererShortCutName("mtap");
@@ -102,7 +102,7 @@ MStatus initializePlugin( MObject obj )
     MString cmd = MString("import appleseed.mtap_initialize as minit; minit.initRenderer()");
     MGlobal::displayInfo("try to register...");
     status = MGlobal::executePythonCommand(cmd, true, false);
-    if(!status)
+    if (!status)
     {
         status.perror("Problem executing cmd: mtap_initialize.initRenderer()");
         return status;
@@ -127,17 +127,17 @@ MStatus initializePlugin( MObject obj )
     return status;
 }
 
-MStatus uninitializePlugin( MObject obj)
+MStatus uninitializePlugin(MObject obj)
 {
     MStatus   status;
-    MFnPlugin plugin( obj );
+    MFnPlugin plugin(obj);
 
     MayaTo::deleteWorld();
 
-    const MString UserClassify( "shader/surface" );
+    const MString UserClassify("shader/surface");
 
     std::cout << "deregister mtap cmd\n";
-    status = plugin.deregisterCommand( MAYATOCMDNAME );
+    status = plugin.deregisterCommand(MAYATOCMDNAME);
     if (!status) {
         status.perror("cannot deregister command: MayaToAppleseedCmd");
         return status;
@@ -156,7 +156,7 @@ MStatus uninitializePlugin( MObject obj)
 #endif
 
     std::cout << "deregister mtap globals\n";
-    status = plugin.deregisterNode( MayaToAppleseedGlobals::id );
+    status = plugin.deregisterNode(MayaToAppleseedGlobals::id);
     if (!status) {
         status.perror("cannot deregister node: MayaToAppleseedGlobals");
         return status;
@@ -166,15 +166,15 @@ MStatus uninitializePlugin( MObject obj)
     CHECK_MSTATUS(plugin.deregisterNode(asDisneyMaterial::id));
 
     std::cout << "update mtap shader ui\n";
-    MString command( "if (`window -exists createRenderNodeWindow` ) {refreshCreateRenderNodeWindow(\"" );
+    MString command("if (`window -exists createRenderNodeWindow`) {refreshCreateRenderNodeWindow(\"");
     command += UserClassify;
     command += "\");}\n";
-    CHECK_MSTATUS( MGlobal::executeCommand( command ) );
+    CHECK_MSTATUS(MGlobal::executeCommand(command));
 
     std::cout << "minit.unregister()\n";
     MString cmd = MString("import appleseed.mtap_initialize as minit; minit.unregister()");
     status = MGlobal::executePythonCommand(cmd);
-    if(!status)
+    if (!status)
     {
         status.perror("Problem executing cmd: mtap_initialize.unregister()");
         return status;

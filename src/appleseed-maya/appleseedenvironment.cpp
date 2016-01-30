@@ -162,7 +162,7 @@ void AppleseedRenderer::defineEnvironment()
             {
                 MFnTransform tn(connectedNode);
                 MMatrix tm = tn.transformationMatrix(&stat);
-                if (stat )
+                if (stat)
                 {
                     MVector sunOrient(0,0,1);
                     sunOrient *= tm;
@@ -175,14 +175,15 @@ void AppleseedRenderer::defineEnvironment()
                     theta = theta;
                     sun_phi = RadToDeg(phi);
                 }
-            }else{
+            }
+            else
+            {
                 Logging::warning("physicalSunConnection plug has no connection, but use physical sun is turned on. Please correct.");
             }
         }
 
-        if(skyModel == 0) // preetham
+        if (skyModel == 0) // preetham
         {
-
             environmentEDF = asr::PreethamEnvironmentEDFFactory().create(
                     "sky_edf",
                     asr::ParamArray()
@@ -194,7 +195,9 @@ void AppleseedRenderer::defineEnvironment()
                     .insert("turbidity", turbidity)
                     .insert("turbidity_max", turbidity_max)
                     .insert("turbidity_min", turbidity_min));
-        }else{ // hosek
+        }
+        else
+        { // hosek
             environmentEDF = asr::HosekEnvironmentEDFFactory().create(
                     "sky_edf",
                     asr::ParamArray()

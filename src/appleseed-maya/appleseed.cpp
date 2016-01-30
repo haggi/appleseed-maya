@@ -173,7 +173,7 @@ void AppleseedRenderer::render()
 
         if (MayaTo::getWorldPtr()->getRenderType() == MayaTo::MayaToWorld::IPRRENDER)
         {
-            masterRenderer = autoPtr<asr::MasterRenderer>( new asr::MasterRenderer(
+            masterRenderer = autoPtr<asr::MasterRenderer>(new asr::MasterRenderer(
                 this->project.ref(),
                 this->project->configurations().get_by_name("interactive")->get_inherited_parameters(),
                 &mtap_controller,

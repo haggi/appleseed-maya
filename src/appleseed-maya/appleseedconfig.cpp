@@ -120,7 +120,7 @@ void AppleseedRenderer::defineConfig()
         .get_by_name("interactive")->get_parameters()
         .insert_path("generic_tile_renderer.sampler", pixel_renderer);
 
-    if (renderGlobals->getUseRenderRegion() )
+    if (renderGlobals->getUseRenderRegion())
     {
         int left, right, bottom, top;
         int imgWidth, imgHeight;

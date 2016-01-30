@@ -49,14 +49,14 @@ void *mtap_StandinLocator::creator()
     return new mtap_StandinLocator();
 }
 
-void mtap_StandinLocator::postConstructor( )
+void mtap_StandinLocator::postConstructor()
 {
     setMPSafe(true);
     MFnDependencyNode nodefn(thisMObject());
     nodefn.setName("mtap_standinShape#");
 }
 
-MStatus   mtap_StandinLocator::compute( const MPlug&, MDataBlock& )
+MStatus   mtap_StandinLocator::compute(const MPlug&, MDataBlock&)
 {
     return MStatus::kSuccess;
 }

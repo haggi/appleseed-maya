@@ -49,7 +49,7 @@ public:
     virtual         ~BinMeshReaderCmd();
     static MSyntax  newSyntax();
 
-    MStatus         doIt( const MArgList& args );
+    MStatus         doIt(const MArgList& args);
     static void*    creator();
     void            printUsage();
     bool            importBinMeshes();

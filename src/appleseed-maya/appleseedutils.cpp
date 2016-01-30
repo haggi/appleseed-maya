@@ -326,7 +326,7 @@ MString defineTexture(MFnDependencyNode& shader, MString& attributeName)
     MPlug plug = shader.findPlug(attributeName, &stat);
     if (stat != MStatus::kSuccess)
         return textureDefinition;
-    if (!plug.isConnected() )
+    if (!plug.isConnected())
         return textureDefinition;
     MObject connectedNode = getConnectedInNode(plug);
 
@@ -367,7 +367,7 @@ MString defineTexture(MFnDependencyNode& shader, MString& attributeName)
     asr::ParamArray tInstParams;
     tInstParams.insert("addressing_mode", "clamp");
     tInstParams.insert("filtering_mode", "bilinear");
-    if (alphaIsLuminance )
+    if (alphaIsLuminance)
         tInstParams.insert("alpha_mode", "luminance");
 
     MString textureInstanceName = textureName + "_texInst";

@@ -198,7 +198,7 @@ void RenderQueueWorker::addIPRCallbacks()
         InteractiveElement iae = ite->second;
         MObject nodeDirty;
 
-        if (iae.obj )
+        if (iae.obj)
             nodeDirty = iae.obj->mobject;
         else
             nodeDirty = iae.mobj;
@@ -338,7 +338,8 @@ void RenderQueueWorker::IPRNodeAddedCallback(MObject& node, void *userPtr)
         if (!dagPath.node().hasFn(MFn::kMesh))
             return;
     }
-    else{
+    else
+    {
         if (!node.hasFn(MFn::kShape))
             return;
     }
@@ -369,7 +370,7 @@ void RenderQueueWorker::IPRNodeAddedCallback(MObject& node, void *userPtr)
             MCallbackId id = MNodeMessage::addNodeDirtyCallback(ie.node, RenderQueueWorker::IPRNodeDirtyCallback, userData);
             objIdMap[id] = ie.node;
 
-            if (ie.node == node ) // we only add the shape node to the update map because do not want a transform update
+            if (ie.node == node) // we only add the shape node to the update map because do not want a transform update
                 idInteractiveMap[id] = userData;
 
             if (ie.node.hasFn(MFn::kMesh))
@@ -536,7 +537,7 @@ void RenderQueueWorker::IPRNodeDirtyCallback(void *interactiveElement)
 }
 
 
-void RenderQueueWorker::renderQueueWorkerTimerCallback( float time, float lastTime, void *userPtr)
+void RenderQueueWorker::renderQueueWorkerTimerCallback(float time, float lastTime, void *userPtr)
 {
     RenderQueueWorker::startRenderQueueWorker();
 }
@@ -585,7 +586,8 @@ void RenderQueueWorker::renderProcessThread()
             modifiedElementList.clear();
         }
     }
-    else{
+    else
+    {
         Logging::debug("RenderQueueWorker::renderProcessThread()");
         MayaTo::getWorldPtr()->worldRendererPtr->render();
         Logging::debug("RenderQueueWorker::renderProcessThread() - DONE.");
@@ -659,17 +661,19 @@ void RenderQueueWorker::startRenderQueueWorker()
     int minPixelsChanged = 500;
 
     MStatus status;
-    while(!terminateLoop)
+    while (!terminateLoop)
     {
-        if(MGlobal::mayaState() != MGlobal::kBatch)
+        if (MGlobal::mayaState() != MGlobal::kBatch)
         {
-            if(!theRenderEventQueue()->try_pop(e))
+            if (!theRenderEventQueue()->try_pop(e))
                 break;
-        }else{
+        }
+        else
+        {
             theRenderEventQueue()->wait_and_pop(e);
         }
 
-        switch(e.type)
+        switch (e.type)
         {
         case EventQueue::Event::FINISH:
             break;
@@ -894,7 +898,7 @@ void RenderQueueWorker::startRenderQueueWorker()
         }
 
 
-        if(MGlobal::mayaState() != MGlobal::kBatch)
+        if (MGlobal::mayaState() != MGlobal::kBatch)
             break;
     }
 }
@@ -902,8 +906,6 @@ void RenderQueueWorker::startRenderQueueWorker()
 RenderQueueWorker::~RenderQueueWorker()
 {
     // clean the queue
-    Logging::debug("~RenderQueueWorker");
     EventQueue::Event e;
-    while(RenderEventQueue.try_pop(e))
-    {}
+    while (RenderEventQueue.try_pop(e)) {}
 }

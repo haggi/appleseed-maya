@@ -93,13 +93,13 @@ bool MayaScene::listContainsAllLights(MDagPathArray& linkedLights, MDagPathArray
         for (uint liId = 0; liId < linkedLights.length(); liId++)
         {
             MDagPath linkedPath = linkedLights[liId];
-            if (linkedPath == path )
+            if (linkedPath == path)
             {
                 found = true;
                 break;
             }
         }
-        if (found )
+        if (found)
             continue;
         else
             excludedLights.append(path);

@@ -32,7 +32,7 @@
 #include <maya/MGlobal.h>
 #include <stdio.h>
 
-void Logging::setLogLevel( Logging::LogLevel level)
+void Logging::setLogLevel(Logging::LogLevel level)
 {
     if (level == Logging::LevelDebug)
     {

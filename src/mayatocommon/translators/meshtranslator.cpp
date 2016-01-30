@@ -51,7 +51,7 @@ MeshTranslator::MeshTranslator(MObject meshMObject)
     CHECK_MSTATUS_AND_RETURNONLY(stat);
 
     meshFn.getPoints(this->vertices);
-    meshFn.getNormals( this->normals, MSpace::kWorld );
+    meshFn.getNormals(this->normals, MSpace::kWorld);
 
 
     //// Triangles.

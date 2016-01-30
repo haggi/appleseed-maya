@@ -41,7 +41,7 @@ public:
     virtual         ~MayaToRendererCmd();
     static MSyntax  newSyntax();
 
-    MStatus         doIt( const MArgList& args );
+    MStatus         doIt(const MArgList& args);
     static void*    creator();
 
 private:
