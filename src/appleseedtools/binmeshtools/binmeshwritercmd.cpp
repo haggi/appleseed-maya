@@ -202,7 +202,7 @@ MStatus BinMeshWriterCmd::doIt( const MArgList& args)
 {
     MStatus stat = MStatus::kSuccess;
     MGlobal::displayInfo("Executing BinMeshWriterCmd...");
-    logger.setLogLevel(Logging::Debug);
+    logger.setLogLevel(Logging::LevelDebug);
 
     MArgDatabase argData(syntax(), args);
 

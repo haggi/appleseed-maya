@@ -3,10 +3,10 @@
 
 #include <string>
 #include <vector>
-#include "openimageio/oiioversion.h"
-#include "osl/oslversion.h"
+#include "OpenImageIO//oiioversion.h"
+#include "OSL/oslversion.h"
 #include "boost/version.hpp"
-#include "openexr\openexrconfig.h"
+#include <OpenEXR/ImfVersion.h>
 #include "foundation/core/appleseed.h"
 
 #define VENDOR "haggis vfx & animation"
@@ -26,14 +26,14 @@
 
 inline std::vector<std::string> getFullVersionString()
 {
-	std::vector<std::string> versionData;
-	versionData.push_back(std::string("MayaToAppleseed: ") + MTXX_VERSION_STRING);
-	versionData.push_back(std::string("Appleseed: ") + foundation::Appleseed::get_synthetic_version_string());	
-	versionData.push_back(std::string("OpenImageIO: ") + OIIO_VERSION_STRING);
-	versionData.push_back(std::string("OSL: ") + OSL_LIBRARY_VERSION_STRING);
-	versionData.push_back(std::string("BOOST: ") + BOOST_LIB_VERSION);
-	versionData.push_back(std::string("OpenExr: ") + OPENEXR_VERSION_STRING);
-	return versionData;
+    std::vector<std::string> versionData;
+    versionData.push_back(std::string("MayaToAppleseed: ") + MTXX_VERSION_STRING);
+    versionData.push_back(std::string("Appleseed: ") + foundation::Appleseed::get_synthetic_version_string());
+    versionData.push_back(std::string("OpenImageIO: ") + OIIO_VERSION_STRING);
+    versionData.push_back(std::string("OSL: ") + OSL_LIBRARY_VERSION_STRING);
+    versionData.push_back(std::string("BOOST: ") + BOOST_LIB_VERSION);
+    versionData.push_back(std::string("OpenExr: ") + OPENEXR_VERSION_STRING);
+    return versionData;
 }
 
 #endif

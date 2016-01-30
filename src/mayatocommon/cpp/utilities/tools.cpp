@@ -113,7 +113,7 @@ void rowToColumn(MMatrix& from, MMatrix& to, bool transRev)
 }
 
 // replace :,| and . by _ ... the modern version
-MString makeGoodString(MString& oldString)
+MString makeGoodString(const MString& oldString)
 {
     std::string old(oldString.asChar());
     std::string newString;
@@ -732,7 +732,7 @@ bool getArrayIndex(MString attrib, MString& index, MString& baseName)
     return index.length() > 0;
 }
 
-MObject getConnectedInNode(MObject& thisObject, const char *attrName)
+MObject getConnectedInNode(const MObject& thisObject, const char *attrName)
 {
     MObject result = MObject::kNullObj;
     MString indexStr, base;

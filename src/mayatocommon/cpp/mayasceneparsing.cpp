@@ -135,7 +135,7 @@ bool MayaScene::updateScene(MFn::Type updateElement)
         // this part is only used if motionblur is turned on, else we have no MbElement::None
         if (!obj->motionBlurred)
         {
-            if (MayaTo::getWorldPtr()->worldRenderGlobalsPtr->currentMbElement.elementType == MbElement::None)
+            if (MayaTo::getWorldPtr()->worldRenderGlobalsPtr->currentMbElement.elementType == MbElement::MotionBlurNone)
             {
                 Logging::debug(MString("found non mb element type. Updating non mb objects.") + objId + ": " + obj->dagPath.fullPathName());
                 if (updateElement == MFn::kShape)
