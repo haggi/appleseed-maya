@@ -50,7 +50,7 @@ MDagPath getDagPathFromName(MString name);
 
 bool checkDirectory( MString& path);
 
-MString makeGoodString(MString& oldString);
+MString makeGoodString(const MString& oldString);
 
 MString makeGoodHierarchyString(MString& oldString);
 
@@ -116,7 +116,7 @@ bool getConnectedOutPlugs(MObject& thisObject, MPlugArray& outPlugs);
 
 void getConnectedNodes(MObject& thisObject, MObjectArray& nodeList);
 
-MObject getConnectedInNode(MObject& thisObject, const char *attrName);
+MObject getConnectedInNode(const MObject& thisObject, const char *attrName);
 
 MObject getConnectedInNode(MPlug& inPlug);
 

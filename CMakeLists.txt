@@ -39,7 +39,6 @@ project (appleseed-maya)
 set (CMAKE_MODULE_PATH
     ${CMAKE_MODULE_PATH}
     ${PROJECT_SOURCE_DIR}/cmake/Modules
-    ${APPLESEED_INCLUDE_DIR}/../cmake/Modules
 )
 
 
@@ -49,7 +48,7 @@ set (CMAKE_MODULE_PATH
 
 option (USE_EXTERNAL_OIIO                   "Use external OpenImageIO library"                      OFF)
 option (USE_EXTERNAL_OSL                    "Use external OpenShadingLanguage library"              OFF)
-            
+
 option (WITH_OSL                            "Build OSL support"                                     OFF)
 
 option (USE_STATIC_BOOST                    "Use static Boost libraries"                            ON)
