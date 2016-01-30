@@ -7,7 +7,7 @@
 mtap_SwatchRendererInterface::mtap_SwatchRendererInterface(MObject dependNode, MObject renderNode, int imageResolution)
 {
 #ifdef _DEBUG
-	Logging::setLogLevel(Logging::Debug);
+	Logging::setLogLevel(Logging::LevelDebug);
 #endif
 
 	this->imgDone = false;

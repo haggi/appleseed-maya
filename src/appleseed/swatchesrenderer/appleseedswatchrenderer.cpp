@@ -181,7 +181,7 @@ AppleseedSwatchRenderer::~AppleseedSwatchRenderer()
 void AppleseedSwatchRenderer::mainLoop()
 {
 #ifdef _DEBUG
-    Logging::setLogLevel(Logging::Debug);
+    Logging::setLogLevel(Logging::LevelDebug);
 #endif
 
     SQueue::SEvent swatchEvent;

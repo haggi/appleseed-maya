@@ -46,7 +46,7 @@ NewSwatchRenderer::NewSwatchRenderer(MObject dependNode, MObject renderNode, int
     //SQueue::getQueue()->push(event);
 
 #ifdef _DEBUG
-    Logging::setLogLevel(Logging::Debug);
+    Logging::setLogLevel(Logging::LevelDebug);
 #endif
     Logging::debug(MString("NewSwatchRenderer: dependNode: ") + MFnDependencyNode(dependNode).name() + " renderNode: " + MFnDependencyNode(renderNode).name());
 
@@ -90,7 +90,7 @@ static int dummy = 0;
 bool NewSwatchRenderer::doIteration()
 {
 #ifdef _DEBUG
-    Logging::setLogLevel(Logging::Debug);
+    Logging::setLogLevel(Logging::LevelDebug);
 #endif
 
     //if (swatchRenderingDone)
