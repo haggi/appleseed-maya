@@ -9,108 +9,108 @@
 
 namespace RenderProcess{
 
-	void doPreRenderJobs()
-	{
-	}
+    void doPreRenderJobs()
+    {
+    }
 
-	// not sure if this is really the best way to do it. 
-	// the renderer should be able to access all scene element lists and these are creating in parseScene() 
-	// but the preFrameScripts should be called before the whole parsing is done because it is possible that this script 
-	// updates or creates geometry.
-	void doRenderPreFrameJobs()
-	{
-		MayaTo::getWorldPtr()->worldRendererPtr->preFrame();
-	}
-	
-	void doPreFrameJobs()
-	{
-		MString result;
-		MGlobal::executeCommand(MayaTo::getWorldPtr()->worldRenderGlobalsPtr->preFrameScript, result, true);
-	}
-	void doPostFrameJobs()
-	{
-		MString result;
-		MGlobal::executeCommand(MayaTo::getWorldPtr()->worldRenderGlobalsPtr->postFrameScript, result, true);
-		MayaTo::getWorldPtr()->worldRendererPtr->postFrame();
-	}
+    // not sure if this is really the best way to do it.
+    // the renderer should be able to access all scene element lists and these are creating in parseScene()
+    // but the preFrameScripts should be called before the whole parsing is done because it is possible that this script
+    // updates or creates geometry.
+    void doRenderPreFrameJobs()
+    {
+        MayaTo::getWorldPtr()->worldRendererPtr->preFrame();
+    }
 
-	void doPostRenderJobs(){}
-	void doPrepareFrame()
-	{
-		float currentFrame = MayaTo::getWorldPtr()->worldRenderGlobalsPtr->getFrameNumber();
-		sharedPtr<MayaScene> mayaScene = MayaTo::getWorldPtr()->worldScenePtr;
-		Logging::progress(MString("\n========== doPrepareFrame ") + currentFrame + " ==============\n");
+    void doPreFrameJobs()
+    {
+        MString result;
+        MGlobal::executeCommand(MayaTo::getWorldPtr()->worldRenderGlobalsPtr->preFrameScript, result, true);
+    }
+    void doPostFrameJobs()
+    {
+        MString result;
+        MGlobal::executeCommand(MayaTo::getWorldPtr()->worldRenderGlobalsPtr->postFrameScript, result, true);
+        MayaTo::getWorldPtr()->worldRendererPtr->postFrame();
+    }
 
-		mayaScene->parseScene(); // all lists are cleaned and refilled with the current scene content
-		std::vector<sharedPtr<MayaObject>>::iterator oIt;
-		for (oIt = mayaScene->camList.begin(); oIt != mayaScene->camList.end(); oIt++)
-		{
-			sharedPtr<MayaObject> camera = *oIt;
-			if (!isCameraRenderable(camera->mobject) && (!(camera->dagPath == mayaScene->uiCamera)))
-			{
-				Logging::debug(MString("Camera ") + camera->shortName + " is not renderable, skipping.");
-				continue;
-			}
-			Logging::info(MString("Rendering camera ") + camera->shortName);
-			if (MGlobal::mayaState() != MGlobal::kBatch)
-			{
-				MRenderView::setCurrentCamera(camera->dagPath);
-			}
-		}
+    void doPostRenderJobs(){}
+    void doPrepareFrame()
+    {
+        float currentFrame = MayaTo::getWorldPtr()->worldRenderGlobalsPtr->getFrameNumber();
+        sharedPtr<MayaScene> mayaScene = MayaTo::getWorldPtr()->worldScenePtr;
+        Logging::progress(MString("\n========== doPrepareFrame ") + currentFrame + " ==============\n");
 
-		MayaTo::getWorldPtr()->worldRenderGlobalsPtr->getMbSteps();
+        mayaScene->parseScene(); // all lists are cleaned and refilled with the current scene content
+        std::vector<sharedPtr<MayaObject> >::iterator oIt;
+        for (oIt = mayaScene->camList.begin(); oIt != mayaScene->camList.end(); oIt++)
+        {
+            sharedPtr<MayaObject> camera = *oIt;
+            if (!isCameraRenderable(camera->mobject) && (!(camera->dagPath == mayaScene->uiCamera)))
+            {
+                Logging::debug(MString("Camera ") + camera->shortName + " is not renderable, skipping.");
+                continue;
+            }
+            Logging::info(MString("Rendering camera ") + camera->shortName);
+            if (MGlobal::mayaState() != MGlobal::kBatch)
+            {
+                MRenderView::setCurrentCamera(camera->dagPath);
+            }
+        }
 
-		if (MayaTo::getWorldPtr()->worldRenderGlobalsPtr->mbElementList.size() == 0)
-		{
-			Logging::error(MString("no mb steps, something's wrong."));
-			return;
-		}
+        MayaTo::getWorldPtr()->worldRenderGlobalsPtr->getMbSteps();
 
-		int numMbSteps = (int)MayaTo::getWorldPtr()->worldRenderGlobalsPtr->mbElementList.size();
+        if (MayaTo::getWorldPtr()->worldRenderGlobalsPtr->mbElementList.size() == 0)
+        {
+            Logging::error(MString("no mb steps, something's wrong."));
+            return;
+        }
 
-		for (int mbStepId = 0; mbStepId < numMbSteps; mbStepId++)
-		{
-			MayaTo::getWorldPtr()->worldRenderGlobalsPtr->currentMbStep = mbStepId;
-			MayaTo::getWorldPtr()->worldRenderGlobalsPtr->currentMbElement = MayaTo::getWorldPtr()->worldRenderGlobalsPtr->mbElementList[mbStepId];
-			MayaTo::getWorldPtr()->worldRenderGlobalsPtr->currentFrameNumber = (float)(currentFrame + MayaTo::getWorldPtr()->worldRenderGlobalsPtr->mbElementList[mbStepId].time);
-			bool needView = true;
+        int numMbSteps = (int)MayaTo::getWorldPtr()->worldRenderGlobalsPtr->mbElementList.size();
 
-			// we can have some mb time steps at the same time, e.g. for xform and deform, then we do not need to update the view
-			if (mbStepId > 0)
-			{
-				if (MayaTo::getWorldPtr()->worldRenderGlobalsPtr->mbElementList[mbStepId].time == MayaTo::getWorldPtr()->worldRenderGlobalsPtr->mbElementList[mbStepId - 1].time)
-				{
-					needView = false;
-				}
-			}
+        for (int mbStepId = 0; mbStepId < numMbSteps; mbStepId++)
+        {
+            MayaTo::getWorldPtr()->worldRenderGlobalsPtr->currentMbStep = mbStepId;
+            MayaTo::getWorldPtr()->worldRenderGlobalsPtr->currentMbElement = MayaTo::getWorldPtr()->worldRenderGlobalsPtr->mbElementList[mbStepId];
+            MayaTo::getWorldPtr()->worldRenderGlobalsPtr->currentFrameNumber = (float)(currentFrame + MayaTo::getWorldPtr()->worldRenderGlobalsPtr->mbElementList[mbStepId].time);
+            bool needView = true;
 
-			if (needView)
-			{
-				Logging::debug(MString("doFrameJobs() viewFrame: ") + MayaTo::getWorldPtr()->worldRenderGlobalsPtr->currentFrameNumber);
-				MGlobal::viewFrame(MayaTo::getWorldPtr()->worldRenderGlobalsPtr->currentFrameNumber);
-			}
+            // we can have some mb time steps at the same time, e.g. for xform and deform, then we do not need to update the view
+            if (mbStepId > 0)
+            {
+                if (MayaTo::getWorldPtr()->worldRenderGlobalsPtr->mbElementList[mbStepId].time == MayaTo::getWorldPtr()->worldRenderGlobalsPtr->mbElementList[mbStepId - 1].time)
+                {
+                    needView = false;
+                }
+            }
 
-			if (MayaTo::getWorldPtr()->worldScenePtr)
-				mayaScene->updateScene();
-			else
-				Logging::error(MString("no maya scene ptr."));
+            if (needView)
+            {
+                Logging::debug(MString("doFrameJobs() viewFrame: ") + MayaTo::getWorldPtr()->worldRenderGlobalsPtr->currentFrameNumber);
+                MGlobal::viewFrame(MayaTo::getWorldPtr()->worldRenderGlobalsPtr->currentFrameNumber);
+            }
 
-			Logging::info(MString("update scene done"));
-			MayaTo::getWorldPtr()->worldRenderGlobalsPtr->currentMbStep++;
-		}
+            if (MayaTo::getWorldPtr()->worldScenePtr)
+                mayaScene->updateScene();
+            else
+                Logging::error(MString("no maya scene ptr."));
 
-		if (MGlobal::mayaState() != MGlobal::kBatch)
-			MGlobal::viewFrame(currentFrame);
-		//}
-	}
+            Logging::info(MString("update scene done"));
+            MayaTo::getWorldPtr()->worldRenderGlobalsPtr->currentMbStep++;
+        }
 
-	void doFrameJobs()
-	{
-		Logging::debug("doFrameJobs()");
-	}
+        if (MGlobal::mayaState() != MGlobal::kBatch)
+            MGlobal::viewFrame(currentFrame);
+        //}
+    }
 
-	void render()
-	{
-	}
+    void doFrameJobs()
+    {
+        Logging::debug("doFrameJobs()");
+    }
+
+    void render()
+    {
+    }
 
 }
