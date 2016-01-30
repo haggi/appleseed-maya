@@ -1,5 +1,7 @@
 #include "mtap_swatchrenderer.h"
 
+#include <string.h>
+
 #include "utilities/tools.h"
 #include "utilities/attrtools.h"
 #include "utilities/logging.h"
@@ -7,30 +9,30 @@
 mtap_SwatchRendererInterface::mtap_SwatchRendererInterface(MObject dependNode, MObject renderNode, int imageResolution)
 {
 #ifdef _DEBUG
-	Logging::setLogLevel(Logging::LevelDebug);
+    Logging::setLogLevel(Logging::LevelDebug);
 #endif
 
-	this->imgDone = false;
-	this->inProgress = false;
+    this->imgDone = false;
+    this->inProgress = false;
 
-	this->dependNode = dependNode;
-	this->renderNode = renderNode;
-	this->swatchWidth = imageResolution;
-	this->imageData = (float *)malloc(sizeof(float)* this->swatchWidth * this->swatchWidth * 4);
-	memset(this->imageData, 0, sizeof(float)* this->swatchWidth * this->swatchWidth * 4);
+    this->dependNode = dependNode;
+    this->renderNode = renderNode;
+    this->swatchWidth = imageResolution;
+    this->imageData = (float *)malloc(sizeof(float)* this->swatchWidth * this->swatchWidth * 4);
+    memset(this->imageData, 0, sizeof(float)* this->swatchWidth * this->swatchWidth * 4);
 }
 
 mtap_SwatchRendererInterface::~mtap_SwatchRendererInterface()
 {
-	if (this->imageData != nullptr)
-		free(this->imageData);
-	this->imageData = nullptr;
-	Logging::debug("SwatchRendererInterface deleted.");
+    if (this->imageData != nullptr)
+        free(this->imageData);
+    this->imageData = nullptr;
+    Logging::debug("SwatchRendererInterface deleted.");
 }
 
 void mtap_SwatchRendererInterface::init()
 {
-	Logging::debug("SwatchRendererInterface init called.");
+    Logging::debug("SwatchRendererInterface init called.");
 }
 
 void mtap_SwatchRendererInterface::loadGeometry()
@@ -39,29 +41,29 @@ void mtap_SwatchRendererInterface::loadGeometry()
 
 void mtap_SwatchRendererInterface::fillDummySwatch(MImage& image)
 {
-	const int res(swatchWidth);
-	float rndR = rnd();
-	float rndG = rnd();
-	float rndB = rnd();
+    const int res(swatchWidth);
+    float rndR = rnd();
+    float rndG = rnd();
+    float rndB = rnd();
 
-	float *pixels = image.floatPixels();
-	int index = 0;
-	for (int y = 0; y < res; y++)
-	{
-		for (int x = 0; x < res; x++)
-		{
-			float fac = float(y) / res;
-			pixels[index++] = fac * rndR;
-			pixels[index++] = fac * rndG;
-			pixels[index++] = fac * rndB;
-			pixels[index++] = 1.0f;
-		}
-	}
+    float *pixels = image.floatPixels();
+    int index = 0;
+    for (int y = 0; y < res; y++)
+    {
+        for (int x = 0; x < res; x++)
+        {
+            float fac = float(y) / res;
+            pixels[index++] = fac * rndR;
+            pixels[index++] = fac * rndG;
+            pixels[index++] = fac * rndB;
+            pixels[index++] = 1.0f;
+        }
+    }
 }
 
 void mtap_SwatchRendererInterface::getImageData(MImage& imageRef)
 {
-	fillDummySwatch(imageRef);
+    fillDummySwatch(imageRef);
 }
 
 void mtap_SwatchRendererInterface::renderSwatch()
