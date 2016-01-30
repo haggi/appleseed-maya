@@ -1,6 +1,5 @@
-
 include_directories (
-    ../mayatocommon/cpp
+    ../mayatocommon
 )
 
 set (shaders_sources
@@ -90,41 +89,41 @@ source_group ("" FILES
 )
 
 add_library (mayaToAppleseed SHARED
-    ../mayatocommon/cpp/mayaobject.cpp
-    ../mayatocommon/cpp/mayaobject.h
-    ../mayatocommon/cpp/mayaobjectfactory.h
-    ../mayatocommon/cpp/mayascene.cpp
-    ../mayatocommon/cpp/mayascene.h
-    ../mayatocommon/cpp/mayascenefactory.cpp
-    ../mayatocommon/cpp/mayascenefactory.h
-    ../mayatocommon/cpp/mayarendernodes/rendercmd.cpp
-    ../mayatocommon/cpp/mayarendernodes/renderglobalsnode.cpp
-    ../mayatocommon/cpp/mayarendernodes/standinlocatornode.cpp
-    ../mayatocommon/cpp/mayasceneparsing.cpp
-    ../mayatocommon/cpp/mayasceneutils.cpp
-    ../mayatocommon/cpp/memory/memoryinfo.cpp
-    ../mayatocommon/cpp/renderglobals.cpp
-    ../mayatocommon/cpp/renderglobalsfactory.cpp
-    ../mayatocommon/cpp/rendering/mayarenderer.cpp
-    ../mayatocommon/cpp/rendering/renderer.cpp
-    ../mayatocommon/cpp/renderprocess.cpp
-    ../mayatocommon/cpp/shadingtools/material.cpp
-    ../mayatocommon/cpp/shadingtools/shaderdefs.cpp
-    ../mayatocommon/cpp/shadingtools/shadingnode.cpp
-    ../mayatocommon/cpp/shadingtools/shadingutils.cpp
-    ../mayatocommon/cpp/swatchesrenderer/swatchrenderer.cpp
-    ../mayatocommon/cpp/threads/compute.cpp
-    ../mayatocommon/cpp/threads/queue.cpp
-    ../mayatocommon/cpp/threads/renderqueueworker.cpp
-    ../mayatocommon/cpp/threads/threads.cpp
-    ../mayatocommon/cpp/utilities/attrtools.cpp
-    ../mayatocommon/cpp/utilities/logging.cpp
-    ../mayatocommon/cpp/utilities/meshtools.cpp
-    ../mayatocommon/cpp/utilities/minimap.cpp
-    ../mayatocommon/cpp/utilities/pystring.cpp
-    ../mayatocommon/cpp/utilities/tools.cpp
-    ../mayatocommon/cpp/world.cpp
-    ../mayatocommon/cpp/osl/oslutils.cpp
+    ../mayatocommon/mayaobject.cpp
+    ../mayatocommon/mayaobject.h
+    ../mayatocommon/mayaobjectfactory.h
+    ../mayatocommon/mayascene.cpp
+    ../mayatocommon/mayascene.h
+    ../mayatocommon/mayascenefactory.cpp
+    ../mayatocommon/mayascenefactory.h
+    ../mayatocommon/mayarendernodes/rendercmd.cpp
+    ../mayatocommon/mayarendernodes/renderglobalsnode.cpp
+    ../mayatocommon/mayarendernodes/standinlocatornode.cpp
+    ../mayatocommon/mayasceneparsing.cpp
+    ../mayatocommon/mayasceneutils.cpp
+    ../mayatocommon/memory/memoryinfo.cpp
+    ../mayatocommon/renderglobals.cpp
+    ../mayatocommon/renderglobalsfactory.cpp
+    ../mayatocommon/rendering/mayarenderer.cpp
+    ../mayatocommon/rendering/renderer.cpp
+    ../mayatocommon/renderprocess.cpp
+    ../mayatocommon/shadingtools/material.cpp
+    ../mayatocommon/shadingtools/shaderdefs.cpp
+    ../mayatocommon/shadingtools/shadingnode.cpp
+    ../mayatocommon/shadingtools/shadingutils.cpp
+    ../mayatocommon/swatchesrenderer/swatchrenderer.cpp
+    ../mayatocommon/threads/compute.cpp
+    ../mayatocommon/threads/queue.cpp
+    ../mayatocommon/threads/renderqueueworker.cpp
+    ../mayatocommon/threads/threads.cpp
+    ../mayatocommon/utilities/attrtools.cpp
+    ../mayatocommon/utilities/logging.cpp
+    ../mayatocommon/utilities/meshtools.cpp
+    ../mayatocommon/utilities/minimap.cpp
+    ../mayatocommon/utilities/pystring.cpp
+    ../mayatocommon/utilities/tools.cpp
+    ../mayatocommon/world.cpp
+    ../mayatocommon/osl/oslutils.cpp
     ${rendererplugin_sources}
 )
 

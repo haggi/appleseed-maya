@@ -171,4 +171,5 @@ endif ()
 #--------------------------------------------------------------------------------------------------
 
 add_subdirectory (src/appleseedtools)
+add_subdirectory (src/mayatocommon)
 add_subdirectory (src/rendererplugin)

@@ -1,6 +1,5 @@
-
 include_directories (
-    ../mayatocommon/cpp
+    ../mayatocommon
     ../rendererplugin
 )
 
@@ -23,17 +22,12 @@ source_group ("" FILES
 )
 
 add_library (appleseedtools SHARED
-    ../mayatocommon/cpp/memory/memoryinfo.cpp
-    ../mayatocommon/cpp/shadingtools/shadingutils.cpp
-    ../mayatocommon/cpp/utilities/attrtools.cpp
-    ../mayatocommon/cpp/utilities/logging.cpp
-    ../mayatocommon/cpp/utilities/pystring.cpp
-    ../mayatocommon/cpp/utilities/tools.cpp
     ../rendererplugin/appleseedmeshwalker.cpp
     ${appleseedtools_sources}
 )
 
 target_link_libraries (appleseedtools
+    mayatocommon
     ${MAYA_Foundation_LIBRARY}
     ${MAYA_OpenMaya_LIBRARY}
     ${MAYA_OpenMayaAnim_LIBRARY}

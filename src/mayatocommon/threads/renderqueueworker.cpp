@@ -18,7 +18,6 @@
 #include "utilities/tools.h"
 #include "mayascenefactory.h"
 #include "memory/memoryinfo.h"
-#include "../dummyrenderer/dummyscene.h"
 #include "../mayascene.h"
 #include "../world.h"
 #include "../renderprocess.h"
