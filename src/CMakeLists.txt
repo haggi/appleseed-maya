@@ -3,10 +3,9 @@
 # plug-in
 
 INCLUDE_DIRECTORIES(${PROJECT_SOURCE_DIR}/mayatocommon/cpp
-${PROJECT_SOURCE_DIR}/src/appleseed
-)
+    ${PROJECT_SOURCE_DIR}/src/appleseed)
 
-ADD_LIBRARY(mayaToAppleseed SHARED
+SET(SOURCES
     ${PROJECT_SOURCE_DIR}/mayatocommon/cpp/mayaobject.cpp
     ${PROJECT_SOURCE_DIR}/mayatocommon/cpp/mayaobject.h
     ${PROJECT_SOURCE_DIR}/mayatocommon/cpp/mayaobjectfactory.h
@@ -14,14 +13,12 @@ ADD_LIBRARY(mayaToAppleseed SHARED
     ${PROJECT_SOURCE_DIR}/mayatocommon/cpp/mayascene.h
     ${PROJECT_SOURCE_DIR}/mayatocommon/cpp/mayascenefactory.cpp
     ${PROJECT_SOURCE_DIR}/mayatocommon/cpp/mayascenefactory.h
-
     ${PROJECT_SOURCE_DIR}/mayatocommon/cpp/mayarendernodes/rendercmd.cpp
     ${PROJECT_SOURCE_DIR}/mayatocommon/cpp/mayarendernodes/renderglobalsnode.cpp
     ${PROJECT_SOURCE_DIR}/mayatocommon/cpp/mayarendernodes/standinlocatornode.cpp
     ${PROJECT_SOURCE_DIR}/mayatocommon/cpp/mayasceneparsing.cpp
     ${PROJECT_SOURCE_DIR}/mayatocommon/cpp/mayasceneutils.cpp
     ${PROJECT_SOURCE_DIR}/mayatocommon/cpp/memory/memoryinfo.cpp
-    ${PROJECT_SOURCE_DIR}/mayatocommon/cpp/osl/oslutils.cpp
     ${PROJECT_SOURCE_DIR}/mayatocommon/cpp/renderglobals.cpp
     ${PROJECT_SOURCE_DIR}/mayatocommon/cpp/renderglobalsfactory.cpp
     ${PROJECT_SOURCE_DIR}/mayatocommon/cpp/rendering/mayarenderer.cpp
@@ -44,24 +41,12 @@ ADD_LIBRARY(mayaToAppleseed SHARED
     ${PROJECT_SOURCE_DIR}/mayatocommon/cpp/utilities/tools.cpp
     ${PROJECT_SOURCE_DIR}/mayatocommon/cpp/world.cpp
     appleseed/appleseed.cpp
-    appleseed/appleseedcamera.cpp
     appleseed/appleseedconfig.cpp
     appleseed/appleseedcreateoslshader.cpp
-    appleseed/appleseedenvironment.cpp
     appleseed/appleseedframeoutput.cpp
-    appleseed/appleseedgeo.cpp
     appleseed/appleseedgeometry.cpp
-    appleseed/appleseedinteractiveupdate.cpp
-    appleseed/appleseedlights.cpp
     appleseed/appleseedmaterial.cpp
-    appleseed/appleseedmeshwalker.cpp
-    appleseed/appleseedrendererfactory.cpp
     appleseed/appleseedshaders.cpp
-    appleseed/appleseedshadingnodes.cpp
-    appleseed/appleseedupdateelements.cpp
-    appleseed/appleseedutils.cpp
-    appleseed/mtap_renderercontroller.cpp
-    appleseed/mtap_tilecallback.cpp
     appleseed/swatchesrenderer/appleseedswatchrenderer.cpp
     appleseed/swatchesrenderer/newswatchrenderer.cpp
     appleseed/swatchesrenderer/swatchesevent.cpp
@@ -71,20 +56,42 @@ ADD_LIBRARY(mayaToAppleseed SHARED
     mtap_common/mtap_mayaobject.cpp
     mtap_common/mtap_mayaobjectfactory.cpp
     mtap_common/mtap_mayarenderer.cpp
-    mtap_common/mtap_mayascene.cpp
-    mtap_common/mtap_mayascenefactory.cpp
     mtap_common/mtap_renderglobals.cpp
     mtap_common/mtap_renderglobalsnode.cpp
-    mtap_common/mtap_standinlocator.cpp
-    mtap_common/mtap_standinmeshnode.cpp
-    mtap_common/mtap_swatchrenderer.cpp
     mtap_common/mtap_swatchrendererinterfacefactory.cpp
     mtap_common/mtap_world.cpp
     pluginmain.cpp
     shaders/asdisneymaterial.cpp
     shaders/asdisneymaterialoverride.cpp
     shaders/aslayeredshader.cpp
-)
+
+    # These files are apparently excluded from all build configs
+    # in the VC++ project files. Unused?
+    #appleseed/appleseedmeshwalker.cpp
+    #appleseed/appleseedrendererfactory.cpp
+    #appleseed/appleseedshadingnodes.cpp
+    #mtap_common/mtap_standinlocator.cpp
+    #mtap_common/mtap_standinmeshnode.cpp
+    )
+
+IF(MAYA2016)
+    SET(SOURCES ${SOURCES}
+    ${PROJECT_SOURCE_DIR}/mayatocommon/cpp/osl/oslutils.cpp
+    appleseed/appleseedcamera.cpp
+    appleseed/appleseedenvironment.cpp
+    appleseed/appleseedgeo.cpp
+    appleseed/appleseedlights.cpp
+    appleseed/appleseedinteractiveupdate.cpp
+    appleseed/appleseedupdateelements.cpp
+    appleseed/appleseedutils.cpp
+    appleseed/mtap_renderercontroller.cpp
+    appleseed/mtap_tilecallback.cpp
+    mtap_common/mtap_swatchrenderer.cpp
+    )
+ENDIF()
+
+ADD_LIBRARY(mayaToAppleseed SHARED ${SOURCES})
+
 
 TARGET_LINK_LIBRARIES(mayaToAppleseed ${MAYA_Foundation_LIBRARY}
                                       ${MAYA_OpenMaya_LIBRARY}

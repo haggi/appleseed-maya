@@ -20,16 +20,16 @@ ENDIF()
 
 # Set the default built type
 IF(NOT CMAKE_BUILD_TYPE)
-  SET(CMAKE_BUILD_TYPE Debug CACHE STRING "Choose the type of build, options are: None Debug Release RelWithDebInfo MinSizeRel." FORCE)
+    SET(CMAKE_BUILD_TYPE Debug CACHE STRING "Choose the type of build, options are: None Debug Release RelWithDebInfo MinSizeRel." FORCE)
 ENDIF()
 
 ######################################################
 # version
 
+
 ######################################################
 # options
 
-option(USE_CPP11 "Enable C++11" ON)
 
 ######################################################
 # platform specific
@@ -57,8 +57,16 @@ ENDIF()
 ######################################################
 # dependencies
 
-FIND_PACKAGE(Maya REQUIRED)
 FIND_PACKAGE(Appleseed REQUIRED)
+
+FIND_PACKAGE(Maya REQUIRED)
+MESSAGE("MAYA_API_VERSION = ${MAYA_API_VERSION}")
+
+IF(${MAYA_API_VERSION} GREATER OR EQUAL 201600)
+    SET(MAYA2016 TRUE)
+ELSE()
+    SET(MAYA2016 FALSE)
+ENDIF()
 
 IF(NOT USE_CPP11)
     SET(BOOST_COMPONENTS thread system)
@@ -77,7 +85,7 @@ ADD_DEFINITIONS(-DREQUIRE_IOSTREAM)
 ADD_DEFINITIONS(-DAPPLESEED_WITH_OIIO)
 ADD_DEFINITIONS(-DAPPLESEED_WITH_OSL)
 
-IF(NOT USE_CPP11)
+IF(NOT MAYA2016)
     ADD_DEFINITIONS(-DNOCPP11)
 ENDIF()
 
@@ -91,5 +99,5 @@ INCLUDE_DIRECTORIES(${MAYA_INCLUDE_DIRS}
 ######################################################
 # subdirs
 
-ADD_SUBDIRECTORY(src)
+#ADD_SUBDIRECTORY(src)
 ADD_SUBDIRECTORY(src/appleseedtools)
