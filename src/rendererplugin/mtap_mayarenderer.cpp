@@ -3,12 +3,12 @@
 #include "mtap_mayarenderer.h"
 #include "utilities/logging.h"
 #include "utilities/attrtools.h"
-#include "../appleseed/appleseedgeometry.h"
+#include "appleseedgeometry.h"
 #include "osl/oslutils.h"
 #include "shadingtools/material.h"
 #include "shadingtools/shadingutils.h"
 #include "world.h"
-#include "../appleseed/appleseedmaterial.h"
+#include "appleseedmaterial.h"
 
 #include "foundation/core/appleseed.h"
 #include "renderer/api/bsdf.h"
@@ -52,7 +52,7 @@
 #include <boost/thread/mutex.hpp>
 
 #include "renderer/modeling/shadergroup/shadergroup.h"
-#include "../appleseed/appleseedutils.h"
+#include "appleseedutils.h"
 #include "definitions.h"
 
 

@@ -9,7 +9,7 @@
 
 #include <maya/MFnDependencyNode.h>
 
-#include "../mtap_common/mtap_mayaobject.h"
+#include "mtap_mayaobject.h"
 #include <maya/MMatrix.h>
 
 namespace asr = renderer;

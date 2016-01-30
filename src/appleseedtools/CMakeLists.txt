@@ -1,26 +1,39 @@
 
 include_directories (
     ../mayatocommon/cpp
-    ../appleseed
-    ..
+    ../rendererplugin
 )
 
-add_library (appleseedTools SHARED
+set (sources
+    binmeshreadercmd.cpp
+    binmeshreadercmd.h
+    binmeshtranslator.cpp
+    binmeshtranslator.h
+    binmeshwritercmd.cpp
+    binmeshwritercmd.h
+    proxymesh.cpp
+    proxymesh.h
+    toolspluginmain.cpp
+)
+list (APPEND appleseedtools_sources
+    ${sources}
+)
+source_group ("" FILES
+    ${sources}
+)
+
+add_library (appleseedtools SHARED
     ../mayatocommon/cpp/memory/memoryinfo.cpp
     ../mayatocommon/cpp/shadingtools/shadingutils.cpp
     ../mayatocommon/cpp/utilities/attrtools.cpp
     ../mayatocommon/cpp/utilities/logging.cpp
     ../mayatocommon/cpp/utilities/pystring.cpp
     ../mayatocommon/cpp/utilities/tools.cpp
-    ../appleseed/appleseedmeshwalker.cpp
-    binmeshtools/binmeshreadercmd.cpp
-    binmeshtools/binmeshtranslator.cpp
-    binmeshtools/binmeshwritercmd.cpp
-    binmeshtools/proxymesh.cpp
-    toolspluginmain.cpp
+    ../rendererplugin/appleseedmeshwalker.cpp
+    ${appleseedtools_sources}
 )
 
-target_link_libraries (appleseedTools
+target_link_libraries (appleseedtools
     ${MAYA_Foundation_LIBRARY}
     ${MAYA_OpenMaya_LIBRARY}
     ${MAYA_OpenMayaAnim_LIBRARY}
@@ -30,8 +43,8 @@ target_link_libraries (appleseedTools
     ${Boost_LIBRARIES}
 )
 
-set_target_properties (appleseedTools PROPERTIES PREFIX "")
+set_target_properties (appleseedtools PROPERTIES PREFIX "")
 
 if (${CMAKE_SYSTEM_NAME} MATCHES "Windows")
-    set_target_properties (appleseedTools PROPERTIES SUFFIX ".mll")
+    set_target_properties (appleseedtools PROPERTIES SUFFIX ".mll")
 endif ()

@@ -166,8 +166,8 @@ endif ()
 
 
 #--------------------------------------------------------------------------------------------------
-# Product.
+# Products.
 #--------------------------------------------------------------------------------------------------
 
-add_subdirectory (src)
 add_subdirectory (src/appleseedtools)
+add_subdirectory (src/rendererplugin)

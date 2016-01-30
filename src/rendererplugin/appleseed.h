@@ -43,7 +43,7 @@
 
 #include "rendering/renderer.h"
 #include "mtap_tilecallback.h"
-#include "../mtap_common/mtap_mayaobject.h"
+#include "mtap_mayaobject.h"
 #include "mtap_renderercontroller.h"
 
 #include "utilities/minimap.h"

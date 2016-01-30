@@ -7,7 +7,7 @@
 #include <maya/MFloatArray.h>
 #include <maya/MFloatVectorArray.h>
 #include "mayascene.h"
-#include "../mtap_common/mtap_mayaobject.h"
+#include "mtap_mayaobject.h"
 #include "utilities/tools.h"
 #include "utilities/attrtools.h"
 #include "utilities/logging.h"
@@ -21,25 +21,6 @@ using namespace AppleRender;
 #define MTAP_MESH_STANDIN_ID 0x0011CF7B
 
 #define MPointToAppleseed(pt) asr::GVector3((float)pt.x, (float)pt.y, (float)pt.z)
-
-//void AppleseedRenderer::createMeshFromFile(sharedPtr<MayaObject> obj, MString fileName, asr::MeshObjectArray& meshArray)
-//{
-//	asr::MeshObjectReader reader;
-//	asf::SearchPaths searchPaths;
-//
-//	MString objName = obj->fullNiceName;
-//	asr::ParamArray params;
-//	params.insert("filename", fileName.asChar());
-//	reader.read(searchPaths, objName.asChar(), params, meshArray);
-//}
-//
-//void AppleseedRenderer::createMeshFromFile(sharedPtr<MayaObject> obj, asr::MeshObjectArray& meshArray)
-//{
-//	MFnDependencyNode depFn(obj->mobject);
-//	MString proxyFile("");
-//	getString(MString("mtap_standin_path"), depFn, proxyFile);
-//	createMeshFromFile(obj, proxyFile, meshArray);
-//}
 
 asf::auto_release_ptr<asr::MeshObject> AppleseedRenderer::defineStandardPlane(bool area)
 {
@@ -93,8 +74,6 @@ void AppleseedRenderer::createMesh(sharedPtr<mtap_MayaObject> obj)
     MFnMesh meshFn(obj->mobject, &stat);
     CHECK_MSTATUS(stat);
 
-    //isProxyArray = false;
-
     MPointArray points;
     MFloatVectorArray normals;
     MFloatArray uArray, vArray;
@@ -104,18 +83,16 @@ void AppleseedRenderer::createMesh(sharedPtr<mtap_MayaObject> obj)
 
     Logging::debug(MString("Translating mesh object ") + meshFn.name().asChar());
     MString meshFullName = makeGoodString(meshFn.fullPathName());
+
     // Create a new mesh object.
     asf::auto_release_ptr<asr::MeshObject> mesh = asr::MeshObjectFactory::create(meshFullName.asChar(), asr::ParamArray());
 
     Logging::debug(MString("//object ") + meshFn.name());
-    //Logging::debug(MString("MPointArray ") + obj->shortName + "Vertices(" + points.length() + ");");
     for (uint vtxId = 0; vtxId < points.length(); vtxId++)
     {
         mesh->push_vertex(MPointToAppleseed(points[vtxId]));
-        //Logging::debug(obj->shortName + "Vertices.append(MPoint(" + points[vtxId].x + "," + points[vtxId].y + "," + points[vtxId].z + "));");
     }
 
-    //Logging::debug(MString("MVectorArray ") + obj->shortName + "Normals(" + normals.length() + ");");
     for (uint nId = 0; nId < normals.length(); nId++)
     {
         MVector n = normals[nId];
@@ -124,16 +101,11 @@ void AppleseedRenderer::createMesh(sharedPtr<mtap_MayaObject> obj)
             n.y = .1;
         n.normalize();
         mesh->push_vertex_normal(MPointToAppleseed(n));
-        //Logging::debug(obj->shortName + "Normals.append(MVector(" + normals[nId].x + "," + normals[nId].y + "," + normals[nId].z + "));");
     }
 
-    //Logging::debug(MString("MFloatArray") + obj->shortName + "u(" + uArray.length() + ");");
-    //Logging::debug(MString("MFloatArray") + obj->shortName + "v(" + uArray.length() + ");");
     for (uint tId = 0; tId < uArray.length(); tId++)
     {
         mesh->push_tex_coords(asr::GVector2((float)uArray[tId], (float)vArray[tId]));
-        //Logging::debug(obj->shortName + "u.append(" + uArray[tId] + ");");
-        //Logging::debug(obj->shortName + "v.append(" + vArray[tId] + "); ");
     }
 
     mesh->reserve_material_slots(obj->shadingGroups.length());
@@ -145,8 +117,6 @@ void AppleseedRenderer::createMesh(sharedPtr<mtap_MayaObject> obj)
 
     int numTris = triPointIds.length() / 3;
 
-    //Logging::debug(MString("//MIntArray triData(vtxId0, vtxId1, vtxId2,  normalId0, normalId1, normalId2, uvId0, uvId1, uvId2, perFaceShadingGroup"));
-    //Logging::debug(MString("int ") + obj->shortName + "triData[] = {");
     for (uint triId = 0; triId < numTris; triId++)
     {
         uint index = triId * 3;
@@ -161,9 +131,7 @@ void AppleseedRenderer::createMesh(sharedPtr<mtap_MayaObject> obj)
         int uvId1 = triUvIds[index + 1];
         int uvId2 = triUvIds[index + 2];
         mesh->push_triangle(asr::Triangle(vtxId0, vtxId1, vtxId2,  normalId0, normalId1, normalId2, uvId0, uvId1, uvId2, perFaceShadingGroup));
-        //Logging::debug(MString("") + vtxId0 + "," + vtxId1 + "," + vtxId2 + "," + normalId0 + "," + normalId1 + "," + normalId2 + "," + uvId0 + "," + uvId1 + "," + uvId2 + "," + perFaceShadingGroup + ",");
     }
-    //Logging::debug(MString("};\n\n\n\n-------------------------------------------------------------"));
 
     MayaObject *assemblyObject = getAssemblyMayaObject(obj.get());
     asr::Assembly *ass = getCreateObjectAssembly(obj);
@@ -306,47 +274,4 @@ void AppleseedRenderer::defineGeometry()
         fillMatrices(obj, ts);
         getMasterAssemblyFromProject(this->project.get())->assembly_instances().insert(assemblyInstance);
     }
-
 }
-
-
-//// check for standin_path attribute
-//MString proxyFile("");
-//if( getString(MString("mtap_standin_path"), meshFn, proxyFile))
-//{
-//	// we need at least .obj == 4 chars - maybe replace by a useful file check
-//	if( proxyFile.length() > 4 )
-//	{
-//		isProxyArray = true;
-//		createMeshFromFile(obj, proxyFile, meshArray);
-//		return;
-//	}
-//}
-
-
-//// check for standInNode connection
-//MObjectArray connectedElements;
-//Logging::debug(MString("findConnectedNodeTypes ") + meshFn.name());
-//findConnectedNodeTypes(MTAP_MESH_STANDIN_ID, meshObject, connectedElements, false);
-
-//if( connectedElements.length() > 0)
-//{
-
-//	if( connectedElements.length() > 1)
-//	{
-//		Logging::warning(MString("Found more than 1 standin elements:"));
-//		for( uint i = 0; i < connectedElements.length(); i++)
-//		{
-//			Logging::warning(MString("Standin element: ") + getObjectName(connectedElements[i]));
-//		}
-//		Logging::warning(MString("Using element: ") + getObjectName(connectedElements[0]));
-//	}
-//	MFnDependencyNode depFn(connectedElements[0]);
-//	if(getString(MString("binMeshFile"), depFn, proxyFile))
-//	{
-//		Logging::debug(MString("Reading binarymesh from file: ") + proxyFile);
-//		isProxyArray = true;
-//		createMeshFromFile(obj, proxyFile, meshArray);
-//		return;
-//	}
-//}

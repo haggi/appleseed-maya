@@ -1,9 +1,9 @@
 #include <maya/MFnPlugin.h>
 #include <maya/MGlobal.h>
 
-#include "binmeshtools/binmeshtranslator.h"
-#include "binmeshtools/binmeshwritercmd.h"
-#include "binmeshtools/binmeshreadercmd.h"
+#include "binmeshtranslator.h"
+#include "binmeshwritercmd.h"
+#include "binmeshreadercmd.h"
 
 
 #define VENDOR "haggis vfx & animation"

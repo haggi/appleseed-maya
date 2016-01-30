@@ -89,11 +89,6 @@ AppleseedSwatchRenderer::AppleseedSwatchRenderer()
 
 void AppleseedSwatchRenderer::renderSwatch()
 {
-    if (!mrenderer.get())
-        return;
-    //MString tstFile = "C:/daten/3dprojects/mayaToAppleseed/renderData/swatchRenderScene/swatchRender.jpg";
-    //project->get_frame()->write_main_image(tstFile.asChar());
-    //asr::ProjectFileWriter::write(project.ref(), "C:/daten/3dprojects/mayaToAppleseed/renderData/swatchRenderScene/swOutputTest.appleseed");
 }
 
 void AppleseedSwatchRenderer::renderSwatch(NewSwatchRenderer *sr)
@@ -105,11 +100,6 @@ void AppleseedSwatchRenderer::renderSwatch(NewSwatchRenderer *sr)
     this->setSize(res);
     this->setShader(sr->dNode);
     mrenderer->render();
-
-    //MString tstFile = "C:/daten/3dprojects/mayaToAppleseed/renderData/swatchRenderScene/swatchRender.exr";
-    //project->get_frame()->write_main_image(tstFile.asChar());
-    asr::ProjectFileWriter::write(project.ref(), "C:/daten/3dprojects/mayaToAppleseed/renderData/swatchRenderScene/swOutputTest.appleseed");
-    //project->get_frame()->transform_to_output_color_space(project->get_frame()->image());
 
     sr->image().create(res, res, 4, MImage::kFloat);
     float *floatPixels = sr->image().floatPixels();

@@ -33,7 +33,9 @@ void mtap_SwatchRendererInterface::init()
 	Logging::debug("SwatchRendererInterface init called.");
 }
 
-void mtap_SwatchRendererInterface::loadGeometry(){}
+void mtap_SwatchRendererInterface::loadGeometry()
+{
+}
 
 void mtap_SwatchRendererInterface::fillDummySwatch(MImage& image)
 {
@@ -57,37 +59,15 @@ void mtap_SwatchRendererInterface::fillDummySwatch(MImage& image)
 	}
 }
 
-
 void mtap_SwatchRendererInterface::getImageData(MImage& imageRef)
 {
 	fillDummySwatch(imageRef);
-
-	//float *img = imageRef.floatPixels();
-	//memcpy(img, this->imageData, sizeof(float) * this->swatchWidth * this->swatchWidth * 4);
-	return;
 }
-
 
 void mtap_SwatchRendererInterface::renderSwatch()
 {
-
 }
 
 void mtap_SwatchRendererInterface::getImage(MImage& imageRef)
-{}
-
-//void mtap_SwatchRendererInterface::swatchRenderThread(mtap_SwatchRendererInterface* me)
-//{
-//
-//}
-//
-//void mtap_SwatchRendererInterface::initializeStaticData()
-//{
-//#ifdef _DEBUG
-//	Logging::setLogLevel(Logging::Debug);
-//#endif
-//}
-//
-//void mtap_SwatchRendererInterface::cleanUpStaticData()
-//{
-//}
+{
+}

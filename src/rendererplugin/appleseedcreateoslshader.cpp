@@ -9,8 +9,6 @@
 MString oslTypeToMString(MAYATO_OSL::OSLParameter param)
 {
     MString result;
-    float vec[3];
-    float m[4][4];
     void *val = nullptr;
     if (param.type == OSL::TypeDesc::TypeFloat)
     {

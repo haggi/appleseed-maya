@@ -5,26 +5,23 @@
 #include <maya/MSwatchRenderRegister.h>
 
 #include "mayatoappleseed.h"
-#include "mtap_common/mtap_renderglobalsnode.h"
+#include "mtap_renderglobalsnode.h"
 #include "swatchesrenderer/swatchrenderer.h"
 #include "swatchesrenderer/newswatchrenderer.h"
-//#include "appleseed/SwatchesRenderer/appleseedSwatchRenderer.h"
 
 #include "utilities/tools.h"
 #include "threads/renderqueueworker.h"
 #include "world.h"
-#include "appleseed/version.h"
+#include "version.h"
 
 #include "shaders/asdisneymaterial.h"
 #include "shaders/asdisneymaterialoverride.h"
 #include "shaders/aslayeredshader.h"
 
 #if MAYA_API_VERSION >= 201600
-#include "mtap_common/mtap_mayarenderer.h"
+#include "mtap_mayarenderer.h"
 #endif
 
-//#include "mtap_common/mtap_standinMeshNode.h"
-//#include "mtap_common/mtap_standinLocator.h"
 static const MString swatchName("AppleseedRenderSwatch");
 static const MString swatchFullName("swatch/AppleseedRenderSwatch");
 
@@ -33,8 +30,6 @@ static const MString asDisneyMaterialIdDrawDBClassification("drawdb/shader/surfa
 static const MString asDisneyMaterialIdFullClassification("shader/surface:Appleseed/material:" + swatchFullName + ":" + asDisneyMaterialIdDrawDBClassification);
 
 static const MString asLayeredId("asLayeredId");
-//static const MString asLayeredIdDrawDBClassification("drawdb/shader/surface/asLayeredId");
-//static const MString asLayeredIdFullClassification("shader/surface:Appleseed/material:" + swatchFullName + ":" + asLayeredIdDrawDBClassification);
 static const MString asLayeredIdFullClassification("shader/surface:Appleseed/material:" + swatchFullName);
 
 MStatus initializePlugin( MObject obj )
@@ -54,18 +49,6 @@ MStatus initializePlugin( MObject obj )
 		status.perror("cannot register command: mayatoappleseed");
 		return status;
 	}
-
-	//status = plugin.registerNode( STANDIN_LOCATOR_NODE_NAME, mtap_StandinLocator::id, mtap_StandinLocator::creator, mtap_StandinLocator::initialize, MPxNode::kLocatorNode);
-	//if (!status) {
-	//	status.perror("cannot register node: mtap_StandinLocator");
-	//	return status;
-	//}
-
-	//status = plugin.registerNode( STANDIN_MESH_NODE_NAME, mtap_standinMeshNode::id, mtap_standinMeshNode::creator, mtap_standinMeshNode::initialize);
-	//if (!status) {
-	//	status.perror("cannot register node: mtap_standinMeshNode");
-	//	return status;
-	//}
 
 	status = plugin.registerNode(MayaToAppleseedGlobalsName, MayaToAppleseedGlobals::id, MayaToAppleseedGlobals::creator, MayaToAppleseedGlobals::initialize );
 	if (!status) {

@@ -3,8 +3,8 @@
 #include "renderglobalsfactory.h"
 #include "utilities/logging.h"
 #include <maya/MGlobal.h>
-#include "../appleseed/swatchesrenderer/appleseedswatchrenderer.h"
-#include "../appleseed/swatchesrenderer/swatchesevent.h"
+#include "swatchesrenderer/appleseedswatchrenderer.h"
+#include "swatchesrenderer/swatchesevent.h"
 
 static Logging logger;
 namespace MayaTo{
