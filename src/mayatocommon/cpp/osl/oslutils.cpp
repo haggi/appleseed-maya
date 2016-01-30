@@ -1,4 +1,3 @@
-#include <filesystem>
 #include "oslutils.h"
 #include <maya/MPlugArray.h>
 #include <maya/MFnDependencyNode.h>
@@ -9,6 +8,8 @@
 #include "utilities/pystring.h"
 #include "shadingtools/shaderdefs.h"
 #include "world.h"
+
+#include "boost/filesystem.hpp"
 
 static Logging logger;
 
@@ -71,7 +72,7 @@ namespace MAYATO_OSLUTIL{
         return doesOSLNodeAlreadyExist(objName);
     }
 
-    void OSLUtilClass::listProjectionHistory(MObject& mobject)
+    void OSLUtilClass::listProjectionHistory(const MObject& mobject)
     {
         MFnDependencyNode depFn(mobject);
         MStatus stat;
@@ -249,8 +250,8 @@ namespace MAYATO_OSLUTIL{
                             //if (ext == "exr")
                             //{
                             std::string txFileName = fileName + ".exr.tx";
-                            std::tr2::sys::path p = std::tr2::sys::path(txFileName);
-                            if (std::tr2::sys::exists(p))
+                            boost::filesystem::path p(txFileName);
+                            if (boost::filesystem::exists(p))
                             {
                                 Logging::debug(MString("texture file has a .exr.tx extension, using ") + txFileName.c_str() + " instead of original one");
                                 ext = ext + ".exr.tx";
@@ -341,7 +342,7 @@ namespace MAYATO_OSLUTIL{
         }
     }
 
-    void OSLUtilClass::createOSLProjectionNodes(MObject& surfaceShaderNode)
+    void OSLUtilClass::createOSLProjectionNodes(const MObject& surfaceShaderNode)
     {
         listProjectionHistory(surfaceShaderNode);
 

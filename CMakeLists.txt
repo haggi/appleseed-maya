@@ -48,6 +48,7 @@ set (CMAKE_MODULE_PATH
 
 option (USE_EXTERNAL_OIIO                   "Use external OpenImageIO library"                      OFF)
 option (USE_EXTERNAL_OSL                    "Use external OpenShadingLanguage library"              OFF)
+option (USE_EXTERNAL_EXR                    "Use external OpenEXR library"                          OFF)
 
 option (WITH_OSL                            "Build OSL support"                                     OFF)
 
