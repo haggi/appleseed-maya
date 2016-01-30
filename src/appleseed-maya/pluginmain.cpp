@@ -90,7 +90,7 @@ MStatus initializePlugin( MObject obj )
     status = plugin.registerNode("asLayeredShader", asLayeredShader::id, asLayeredShader::creator, asLayeredShader::initialize, MPxNode::kDependNode, &asLayeredIdFullClassification);
     CHECK_MSTATUS(status);
 
-    MString command( "if( `window -exists createRenderNodeWindow` ) {refreshCreateRenderNodeWindow(\"" );
+    MString command( "if (`window -exists createRenderNodeWindow` ) {refreshCreateRenderNodeWindow(\"" );
     command += UserClassify;
     command += "\");}\n";
     MGlobal::executeCommand( command );
@@ -155,20 +155,6 @@ MStatus uninitializePlugin( MObject obj)
     }
 #endif
 
-    //std::cout << "deregister mtap standinLocator\n";
-    //status = plugin.deregisterNode( mtap_StandinLocator::id );
-    //if (!status) {
-    //  status.perror("cannot deregister node: mtap standinLocator");
-    //  return status;
-    //}
-
-    //std::cout << "deregister mtap standinMeshNode\n";
-    //status = plugin.deregisterNode( mtap_standinMeshNode::id );
-    //if (!status) {
-    //  status.perror("cannot deregister node: mtap_standinMeshNode");
-    //  return status;
-    //}
-
     std::cout << "deregister mtap globals\n";
     status = plugin.deregisterNode( MayaToAppleseedGlobals::id );
     if (!status) {
@@ -180,7 +166,7 @@ MStatus uninitializePlugin( MObject obj)
     CHECK_MSTATUS(plugin.deregisterNode(asDisneyMaterial::id));
 
     std::cout << "update mtap shader ui\n";
-    MString command( "if( `window -exists createRenderNodeWindow` ) {refreshCreateRenderNodeWindow(\"" );
+    MString command( "if (`window -exists createRenderNodeWindow` ) {refreshCreateRenderNodeWindow(\"" );
     command += UserClassify;
     command += "\");}\n";
     CHECK_MSTATUS( MGlobal::executeCommand( command ) );

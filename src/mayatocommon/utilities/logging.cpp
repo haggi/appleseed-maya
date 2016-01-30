@@ -128,7 +128,7 @@ void Logging::detail(MString logString)
 MString makeSpace(int level)
 {
     MString space;
-    for( int i = 0; i < level; i++)
+    for (int i = 0; i < level; i++)
         space += "\t";
     return space;
 }

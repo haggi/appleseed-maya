@@ -86,26 +86,26 @@ MayaScene::~MayaScene()
 bool MayaScene::listContainsAllLights(MDagPathArray& linkedLights, MDagPathArray& excludedLights)
 {
     excludedLights.clear();
-    for( uint lId = 0; lId < this->lightList.size(); lId++)
+    for (uint lId = 0; lId < this->lightList.size(); lId++)
     {
         MDagPath path = this->lightList[lId]->dagPath;
         bool found = false;
-        for( uint liId = 0; liId < linkedLights.length(); liId++)
+        for (uint liId = 0; liId < linkedLights.length(); liId++)
         {
             MDagPath linkedPath = linkedLights[liId];
-            if( linkedPath == path )
+            if (linkedPath == path )
             {
                 found = true;
                 break;
             }
         }
-        if( found )
+        if (found )
             continue;
         else
             excludedLights.append(path);
     }
 
-    if( excludedLights.length() > 0)
+    if (excludedLights.length() > 0)
         return false;
 
     return true;
@@ -127,7 +127,6 @@ bool MayaScene::lightObjectIsInLinkedLightList(sharedPtr<MayaObject> lightObject
 
 void MayaScene::getLightLinking()
 {
-    //Logging::debug(MString("----------- MayaScene::getLightLinking ---------------"));
     MLightLinks lightLink;
     bool parseStatus;
     parseStatus = lightLink.parseLinks(MObject::kNullObj);
@@ -146,7 +145,6 @@ void MayaScene::getLightLinking()
             MObjectArray shadingGroups, components;
             MFnMesh meshFn(obj->mobject);
             meshFn.getConnectedSetsAndMembers(obj->instanceNumber, shadingGroups, components, true);
-            //Logging::debug(MString("Object ") + obj->shortName + " has " + components.length() + " component groups and " + shadingGroups.length() + " shading groups.");
             int componentElements = 0;
             for (uint cId = 0; cId < components.length(); cId++)
             {
@@ -176,12 +174,8 @@ void MayaScene::getLightLinking()
         // the light has either turned off "Illuminate by default" or it is explicilty not linked to this object.
         for (size_t lObjId = 0; lObjId < this->lightList.size(); lObjId++)
         {
-            if (lightObjectIsInLinkedLightList(this->lightList[lObjId], lightArray))
+            if (!lightObjectIsInLinkedLightList(this->lightList[lObjId], lightArray))
             {
-                //Logging::debug(MString("Light object ") + this->lightList[lObjId]->shortName + " IS in lightList -> linked.");
-            }
-            else{
-                //Logging::debug(MString("Light object ") + this->lightList[lObjId]->shortName + " is NOT in lightList -> " + obj->shortName + " is not linked.");
                 this->lightList[lObjId]->excludedObjects.push_back(obj);
             }
         }

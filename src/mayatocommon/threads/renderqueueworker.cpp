@@ -54,7 +54,6 @@ threadObject RenderQueueWorker::sceneThread;
 static bool userEventFinished = false;
 static int numTiles = 0;
 static int tilesDone = 0;
-//static MCallbackId timerCallbackId = 0;
 static MCallbackId idleCallbackId = 0;
 static MCallbackId computationInterruptCallbackId = 0;
 static MCallbackId sceneCallbackId0 = 0;
@@ -199,7 +198,7 @@ void RenderQueueWorker::addIPRCallbacks()
         InteractiveElement iae = ite->second;
         MObject nodeDirty;
 
-        if ( iae.obj )
+        if (iae.obj )
             nodeDirty = iae.obj->mobject;
         else
             nodeDirty = iae.mobj;
@@ -226,7 +225,6 @@ void RenderQueueWorker::addIPRCallbacks()
         }
     }
 
-    //idleCallbackId = MEventMessage::addEventCallback("idle", RenderQueueWorker::renderQueueWorkerIPRIdleCallback, nullptr, &stat);
     idleCallbackId = MTimerMessage::addTimerCallback(0.2, RenderQueueWorker::IPRIdleCallback, nullptr, &stat);
     sceneCallbackId0 = MSceneMessage::addCallback(MSceneMessage::kBeforeNew, RenderQueueWorker::sceneCallback, nullptr, &stat);
     sceneCallbackId1 = MSceneMessage::addCallback(MSceneMessage::kBeforeOpen, RenderQueueWorker::sceneCallback, nullptr, &stat);
@@ -309,18 +307,6 @@ void  RenderQueueWorker::IPRattributeChangedCallback(MNodeMessage::AttributeMess
     else {
         return;
     }
-    //Logging::debug(MString("IPRattributeChangedCallback. Plug info: ") + plug.info());
-    //if (msg & MNodeMessage::kOtherPlugSet)
-    //{
-    //  if (msg & MNodeMessage::kIncomingDirection)
-    //  {
-    //      cout << "  <--  " << otherPlug.info();
-    //  }
-    //  else {
-    //      cout << "  -->  " << otherPlug.info();
-    //  }
-    //}
-    //cout << endl;
 }
 
 
@@ -383,7 +369,7 @@ void RenderQueueWorker::IPRNodeAddedCallback(MObject& node, void *userPtr)
             MCallbackId id = MNodeMessage::addNodeDirtyCallback(ie.node, RenderQueueWorker::IPRNodeDirtyCallback, userData);
             objIdMap[id] = ie.node;
 
-            if ( ie.node == node ) // we only add the shape node to the update map because do not want a transform update
+            if (ie.node == node ) // we only add the shape node to the update map because do not want a transform update
                 idInteractiveMap[id] = userData;
 
             if (ie.node.hasFn(MFn::kMesh))
@@ -438,28 +424,15 @@ void RenderQueueWorker::IPRNodeRemovedCallback(MObject& node, void *userPtr)
     }
 }
 
-//void RenderQueueWorker::IPRIdleCallback(void *data)
-//{
-//  //Logging::debug("renderQueueWorkerIPRIdleCallback.");
-//  //MMessage::removeCallback(idleCallbackId);
-//  //RenderQueueWorker::renderQueueWorkerIdleCallback(0.0f, 0.0f, nullptr);
-//}
-
 void RenderQueueWorker::pluginUnloadCallback(void *)
 {
     Logging::debug("pluginUnloadCallback.");
     RenderQueueWorker::removeCallbacks();
-    //EventQueue::Event e;
-    //e.type = EventQueue::Event::FINISH;
-    //theRenderEventQueue()->push(e);
 }
 
 void RenderQueueWorker::sceneCallback(void *)
 {
     Logging::debug("sceneCallback.");
-    //EventQueue::Event e;
-    //e.type = EventQueue::Event::FINISH;
-    //theRenderEventQueue()->push(e);
 }
 
 void RenderQueueWorker::removeCallbacks()
@@ -478,7 +451,7 @@ void RenderQueueWorker::removeCallbacks()
         MDGMessage::removeCallback(nodeRemovedCallbackId);
     pluginCallbackId = idleCallbackId = sceneCallbackId0 = sceneCallbackId1 = nodeRemovedCallbackId = nodeAddedCallbackId = 0;
     std::vector<MCallbackId>::iterator iter;
-    for( iter = nodeCallbacks.begin(); iter != nodeCallbacks.end(); iter++)
+    for (iter = nodeCallbacks.begin(); iter != nodeCallbacks.end(); iter++)
         MMessage::removeCallback(*iter);
     nodeCallbacks.clear();
     objIdMap.clear();
@@ -607,7 +580,6 @@ void RenderQueueWorker::renderProcessThread()
                 sleepFor(100);
             if ((MayaTo::getWorldPtr()->renderType != MayaTo::MayaToWorld::WorldRenderType::IPRRENDER) || (MayaTo::getWorldPtr()->renderState == MayaTo::MayaToWorld::WorldRenderState::RSTATESTOPPED))
                 break;
-            //MayaTo::getWorldPtr()->worldRendererPtr->abortRendering();
             MayaTo::getWorldPtr()->worldRendererPtr->interactiveUpdateList = modifiedElementList;
             MayaTo::getWorldPtr()->worldRendererPtr->doInteractiveUpdate();
             modifiedElementList.clear();
@@ -829,7 +801,6 @@ void RenderQueueWorker::startRenderQueueWorker()
                 setEndTime();
                 if (MRenderView::doesRenderEditorExist())
                 {
-                    //status = MRenderView::endRender();
                     MString captionString = getCaptionString();
                     MString captionCmd = MString("import pymel.core as pm;pm.renderWindowEditor(\"renderView\", edit=True, pcaption=\"") + captionString + "\");";
                     Logging::debug(captionCmd);
@@ -848,7 +819,6 @@ void RenderQueueWorker::startRenderQueueWorker()
             break;
 
         case EventQueue::Event::FRAMEUPDATE:
-            //Logging::debug("Event::FRAMEUPDATE");
             RenderQueueWorker::updateRenderView(e);
             break;
 
@@ -866,10 +836,6 @@ void RenderQueueWorker::startRenderQueueWorker()
             Logging::debug("Event::IPRSTOP");
             MayaTo::getWorldPtr()->setRenderState(MayaTo::MayaToWorld::WorldRenderState::RSTATESTOPPED);
             MayaTo::getWorldPtr()->worldRendererPtr->abortRendering();
-            //if (RenderQueueWorker::sceneThread.joinable())
-            //  RenderQueueWorker::sceneThread.join();
-            //e.type = EventQueue::Event::RENDERDONE;
-            //theRenderEventQueue()->push(e);
             break;
 
         case EventQueue::Event::TILEDONE:
@@ -886,31 +852,6 @@ void RenderQueueWorker::startRenderQueueWorker()
             break;
 
         case EventQueue::Event::PIXELSDONE:
-            //if( MRenderView::doesRenderEditorExist())
-            //{
-            //  int width, height;
-            //  MayaTo::getWorldPtr()->worldRenderGlobalsPtr->getWidthHeight(width, height);
-            //  if (imageBuffer == nullptr)
-            //  {
-            //      imageBuffer = new RV_PIXEL[width * height];
-            //      for( int x=0; x < width; x++)
-            //          for( int y=0; y < height; y++)
-            //              imageBuffer[width*y + x].r = imageBuffer[width*y + x].g = imageBuffer[width*y + x].b = imageBuffer[width*y + x].a = 0.0f;
-            //  }
-            //  EventQueue::RandomPixel *pixels = (EventQueue::RandomPixel *)e.data;
-            //  for( size_t pId = 0; pId < e.numPixels; pId++)
-            //  {
-            //      imageBuffer[width * pixels[pId].y + pixels[pId].x] =  pixels[pId].pixel;
-            //  }
-            //  pixelsChanged += e.numPixels;
-            //  if( (theRenderEventQueue()->size() <= 1) || (pixelsChanged >= minPixelsChanged))
-            //  {
-            //      MRenderView::updatePixels(0, width-1, 0, height-1, imageBuffer);
-            //      MRenderView::refresh(0, width-1, 0, height-1);
-            //      pixelsChanged = 0;
-            //  }
-            //}
-            //delete[]  (EventQueue::RandomPixel *)e.data;
             break;
 
         case EventQueue::Event::PRETILE:
@@ -920,10 +861,6 @@ void RenderQueueWorker::startRenderQueueWorker()
         case EventQueue::Event::IPRUPDATESCENE:
             {
                 Logging::debug("Event::IPRUPDATESCENE");
-                //MayaTo::getWorldPtr()->worldRendererPtr->interactiveUpdateList = modifiedElementList;
-                //threadObject tst = threadObject(RenderQueueWorker::interactiveStartThread);
-                //tst.detach();
-                //modifiedElementList.clear();
             }
             break;
 

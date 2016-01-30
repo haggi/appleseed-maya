@@ -258,19 +258,8 @@ bool RenderGlobals::getMbSteps()
 {
     this->mbElementList.clear();
 
-    // if shadowmap then ignore motionblur steps
-    //if(this->currentRenderPass->passType == RenderPass::ShadowMap)
-    //{
-    //  MbElement mbel;
-    //  mbel.elementType = MbElement::Both;
-    //  mbel.time = 0.0;
-    //  this->mbElementList.push_back(mbel);
-    //  return true;
-    //}
-
-
     // if no motionblur, I add 0.0 to the list as dummy
-    if( !this->doMb )
+    if (!this->doMb )
     {
         MbElement mbel;
         mbel.elementType = MbElement::MotionBlurBoth;
@@ -279,12 +268,8 @@ bool RenderGlobals::getMbSteps()
         return true;
     }
 
-    //degrees * ( M_PI/ 180.0 );
-    //radians * (180.0/M_PI);
     //TODO: make motionblur calculation time dependent instead of frame dependent
 
-
-    //double shutterDist = shutterAngle / (2.0 * M_PI);
     double shutterDist = this->motionBlurRange;
     MString info;
 
@@ -320,11 +305,11 @@ bool RenderGlobals::getMbSteps()
     std::list<MbElement> sortList;
     std::list<MbElement >::iterator sortListIt;
 
-    if( this->xftimesamples > 1)
+    if (this->xftimesamples > 1)
     {
         float xfStepSize =  (float)(shutterDist/(float)(this->xftimesamples - 1));
         double mbStepValue = startStep;
-        for( int step = 0; step < this->xftimesamples; step++)
+        for (int step = 0; step < this->xftimesamples; step++)
         {
             MbElement mbel;
             mbel.elementType = MbElement::MotionBlurXForm;
@@ -338,7 +323,7 @@ bool RenderGlobals::getMbSteps()
     {
         float geoStepSize =  (float)(shutterDist/(float)(this->geotimesamples - 1));
         double mbStepValue = startStep;
-        for( int step = 0; step < this->geotimesamples; step++)
+        for (int step = 0; step < this->geotimesamples; step++)
         {
             MbElement mbel;
             mbel.elementType = MbElement::MotionBlurGeo;
@@ -348,7 +333,7 @@ bool RenderGlobals::getMbSteps()
         }
     }
     sortList.sort();
-    for( sortListIt = sortList.begin(); sortListIt != sortList.end(); sortListIt++)
+    for (sortListIt = sortList.begin(); sortListIt != sortList.end(); sortListIt++)
     {
         this->mbElementList.push_back(*sortListIt);
     }
@@ -377,7 +362,7 @@ bool RenderGlobals::getDefaultGlobals()
     MSelectionList defaultGlobals;
     defaultGlobals.add("defaultRenderGlobals");
 
-    if( defaultGlobals.length() == 0 )
+    if (defaultGlobals.length() == 0 )
     {
         Logging::debug("defaultRenderGlobals not found. Stopping.");
         return false;
@@ -398,15 +383,15 @@ bool RenderGlobals::getDefaultGlobals()
     this->byFrame = data.frameBy;
 
     // check if we are in a batch render mode or if we are rendering from UI
-    if( MGlobal::mayaState() == MGlobal::kBatch )
+    if (MGlobal::mayaState() == MGlobal::kBatch )
     {
         this->inBatch = true;
-        if( data.isAnimated() )
+        if (data.isAnimated() )
         {
             Logging::debug(MString("animation on, rendering frame sequence from ") + this->startFrame + " to " + this->endFrame + " by " + this->byFrame);
             // these are the frames that are supposed to be rendered in batch mode
             this->doAnimation = true;
-            for( double frame = this->startFrame; frame <= this->endFrame; frame += this->byFrame)
+            for (double frame = this->startFrame; frame <= this->endFrame; frame += this->byFrame)
                 this->frameList.push_back((float)frame);
         }else{
             Logging::debug(MString("animation off, rendering current frame"));

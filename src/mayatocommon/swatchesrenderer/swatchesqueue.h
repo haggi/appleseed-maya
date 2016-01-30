@@ -36,18 +36,8 @@
 #include <maya/MObject.h>
 #include <maya/MImage.h>
 
-//class NewSwatchRenderer;
-
 namespace SQueue
 {
-    //struct Event
-    //{
-    //  MObject renderNode;
-    //  //NewSwatchRenderer *swatchRenderer;
-    //  bool *renderDone;
-    //  MImage *imageRef;
-    //};
-
     template<typename Data>
     class concurrent_queue
     {
@@ -99,8 +89,6 @@ namespace SQueue
             the_queue.pop();
         }
     };
-
-//  static concurrent_queue<Event> SwatchesQueue;
 }
 
 #endif

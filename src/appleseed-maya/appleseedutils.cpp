@@ -258,33 +258,11 @@ void removeColorEntityIfItExists(const MString colorName)
     assert(appleRenderer != nullptr);
     asr::Scene *scene = getSceneFromProject(appleRenderer->getProjectPtr());
     asr::ColorEntity *entity = scene->colors().get_by_name(colorName.asChar());
-    if( entity != nullptr)
+    if (entity != nullptr)
     {
         scene->colors().remove(entity);
     }
 }
-
-//void defineColor(const MString name, const MColor color, const float intensity, MString colorSpace)
-//{
-//  sharedPtr<AppleRender::AppleseedRenderer> appleRenderer = staticPtrCast<AppleRender::AppleseedRenderer>(MayaTo::getWorldPtr()->worldRendererPtr);
-//  assert(appleRenderer != nullptr);
-//
-//  float colorDef[3];
-//  float alpha = color.a;
-//  mayaColorToFloat(color, colorDef, &alpha);
-//  removeColorEntityIfItExists(name);
-//
-//  asf::auto_release_ptr<asr::ColorEntity> colorEntity = asr::ColorEntityFactory::create(
-//              name.asChar(),
-//              asr::ParamArray()
-//                  .insert("color_space", colorSpace.asChar())
-//                  .insert("multiplier", intensity),
-//              asr::ColorValueArray(3, colorDef),
-//              asr::ColorValueArray(1, &alpha));
-//
-//  asr::Scene *scene = getSceneFromProject(appleRenderer->getProjectPtr());
-//  scene->colors().insert(colorEntity);
-//}
 
 void defineColor(asr::Project *project, const char *name, MColor color, float intensity, MString colorSpace)
 {
@@ -328,11 +306,11 @@ void removeTextureEntityIfItExists(MString& textureName)
 
     MString textureInstanceName = textureName + "_texInst";
     asr::Entity *texture = (asr::Entity *)scene->textures().get_by_name(textureName.asChar());
-    if( texture != nullptr)
+    if (texture != nullptr)
         scene->textures().remove(texture);
 
     asr::TextureInstance *textureInstance = scene->texture_instances().get_by_name(textureInstanceName.asChar());
-    if( textureInstance != nullptr)
+    if (textureInstance != nullptr)
         scene->texture_instances().remove(textureInstance);
 }
 
@@ -346,9 +324,9 @@ MString defineTexture(MFnDependencyNode& shader, MString& attributeName)
     MStatus stat;
     MString textureDefinition("");
     MPlug plug = shader.findPlug(attributeName, &stat);
-    if( stat != MStatus::kSuccess)
+    if (stat != MStatus::kSuccess)
         return textureDefinition;
-    if( !plug.isConnected() )
+    if (!plug.isConnected() )
         return textureDefinition;
     MObject connectedNode = getConnectedInNode(plug);
 
@@ -359,9 +337,9 @@ MString defineTexture(MFnDependencyNode& shader, MString& attributeName)
     MString textureName = fileTextureNode.name() + "_texture";
     MString fileTextureName = "";
     getString(MString("fileTextureName"), fileTextureNode, fileTextureName);
-    if( !pystring::endswith(fileTextureName.asChar(), ".exr") || (fileTextureName.length() == 0))
+    if (!pystring::endswith(fileTextureName.asChar(), ".exr") || (fileTextureName.length() == 0))
     {
-        if( fileTextureName.length() == 0)
+        if (fileTextureName.length() == 0)
             Logging::warning(MString("FileTextureName has no content."));
         else
             Logging::warning(MString("FileTextureName does not have an .exr extension. Other filetypes are not yet supported, sorry."));
@@ -370,7 +348,6 @@ MString defineTexture(MFnDependencyNode& shader, MString& attributeName)
 
     removeTextureEntityIfItExists(textureName);
 
-    //MString colorProfile = getTextureColorProfile(fileTextureNode);
     MString colorProfile = "srgb";
 
     asr::ParamArray params;
@@ -389,9 +366,8 @@ MString defineTexture(MFnDependencyNode& shader, MString& attributeName)
     getBool(MString("alphaIsLuminance"), fileTextureNode, alphaIsLuminance);
     asr::ParamArray tInstParams;
     tInstParams.insert("addressing_mode", "clamp");
-    //tInstParams.insert("addressing_mode", "wrap");
     tInstParams.insert("filtering_mode", "bilinear");
-    if( alphaIsLuminance )
+    if (alphaIsLuminance )
         tInstParams.insert("alpha_mode", "luminance");
 
     MString textureInstanceName = textureName + "_texInst";
@@ -471,8 +447,8 @@ void fillTransformMatrices(sharedPtr<MayaObject> obj, asr::Light *light)
 void MMatrixToAMatrix(MMatrix& mayaMatrix, asf::Matrix4d& appleMatrix)
 {
     MMatrix rowMatrix = mayaMatrix.transpose();
-    for( int i = 0; i < 4; i++)
-        for( int k = 0; k < 4; k++)
+    for (int i = 0; i < 4; i++)
+        for (int k = 0; k < 4; k++)
             appleMatrix[i * 4 + k] = rowMatrix[i][k];
 }
 

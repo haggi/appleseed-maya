@@ -177,7 +177,6 @@ namespace MAYATO_OSLUTIL{
             {
                 MPlug p = plug[i];
                 MString attrName = getCorrectOSLParameterName(p);
-                //Logging::debug(MString("Found an array plug ") + attrName);
 
                 if (p.isCompound() && (getAttributeNameFromPlug(plug) == "colorEntryList"))
                 {
@@ -232,7 +231,6 @@ namespace MAYATO_OSLUTIL{
             // in OSL we don't have option menus, they are defined in our definition by string metadatas
             if (sa.optionMenu)
             {
-                //int v = getEnumInt(sa.name.c_str(), depFn);
                 MString v = getEnumString(sa.name.c_str(), depFn);
                 paramArray.push_back(MAYATO_OSL::OSLParameter(sa.name.c_str(), v));
             }
@@ -262,7 +260,6 @@ namespace MAYATO_OSLUTIL{
                             baseFileName = fileNameWithTokens.substr(0, pos - 1);
                             if (uvTilingMode == 3)
                                 baseFileName = fileNameWithTokens.substr(0, pos);
-                            //Logging::debug(MString("Base fileName is: ") + baseFileName.c_str());
                             paramArray.push_back(MAYATO_OSL::OSLParameter("baseName", baseFileName));
                         }
                         pos = fileName.rfind(".");
@@ -630,7 +627,7 @@ namespace MAYATO_OSLUTIL{
         MString paramName = getParamName(plug);
 
         int found = pystring::find(plugName.asChar(), "colorEntryList");
-        if ( found > -1)
+        if (found > -1)
         {
             // a color entrylist is a list of compounds: color and position
             // check if we have a color or position entry or if we have a component e.g. colorR

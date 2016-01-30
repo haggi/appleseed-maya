@@ -57,14 +57,14 @@ void mtap_ITileCallback::copyTileToImage(RV_PIXEL* pixels, asf::Tile& tile, int 
     size_t pixelIdYStart = frame_props.m_canvas_width * ypos;
     size_t max = frame_props.m_canvas_width * frame_props.m_canvas_height;
     int dummy = 0;
-    for( size_t ty = 0; ty < th; ty++)
+    for (size_t ty = 0; ty < th; ty++)
     {
-        for( size_t tx = 0; tx < tw; tx++)
+        for (size_t tx = 0; tx < tw; tx++)
         {
             size_t yPixelPos = pixelIdYStart - ty * frame_props.m_canvas_width;
             size_t pixelId = yPixelPos + tile_x * frame_props.m_tile_width + tx;
             asf::uint8 *source = tile.pixel(tx, ty);
-            if( pixelId < max)
+            if (pixelId < max)
             {
                 pixels[pixelId].r = (float)source[0];
                 pixels[pixelId].g = (float)source[1];
@@ -88,7 +88,7 @@ void mtap_ITileCallback::post_render(
     sharedPtr<RV_PIXEL> pixelsPtr(new RV_PIXEL[numPixels]);
     RV_PIXEL *pixels = pixelsPtr.get();
 
-    for( int x = 0; x < numPixels; x++)
+    for (int x = 0; x < numPixels; x++)
     {
         pixels[x].r = 255.0f;
         pixels[x].g = .0f;
@@ -96,9 +96,9 @@ void mtap_ITileCallback::post_render(
         pixels[x].a = .0f;
     }
 
-    for( int tile_x = 0; tile_x < frame_props.m_tile_count_x; tile_x++)
+    for (int tile_x = 0; tile_x < frame_props.m_tile_count_x; tile_x++)
     {
-        for( int tile_y = 0; tile_y < frame_props.m_tile_count_y; tile_y++)
+        for (int tile_y = 0; tile_y < frame_props.m_tile_count_y; tile_y++)
         {
             const asf::Tile& tile = frame->image().tile(tile_x, tile_y);
 
@@ -182,7 +182,7 @@ void mtap_ITileCallback::post_render_tile(
     RV_PIXEL *pixels = pixelsPtr.get();
     for (size_t yy = 0; yy < th; yy++)
     {
-        for( size_t xx = 0; xx < tw; xx++)
+        for (size_t xx = 0; xx < tw; xx++)
         {
             size_t pixelId = yy * tw + xx;
             size_t yy1 = th - yy - 1;

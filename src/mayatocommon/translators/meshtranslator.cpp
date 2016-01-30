@@ -69,20 +69,20 @@ MeshTranslator::MeshTranslator(MObject meshMObject)
         faceIt.getTriangles(triPoints, triVtxIds);
         faceIt.getVertices(faceVtxIds);
         faceNormalIds.clear();
-        for( int vtxId = 0; vtxId < faceVtxIds.length(); vtxId++)
+        for (int vtxId = 0; vtxId < faceVtxIds.length(); vtxId++)
         {
             faceNormalIds.append(faceIt.normalIndex(vtxId));
         }
 
-        for( int triId = 0; triId < numTris; triId++)
+        for (int triId = 0; triId < numTris; triId++)
         {
             int faceRelIds[3];
 
-            for( uint triVtxId = 0; triVtxId < 3; triVtxId++)
+            for (uint triVtxId = 0; triVtxId < 3; triVtxId++)
             {
                 for(uint faceVtxId = 0; faceVtxId < triVtxIds.length(); faceVtxId++)
                 {
-                    if( triVtxIds[faceVtxId] == triVtxIds[triVtxId])
+                    if (triVtxIds[faceVtxId] == triVtxIds[triVtxId])
                     {
                         faceRelIds[triVtxId] = faceVtxId;
                     }

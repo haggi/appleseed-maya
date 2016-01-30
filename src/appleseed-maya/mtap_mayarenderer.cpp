@@ -92,8 +92,6 @@
 
 mtap_MayaRenderer::mtap_MayaRenderer()
 {
-    //log_target = autoPtr<asf::ILogTarget>(asf::create_console_log_target(stdout));
-    //asr::global_logger().add_target(log_target.get());
     initProject();
     width = height = initialSize;
     this->rb = (float*)malloc(width*height*kNumChannels*sizeof(float));
@@ -181,7 +179,6 @@ void mtap_MayaRenderer::initProject()
     project->configurations().get_by_name("final")->get_parameters().insert_path("uniform_pixel_renderer.samples", "4");
 #else
     project->configurations().get_by_name("final")->get_parameters().insert_path("uniform_pixel_renderer.samples", "16");
-    //project->configurations().get_by_name("interactive")->get_parameters().insert_path("uniform_pixel_renderer.samples", "2");
 #endif
     defineScene(project.get());
     defineMasterAssembly(project.get());
@@ -224,19 +221,12 @@ void mtap_MayaRenderer::initProject()
         this->project->configurations().get_by_name("interactive")->get_inherited_parameters(),
         &controller,
         this->tileCallbackFac.get()));
-    //mrenderer = autoPtr<asr::MasterRenderer>(new asr::MasterRenderer(
-    //  this->project.ref(),
-    //  this->project->configurations().get_by_name("final")->get_inherited_parameters(),
-    //  &controller,
-    //  this->tileCallbackFac.get()));
 
     for (uint i = 0; i < MayaTo::getWorldPtr()->shaderSearchPath.length(); i++)
     {
         Logging::debug(MString("Search path: ") + MayaTo::getWorldPtr()->shaderSearchPath[i]);
         project->search_paths().push_back(MayaTo::getWorldPtr()->shaderSearchPath[i].asChar());
     }
-
-
 }
 
 bool mtap_MayaRenderer::isRunningAsync()
@@ -244,6 +234,7 @@ bool mtap_MayaRenderer::isRunningAsync()
     Logging::debug("isRunningAsync");
     return true;
 }
+
 void* mtap_MayaRenderer::creator()
 {
     return new mtap_MayaRenderer();
@@ -278,7 +269,6 @@ MStatus mtap_MayaRenderer::startAsync(const JobParams& params)
 {
     Logging::debug("startAsync:");
     Logging::debug(MString("\tJobDescr: ") + params.description + " max threads: " + params.maxThreads);
-    //renderThread = threadObject(startRenderThread, this);
     Logging::debug(MString("started async"));
     asyncStarted = true;
     return MStatus::kSuccess;
@@ -312,7 +302,6 @@ MStatus mtap_MayaRenderer::translateMesh(const MUuid& id, const MObject& node)
     MFnDependencyNode depFn(mobject);
     MString meshName = depFn.name();
     MString meshIdName = meshName;
-    //MString meshIdName = meshName + "_" + id;
     MString meshInstName = meshIdName + "_instance";
     Logging::debug(MString("translateMesh ") + meshIdName);
 
@@ -582,68 +571,6 @@ MStatus mtap_MayaRenderer::translateShader(const MUuid& id, const MObject& node)
     MString shadingGroupName = getObjectName(sgNode);
     MString shaderGroupName = shadingGroupName + "_OSLShadingGroup";
 
-    //MString shaderGroupName = depFn.name() + "_" + id + "_SG";
-    //MString shaderMaterialName = depFn.name() + "_" + "Material";
-    //Logging::debug(MString("translateShader: ") + shaderGroupName);
-
-    //MStatus status;
-    //asf::StringArray materialNames;
-    //MAYATO_OSLUTIL::OSLUtilClass oslClass;
-    //MString surfaceShader;
-    //MObject surfaceShaderNode = node;
-    //ShadingNetwork network(surfaceShaderNode);
-    //size_t numNodes = network.shaderList.size();
-
-    //asr::ShaderGroup *existingShaderGroup = GETASM()->shader_groups().get_by_name(shaderGroupName.asChar());
-    //if (existingShaderGroup != nullptr)
-    //{
-    //  existingShaderGroup->clear();
-    //  oslClass.group = (OSL::ShaderGroup *)existingShaderGroup;
-    //}
-    //else{
-    //  asf::auto_release_ptr<asr::ShaderGroup> oslShaderGroup = asr::ShaderGroupFactory().create(shaderGroupName.asChar());
-    //  GETASM()->shader_groups().insert(oslShaderGroup);
-    //  MString physicalSurfaceName = shaderGroupName + "_physical_surface_shader";
-    //  GETASM()->surface_shaders().insert(
-    //      asr::PhysicalSurfaceShaderFactory().create(
-    //      physicalSurfaceName.asChar(),
-    //      asr::ParamArray()));
-
-    //  GETASM()->materials().insert(
-    //      asr::OSLMaterialFactory().create(
-    //      shaderMaterialName.asChar(),
-    //      asr::ParamArray()
-    //      .insert("surface_shader", physicalSurfaceName.asChar())
-    //      .insert("osl_surface", shaderGroupName.asChar())));
-
-    //  existingShaderGroup = GETASM()->shader_groups().get_by_name(shaderGroupName.asChar());
-    //}
-    //oslClass.group = (OSL::ShaderGroup *)existingShaderGroup;
-    //oslClass.createOSLProjectionNodes(surfaceShaderNode);
-    //for (int shadingNodeId = 0; shadingNodeId < numNodes; shadingNodeId++)
-    //{
-    //  ShadingNode snode = network.shaderList[shadingNodeId];
-    //  Logging::debug(MString("ShadingNode Id: ") + shadingNodeId + " ShadingNode name: " + snode.fullName);
-    //  if (shadingNodeId == (numNodes - 1))
-    //      Logging::debug(MString("LastNode Surface Shader: ") + snode.fullName);
-    //  //oslClass.createOSLHelperNodes(network.shaderList[shadingNodeId]);
-    //  oslClass.createOSLShadingNode(network.shaderList[shadingNodeId]);
-    //  oslClass.connectProjectionNodes(network.shaderList[shadingNodeId].mobject);
-    //}
-    //if (numNodes > 0)
-    //{
-    //  ShadingNode snode = network.shaderList[numNodes - 1];
-    //  MString layer = (snode.fullName + "_interface");
-    //  Logging::debug(MString("Adding interface shader: ") + layer);
-    //  existingShaderGroup->add_shader("surface", "surfaceShaderInterface", layer.asChar(), asr::ParamArray());
-    //  const char *srcLayer = snode.fullName.asChar();
-    //  const char *srcAttr = "outColor";
-    //  const char *dstLayer = layer.asChar();
-    //  const char *dstAttr = "inColor";
-    //  Logging::debug(MString("Connecting interface shader: ") + srcLayer + "." + srcAttr + " -> " + dstLayer + "." + dstAttr);
-    //  existingShaderGroup->add_connection(srcLayer, srcAttr, dstLayer, dstAttr);
-    //}
-
     IdNameStruct idName;
     idName.id = id;
     idName.name = shadingGroupName;
@@ -685,7 +612,7 @@ MStatus mtap_MayaRenderer::setProperty(const MUuid& id, const MString& name, con
                 {
                     Logging::debug(MString("Setting environment image file to: ") + value);
                     asr::Texture *tex = project->get_scene()->textures().get_by_name("envTex");
-                    if ( tex != nullptr)
+                    if (tex != nullptr)
                     {
                         Logging::debug(MString("Removing already existing env texture."));
                         project->get_scene()->textures().remove(tex);
@@ -695,13 +622,6 @@ MStatus mtap_MayaRenderer::setProperty(const MUuid& id, const MString& name, con
                     {
                         MString mayaRoot = getenv("MAYA_LOCATION");
                         imageFile = mayaRoot + "/presets/Assets/IBL/black.exr";
-
-                        //asr::ParamArray& pa = project->get_scene()->environment_edfs().get_by_name("sky_edf")->get_parameters();
-                        //if (MString(pa.get_path("radiance")) != "black")
-                        //{
-                        //  pa.insert("radiance", "black");
-                        //  project->get_scene()->environment_edfs().get_by_name("sky_edf")->bump_version_id();
-                        //}
                     }
 
                     asr::ParamArray& pa = project->get_scene()->environment_edfs().get_by_name("sky_edf")->get_parameters();
@@ -763,7 +683,7 @@ MStatus mtap_MayaRenderer::setShader(const MUuid& id, const MUuid& shaderId)
 
 
     asr::ObjectInstance *objInstance = GETASM()->object_instances().get_by_name(objElement.name.asChar());
-    if ( objInstance != nullptr)
+    if (objInstance != nullptr)
         objInstance->get_front_material_mappings().insert("slot0", shaderElement.name.asChar());
     else
         Logging::debug(MString("unable to assign shader "));
@@ -847,9 +767,6 @@ MStatus mtap_MayaRenderer::destroyScene()
     controller.status = asr::IRendererController::AbortRendering;
     if (renderThread.joinable())
         renderThread.join();
-    //mrenderer.release();
-    //project.release();
-    //objectArray.clear();
 
     ProgressParams progressParams;
     progressParams.progress = -1.0f;

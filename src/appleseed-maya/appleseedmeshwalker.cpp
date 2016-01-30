@@ -62,9 +62,9 @@ MObject MeshWalker::checkSmoothMesh()
     }
 
     bool displaySmoothMesh = false;
-    if( getBool("displaySmoothMesh", mesh, displaySmoothMesh) )
+    if (getBool("displaySmoothMesh", mesh, displaySmoothMesh) )
     {
-        if( !displaySmoothMesh )
+        if (!displaySmoothMesh )
             return object;
     }else{
         MGlobal::displayError(MString("generateSmoothMesh : could not get displaySmoothMesh attr "));
@@ -88,7 +88,7 @@ MObject MeshWalker::checkSmoothMesh()
 
     MPointArray points;
     stat = smoothMeshDn.getPoints(points);
-    if( !stat )
+    if (!stat )
     {
         MGlobal::displayError(MString("generateSmoothMesh : could not get points"));
     }
@@ -106,7 +106,7 @@ MeshWalker::MeshWalker(MDagPath& dagPath)
     this->useSmoothMesh = false;
 
     MObject smoothMesh = this->checkSmoothMesh();
-    if( smoothMesh != MObject::kNullObj)
+    if (smoothMesh != MObject::kNullObj)
     {
         this->meshObject = smoothMesh;
         this->useSmoothMesh = true;
@@ -130,7 +130,7 @@ MeshWalker::MeshWalker(MDagPath& dagPath)
 
     MGlobal::displayInfo(MString("MeshWalker : numU: ") + u.length() + " numV:" + v.length());
 
-    for( uint i = 0; i < v.length(); i++)
+    for (uint i = 0; i < v.length(); i++)
         MGlobal::displayInfo(MString("MeshWalker : V[") + i + "]: " + u[i]);
 
 
@@ -151,7 +151,7 @@ MeshWalker::MeshWalker(MDagPath& dagPath)
         MIntArray faceUVIndices;
 
         faceNormalIds.clear();
-        for( uint vtxId = 0; vtxId < faceVtxIds.length(); vtxId++)
+        for (uint vtxId = 0; vtxId < faceVtxIds.length(); vtxId++)
         {
             faceNormalIds.append(faceIt.normalIndex(vtxId));
             int uvIndex;
@@ -159,17 +159,17 @@ MeshWalker::MeshWalker(MDagPath& dagPath)
             faceUVIndices.append(uvIndex);
         }
 
-        for( int triId = 0; triId < numTris; triId++)
+        for (int triId = 0; triId < numTris; triId++)
         {
             int faceRelIds[3];
             faceIt.getTriangle(triId, triPoints, triVtxIds);
             this->perTriangleAssignments.append(this->perFaceAssignments[faceId]);
 
-            for( uint triVtxId = 0; triVtxId < 3; triVtxId++)
+            for (uint triVtxId = 0; triVtxId < 3; triVtxId++)
             {
                 for(uint faceVtxId = 0; faceVtxId < faceVtxIds.length(); faceVtxId++)
                 {
-                    if( faceVtxIds[faceVtxId] == triVtxIds[triVtxId])
+                    if (faceVtxIds[faceVtxId] == triVtxIds[triVtxId])
                     {
                         faceRelIds[triVtxId] = faceVtxId;
                     }
@@ -207,7 +207,7 @@ MeshWalker::MeshWalker(MDagPath& dagPath)
 void MeshWalker::setTransform()
 {
     MMatrix matrix = meshDagPath.inclusiveMatrix();
-    for( uint vtxId = 0; vtxId < points.length(); vtxId++)
+    for (uint vtxId = 0; vtxId < points.length(); vtxId++)
         points[vtxId] *= matrix;
 }
 
@@ -294,5 +294,4 @@ size_t MeshWalker::get_face_tex_coords(const size_t face_index, const size_t ver
 size_t MeshWalker::get_face_material(const size_t face_index) const
 {
     return 0;
-    //return this->perTriangleAssignments[face_index];
 }

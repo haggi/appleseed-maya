@@ -51,7 +51,6 @@ void AppleseedRenderer::addRenderParams(asr::ParamArray& paramArray)
     MString dlType = dlTypes[getEnumInt("dl_mode", renderGlobalsFn)];
     sharedPtr<RenderGlobals> renderGlobals = MayaTo::getWorldPtr()->worldRenderGlobalsPtr;
 
-    //paramArray.insert("rendering_threads", renderGlobals->threads);
     paramArray.insert_path("texture_store.max_size", getIntAttr("texCacheSize", renderGlobalsFn, 128) * 1024 * 1024); // at least 128 MB
 
     paramArray.insert("sampling_mode", getEnumString("sampling_mode", renderGlobalsFn));
@@ -121,7 +120,7 @@ void AppleseedRenderer::defineConfig()
         .get_by_name("interactive")->get_parameters()
         .insert_path("generic_tile_renderer.sampler", pixel_renderer);
 
-    if( renderGlobals->getUseRenderRegion() )
+    if (renderGlobals->getUseRenderRegion() )
     {
         int left, right, bottom, top;
         int imgWidth, imgHeight;
@@ -137,16 +136,6 @@ void AppleseedRenderer::defineConfig()
         .get_by_name("final")->get_parameters()
         .insert_path("generic_tile_renderer.crop_window", regionString.asChar());
     }
-
-    //if( !renderGlobals->enable_caustics )
-    //{
-    //  this->project->configurations()
- //       .get_by_name("final")->get_parameters()
-    //  .insert_path((lightingEngine + ".enable_caustics").asChar(), "false");
-    //  this->project->configurations()
- //       .get_by_name("interactive")->get_parameters()
-    //  .insert_path((lightingEngine + ".enable_caustics").asChar(), "false");
-    //}
 
     this->project->configurations()
     .get_by_name("interactive")->get_parameters()

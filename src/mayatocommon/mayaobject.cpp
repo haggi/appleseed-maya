@@ -63,13 +63,13 @@ bool MayaObject::isInstanced()
 
 bool MayaObject::isLight()
 {
-    if( this->mobject.hasFn(MFn::kLight))
+    if (this->mobject.hasFn(MFn::kLight))
         return true;
     MFnDependencyNode depFn(this->mobject);
     uint nodeId = depFn.typeId().id();
-    for( uint lId = 0; lId < lightIdentifier.size(); lId++)
+    for (uint lId = 0; lId < lightIdentifier.size(); lId++)
     {
-        if( nodeId == lightIdentifier[lId])
+        if (nodeId == lightIdentifier[lId])
         {
             Logging::debug(MString("Found external lighttype: ") + depFn.name());
             return true;
@@ -80,7 +80,7 @@ bool MayaObject::isLight()
 
 bool MayaObject::isCamera()
 {
-    if( this->mobject.hasFn(MFn::kCamera))
+    if (this->mobject.hasFn(MFn::kCamera))
     {
         this->motionBlurred = true;
         return true;
@@ -91,24 +91,24 @@ bool MayaObject::isCamera()
 bool MayaObject::isGeo()
 {
 
-    if( this->mobject.hasFn(MFn::kMesh))
+    if (this->mobject.hasFn(MFn::kMesh))
         return true;
-    if( this->mobject.hasFn(MFn::kNurbsSurface))
+    if (this->mobject.hasFn(MFn::kNurbsSurface))
         return true;
-    if( this->mobject.hasFn(MFn::kParticle))
+    if (this->mobject.hasFn(MFn::kParticle))
         return true;
-    if( this->mobject.hasFn(MFn::kSubSurface))
+    if (this->mobject.hasFn(MFn::kSubSurface))
         return true;
-    if( this->mobject.hasFn(MFn::kNurbsCurve))
+    if (this->mobject.hasFn(MFn::kNurbsCurve))
         return true;
-    if( this->mobject.hasFn(MFn::kHairSystem))
+    if (this->mobject.hasFn(MFn::kHairSystem))
         return true;
 
     MFnDependencyNode depFn(this->mobject);
     uint nodeId = depFn.typeId().id();
-    for( uint lId = 0; lId < objectIdentifier.size(); lId++)
+    for (uint lId = 0; lId < objectIdentifier.size(); lId++)
     {
-        if( nodeId == objectIdentifier[lId])
+        if (nodeId == objectIdentifier[lId])
         {
             Logging::debug(MString("Found external geotype: ") + depFn.name());
             return true;
@@ -119,7 +119,7 @@ bool MayaObject::isGeo()
 
 bool MayaObject::isTransform()
 {
-    if( this->mobject.hasFn(MFn::kTransform))
+    if (this->mobject.hasFn(MFn::kTransform))
         return true;
     return false;
 }
@@ -129,11 +129,11 @@ void MayaObject::getShadingGroups()
 {
     // get shading groups only for allowed shapes
 
-    if( this->geometryShapeSupported() )
+    if (this->geometryShapeSupported() )
     {
         Logging::debug(MString("getShadingGroups::Supported geo ") + this->shortName);
         // only makes sense if we have a geometry shape.
-        if( this->mobject.hasFn(MFn::kMesh) || this->mobject.hasFn(MFn::kNurbsSurface) || this->mobject.hasFn(MFn::kParticle) || this->mobject.hasFn(MFn::kNParticle))
+        if (this->mobject.hasFn(MFn::kMesh) || this->mobject.hasFn(MFn::kNurbsSurface) || this->mobject.hasFn(MFn::kParticle) || this->mobject.hasFn(MFn::kNParticle))
         {
             getObjectShadingGroups(this->dagPath, this->perFaceAssignments, this->shadingGroups, true);
         }
@@ -213,11 +213,11 @@ void MayaObject::initialize()
     this->motionBlurred = true;
     this->geometryMotionblur = false;
     bool mb = true;
-    if( getBool(MString("motionBlur"), depFn, mb) )
+    if (getBool(MString("motionBlur"), depFn, mb) )
         this->motionBlurred = mb;
     // cameras have motionBlur attribute but it is set to false by default and it is not accessible via UI
     // but we want to have a blurred camera by default.
-    if( this->mobject.hasFn(MFn::kCamera))
+    if (this->mobject.hasFn(MFn::kCamera))
         this->motionBlurred = true;
     this->perObjectTransformSteps = 1;
     this->perObjectDeformSteps = 1;
@@ -239,18 +239,18 @@ void MayaObject::initialize()
     // get instancer connection
     MStatus stat;
     MPlug matrixPlug = depFn.findPlug(MString("matrix"), &stat);
-    if( !stat)
+    if (!stat)
         Logging::debug(MString("Could not find matrix plug"));
     else{
         MPlugArray outputs;
-        if( matrixPlug.isConnected())
+        if (matrixPlug.isConnected())
         {
             matrixPlug.connectedTo(outputs, false, true);
-            for( uint i = 0; i < outputs.length(); i++)
+            for (uint i = 0; i < outputs.length(); i++)
             {
                 MObject otherSide = outputs[i].node();
                 Logging::debug(MString("matrix is connected to ") + getObjectName(otherSide));
-                if( otherSide.hasFn(MFn::kInstancer))
+                if (otherSide.hasFn(MFn::kInstancer))
                 {
                     Logging::debug(MString("other side is instancer"));
                     this->hasInstancerConnection = true;
@@ -259,7 +259,7 @@ void MayaObject::initialize()
         }
     }
 
-    if( this->mobject.hasFn(MFn::kWorld))
+    if (this->mobject.hasFn(MFn::kWorld))
     {
         this->shortName = this->fullName = this->fullNiceName = "world";
     }
@@ -287,22 +287,22 @@ bool MayaObject::isObjAnimated()
     MStatus stat;
     bool returnValue = false;
 
-    if( this->instancerParticleId > -1)
+    if (this->instancerParticleId > -1)
         return true;
 
-    if( this->mobject.hasFn(MFn::kTransform))
+    if (this->mobject.hasFn(MFn::kTransform))
     {
         MFnDependencyNode depFn(this->mobject, &stat);
         if(stat)
         {
             MPlugArray connections;
             depFn.getConnections(connections);
-            if( connections.length() == 0)
+            if (connections.length() == 0)
                 returnValue = false;
             else{
-                for( uint cId = 0; cId < connections.length(); cId++)
+                for (uint cId = 0; cId < connections.length(); cId++)
                 {
-                    if( connections[cId].isDestination())
+                    if (connections[cId].isDestination())
                     {
                         returnValue = true;
                     }
@@ -328,20 +328,20 @@ bool MayaObject::isShapeConnected()
         {
         case MFn::kMesh:
             inPlug = depFn.findPlug(MString("inMesh"), &stat);
-            if( stat)
-                if( inPlug.isConnected())
+            if (stat)
+                if (inPlug.isConnected())
                     returnValue = true;
             break;
         case MFn::kNurbsSurface:
             inPlug = depFn.findPlug(MString("create"), &stat);
-            if( stat)
-                if( inPlug.isConnected())
+            if (stat)
+                if (inPlug.isConnected())
                     returnValue = true;
             break;
         case MFn::kNurbsCurve:
             inPlug = depFn.findPlug(MString("create"), &stat);
-            if( stat)
-                if( inPlug.isConnected())
+            if (stat)
+                if (inPlug.isConnected())
                     returnValue = true;
             break;
         }
@@ -452,7 +452,6 @@ void MayaObject::getMeshData(MPointArray& points, MFloatVectorArray& normals)
         {
             if (!tmpMesh.findPlug("useSmoothPreviewForRender", false, &stat).asBool())
             {
-                //Logging::debug(MString("useSmoothPreviewForRender turned off"));
                 int smoothLevel = tmpMesh.findPlug("renderSmoothLevel", false, &stat).asInt();
                 options.setDivisions(smoothLevel);
             }
@@ -497,7 +496,6 @@ void MayaObject::getMeshData(MPointArray& points, MFloatVectorArray& normals, MF
         {
             if (!tmpMesh.findPlug("useSmoothPreviewForRender", false, &stat).asBool())
             {
-                //Logging::debug(MString("useSmoothPreviewForRender turned off"));
                 int smoothLevel = tmpMesh.findPlug("renderSmoothLevel", false, &stat).asInt();
                 options.setDivisions(smoothLevel);
             }
@@ -525,10 +523,6 @@ void MayaObject::getMeshData(MPointArray& points, MFloatVectorArray& normals, MF
     uint numVertices = points.length();
     uint numNormals = normals.length();
     uint numUvs = uArray.length();
-
-    //Logging::debug(MString("numVertices ") + numVertices);
-    //Logging::debug(MString("numNormals ") + numNormals);
-    //Logging::debug(MString("numUvs ") + numUvs);
 
     // some meshes may have no uv's
     // to avoid problems I add a default uv coordinate
@@ -572,8 +566,6 @@ void MayaObject::getMeshData(MPointArray& points, MFloatVectorArray& normals, MF
             }
             else{
                 faceIt.getUVIndex(vtxId, uvIndex);
-                //if (uvIndex > uArray.length())
-                //  Logging::info(MString("-----------------> UV Problem!!! uvIndex ") + uvIndex + " > uvArray in object " + this->shortName);
                 faceUVIndices.append(uvIndex);
             }
         }
@@ -617,14 +609,10 @@ void MayaObject::getMeshData(MPointArray& points, MFloatVectorArray& normals, MF
             triUvIndices.append(uvId2);
 
             triMatIndices.append(perFaceShadingGroup);
-
-            //Logging::debug(MString("vtxIds ") + vtxId0 + " " + vtxId1 + " " + vtxId2);
-            //Logging::debug(MString("nIds ") + normalId0 + " " + normalId1 + " " + normalId2);
-            //Logging::debug(MString("uvIds ") + uvId0 + " " + uvId1 + " " + uvId2);
         }
     }
-
 }
 
 MayaObject::~MayaObject()
-{}
+{
+}

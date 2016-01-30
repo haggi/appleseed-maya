@@ -41,7 +41,7 @@
 #define CHECK_MSTATUS_AND_RETURNONLY(_status)       \
 {                                                       \
     MStatus _maya_status = (_status);                   \
-    if ( MStatus::kSuccess != _maya_status )            \
+    if (MStatus::kSuccess != _maya_status )            \
     {                                                   \
         cerr << "\nAPI error detected in " << __FILE__  \
              << " at line " << __LINE__ << endl;        \

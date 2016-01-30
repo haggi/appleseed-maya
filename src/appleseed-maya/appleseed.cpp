@@ -93,8 +93,6 @@ AppleseedRenderer::~AppleseedRenderer()
 
 void AppleseedRenderer::initializeRenderer()
 {
-    //RENDERER_LOG_INFO("%s", asf::Appleseed::get_synthetic_version_string());
-    //definedEntities.clear();
     this->project = asr::ProjectFactory::create("mtap_project");
 
     std::string oslShaderPath = (getRendererHome() + "shaders").asChar();
@@ -152,7 +150,6 @@ void AppleseedRenderer::postFrame()
     // AFTER the assembly it tries to access non existent shadingGroups.
     if (renderGlobals->currentFrameNumber == renderGlobals->frameList.back())
     {
-        //masterRenderer.reset();
         releasePtr(masterRenderer);
     }
 

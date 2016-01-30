@@ -207,7 +207,6 @@ void AppleseedSwatchRenderer::mainLoop()
     while (!terminateLoop)
     {
         SQueue::getQueue()->wait_and_pop(swatchEvent);
-        //Logging::debug(MString("AppleseedSwatchRenderer main Loop: renderDoneAddr: ") + (int)swatchEvent.renderDone);
 
         if (swatchEvent.renderDone == nullptr)
         {
@@ -272,6 +271,4 @@ void AppleseedSwatchRenderer::terminateAppleseedSwatchRender(AppleseedSwatchRend
     SQueue::SEvent swatchEvent;
     SQueue::SwatchesQueue.push(swatchEvent);
     swRend->terminateLoop = true;
-    //while (!swRend->loopDone)
-    //  std::this_thread::sleep_for(std::chrono::milliseconds(20));
 }

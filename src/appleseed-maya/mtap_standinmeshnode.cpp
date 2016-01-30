@@ -66,7 +66,7 @@ namespace asr = renderer;
 MStatus returnStatus;
 
 #define McheckErr(stat,msg)         \
-    if ( MS::kSuccess != stat ) {   \
+    if (MS::kSuccess != stat ) {   \
         cerr << msg;                \
         return MS::kFailure;        \
     }
@@ -109,9 +109,6 @@ MStatus mtap_standinMeshNode::initialize()
     nAttr.setSoftMax(10.0);
     CHECK_MSTATUS(addAttribute( polySizeMultiplier ));
 
-    //returnStatus = attributeAffects(time, outputMesh);
-    //CHECK_MSTATUS(returnStatus);
-
     returnStatus = attributeAffects(polySizeMultiplier, outputMesh);
     returnStatus = attributeAffects(binMeshFile, outputMesh);
     CHECK_MSTATUS(returnStatus);
@@ -138,7 +135,7 @@ MObject mtap_standinMeshNode::createMesh(const MTime& time,
 
     MObject newMesh;
 
-    if( pFile.good() )
+    if (pFile.good() )
     {
         int numPoints = 0;
         MBoundingBox box;
@@ -150,7 +147,7 @@ MObject mtap_standinMeshNode::createMesh(const MTime& time,
 
         read(numShaders);
         MGlobal::displayInfo(MString("Object has: ") + numShaders + " shading groups.");
-        for( int i = 0; i < numShaders; i++)
+        for (int i = 0; i < numShaders; i++)
         {
             read(shaderName);
             MGlobal::displayInfo(MString("Read shader name from file: ") + shaderName);
@@ -162,12 +159,12 @@ MObject mtap_standinMeshNode::createMesh(const MTime& time,
 
         read(numFaces);
         MGlobal::displayInfo(MString("Object has: ") + numFaces + " shading ids.");
-        for( int i = 0; i < numFaces; i++)
+        for (int i = 0; i < numFaces; i++)
         {
             int shaderId = 0;
             read(shaderId);
             polyShaderIds.append(shaderId);
-            if( shaderId >= numShaders)
+            if (shaderId >= numShaders)
             {
                 MGlobal::displayInfo(MString("Shader Id not in shader list: Face: ") + i + " shader id " + shaderId);
                 pma.assignments[shaderId].push_back(0);
@@ -186,9 +183,9 @@ MObject mtap_standinMeshNode::createMesh(const MTime& time,
         read(points);
         pFile.close();
 
-        if( this->poly_size_multiplier != 1.0f)
+        if (this->poly_size_multiplier != 1.0f)
         {
-            for( int f = 0; f < numFaces; f++)
+            for (int f = 0; f < numFaces; f++)
             {
                 MPoint p0 = points[f * 3];
                 MPoint p1 = points[f * 3 + 1];
@@ -206,10 +203,10 @@ MObject mtap_standinMeshNode::createMesh(const MTime& time,
         // create poly structure
         MIntArray faceCounts(numFaces, 3);
         MIntArray faceConnects(numPoints);
-        for( uint i = 0; i < numPoints; i++)
+        for (uint i = 0; i < numPoints; i++)
             faceConnects[i] = i;
         newMesh = meshFS.create(numVertices, numFaces, points, faceCounts, faceConnects, outData, &stat);
-        if( !stat )
+        if (!stat )
             MGlobal::displayError("Mesh creation failure.");
     }
 
@@ -219,29 +216,29 @@ MObject mtap_standinMeshNode::createMesh(const MTime& time,
 void mtap_standinMeshNode::createMaterialAssignments()
 {
     MString idListString = "[";
-    for( size_t i = 0; i < pma.assignments.size(); i++)
+    for (size_t i = 0; i < pma.assignments.size(); i++)
     {
         MGlobal::displayInfo(MString("Shading Group: ") + pma.shadingGroupsNames[i] + " is connected to: " + pma.assignments[i].size() + " polygons.");
         idListString += "[";
         IDList ids = pma.assignments[i];
-        for( size_t k = 0; k < ids.size(); k++)
+        for (size_t k = 0; k < ids.size(); k++)
         {
             idListString += ids[k];
-            if( k < (ids.size() - 1))
+            if (k < (ids.size() - 1))
                 idListString += ",";
         }
         idListString += "]";
-        if( i < (pma.assignments.size() - 1))
+        if (i < (pma.assignments.size() - 1))
             idListString += ",";
     }
     idListString += "]";
 
     MString thisObjectName = getObjectName(this->thisMObject());
     MString shadingEngineList = "[";
-    for( uint seId = 0; seId < shadingEngineNames.length(); seId++)
+    for (uint seId = 0; seId < shadingEngineNames.length(); seId++)
     {
         shadingEngineList += "'" + shadingEngineNames[seId] + "'";
-        if( seId < (shadingEngineNames.length() - 1))
+        if (seId < (shadingEngineNames.length() - 1))
             shadingEngineList += ",";
     }
     shadingEngineList += "]";
@@ -249,7 +246,6 @@ void mtap_standinMeshNode::createMaterialAssignments()
     //def binMeshAssignShader(polyShape = None, shadingGroupList=[], perFaceAssingments=[]):
     MString pythonCmd = MString("import binMeshTranslator as bmt; bmt.binMeshAssignShader( creatorShape = '")  + thisObjectName + "', shadingGroupList = " +  shadingEngineList + ", perFaceAssingments = " + idListString + ")";
     MGlobal::displayInfo(pythonCmd);
-    //MGlobal::executePythonCommand(pythonCmd);
     MGlobal::executePythonCommandOnIdle(pythonCmd);
 }
 
@@ -257,7 +253,7 @@ bool mtap_standinMeshNode::checkMeshFileName(MString meshFileName)
 {
     // do we have content
     // we need at least .binarymesh == 11 characters
-    if( meshFileName.length() < 11 )
+    if (meshFileName.length() < 11 )
     {
         cerr << "mesh file name has less than 11 characters, what means it has no .binarymesh ending.\n";
         return false;
@@ -285,7 +281,7 @@ MStatus mtap_standinMeshNode::compute(const MPlug& plug, MDataBlock& data)
         McheckErr(returnStatus, "Error getting binMeshFile handle\n");
         MString fileName = dataHandle.asString();
 
-        if( !checkMeshFileName(fileName))
+        if (!checkMeshFileName(fileName))
             McheckErr(MS::kFailure, "Filename problem\n");
 
         this->binmesh_file = fileName;

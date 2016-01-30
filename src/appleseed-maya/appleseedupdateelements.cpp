@@ -49,5 +49,4 @@ void AppleseedRenderer::updateTransform(sharedPtr<MayaObject> obj)
 void AppleseedRenderer::updateShape(sharedPtr<MayaObject> obj)
 {
     Logging::debug(MString("AppleseedRenderer::updateShape: ") + obj->shortName);
-    //updateGeometry(obj);
 }

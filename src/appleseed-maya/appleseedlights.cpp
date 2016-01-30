@@ -124,19 +124,8 @@ void AppleseedRenderer::defineLight(sharedPtr<MayaObject> obj)
         MString colorAttribute = obj->shortName + "_intensity";
         defineColor(project.get(), colorAttribute.asChar(), col, intensity);
 
-        if (isSunLight(obj->mobject))
+        if (!isSunLight(obj->mobject))
         {
-            //Logging::debug(MString("Found sunlight."));
-            //light = asf::auto_release_ptr<asr::Light>(
-            //  asr::SunLightFactory().create(
-            //  "sunLight",
-            //  asr::ParamArray()
-            //      .insert("environment_edf", "sky_edf")
-            //      .insert("turbidity", renderGlobals->sunTurbidity)
-            //      .insert("radiance_multiplier", renderGlobals->sunExitanceMultiplier * intensity / 30.0f)
-            //      ));
-        }
-        else{
             if (light == nullptr)
             {
                 asf::auto_release_ptr<asr::Light> lp = asr::DirectionalLightFactory().create(
@@ -168,10 +157,9 @@ void AppleseedRenderer::defineLight(sharedPtr<MayaObject> obj)
         // rotate the defalt up pointing standard plane by 90 degree to match the area light direction
         MTransformationMatrix tm;
         double rotate90Deg[3] = { -M_PI_2, 0, 0 };
-        //double rotate90Deg[3] = { 0, 0, 0 };
         tm.setRotation(rotate90Deg, MTransformationMatrix::kXYZ);
         MMatrix objectMatrix = tm.asMatrix();
-        MMatrix diffMatrix = objectMatrix;// *assemblyObjectMatrix;
+        MMatrix diffMatrix = objectMatrix;
         asf::Matrix4d appleMatrix;
         asf::Matrix4d::identity();
         MMatrixToAMatrix(diffMatrix, appleMatrix);
@@ -186,7 +174,6 @@ void AppleseedRenderer::defineLight(sharedPtr<MayaObject> obj)
         MColor color = getColorAttr("color", depFn);
         defineColor(project.get(), areaLightColorName.asChar(), color, getFloatAttr("intensity", depFn, 1.0f));
         edfParams.insert("radiance", areaLightColorName.asChar());
-        //edfParams.insert("radiance_multiplier", getFloatAttr("intensity", depFn, 1.0f));
 
         asf::auto_release_ptr<asr::EDF> edf = asr::DiffuseEDFFactory().create(edfName.asChar(), edfParams);
         ass->edfs().insert(edf);

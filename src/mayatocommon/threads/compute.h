@@ -66,28 +66,14 @@ private:
 #ifdef _WIN32
             if (GetAsyncKeyState(VK_ESCAPE))
             {
-                //HWND fgh = GetForegroundWindow();
-                //HWND handle = GetActiveWindow();
-                //if (Compute::windowHandle == GetActiveWindow())
-                //{
-                //  std::cout << "Current esc active window is init window.\n";
-                //  std::cout.flush();
-                //}
-                //else{
-                //  std::cout << "Current esc active window is NOT init window - skipping.\n";
-                //  std::cout.flush();
-                //}
                 Compute::escPressed = true;
                 if (Compute::autoexit)
                     done = true;
             }
-#else
-            // STOP;
 #endif
             if (!done && !Compute::checkDone)
                 sleepFor(100);
         }
-        //std::cout << "checkInterrupt done.\n";
         std::cout.flush();
     }
 

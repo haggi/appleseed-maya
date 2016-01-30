@@ -123,7 +123,6 @@ set (threads_sources
     threads/queue.h
     threads/renderqueueworker.cpp
     threads/renderqueueworker.h
-    threads/threads.cpp
     threads/threads.h
 )
 list (APPEND mayatocommon_sources

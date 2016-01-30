@@ -50,7 +50,7 @@ bool getObjectShadingGroups(MObject& geoObject, MObject& sGroup, int instId)
 
     plug.elementByLogicalIndex(instId).connectedTo(connections, false, true);
 
-    if( connections.length() > 0)
+    if (connections.length() > 0)
     {
         MObject shadingGroup(connections[0].node());
         if (shadingGroup.apiType() == MFn::kShadingEngine )
@@ -80,14 +80,11 @@ bool getObjectShadingGroups(MDagPath& shapeObjectDP, MObject& shadingGroup)
         fnMesh.getConnectedSetsAndMembers(shapeObjectDP.instanceNumber(), sets, comps, true);
 
         // Each set is a Shading Group. Loop through them
-        //Logging::debug(MString("Found ") + sets.length()  + " shading groups for mesh object " + fnMesh.name());
         for(unsigned int i = 0; i < sets.length(); ++i)
         {
             MFnDependencyNode fnDepSGNode(sets[i]);
-            //Logging::debug(MString("SG: ") + fnDepSGNode.name());
             shadingGroup = sets[i];
             return true;
-            //cout << fnDepSGNode.name() << endl;
         }
     }
 
@@ -95,12 +92,12 @@ bool getObjectShadingGroups(MDagPath& shapeObjectDP, MObject& shadingGroup)
     {
 
         MObject instObjGroupsAttr;
-        if( shapeObjectDP.hasFn(MFn::kNurbsSurface))
+        if (shapeObjectDP.hasFn(MFn::kNurbsSurface))
         {
             MFnNurbsSurface fnNurbs(shapeObjectDP.node());
             instObjGroupsAttr = fnNurbs.attribute("instObjGroups");
         }
-        if( shapeObjectDP.hasFn(MFn::kParticle)||shapeObjectDP.hasFn(MFn::kNParticle))
+        if (shapeObjectDP.hasFn(MFn::kParticle)||shapeObjectDP.hasFn(MFn::kNParticle))
         {
             MFnParticleSystem fnPart(shapeObjectDP.node());
             instObjGroupsAttr = fnPart.attribute("instObjGroups");
@@ -119,7 +116,6 @@ bool getObjectShadingGroups(MDagPath& shapeObjectDP, MObject& shadingGroup)
         for(unsigned int i=0; i < SGPlugArray.length(); ++i)
         {
             MFnDependencyNode fnDepSGNode(SGPlugArray[i].node());
-            //cout << fnDepSGNode.name() << endl;
             shadingGroup = SGPlugArray[i].node();
             return true;
         }
@@ -137,9 +133,6 @@ bool getObjectShadingGroups(MDagPath& shapeObjectDP, MObject& shadingGroup)
 
 bool getObjectShadingGroups(MDagPath& shapeObjectDP, MIntArray& perFaceAssignments, MObjectArray& shadingGroups, bool needsPerFaceInfo=true)
 {
-
-    //Logging::debug(MString("getObjectShadingGroups:: obj: ") +  shapeObjectDP.partialPathName() + " type: " + shapeObjectDP.node().apiTypeStr());
-
     // if obj is a light, simply return the mobject
     if(shapeObjectDP.node().hasFn(MFn::kLight))
     {
@@ -218,12 +211,12 @@ bool getObjectShadingGroups(MDagPath& shapeObjectDP, MIntArray& perFaceAssignmen
     {
 
         MObject instObjGroupsAttr;
-        if( shapeObjectDP.hasFn(MFn::kNurbsSurface))
+        if (shapeObjectDP.hasFn(MFn::kNurbsSurface))
         {
             MFnNurbsSurface fnNurbs(shapeObjectDP.node());
             instObjGroupsAttr = fnNurbs.attribute("instObjGroups");
         }
-        if( shapeObjectDP.hasFn(MFn::kParticle)||shapeObjectDP.hasFn(MFn::kNParticle))
+        if (shapeObjectDP.hasFn(MFn::kParticle)||shapeObjectDP.hasFn(MFn::kNParticle))
         {
             MFnParticleSystem fnPart(shapeObjectDP.node());
             instObjGroupsAttr = fnPart.attribute("instObjGroups");

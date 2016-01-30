@@ -55,7 +55,7 @@ static Logging logger;
 MStatus returnStatus;
 
 #define McheckErr(stat,msg)         \
-    if ( MS::kSuccess != stat ) {   \
+    if (MS::kSuccess != stat ) {   \
         cerr << msg;                \
         return MS::kFailure;        \
     }
@@ -100,15 +100,9 @@ MStatus standinMeshNode::initialize()
     nAttr.setSoftMax(10.0);
     CHECK_MSTATUS(addAttribute( polySizeMultiplier ));
 
-    //returnStatus = attributeAffects(time, outputMesh);
-    //CHECK_MSTATUS(returnStatus);
-
     returnStatus = attributeAffects(polySizeMultiplier, outputMesh);
     returnStatus = attributeAffects(binMeshFile, outputMesh);
     CHECK_MSTATUS(returnStatus);
-
-    //returnStatus = attributeAffects(percentDisplay, outputMesh);
-    //CHECK_MSTATUS(returnStatus);
 
     return MS::kSuccess;
 }
@@ -132,7 +126,7 @@ MObject standinMeshNode::createMesh(const MTime& time,
     MObject newMesh;
 
 
-    if( pFile.good() )
+    if (pFile.good() )
     {
         int numPoints = 0;
         MBoundingBox box;
@@ -147,9 +141,9 @@ MObject standinMeshNode::createMesh(const MTime& time,
         read(points);
         pFile.close();
 
-        if( this->poly_size_multiplier != 1.0f)
+        if (this->poly_size_multiplier != 1.0f)
         {
-            for( uint f = 0; f < numFaces; f++)
+            for (uint f = 0; f < numFaces; f++)
             {
                 MPoint p0 = points[f * 3];
                 MPoint p1 = points[f * 3 + 1];
@@ -167,10 +161,10 @@ MObject standinMeshNode::createMesh(const MTime& time,
         // create poly structure
         MIntArray faceCounts(numFaces, 3);
         MIntArray faceConnects(numPoints);
-        for( uint i = 0; i < numPoints; i++)
+        for (uint i = 0; i < numPoints; i++)
             faceConnects[i] = i;
         newMesh = meshFS.create(numVertices, numFaces, points, faceCounts, faceConnects, outData, &stat);
-        if( !stat )
+        if (!stat )
             MGlobal::displayError("Mesh creation failure.");
     }
 
@@ -181,7 +175,7 @@ bool standinMeshNode::checkMeshFileName(MString meshFileName)
 {
     // do we have content
     // we need at least .binarymesh == 11 characters
-    if( meshFileName.length() < 11 )
+    if (meshFileName.length() < 11 )
     {
         cerr << "mesh file name has less than 11 characters, what means it has no .binarymesh ending.\n";
         return false;
@@ -209,7 +203,7 @@ MStatus standinMeshNode::compute(const MPlug& plug, MDataBlock& data)
         McheckErr(returnStatus, "Error getting binMeshFile handle\n");
         MString fileName = dataHandle.asString();
 
-        if( !checkMeshFileName(fileName))
+        if (!checkMeshFileName(fileName))
             McheckErr(MS::kFailure, "Filename problem\n");
 
         this->binmesh_file = fileName;

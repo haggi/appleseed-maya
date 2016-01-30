@@ -93,7 +93,7 @@ void MayaRenderGlobalsNode::postConstructor()
 
     MPlug imgFormatPlug(thisObj, imageFormat);
     MFnEnumAttribute imgFormatAttribute(imgFormatPlug.attribute());
-    for( uint i = 0; i < imageFormatList.length(); i++)
+    for (uint i = 0; i < imageFormatList.length(); i++)
     {
         imgFormatAttribute.addField(imageFormatList[i], i);
     }
@@ -101,7 +101,7 @@ void MayaRenderGlobalsNode::postConstructor()
     MPlug filtertypePlug(thisObj, filtertype);
     MFnEnumAttribute filtertypeAttribute(filtertypePlug.attribute());
     filtertypeAttribute.setDefault(this->defaultEnumFilterType);
-    for( uint i = 0; i < filterTypeList.length(); i++)
+    for (uint i = 0; i < filterTypeList.length(); i++)
     {
         filtertypeAttribute.addField(filterTypeList[i], i);
     }

@@ -193,7 +193,6 @@ public:
 
     // raytracing
     int maxTraceDepth;
-    //static    MObject detectShapeDeform;
 
     int xftimesamples;
     int geotimesamples;
@@ -260,7 +259,6 @@ public:
     void setRendererUnit();
     void setRendererAxis();
     void defineGlobalConversionMatrix();
-    //virtual MObject getRenderGlobalsNode();
 };
 
 #endif

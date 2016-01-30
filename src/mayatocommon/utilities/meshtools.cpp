@@ -58,7 +58,6 @@ void getMeshData(MObject& meshObject, MPointArray& points, MFloatVectorArray& no
         {
             if (!tmpMesh.findPlug("useSmoothPreviewForRender", false, &stat).asBool())
             {
-                //Logging::debug(MString("useSmoothPreviewForRender turned off"));
                 int smoothLevel = tmpMesh.findPlug("renderSmoothLevel", false, &stat).asInt();
                 options.setDivisions(smoothLevel);
             }
@@ -101,7 +100,6 @@ void getMeshData(MObject& meshObject, MPointArray& points, MFloatVectorArray& no
         {
             if (!tmpMesh.findPlug("useSmoothPreviewForRender", false, &stat).asBool())
             {
-                //Logging::debug(MString("useSmoothPreviewForRender turned off"));
                 int smoothLevel = tmpMesh.findPlug("renderSmoothLevel", false, &stat).asInt();
                 options.setDivisions(smoothLevel);
             }

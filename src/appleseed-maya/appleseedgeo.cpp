@@ -54,7 +54,7 @@ asf::auto_release_ptr<asr::MeshObject> AppleseedRenderer::defineStandardPlane(bo
 {
     asf::auto_release_ptr<asr::MeshObject> object(asr::MeshObjectFactory::create("stdPlane", asr::ParamArray()));
 
-    if ( area)
+    if (area)
     {
         // Vertices.
         object->push_vertex(asr::GVector3(-1.0f, -1.0f, 0.0f));
@@ -137,7 +137,7 @@ void AppleseedRenderer::createMesh(sharedPtr<mtap_MayaObject> obj)
     }
 
     mesh->reserve_material_slots(obj->shadingGroups.length());
-    for( uint sgId = 0; sgId < obj->shadingGroups.length(); sgId++)
+    for (uint sgId = 0; sgId < obj->shadingGroups.length(); sgId++)
     {
         MString slotName = MString("slot") + sgId;
         mesh->push_material_slot(slotName.asChar());

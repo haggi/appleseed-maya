@@ -489,7 +489,7 @@ MStatus asDisneyMaterial::compute( const MPlug& plug, MDataBlock& block )
     // The plug parameter will allow us to determine which output attribute
     // needs to be calculated.
     //
-    if( plug == aOutColor || plug == aOutTransparency || plug.parent() == aOutColor || plug.parent() == aOutTransparency  )
+    if (plug == aOutColor || plug == aOutTransparency || plug.parent() == aOutColor || plug.parent() == aOutTransparency  )
     {
         MStatus status;
         MFloatVector resultColor( 0.0, 0.0, 0.0 );
@@ -508,11 +508,6 @@ MStatus asDisneyMaterial::compute( const MPlug& plug, MDataBlock& block )
         float diffuseReflectivity = block.inputValue( aDiffuseReflectivity, &status ).asFloat();
         CHECK_MSTATUS( status );
 
-//      float translucenceCoeff = block.inputValue( aTranslucenceCoeff,
-//              &status ).asFloat();
-//      CHECK_MSTATUS( status );
-
-
         // Get light list
         //
         MArrayDataHandle lightData = block.inputArrayValue( aLightData, &status );
@@ -527,7 +522,7 @@ MStatus asDisneyMaterial::compute( const MPlug& plug, MDataBlock& block )
 
         // Iterate through light list and get ambient/diffuse values
         //
-        for( int count=1; count <= numLights; count++ )
+        for (int count=1; count <= numLights; count++ )
         {
             // Get the current light out of the array
             //
@@ -542,7 +537,7 @@ MStatus asDisneyMaterial::compute( const MPlug& plug, MDataBlock& block )
 
             // Find ambient component
             //
-            if ( currentLight.child( aLightAmbient ).asBool() )
+            if (currentLight.child( aLightAmbient ).asBool() )
             {
                 resultColor += lightIntensity;
             }
@@ -550,12 +545,12 @@ MStatus asDisneyMaterial::compute( const MPlug& plug, MDataBlock& block )
 
             // Find diffuse component
             //
-            if ( currentLight.child( aLightDiffuse ).asBool() )
+            if (currentLight.child( aLightDiffuse ).asBool() )
             {
                 MFloatVector& lightDirection = currentLight.child( aLightDirection ).asFloatVector();
                 float cosln = lightDirection * surfaceNormal;
 
-               if ( cosln > 0.0f )
+               if (cosln > 0.0f )
                {
                     resultColor += lightIntensity * ( cosln * diffuseReflectivity );
                }
@@ -564,7 +559,7 @@ MStatus asDisneyMaterial::compute( const MPlug& plug, MDataBlock& block )
 
             // Advance to the next light.
             //
-            if ( count < numLights ) {
+            if (count < numLights ) {
                 status = lightData.next();
                 CHECK_MSTATUS( status );
             }
@@ -580,7 +575,7 @@ MStatus asDisneyMaterial::compute( const MPlug& plug, MDataBlock& block )
 
         // Set ouput color attribute
         //
-        if ( plug == aOutColor || plug.parent() == aOutColor )
+        if (plug == aOutColor || plug.parent() == aOutColor )
         {
             // Get the handle to the attribute
             //
@@ -595,7 +590,7 @@ MStatus asDisneyMaterial::compute( const MPlug& plug, MDataBlock& block )
 
         // Set ouput transparency
         //
-        if ( plug == aOutTransparency || plug.parent() == aOutTransparency )
+        if (plug == aOutTransparency || plug.parent() == aOutTransparency )
         {
             MFloatVector& transparency = block.inputValue( aInTransparency, &status ).asFloatVector();
             CHECK_MSTATUS( status );

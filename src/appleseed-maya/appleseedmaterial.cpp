@@ -84,7 +84,6 @@ void AppleRender::updateMaterial(MObject materialNode, const asr::Assembly *asse
         if (shadingNodeId == (numNodes - 1))
             Logging::debug(MString("LastNode Surface Shader: ") + snode.fullName);
         OSLShaderClass.createOSLShadingNode(network.shaderList[shadingNodeId]);
-        //OSLShaderClass.connectProjectionNodes(network.shaderList[shadingNodeId].mobject);
     }
 
     OSLShaderClass.cleanupShadingNodeList();
@@ -161,7 +160,6 @@ void AppleRender::AppleseedRenderer::updateMaterial(MObject materialNode)
         if (shadingNodeId == (numNodes - 1))
             Logging::debug(MString("LastNode Surface Shader: ") + snode.fullName);
         OSLShaderClass.createOSLShadingNode(network.shaderList[shadingNodeId]);
-        //OSLShaderClass.connectProjectionNodes(network.shaderList[shadingNodeId].mobject);
     }
 
     OSLShaderClass.cleanupShadingNodeList();

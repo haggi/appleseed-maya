@@ -300,10 +300,6 @@ namespace MAYATO_OSLUTIL{
         bool doesHelperNodeExist(MString& helperNode);
         void listProjectionHistory(const MObject& mobject);
         void defineOSLParameter(ShaderAttribute& sa, MFnDependencyNode& depFn, MAYATO_OSL::OSLParamArray& paramArray);
-        //MString createPlugHelperNodeName(MPlug& plug, bool outType);
-        //MString createPlugHelperNodeName(const char *attrName, MObject& node, bool outType);
-        //void createPlugHelperNode(MPlug plug, bool outType = false);
-        //void createOSLHelperNodes(ShadingNode& snode); // go through all snode attributes and create helper nodes if necessary
         void createOSLShadingNode(ShadingNode& snode);
         void connectProjectionNodes(MObject& projNode);
         void fillVectorParam(MAYATO_OSL::OSLParamArray& params, MPlug vectorPlug);

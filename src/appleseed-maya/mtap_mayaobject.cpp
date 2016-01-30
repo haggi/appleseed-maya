@@ -99,22 +99,22 @@ sharedPtr<ObjectAttributes>mtap_MayaObject::getObjectAttributes(sharedPtr<Object
 {
     sharedPtr<mtap_ObjectAttributes> myAttributes = sharedPtr<mtap_ObjectAttributes>(new mtap_ObjectAttributes(parentAttributes));
 
-    if( this->hasInstancerConnection)
+    if (this->hasInstancerConnection)
     {
         myAttributes->hasInstancerConnection = true;
     }
 
-    if( this->isGeo())
+    if (this->isGeo())
     {
     }
 
-    if( this->isTransform())
+    if (this->isTransform())
     {
         MFnDagNode objNode(this->mobject);
         myAttributes->objectMatrix = objNode.transformationMatrix() * myAttributes->objectMatrix;
     }
 
-    if( this->needsAssembly() || myAttributes->hasInstancerConnection)
+    if (this->needsAssembly() || myAttributes->hasInstancerConnection)
     {
         myAttributes->needsOwnAssembly = true;
         myAttributes->assemblyObject = this;
@@ -129,7 +129,7 @@ sharedPtr<ObjectAttributes>mtap_MayaObject::getObjectAttributes(sharedPtr<Object
 void mtap_MayaObject::createAssembly()
 {
     // instances do not need own assembly.
-    if( this->instanceNumber > 0)
+    if (this->instanceNumber > 0)
         return;
 
     asf::auto_release_ptr<asr::Assembly> assembly(asr::AssemblyFactory().create(this->fullName.asChar(),asr::ParamArray()));
@@ -151,32 +151,32 @@ bool mtap_MayaObject::needsAssembly()
     // translation of the complete hierarchy as assemblies/assembly instances.
     if (MayaTo::getWorldPtr()->renderType == MayaTo::MayaToWorld::IPRRENDER)
     {
-        if( this->isTransform())
+        if (this->isTransform())
         {
             return true;
         }
     }
 
     // this is the root of all assemblies
-    if( this->mobject.hasFn(MFn::kWorld))
+    if (this->mobject.hasFn(MFn::kWorld))
         return true;
 
-    if( this->instanceNumber > 0)
+    if (this->instanceNumber > 0)
         return false;
 
-    if( this->hasInstancerConnection)
+    if (this->hasInstancerConnection)
     {
         Logging::debug(MString("obj has instancer connection -> needs assembly."));
         return true;
     }
 
-    if( this->isInstanced() )
+    if (this->isInstanced() )
     {
         Logging::debug(MString("obj has more than 1 parent -> needs assembly."));
         return true;
     }
 
-    if( this->isObjAnimated())
+    if (this->isObjAnimated())
     {
         Logging::debug(MString("Object is animated -> needs assembly."));
         return true;

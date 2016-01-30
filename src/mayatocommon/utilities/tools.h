@@ -51,8 +51,6 @@ static MString RendererName;
 static MString RendererShortCut;
 static MString RendererHome;
 
-//degrees * ( M_PI/ 180.0 );
-//radians * (180.0/M_PI);
 #define DegToRad(x) (M_PI/ 180.0 * x)
 #define RadToDeg(x) (180.0/M_PI * x)
 
@@ -157,8 +155,6 @@ bool hasPlug(MObject& thisObject, const MString& plugName);
 MString getObjectName(MObject& mobject);
 
 MString getObjectName(const MObject& mobject);
-
-//MString getDepNodeTypeName(const MObject& mobject);
 
 MString getDepNodeTypeName(MObject mobject);
 

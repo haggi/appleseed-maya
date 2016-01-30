@@ -128,11 +128,11 @@ float srnd()
 
 void rowToColumn(MMatrix& from, MMatrix& to, bool transRev)
 {
-    for( int i = 0; i < 4; i++)
-        for( int k = 0; k < 4; k++)
+    for (int i = 0; i < 4; i++)
+        for (int k = 0; k < 4; k++)
             to[k][i] = from[i][k];
 
-    if( transRev )
+    if (transRev )
     {
         double t = to[3][0];
         to[3][0] = to[3][2];
@@ -158,7 +158,7 @@ MString makeHierarchyString(MString& oldString)
     std::string newString;
     newString = pystring::replace(old, "|", "/");
     newString = pystring::replace(newString, ":", "_");
-    if( !pystring::startswith(newString, "/") )
+    if (!pystring::startswith(newString, "/") )
         newString = std::string("/") + newString;
     return MString(newString.c_str());
 }
@@ -167,13 +167,13 @@ MString makeGoodHierarchyString(MString& oldString)
     MString returnString, workString = oldString;
     MStringArray stringArray;
     workString.split('|', stringArray);
-    if( stringArray.length() == 0)
+    if (stringArray.length() == 0)
         workString = oldString;
     else
         workString.clear();
-    for( uint i = 0; i < stringArray.length(); i++)
+    for (uint i = 0; i < stringArray.length(); i++)
     {
-        if( i > 0)
+        if (i > 0)
             workString += "/" + stringArray[i];
         else{
             workString = "/";
@@ -187,7 +187,7 @@ MString getPlugName(MString& longPlugname)
 {
     MStringArray stringArray;
     longPlugname.split('.', stringArray);
-    if( stringArray.length() > 0)
+    if (stringArray.length() > 0)
         return(stringArray[stringArray.length() - 1]);
     else
         return(MString(""));
@@ -197,10 +197,10 @@ bool checkDirectory( MString& path)
 {
 #ifdef _WIN32
     // check if directory already exists 0 -> exists, != 0 -> Problem
-    if( _access(path.asChar(), 0) != 0 )
+    if (_access(path.asChar(), 0) != 0 )
     {
         MGlobal::displayInfo( "Directory " + path + " seems not to exist, trying to create" );
-        if( _mkdir( path.asChar() ) != 0 )
+        if (_mkdir( path.asChar() ) != 0 )
         {
             MGlobal::displayInfo( "Problem creating directory " + path );
             return false;
@@ -248,17 +248,17 @@ bool IsVisible(MFnDagNode& node)
 
     bool visibility = true;
     MFnDependencyNode depFn(node.object(), &stat);
-    if( !stat )
+    if (!stat )
         MGlobal::displayInfo("Problem getting dep from " + node.name());
 
     if(!getBool(MString("visibility"), depFn, visibility))
         MGlobal::displayInfo("Problem getting visibility attr from " + node.name());
 
-    if( !visibility)
+    if (!visibility)
         return false;
 
     getBool(MString("overrideVisibility"), depFn, visibility);
-    if( !visibility)
+    if (!visibility)
         return false;
 
     return true;
@@ -271,11 +271,11 @@ bool IsTemplated(MFnDagNode& node)
    MFnDependencyNode depFn(node.object());
    bool isTemplate = false;
    getBool(MString("template"), depFn, isTemplate);
-   if( isTemplate )
+   if (isTemplate )
        return true;
    int intTempl = 0;
    getInt(MString("overrideDisplayType"), depFn, intTempl);
-   if( intTempl == 1 )
+   if (intTempl == 1 )
        return true;
 
    return false;
@@ -303,13 +303,12 @@ bool IsLayerVisible(MDagPath& dp)
    {
       MFnDependencyNode node(dagPath.node());
       MPlug doPlug = node.findPlug("drawOverride", &stat);
-      if( stat )
+      if (stat )
       {
           MObject layer = getOtherSideNode(doPlug);
           MFnDependencyNode layerNode(layer, &stat);
-          if( stat )
+          if (stat )
           {
-              //MGlobal::displayInfo(MString("check layer ") + layerNode.name() + " for node " + dagPath.fullPathName());
               bool visibility = true;
               if(getBool("visibility", layerNode, visibility))
                   if(!visibility)
@@ -338,12 +337,8 @@ bool IsInRenderLayer(MDagPath& dagPath)
 bool CheckVisibility( MDagPath& dagPath )
 {
     MFnDagNode node(dagPath);
-    //if( !IsVisible( node ))
-    //  return false;
-    if( !IsPathVisible( dagPath ))
+    if (!IsPathVisible( dagPath ))
         return false;
-    //if( IsTemplated( node ) )
-    //  return false;
     return true;
 }
 
@@ -411,9 +406,9 @@ MObject getConnectedObjSet(MDagPath& dagPath)
 MString matrixToString(MMatrix& matrix)
 {
     MString matString("");
-    for( int i = 0; i < 4; i++)
+    for (int i = 0; i < 4; i++)
     {
-        for( int j = 0; j < 4; j++)
+        for (int j = 0; j < 4; j++)
         {
             matString += MString(" ") + matrix[i][j];
         }
@@ -425,28 +420,7 @@ MString matrixToString(MMatrix& matrix)
 
 MObject getUpstreamMesh(MString& outputPlugName, MObject thisObject)
 {
-    MStatus stat;
-    MObject result = MObject::kNullObj;
-    //MFnDependencyNode depFn(thisObject, &stat);
-    //if( stat != MStatus::kSuccess) return result;
-
-    //int count = 0;
-    //while( !(result.hasFn(MFn::kMesh)) && (count < 20))
-    //{
-    //  MPlug plug = depFn.findPlug(outputPlugName, &stat);
-    //  if( stat != MStatus::kSuccess)
-    //      return result;
-    //  MPlugArray plugArray;
-    //  plug.connectedTo(plugArray, 0, 1, &stat);
-    //  if( stat != MStatus::kSuccess)
-    //      return result;
-    //  count++;
-    //}
-    //if( plugArray.length() == 0)
-    //  return result;
-    //MPlug otherSidePlug = plugArray[0];
-    //result = otherSidePlug.node();
-    return result;
+    return MObject::kNullObj;
 }
 
 //
@@ -457,11 +431,11 @@ MObject getOtherSideNode(const MString& plugName, MObject& thisObject)
 {
     MStatus stat;
     MObject result = MObject::kNullObj;
-    MFnDependencyNode depFn(thisObject, &stat); if( stat != MStatus::kSuccess) return result;
-    MPlug plug = depFn.findPlug(plugName, &stat);   if( stat != MStatus::kSuccess) return result;
+    MFnDependencyNode depFn(thisObject, &stat); if (stat != MStatus::kSuccess) return result;
+    MPlug plug = depFn.findPlug(plugName, &stat);   if (stat != MStatus::kSuccess) return result;
     MPlugArray plugArray;
-    plug.connectedTo(plugArray, 1, 0, &stat);if( stat != MStatus::kSuccess) return result;
-    if( plugArray.length() == 0)
+    plug.connectedTo(plugArray, 1, 0, &stat);if (stat != MStatus::kSuccess) return result;
+    if (plugArray.length() == 0)
         return result;
     MPlug otherSidePlug = plugArray[0];
     result = otherSidePlug.node();
@@ -507,20 +481,20 @@ MObject getOtherSideNode(const MString& plugName, MObject& thisObject, MStringAr
 {
     MStatus stat;
     MObject result = MObject::kNullObj;
-    MFnDependencyNode depFn(thisObject, &stat); if( stat != MStatus::kSuccess) return result;
-    MPlug plug = depFn.findPlug(plugName, &stat);   if( stat != MStatus::kSuccess)return result;
-    if( !plug.isConnected() )
+    MFnDependencyNode depFn(thisObject, &stat); if (stat != MStatus::kSuccess) return result;
+    MPlug plug = depFn.findPlug(plugName, &stat);   if (stat != MStatus::kSuccess)return result;
+    if (!plug.isConnected() )
     {
         int numChildConnects = plug.numConnectedChildren();
-        if( numChildConnects == 0)
+        if (numChildConnects == 0)
             return result;
         else{
-            for( int i = 0; i < numChildConnects; i++)
+            for (int i = 0; i < numChildConnects; i++)
             {
                 MPlug child = plug.child(i);
                 MString otherSidePlugName;
                 MObject childObj = getOtherSideNode(child.partialName(false), thisObject, otherSidePlugName);
-                if( childObj != MObject::kNullObj)
+                if (childObj != MObject::kNullObj)
                 {
                     otherSidePlugNames.append(otherSidePlugName);
                     result = childObj;
@@ -530,8 +504,8 @@ MObject getOtherSideNode(const MString& plugName, MObject& thisObject, MStringAr
         }
     }else{
         MPlugArray plugArray;
-        plug.connectedTo(plugArray, 1, 0, &stat);if( stat != MStatus::kSuccess) return result;
-        if( plugArray.length() == 0)
+        plug.connectedTo(plugArray, 1, 0, &stat);if (stat != MStatus::kSuccess) return result;
+        if (plugArray.length() == 0)
             return result;
         MPlug otherSidePlug = plugArray[0];
         result = otherSidePlug.node();
@@ -776,12 +750,12 @@ MObject getConnectedInNode(const MObject& thisObject, const char *attrName)
         inPlug = inPlug[index];
     MString plugname = inPlug.name();
 
-    if( !inPlug.isConnected())
+    if (!inPlug.isConnected())
         return result;
 
     MPlugArray connectedPlugs;
     inPlug.connectedTo(connectedPlugs, true, false);
-    if( connectedPlugs.length() == 0)
+    if (connectedPlugs.length() == 0)
         return result;
 
     return connectedPlugs[0].node();
@@ -794,18 +768,17 @@ void getConnectedNodes(MObject& thisObject, MObjectArray& nodeList)
     depFn.getConnections(connectedPlugs);
     int numConnections = connectedPlugs.length();
 
-    for( int i = 0; i <  numConnections; i++)
+    for (int i = 0; i <  numConnections; i++)
     {
         // check for incoming connections only. Outgoing connections are not relevant
         MPlug plug = connectedPlugs[i];
         // an plug can be source AND destination at the same time, like the displacement attribute of a displacementShader
-        if( plug.isSource() && !plug.isDestination())
+        if (plug.isSource() && !plug.isDestination())
             continue;
         MObject plugObject = getOtherSideNode(plug);
-        if( plugObject != MObject::kNullObj)
+        if (plugObject != MObject::kNullObj)
             nodeList.append(plugObject);
     }
-    //return (numConnections > 0);
 }
 
 // get direct connections and primary children connections for such plugs like color, vector, point
@@ -816,11 +789,11 @@ void getConnectedInNodes(MPlug& plug, MObjectArray& nodeList)
     MString plugname = plug.name();
     int numConnections = connectedPlugs.length();
 
-    for( int i = 0; i <  numConnections; i++)
+    for (int i = 0; i <  numConnections; i++)
     {
         MString otherSidePlug = connectedPlugs[i].name();
         MObject plugObject = connectedPlugs[i].node();
-        if( plugObject != MObject::kNullObj)
+        if (plugObject != MObject::kNullObj)
             nodeList.append(plugObject);
     }
 }
@@ -839,8 +812,8 @@ MObject getOtherSideNode(const MPlug& plug)
     MObject result = MObject::kNullObj;
 
     MPlugArray plugArray;
-    plug.connectedTo(plugArray, 1, 0, &stat);if( stat != MStatus::kSuccess) return result;
-    if( plugArray.length() == 0)
+    plug.connectedTo(plugArray, 1, 0, &stat);if (stat != MStatus::kSuccess) return result;
+    if (plugArray.length() == 0)
         return result;
     MPlug otherSidePlug = plugArray[0];
     result = otherSidePlug.node();
@@ -851,13 +824,13 @@ MObject getOtherSideNode(const MString& plugName, MObject& thisObject, MString& 
 {
     MStatus stat;
     MObject result = MObject::kNullObj;
-    MFnDependencyNode depFn(thisObject, &stat); if( stat != MStatus::kSuccess) return result;
-    MPlug plug = depFn.findPlug(plugName, &stat);   if( stat != MStatus::kSuccess)return result;
-    if( !plug.isConnected() )
+    MFnDependencyNode depFn(thisObject, &stat); if (stat != MStatus::kSuccess) return result;
+    MPlug plug = depFn.findPlug(plugName, &stat);   if (stat != MStatus::kSuccess)return result;
+    if (!plug.isConnected() )
         return result;
     MPlugArray plugArray;
-    plug.connectedTo(plugArray, 1, 0, &stat);if( stat != MStatus::kSuccess) return result;
-    if( plugArray.length() == 0)
+    plug.connectedTo(plugArray, 1, 0, &stat);if (stat != MStatus::kSuccess) return result;
+    if (plugArray.length() == 0)
         return result;
     MPlug otherSidePlug = plugArray[0];
     result = otherSidePlug.node();
@@ -870,11 +843,11 @@ bool getConnectedPlugs(const MString& plugName, MObject& thisObject, MPlug& inPl
 {
     MStatus stat;
     bool result = false;
-    MFnDependencyNode depFn(thisObject, &stat); if( stat != MStatus::kSuccess) return result;
-    MPlug plug = depFn.findPlug(plugName, &stat);   if( stat != MStatus::kSuccess) return result;
+    MFnDependencyNode depFn(thisObject, &stat); if (stat != MStatus::kSuccess) return result;
+    MPlug plug = depFn.findPlug(plugName, &stat);   if (stat != MStatus::kSuccess) return result;
     MPlugArray plugArray;
-    plug.connectedTo(plugArray, 1, 0, &stat);if( stat != MStatus::kSuccess) return result;
-    if( plugArray.length() == 0)
+    plug.connectedTo(plugArray, 1, 0, &stat);if (stat != MStatus::kSuccess) return result;
+    if (plugArray.length() == 0)
         return result;
     MPlug otherSidePlug = plugArray[0];
     inPlug = plug;
@@ -907,11 +880,11 @@ bool getConnectedInPlugs(MObject& thisObject, MPlugArray& inPlugs)
 {
     MStatus stat;
     bool result = false;
-    MFnDependencyNode depFn(thisObject, &stat); if( stat != MStatus::kSuccess) return result;
+    MFnDependencyNode depFn(thisObject, &stat); if (stat != MStatus::kSuccess) return result;
     MPlugArray pa;
     depFn.getConnections(pa);
-    for( uint i = 0; i < pa.length(); i++)
-        if( pa[i].isDestination() )
+    for (uint i = 0; i < pa.length(); i++)
+        if (pa[i].isDestination() )
             inPlugs.append(pa[i]);
 
     return true;
@@ -921,11 +894,11 @@ bool getConnectedOutPlugs(MObject& thisObject, MPlugArray& outPlugs)
 {
     MStatus stat;
     bool result = false;
-    MFnDependencyNode depFn(thisObject, &stat); if( stat != MStatus::kSuccess) return result;
+    MFnDependencyNode depFn(thisObject, &stat); if (stat != MStatus::kSuccess) return result;
     MPlugArray pa;
     depFn.getConnections(pa);
-    for( uint i = 0; i < pa.length(); i++)
-        if( pa[i].isSource() )
+    for (uint i = 0; i < pa.length(); i++)
+        if (pa[i].isSource() )
             outPlugs.append(pa[i]);
 
     return true;
@@ -934,9 +907,9 @@ bool getConnectedOutPlugs(MObject& thisObject, MPlugArray& outPlugs)
 bool hasPlug(MObject& thisObject, const MString& plugName)
 {
     MStatus stat;
-    MFnDependencyNode depFn(thisObject, &stat); if( stat != MStatus::kSuccess) return false;
+    MFnDependencyNode depFn(thisObject, &stat); if (stat != MStatus::kSuccess) return false;
     MPlug plug = depFn.findPlug(plugName, &stat);
-    if( stat != MStatus::kSuccess)
+    if (stat != MStatus::kSuccess)
         return false;
     else
         return true;
@@ -947,11 +920,11 @@ bool hasPlug(MObject& thisObject, const MString& plugName)
 bool getOtherSidePlugName(const MString& plugName, MObject& thisObject, MString& otherSidePlugName)
 {
     MStatus stat;
-    MFnDependencyNode depFn(thisObject, &stat); if( stat != MStatus::kSuccess) return false;
-    MPlug plug = depFn.findPlug(plugName, &stat);   if( stat != MStatus::kSuccess) return false;
+    MFnDependencyNode depFn(thisObject, &stat); if (stat != MStatus::kSuccess) return false;
+    MPlug plug = depFn.findPlug(plugName, &stat);   if (stat != MStatus::kSuccess) return false;
     MPlugArray plugArray;
-    plug.connectedTo(plugArray, 1, 0, &stat);if( stat != MStatus::kSuccess) return false;
-    if( plugArray.length() == 0)
+    plug.connectedTo(plugArray, 1, 0, &stat);if (stat != MStatus::kSuccess) return false;
+    if (plugArray.length() == 0)
         return false;
     MPlug otherSidePlug = plugArray[0];
     otherSidePlugName = otherSidePlug.name();
@@ -960,7 +933,7 @@ bool getOtherSidePlugName(const MString& plugName, MObject& thisObject, MString&
 
 MString getObjectName(MObject& mobject)
 {
-    if( mobject == MObject::kNullObj)
+    if (mobject == MObject::kNullObj)
         return "";
 
     MFnDependencyNode depFn(mobject);
@@ -969,18 +942,12 @@ MString getObjectName(MObject& mobject)
 
 MString getObjectName(const MObject& mobject)
 {
-    if( mobject == MObject::kNullObj)
+    if (mobject == MObject::kNullObj)
         return "";
 
     MFnDependencyNode depFn(mobject);
     return depFn.name();
 }
-
-//MString getDepNodeTypeName(const MObject& mobject)
-//{
-//  MFnDependencyNode depFn(mobject);
-//  return depFn.typeName();
-//}
 
 MString getDepNodeTypeName(MObject mobject)
 {
@@ -997,13 +964,13 @@ MString pointToUnderscore(MString& inString)
 
 void writeTMatrixList( std::ofstream& outFile, std::vector<MMatrix>& transformMatrices, bool inverse, float scaleFactor)
 {
-    for( int matrixId = 0; matrixId < transformMatrices.size(); matrixId++)
+    for (int matrixId = 0; matrixId < transformMatrices.size(); matrixId++)
     {
         MMatrix tm = transformMatrices[matrixId];
-        if( inverse )
+        if (inverse )
             tm = tm.inverse();
 
-        if( matrixId == 0)
+        if (matrixId == 0)
         {
             outFile << "\t\tray_transform " << matrixToString(tm) << "\n"; // normal transform
         }
@@ -1015,13 +982,13 @@ void writeTMatrixList( std::ofstream& outFile, std::vector<MMatrix>& transformMa
 
 void writeTMatrixList( std::ofstream *outFile, std::vector<MMatrix>& transformMatrices, bool inverse, float scaleFactor)
 {
-    for( int matrixId = 0; matrixId < transformMatrices.size(); matrixId++)
+    for (int matrixId = 0; matrixId < transformMatrices.size(); matrixId++)
     {
         MMatrix tm = transformMatrices[matrixId];
-        if( inverse )
+        if (inverse )
             tm = tm.inverse();
 
-        if( matrixId == 0)
+        if (matrixId == 0)
         {
             *outFile << "\t\tray_transform " << matrixToString(tm) << "\n"; // normal transform
         }
@@ -1128,21 +1095,21 @@ MObject getConnectedFileTextureObject(const MString& plugName, MFnDependencyNode
     MStatus stat;
     MString path = "";
     MPlug plug = depFn.findPlug(plugName, &stat);
-    if( !stat )
+    if (!stat )
         return MObject::kNullObj;
-    if( plug.isConnected())
+    if (plug.isConnected())
     {
         MPlugArray parray;
         plug.connectedTo(parray, true, false, &stat);
-        if( !stat )
+        if (!stat )
             return MObject::kNullObj;
 
-        if( parray.length() == 0 )
+        if (parray.length() == 0 )
             return MObject::kNullObj;
 
         MPlug destPlug = parray[0];
         MObject fileNode = destPlug.node();
-        if( !fileNode.hasFn(MFn::kFileTexture) )
+        if (!fileNode.hasFn(MFn::kFileTexture) )
         {
             return MObject::kNullObj;
         }else{
@@ -1158,21 +1125,21 @@ MString getConnectedFileTexturePath(const MString& plugName, MFnDependencyNode& 
     MStatus stat;
     MString path = "";
     MPlug plug = depFn.findPlug(plugName, &stat);
-    if( !stat )
+    if (!stat )
         return path;
-    if( plug.isConnected())
+    if (plug.isConnected())
     {
         MPlugArray parray;
         plug.connectedTo(parray, true, false, &stat);
-        if( !stat )
+        if (!stat )
             return path;
 
-        if( parray.length() == 0 )
+        if (parray.length() == 0 )
             return path;
 
         MPlug destPlug = parray[0];
         MObject fileNode = destPlug.node();
-        if( !fileNode.hasFn(MFn::kFileTexture) )
+        if (!fileNode.hasFn(MFn::kFileTexture) )
         {
             return path;
         }
@@ -1193,33 +1160,31 @@ bool getConnectedFileTexturePath(const MString& plugName, MString& nodeName, MSt
 {
     MStatus stat;
     MObject obj = objectFromName(nodeName);
-    if( obj == MObject::kNullObj)
+    if (obj == MObject::kNullObj)
         return false;
 
     MFnDependencyNode depFn(obj);
     MPlug plug = depFn.findPlug(plugName, &stat);
-    if( !stat )
+    if (!stat )
         return false;
 
-    //MGlobal::displayInfo(MString("is plug connected: ") + plug.name());
-    if( !plug.isConnected())
+    if (!plug.isConnected())
     {
-        //MGlobal::displayInfo(MString("plug is NOT connected: ") + plug.name());
         return false;
     }
     MPlugArray parray;
     plug.connectedTo(parray, true, false, &stat);
-    if( !stat )
+    if (!stat )
         return false;
 
-    if( parray.length() == 0 )
+    if (parray.length() == 0 )
         return false;
 
     MPlug destPlug = parray[0];
     MObject fileNode = destPlug.node();
     std::cout << "filenode: " << getObjectName(fileNode).asChar() << " plug name " << destPlug.name() << "\n";
 
-    if( !fileNode.hasFn(MFn::kFileTexture) )
+    if (!fileNode.hasFn(MFn::kFileTexture) )
     {
         std::cout << "node is not from type fileTexture.\n";
         return false;
@@ -1244,14 +1209,14 @@ bool getConnectedFileTexturePath(const MString& plugName, MString& nodeName, MSt
 
 bool findCamera(MDagPath& dagPath)
 {
-    if( dagPath.node().hasFn(MFn::kCamera))
+    if (dagPath.node().hasFn(MFn::kCamera))
         return true;
     uint numChilds = dagPath.childCount();
-    for( uint chId = 0; chId < numChilds; chId++)
+    for (uint chId = 0; chId < numChilds; chId++)
     {
         MDagPath childPath = dagPath;
         MStatus stat = childPath.push(dagPath.child(chId));
-        if( !stat )
+        if (!stat )
         {
             continue;
         }
@@ -1266,15 +1231,15 @@ bool findCamera(MDagPath& dagPath)
 bool isLightTransform(MDagPath& dagPath)
 {
     uint numChilds = dagPath.childCount();
-    for( uint chId = 0; chId < numChilds; chId++)
+    for (uint chId = 0; chId < numChilds; chId++)
     {
         MDagPath childPath = dagPath;
         MStatus stat = childPath.push(dagPath.child(chId));
-        if( !stat )
+        if (!stat )
         {
             continue;
         }
-        if( childPath.node().hasFn(MFn::kLight))
+        if (childPath.node().hasFn(MFn::kLight))
             return true;
     }
     return false;
@@ -1283,15 +1248,15 @@ bool isLightTransform(MDagPath& dagPath)
 bool isCameraTransform(MDagPath& dagPath)
 {
     uint numChilds = dagPath.childCount();
-    for( uint chId = 0; chId < numChilds; chId++)
+    for (uint chId = 0; chId < numChilds; chId++)
     {
         MDagPath childPath = dagPath;
         MStatus stat = childPath.push(dagPath.child(chId));
-        if( !stat )
+        if (!stat )
         {
             continue;
         }
-        if( childPath.node().hasFn(MFn::kCamera))
+        if (childPath.node().hasFn(MFn::kCamera))
             return true;
     }
     return false;
@@ -1300,18 +1265,18 @@ bool isCameraTransform(MDagPath& dagPath)
 void makeUniqueArray( MObjectArray& oa)
 {
     MObjectArray tmpArray;
-    for( uint i = 0; i < oa.length(); i++)
+    for (uint i = 0; i < oa.length(); i++)
     {
         bool found = false;
-        for( uint k = 0; k < tmpArray.length(); k++)
+        for (uint k = 0; k < tmpArray.length(); k++)
         {
-            if( oa[i] == tmpArray[k])
+            if (oa[i] == tmpArray[k])
             {
                 found = true;
                 break;
             }
         }
-        if( !found )
+        if (!found )
             tmpArray.append(oa[i]);
     }
     oa = tmpArray;
@@ -1319,9 +1284,9 @@ void makeUniqueArray( MObjectArray& oa)
 
 bool isObjectInList(MObject obj, MObjectArray& objectArray)
 {
-    for( uint oId = 0; oId < objectArray.length(); oId++)
+    for (uint oId = 0; oId < objectArray.length(); oId++)
     {
-        if( objectArray[oId] == obj)
+        if (objectArray[oId] == obj)
             return true;
     }
     return false;
@@ -1329,9 +1294,9 @@ bool isObjectInList(MObject obj, MObjectArray& objectArray)
 
 bool isPlugInList(MObject obj, MPlugArray& plugArray)
 {
-    for( uint oId = 0; oId < plugArray.length(); oId++)
+    for (uint oId = 0; oId < plugArray.length(); oId++)
     {
-        if( plugArray[oId] == obj)
+        if (plugArray[oId] == obj)
             return true;
     }
     return false;
@@ -1359,18 +1324,18 @@ void findConnectedNodeTypes(uint nodeId, MObject thisObject, MObjectArray& conne
 
     int numc = plugArray.length();
 
-    for( uint plugId = 0; plugId < plugArray.length(); plugId++)
+    for (uint plugId = 0; plugId < plugArray.length(); plugId++)
     {
         MPlug plug = plugArray[plugId];
-        if( isPlugInList(plug, completeList))
+        if (isPlugInList(plug, completeList))
             continue;
 
         completeList.append(plug);
 
         MString pn = plug.name();
-        if( upstream && plug.isDestination())
+        if (upstream && plug.isDestination())
             continue;
-        if( downstream && plug.isSource())
+        if (downstream && plug.isSource())
             continue;
 
         MPlugArray otherSidePlugs;
@@ -1378,7 +1343,7 @@ void findConnectedNodeTypes(uint nodeId, MObject thisObject, MObjectArray& conne
         bool asSrc = plug.isSource();
         MGlobal::displayInfo(MString("findConnectedNodeTypes: checking plug ") + plug.name());
         plug.connectedTo(otherSidePlugs, asDest, asSrc);
-        for( uint cplugId = 0; cplugId < otherSidePlugs.length(); cplugId++)
+        for (uint cplugId = 0; cplugId < otherSidePlugs.length(); cplugId++)
         {
             findConnectedNodeTypes(nodeId, otherSidePlugs[cplugId].node(), connectedElements, completeList, upstream);
         }
@@ -1407,15 +1372,15 @@ MObject getConnectedShadingEngine(MObject node)
     MFnDependencyNode depFn(node);
     MPlugArray plugArray;
     depFn.getConnections(plugArray);
-    for( uint i = 0; i < plugArray.length(); i++)
+    for (uint i = 0; i < plugArray.length(); i++)
     {
-        if( plugArray[i].isSource() )
+        if (plugArray[i].isSource() )
         {
             MPlugArray desArray;
             plugArray[i].connectedTo(desArray, false, true);
             for(uint k = 0; k < desArray.length(); k++)
             {
-                if( desArray[k].node().hasFn(MFn::kShadingEngine))
+                if (desArray[k].node().hasFn(MFn::kShadingEngine))
                 {
                     se = desArray[k].node();
                 }
@@ -1452,7 +1417,7 @@ void getUVFromConnectedTexturePlacementNode(MObject fileTextureNode, float inU, 
     MObject texPlaceObj = getConnectedInNode(fileTextureNode, "uvCoord");
     outU = inU;
     outV = outV;
-    if( texPlaceObj == MObject::kNullObj )
+    if (texPlaceObj == MObject::kNullObj )
         return;
 
     double offsetU = 0.0;

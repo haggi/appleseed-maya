@@ -58,7 +58,7 @@ float getFloatAttr(const char* plugName, const MFnDependencyNode& dn, float defa
     MStatus stat = MS::kSuccess;
     bool result = false;
     MPlug plug = dn.findPlug(plugName, &stat);
-    if( !stat )
+    if (!stat )
         return defaultValue;
     return plug.asFloat();
 }
@@ -69,7 +69,7 @@ bool getFloat(const MString& plugName, const MFnDependencyNode& dn, float& value
     MStatus stat = MS::kSuccess;
     bool result = false;
     MPlug plug = dn.findPlug(plugName, &stat);
-    if( !stat )
+    if (!stat )
         return false;
     value = plug.asFloat(ctx, &stat);
     if(stat)
@@ -89,17 +89,17 @@ bool getFloat2(const MString& plugName, const MFnDependencyNode& dn, float2& val
     bool result = false;
     MString pName0 = plugName + "0";
     MString pName1 = plugName + "1";
-    if( plugName == "repeatUV")
+    if (plugName == "repeatUV")
     {
         pName0 = "repeatU";
         pName0 = "repeatV";
     }
     MPlug plug = dn.findPlug(pName0, &stat);
-    if( !stat )
+    if (!stat )
         return false;
     value[0] = plug.asFloat(ctx, &stat);
     plug = dn.findPlug(pName0, &stat);
-    if( !stat )
+    if (!stat )
         return false;
     value[1] = plug.asFloat(ctx, &stat);
     if(stat)
@@ -113,11 +113,11 @@ bool getFloat2(const MString& plugName, const MFnDependencyNode& dn, MVector& va
     MStatus stat = MS::kSuccess;
     bool result = false;
     MPlug plug = dn.findPlug(plugName + "0", &stat);
-    if( !stat )
+    if (!stat )
         return false;
     value.x = plug.asFloat(ctx, &stat);
     plug = dn.findPlug(plugName + "1", &stat);
-    if( !stat )
+    if (!stat )
         return false;
     value.y = plug.asFloat(ctx, &stat);
     if(stat)
@@ -132,7 +132,7 @@ bool getDouble(const MString& plugName, const MFnDependencyNode& dn, double& val
     MStatus stat = MS::kSuccess;
     bool result = false;
     MPlug plug = dn.findPlug(plugName, &stat);
-    if( !stat )
+    if (!stat )
         return false;
     value = plug.asDouble(ctx, &stat);
     if(stat)
@@ -146,7 +146,7 @@ bool getString(const MString& plugName, const MFnDependencyNode& dn, MString& va
     MStatus stat = MS::kSuccess;
     bool result = false;
     MPlug plug = dn.findPlug(plugName, &stat);
-    if( !stat )
+    if (!stat )
         return false;
     value = plug.asString(ctx, &stat);
     if(stat)
@@ -159,7 +159,7 @@ MString getString(const char *plugName, const MFnDependencyNode& dn)
     MDGContext ctx = MDGContext::fsNormal;
     MStatus stat = MS::kSuccess;
     MPlug plug = dn.findPlug(plugName, &stat);
-    if( !stat )
+    if (!stat )
         return "";
     return plug.asString(ctx, &stat);
 }
@@ -180,7 +180,7 @@ bool getLong(const MString& plugName, const MFnDependencyNode& dn, long& value)
     MStatus stat = MS::kSuccess;
     bool result = false;
     MPlug plug = dn.findPlug(plugName, &stat);
-    if( !stat )
+    if (!stat )
         return false;
     value = plug.asInt(ctx, &stat);
     if(stat)
@@ -194,7 +194,7 @@ bool getInt(const MString& plugName, const MFnDependencyNode& dn, int& value)
     MStatus stat = MS::kSuccess;
     bool result = false;
     MPlug plug = dn.findPlug(plugName, &stat);
-    if( !stat )
+    if (!stat )
         return false;
     value = plug.asInt(ctx, &stat);
     if(stat)
@@ -211,7 +211,7 @@ int getIntAttr(const char *plugName, const MFnDependencyNode& dn, int defaultVal
     MDGContext ctx = MDGContext::fsNormal;
     MStatus stat = MS::kSuccess;
     MPlug plug = dn.findPlug(plugName, &stat);
-    if( !stat )
+    if (!stat )
         return defaultValue;
     return plug.asInt(ctx, &stat);
 }
@@ -230,7 +230,7 @@ bool getBool(const MString& plugName, const MFnDependencyNode& dn, bool& value)
     MStatus stat = MS::kSuccess;
     bool result = false;
     MPlug plug = dn.findPlug(plugName, &stat);
-    if( !stat )
+    if (!stat )
         return false;
     value = plug.asBool(ctx, &stat);
     if(stat)
@@ -244,7 +244,7 @@ bool getBoolAttr(const char *plugName, const MFnDependencyNode& dn, bool default
     MStatus stat = MS::kSuccess;
     bool result = false;
     MPlug plug = dn.findPlug(plugName, &stat);
-    if( !stat )
+    if (!stat )
         return false;
     return plug.asBool(ctx, &stat);
 }
@@ -260,7 +260,7 @@ bool getEnum(const MString& plugName, const MFnDependencyNode& dn, int& value)
     MStatus stat = MS::kSuccess;
     bool result = false;
     MPlug plug = dn.findPlug(plugName, &stat);
-    if( !stat )
+    if (!stat )
         return false;
     value = plug.asShort(ctx, &stat);
     if(stat)
@@ -316,7 +316,7 @@ bool getEnum(const MString& plugName, const MFnDependencyNode& dn, int& id, MStr
     MStatus stat = MS::kSuccess;
     bool result = false;
     MPlug plug = dn.findPlug(plugName, &stat);
-    if( !stat )
+    if (!stat )
         return false;
     id = plug.asShort(ctx, &stat);
     if(!stat)
@@ -341,11 +341,11 @@ bool getInt2(const MString& plugName, const MFnDependencyNode& dn, int2& value)
     MStatus stat = MS::kSuccess;
     bool result = false;
     MPlug plug = dn.findPlug(plugName + "0", &stat);
-    if( !stat )
+    if (!stat )
         return false;
     value[0] = plug.asInt(ctx, &stat);
     plug = dn.findPlug(plugName + "1", &stat);
-    if( !stat )
+    if (!stat )
         return false;
     value[1] = plug.asInt(ctx, &stat);
     if(stat)
@@ -408,13 +408,13 @@ bool getColor(const MString& plugName, const MFnDependencyNode& dn, MString& val
     bool result = false;
     float r, g, b;
     MPlug plug = dn.findPlug(plugName + "R", &stat);
-    if( !stat ) return false;
+    if (!stat ) return false;
     r = plug.asFloat(ctx, &stat);
     plug = dn.findPlug(plugName + "G", &stat);
-    if( !stat ) return false;
+    if (!stat ) return false;
     g = plug.asFloat(ctx, &stat);
     plug = dn.findPlug(plugName + "B", &stat);
-    if( !stat ) return false;
+    if (!stat ) return false;
     b = plug.asFloat(ctx, &stat);
     value = MString("") + r + " " + g + " " + b;
     result = true;
@@ -425,7 +425,7 @@ bool getColor(const char *plugName, const MFnDependencyNode& dn, float *value)
 {
     MColor c(1,0,1);
     bool result = getColor(MString(plugName), dn, c);
-    if( result )
+    if (result )
     {
         value[0] = c.r;
         value[1] = c.g;
@@ -485,17 +485,17 @@ bool getVector(const MString& plugName, const MFnDependencyNode& dn, MVector& va
     MStatus stat = MS::kSuccess;
     bool result = false;
     MPlug plug = dn.findPlug(plugName, &stat);
-    if( !stat )
+    if (!stat )
         return false;
     MPlug Xplug = dn.findPlug(plugName + "X", &stat);
     MPlug Yplug = dn.findPlug(plugName + "Y", &stat);
     MPlug Zplug = dn.findPlug(plugName + "Z", &stat);
-    if( !stat )
+    if (!stat )
         return false;
     value.x = Xplug.asDouble(ctx, &stat);
     value.y = Yplug.asDouble(ctx, &stat);
     value.z = Zplug.asDouble(ctx, &stat);
-    if( !stat )
+    if (!stat )
         return false;
     return true;
 }
@@ -506,17 +506,17 @@ bool getPoint(const MString& plugName, const MFnDependencyNode& dn, MPoint& valu
     MStatus stat = MS::kSuccess;
     bool result = false;
     MPlug plug = dn.findPlug(plugName, &stat);
-    if( !stat )
+    if (!stat )
         return false;
     MPlug Xplug = dn.findPlug(plugName + "X", &stat);
     MPlug Yplug = dn.findPlug(plugName + "Y", &stat);
     MPlug Zplug = dn.findPlug(plugName + "Z", &stat);
-    if( !stat )
+    if (!stat )
         return false;
     value.x = Xplug.asDouble(ctx, &stat);
     value.y = Yplug.asDouble(ctx, &stat);
     value.z = Zplug.asDouble(ctx, &stat);
-    if( !stat )
+    if (!stat )
         return false;
     return true;
 }
@@ -527,17 +527,17 @@ bool getPoint(const MString& plugName, const MFnDependencyNode& dn, MVector& val
     MStatus stat = MS::kSuccess;
     bool result = false;
     MPlug plug = dn.findPlug(plugName, &stat);
-    if( !stat )
+    if (!stat )
         return false;
     MPlug Xplug = dn.findPlug(plugName + "X", &stat);
     MPlug Yplug = dn.findPlug(plugName + "Y", &stat);
     MPlug Zplug = dn.findPlug(plugName + "Z", &stat);
-    if( !stat )
+    if (!stat )
         return false;
     value.x = Xplug.asDouble(ctx, &stat);
     value.y = Yplug.asDouble(ctx, &stat);
     value.z = Zplug.asDouble(ctx, &stat);
-    if( !stat )
+    if (!stat )
         return false;
     return true;
 }
@@ -549,13 +549,13 @@ bool getMsgObj(const char *plugName, const MFnDependencyNode& dn, MObject& value
     MStatus stat = MS::kSuccess;
     bool result = false;
     MPlug plug = dn.findPlug(plugName, &stat);
-    if( !stat )
+    if (!stat )
         return false;
     if(!plug.isConnected())
         return false;
     MPlugArray inConnections;
     plug.connectedTo(inConnections, true, false, &stat);
-    if( !stat )
+    if (!stat )
         return false;
     value = inConnections[0].node();
     return true;
@@ -680,22 +680,22 @@ ATTR_TYPE getPlugAttrType(const char *plugName, const MFnDependencyNode& dn)
     plugName = pn.c_str();
 
     MPlug plug = dn.findPlug(plugName, &stat);
-    if( !stat )
+    if (!stat )
         return ATTR_TYPE_NONE;
 
     MObject attObj = plug.attribute(&stat);
     MFnAttribute att(attObj);
-    if( !stat )
+    if (!stat )
         return ATTR_TYPE_NONE;
 
     if(att.isUsedAsColor())
         return ATTR_TYPE_COLOR;
-    if( attObj.apiType() == MFn::kNumericAttribute)
+    if (attObj.apiType() == MFn::kNumericAttribute)
     {
         MFnNumericAttribute na(attObj, &stat);
-        if( !stat )
+        if (!stat )
             return ATTR_TYPE_NONE;
-        if( na.unitType() == MFnNumericData::kFloat )
+        if (na.unitType() == MFnNumericData::kFloat )
             return ATTR_TYPE_FLOAT;
     }
     return ATTR_TYPE_NONE;

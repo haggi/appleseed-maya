@@ -52,7 +52,7 @@ SwatchRenderer::SwatchRenderer(MObject dependNode, MObject renderNode, int image
 
 SwatchRenderer::~SwatchRenderer()
 {
-    if ( this->renderInterface != 0)
+    if (this->renderInterface != 0)
         SwatchRendererInterfaceFactory().deleteSwatchRendererInterface(this->renderInterface);
     this->renderInterface = nullptr;
 }
@@ -60,7 +60,6 @@ SwatchRenderer::~SwatchRenderer()
 bool SwatchRenderer::doIteration()
 {
     MStatus status;
-    //MGlobal::displayInfo("doIteration called.");
     image().create(resolution(), resolution(), 4, MImage::kFloat);
 
     // if another render process is rendering then...

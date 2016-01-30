@@ -81,19 +81,19 @@ bool BinMeshReaderCmd::importBinMeshes()
 
     asr::ParamArray params;
     params.insert("filename", path.asChar());
-    if( !asr::MeshObjectReader::read(searchPaths, path.asChar(), params, meshArray) )
+    if (!asr::MeshObjectReader::read(searchPaths, path.asChar(), params, meshArray) )
     {
         logger.error(MString("Unable to read meshes from ") + path);
         return false;
     }
 
-    for( size_t meshId = 0; meshId < meshArray.size(); meshId++)
+    for (size_t meshId = 0; meshId < meshArray.size(); meshId++)
     {
-        int numVertices = meshArray[meshId]->get_vertex_count();
-        int numNormals = meshArray[meshId]->get_vertex_normal_count();
-        int numTriangles = meshArray[meshId]->get_triangle_count();
-        int numMaterials = meshArray[meshId]->get_material_slot_count();
-        int numUVs = meshArray[meshId]->get_tex_coords_count();
+        const unsigned int numVertices = static_cast<unsigned int>(meshArray[meshId]->get_vertex_count());
+        const unsigned int numNormals = static_cast<unsigned int>(meshArray[meshId]->get_vertex_normal_count());
+        const unsigned int numTriangles = static_cast<unsigned int>(meshArray[meshId]->get_triangle_count());
+        const unsigned int numMaterials = static_cast<unsigned int>(meshArray[meshId]->get_material_slot_count());
+        const unsigned int numUVs = static_cast<unsigned int>(meshArray[meshId]->get_tex_coords_count());
 
         MPointArray points(numVertices);
         MVectorArray normals(numNormals);
@@ -102,13 +102,13 @@ bool BinMeshReaderCmd::importBinMeshes()
         MFloatArray uArray(numUVs), vArray(numUVs);
         MIntArray uvIds;
 
-        for( size_t vtxId = 0; vtxId < numVertices; vtxId++)
+        for (unsigned int vtxId = 0; vtxId < numVertices; vtxId++)
         {
             asr::GVector3 p = meshArray[meshId]->get_vertex(vtxId);
             points[vtxId] = MPoint(p.x, p.y, p.z);
         }
 
-        for( size_t triId = 0; triId < numTriangles; triId++)
+        for (unsigned int triId = 0; triId < numTriangles; triId++)
         {
             faceVertexCounts.append(3);
             asr::Triangle tri = meshArray[meshId]->get_triangle(triId);
@@ -120,14 +120,14 @@ bool BinMeshReaderCmd::importBinMeshes()
             uvIds.append(tri.m_a2);
         }
 
-        for( size_t uvId = 0; uvId < numUVs; uvId++)
+        for (unsigned int uvId = 0; uvId < numUVs; uvId++)
         {
             asr::GVector2 uv = meshArray[meshId]->get_tex_coords(uvId);
             uArray[uvId] = uv.x;
             vArray[uvId] = uv.y;
         }
 
-        for( size_t nId = 0; nId < numNormals; nId++)
+        for (unsigned int nId = 0; nId < numNormals; nId++)
         {
             asr::GVector3 v = meshArray[meshId]->get_vertex_normal(nId);
             normals[nId] = MVector(v.x, v.y, v.z);
@@ -135,18 +135,15 @@ bool BinMeshReaderCmd::importBinMeshes()
 
         MFnMesh newMesh;
         MStatus stat;
-        //newMesh.create(numVertices, numTriangles, points, faceVertexCounts, faceConnects, MObject::kNullObj, &stat);
         newMesh.create(numVertices, numTriangles, points, faceVertexCounts, faceConnects, uArray, vArray, MObject::kNullObj, &stat);
 
         stat = newMesh.clearUVs();
         stat = newMesh.setUVs(uArray, vArray);
         stat = newMesh.assignUVs(faceVertexCounts, uvIds);
-
     }
 
     return true;
 }
-
 
 MStatus BinMeshReaderCmd::doIt( const MArgList& args)
 {
@@ -157,13 +154,13 @@ MStatus BinMeshReaderCmd::doIt( const MArgList& args)
     MArgDatabase argData(syntax(), args);
 
     path = "";
-    if( argData.isFlagSet("-path", &stat))
+    if (argData.isFlagSet("-path", &stat))
     {
         argData.getFlagArgument("-path", 0, path);
         logger.debug(MString("path: ") + path);
     }
 
-    if( (path == ""))
+    if ((path == ""))
     {
         MGlobal::displayError("binMeshTranslator failed: no path for export.\n");
         printUsage();

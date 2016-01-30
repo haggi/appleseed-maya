@@ -57,18 +57,12 @@ asr::Assembly *getMasterAssemblyFromProject(asr::Project *project);
 asr::Assembly *getSceneAssemblyFromProject(asr::Project *project);
 asr::AssemblyInstance *getExistingObjectAssemblyInstance(MayaObject *obj);
 void MMatrixToAMatrix(MMatrix& mayaMatrix, asf::Matrix4d& appleMatrix);
-//asr::Assembly *getAssemblyFromScene(MayaObject *obj, asr::Scene *scenePtr);
 asf::Matrix4d MMatrixToAMatrix(MMatrix& mayaMatrix);
 asf::Matrix4d MMatrixToAMatrix(MMatrix mayaMatrix);
 
-//void fillTransformMatrices(sharedPtr<MayaObject> obj, asr::AssemblyInstance *assInstance);
-//void fillTransformMatrices(MayaObject *obj, asr::AssemblyInstance *assInstance);
-//void fillTransformMatrices(sharedPtr<MayaObject> obj, asr::AssemblyInstance *assInstance, MMatrix correctorMatrix);
-//void fillTransformMatrices(sharedPtr<MayaObject> obj, asr::Camera *assInstance);
 void fillTransformMatrices(sharedPtr<MayaObject> obj, asr::Light *assInstance);
 void fillTransformMatrices(MMatrix matrix, asr::AssemblyInstance *assInstance);
 void fillMatrices(sharedPtr<MayaObject> obj, asr::TransformSequence& transformSequence);
-//template <typename T> void fillMatrices(sharedPtr<MayaObject> obj, T*);
 
 void mayaColorToFloat(const MColor col, const float *floatCol, float *alpha);
 void removeColorEntityIfItExists(const MString colorName);

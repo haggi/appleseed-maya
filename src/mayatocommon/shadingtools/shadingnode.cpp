@@ -64,7 +64,7 @@ ShadingNode::~ShadingNode()
 void ShadingNode::setMObject(MObject mobj)
 {
     this->mobject = mobj;
-    if( this->mobject != MObject::kNullObj)
+    if (this->mobject != MObject::kNullObj)
     {
         this->typeName = getDepNodeTypeName(this->mobject);
         this->fullName = getObjectName(this->mobject);

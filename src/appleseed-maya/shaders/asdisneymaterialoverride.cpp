@@ -39,30 +39,6 @@ MHWRender::MPxSurfaceShadingNodeOverride* asDisneyMaterialOverride::creator(cons
 asDisneyMaterialOverride::asDisneyMaterialOverride(const MObject& obj)
 : MPxSurfaceShadingNodeOverride(obj)
 {
-    //MHWRender::MRenderer* theRenderer = MHWRender::MRenderer::theRenderer();
-    //if (theRenderer)
-    //{
-    //  MHWRender::MFragmentManager* fragmentMgr = theRenderer->getFragmentManager();
-    //  if (fragmentMgr)
-    //  {
-    //      for (uint i = 0; i < MayaTo::getWorldPtr()->shaderSearchPath.length(); i++)
-    //          fragmentMgr->addFragmentPath(MayaTo::getWorldPtr()->shaderSearchPath[i]);
-
-    //      MString fragment = "asDisneyMaterial";
-    //      bool fragAdded = fragmentMgr->hasFragment(fragment);
-    //      if (!fragAdded)
-    //      {
-    //          fragAdded = (fragment == fragmentMgr->addShadeFragmentFromFile(fragment + ".xml", false));
-    //          if (fragAdded)
-    //          {
-    //              MGlobal::displayInfo(MString("Successfully loaded fragment ") + fragment + ".xml");
-    //          }
-    //          else{
-    //              MGlobal::displayInfo(MString("Could not load fragment ") + fragment + ".xml");
-    //          }
-    //      }
-    //  }
-    //}
 }
 
 asDisneyMaterialOverride::~asDisneyMaterialOverride()

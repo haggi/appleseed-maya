@@ -106,7 +106,7 @@ void StandinLocatorNode::draw( M3dView & view, const MDagPath & /*path*/,
     {
         glPushAttrib( GL_CURRENT_BIT );
         {
-            if ( status == M3dView::kActive ) {
+            if (status == M3dView::kActive ) {
                 view.setDrawColor( 13, M3dView::kActiveColors );
             } else {
                 view.setDrawColor( 13, M3dView::kDormantColors );
@@ -152,10 +152,6 @@ void StandinLocatorNode::draw( M3dView & view, const MDagPath & /*path*/,
         }
         glPopAttrib();
 
-        //glPointSize((float)pointsize);
-        //glBegin( GL_POINTS );
-        //for( uint i = 0; i < pointData.length(); i++)
-        //  glVertex3f(pointData[i].x, pointData[i].y, pointData[i].z);
         glEnd();
     }
 

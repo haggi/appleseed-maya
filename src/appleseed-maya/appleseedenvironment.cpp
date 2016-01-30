@@ -158,11 +158,11 @@ void AppleseedRenderer::defineEnvironment()
             // get the connected sun light
             // physicalSunConnection
             MObject connectedNode = getConnectedInNode(getRenderGlobalsNode(), "physicalSunConnection");
-            if ( connectedNode != MObject::kNullObj)
+            if (connectedNode != MObject::kNullObj)
             {
                 MFnTransform tn(connectedNode);
                 MMatrix tm = tn.transformationMatrix(&stat);
-                if( stat )
+                if (stat )
                 {
                     MVector sunOrient(0,0,1);
                     sunOrient *= tm;

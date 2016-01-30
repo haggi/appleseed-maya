@@ -118,7 +118,6 @@ public:
     bool isGeo(MObject obj);
     bool isLight(MObject obj);
 
-    //void waitForFrameCompletion();
     void setRenderType(RenderType rtype);
     sharedPtr<MayaObject> getObject(MObject obj);
     sharedPtr<MayaObject> getObject(MDagPath dp);

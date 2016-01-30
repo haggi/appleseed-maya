@@ -76,7 +76,6 @@ MStatus asLayeredShader::initialize()
     MFnTypedAttribute tAttr;
     MFnGenericAttribute gAttr;
     MFnEnumAttribute eAttr;
-    //MFnMessageAttribute mAttr;
     MFnCompoundAttribute cAttr;
 
     MStatus status;

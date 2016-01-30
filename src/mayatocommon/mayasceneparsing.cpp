@@ -177,11 +177,6 @@ bool MayaScene::updateScene(MFn::Type updateElement)
             }
         }
 
-        //if( !MayaTo::getWorldPtr()->worldRenderGlobalsPtr->isMbStartStep )
-        // non mb objects will be exported only above
-        //if (!obj->motionBlurred)
-        //  continue;
-
         if (MayaTo::getWorldPtr()->worldRenderGlobalsPtr->isDeformStep())
             if (obj->mobject.hasFn(MFn::kShape))
                 MayaTo::getWorldPtr()->worldRendererPtr->updateShape(obj);
@@ -241,7 +236,6 @@ bool MayaScene::updateScene()
             if (MayaTo::getWorldPtr()->worldRenderGlobalsPtr->isMbStartStep())
                 obj->transformMatrices.clear();
             obj->transformMatrices.push_back(obj->dagPath.inclusiveMatrix());
-            //this->transformUpdateCallback(obj);
             MayaTo::getWorldPtr()->worldRendererPtr->updateShape(obj);
         }
     }

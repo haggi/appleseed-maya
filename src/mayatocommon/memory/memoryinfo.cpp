@@ -39,9 +39,9 @@
         PROCESS_MEMORY_COUNTERS pmc;
         GetProcessMemoryInfo(GetCurrentProcess(), &pmc, sizeof(pmc));
         SIZE_T usedMB = pmc.WorkingSetSize / (1024 * 1024);
-        if( startUsage == 0)
+        if (startUsage == 0)
             startUsage = usedMB;
-        if( usedMB > peakUsage)
+        if (usedMB > peakUsage)
             peakUsage = usedMB;
         return (usedMB);
     }

@@ -91,14 +91,8 @@ void AppleseedRenderer::doInteractiveUpdate()
 
             if (iElement->triggeredFromTransform)
             {
-                //Logging::debug(MString("AppleseedRenderer::doInteractiveUpdate - found mesh triggered from transform - update instance.") + iElement->name);
                 Logging::debug(MString("AppleseedRenderer::doInteractiveUpdate mesh ") + iElement->name + " ieNodeName " + getObjectName(iElement->node) + " objDagPath " + iElement->obj->dagPath.fullPathName());
                 MStatus stat;
-                //MFnDagNode dn(iElement->node, &stat);
-                //Logging::debug(MString("AppleseedRenderer::doInteractiveUpdate dn ") + dn.fullPathName() + " (sollte sein: " + iElement->name + ")");
-                //MDagPath mdp;
-                //stat = dn.getPath(mdp);
-                //Logging::debug(MString("AppleseedRenderer::doInteractiveUpdate dp ") + mdp.fullPathName() + " (sollte sein: " + iElement->name + ")");
 
                 asr::AssemblyInstance *assInst = getExistingObjectAssemblyInstance(obj.get());
                 if (assInst == nullptr)
@@ -112,7 +106,7 @@ void AppleseedRenderer::doInteractiveUpdate()
                 assInst->bump_version_id();
             }
             else{
-                if ( obj->instanceNumber == 0)
+                if (obj->instanceNumber == 0)
                     updateGeometry(obj);
                 if (obj->instanceNumber > 0)
                     updateInstance(obj);

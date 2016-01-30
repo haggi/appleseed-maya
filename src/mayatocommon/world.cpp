@@ -92,7 +92,6 @@ namespace MayaTo{
         // in batch mode we do not need any renderView callbacks, and timer callbacks do not work anyway in batch
         if (MGlobal::mayaState() != MGlobal::kBatch)
             timerCallbackId = MTimerMessage::addTimerCallback(0.001, RenderQueueWorker::renderQueueWorkerTimerCallback, nullptr);
-        //MSceneMessage::addCallback(MSceneMessage::kAfterNew, MayaToWorld::callAfterNewCallback, nullptr, &stat);
         MayaToWorld::afterNewCallbackId = MSceneMessage::addCallback(MSceneMessage::kAfterOpen, MayaToWorld::callAfterOpenCallback, nullptr, &stat);
 
         initialize();

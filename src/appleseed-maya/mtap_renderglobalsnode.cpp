@@ -38,7 +38,6 @@ MTypeId MayaToAppleseedGlobals::id(0x0011CF40);
 
 MObject MayaToAppleseedGlobals::bitdepth;
 MObject MayaToAppleseedGlobals::colorSpace;
-//MObject MayaToAppleseedGlobals::filtertype;
 MObject MayaToAppleseedGlobals::lightingEngine;
 MObject MayaToAppleseedGlobals::clamping;
 MObject MayaToAppleseedGlobals::maxError;
