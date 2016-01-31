@@ -27,8 +27,8 @@
 //
 
 #include "meshtranslator.h"
-#include "maya/mfnmesh.h"
-#include "maya/mitmeshpolygon.h"
+#include "maya/MFnMesh.h"
+#include "maya/MItMeshPolygon.h"
 #include "utilities/logging.h"
 
 static Logging logger;
