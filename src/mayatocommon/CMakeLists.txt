@@ -131,17 +131,6 @@ source_group ("threads" FILES
     ${threads_sources}
 )
 
-set (translators_sources
-    translators/meshtranslator.cpp
-    translators/meshtranslator.h
-)
-list (APPEND mayatocommon_sources
-    ${translators_sources}
-)
-source_group ("translators" FILES
-    ${translators_sources}
-)
-
 set (utilities_sources
     utilities/attrtools.cpp
     utilities/attrtools.h
