@@ -144,21 +144,21 @@ void AppleseedRenderer::createMesh(sharedPtr<mtap_MayaObject> obj)
         mesh->push_material_slot(slotName.asChar());
     }
 
-    int numTris = triPointIds.length() / 3;
+    const uint numTris = triPointIds.length() / 3;
 
     for (uint triId = 0; triId < numTris; triId++)
     {
-        uint index = triId * 3;
-        int perFaceShadingGroup = triMatIds[triId];
-        int vtxId0 = triPointIds[index];
-        int vtxId1 = triPointIds[index + 1];
-        int vtxId2 = triPointIds[index + 2];
-        int normalId0 = triNormalIds[index];
-        int normalId1 = triNormalIds[index + 1];
-        int normalId2 = triNormalIds[index + 2];
-        int uvId0 = triUvIds[index];
-        int uvId1 = triUvIds[index + 1];
-        int uvId2 = triUvIds[index + 2];
+        const uint index = triId * 3;
+        const int perFaceShadingGroup = triMatIds[triId];
+        const int vtxId0 = triPointIds[index];
+        const int vtxId1 = triPointIds[index + 1];
+        const int vtxId2 = triPointIds[index + 2];
+        const int normalId0 = triNormalIds[index];
+        const int normalId1 = triNormalIds[index + 1];
+        const int normalId2 = triNormalIds[index + 2];
+        const int uvId0 = triUvIds[index];
+        const int uvId1 = triUvIds[index + 1];
+        const int uvId2 = triUvIds[index + 2];
         mesh->push_triangle(asr::Triangle(vtxId0, vtxId1, vtxId2,  normalId0, normalId1, normalId2, uvId0, uvId1, uvId2, perFaceShadingGroup));
     }
 
