@@ -54,7 +54,7 @@ SwatchRenderer::~SwatchRenderer()
 {
     if (this->renderInterface != 0)
         SwatchRendererInterfaceFactory().deleteSwatchRendererInterface(this->renderInterface);
-    this->renderInterface = nullptr;
+    this->renderInterface = 0;
 }
 
 bool SwatchRenderer::doIteration()

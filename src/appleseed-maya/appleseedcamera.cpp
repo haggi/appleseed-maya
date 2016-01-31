@@ -48,7 +48,7 @@ void AppleseedRenderer::defineCamera(sharedPtr<MayaObject> cam)
     sharedPtr<RenderGlobals> renderGlobals = MayaTo::getWorldPtr()->worldRenderGlobalsPtr;
 
     asr::Camera *camera = project->get_scene()->get_camera();
-    if (camera != nullptr)
+    if (camera != 0)
         Logging::debug("Camera is not null - we already have a camera -> update it.");
 
     // update the complete camera and place it into the scene

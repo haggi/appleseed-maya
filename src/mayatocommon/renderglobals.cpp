@@ -51,7 +51,7 @@ RenderGlobals::RenderGlobals()
 {
     Logging::debug("RenderGlobals::RenderGlobals()");
     this->good = false;
-    this->currentRenderPass = nullptr;
+    this->currentRenderPass = 0;
     this->currentRenderPassElementId = 0;
     this->maxTraceDepth = 4;
     this->doMb = false;

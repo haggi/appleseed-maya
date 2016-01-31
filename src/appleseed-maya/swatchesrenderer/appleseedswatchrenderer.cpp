@@ -93,7 +93,7 @@ AppleseedSwatchRenderer::AppleseedSwatchRenderer()
     MString swatchRenderFile = getRendererHome() + "resources/swatchRender.xml";
     MString schemaPath = getRendererHome() + "schemas/project.xsd";
     project = asr::ProjectFileReader().read(swatchRenderFile.asChar(), schemaPath.asChar());
-    if (project.get() == nullptr)
+    if (project.get() == 0)
     {
         Logging::error(MString("Unable to load swatch render file correctly: ") + swatchRenderFile);
         return;
@@ -211,7 +211,7 @@ void AppleseedSwatchRenderer::mainLoop()
     {
         SQueue::getQueue()->wait_and_pop(swatchEvent);
 
-        if (swatchEvent.renderDone == nullptr)
+        if (swatchEvent.renderDone == 0)
         {
             Logging::debug(MString("AppleseedSwatchRenderer main Loop: received a null ptr. Terminating loop"));
             terminateLoop = true;
@@ -259,7 +259,7 @@ void AppleseedSwatchRenderer::defineMaterial(MObject shadingNode)
 
 void AppleseedSwatchRenderer::startAppleseedSwatchRender(AppleseedSwatchRenderer *swRend)
 {
-    if (swRend != nullptr)
+    if (swRend != 0)
     {
         Logging::debug(MString("startAppleseedSwatchRender"));
         swRend->mainLoop();

@@ -121,7 +121,7 @@ MString getAssemblyName(MayaObject *obj)
 void defineScene(asr::Project *project)
 {
     asr::Scene *scenePtr = project->get_scene();
-    if (scenePtr == nullptr)
+    if (scenePtr == 0)
     {
         asf::auto_release_ptr<asr::Scene> scene(asr::SceneFactory::create());
         project->set_scene(scene);
@@ -142,13 +142,13 @@ void defineMasterAssembly(asr::Project *project)
     MMatrix conversionMatrix;
     conversionMatrix.setToIdentity();
     MayaTo::MayaToWorld *world = MayaTo::getWorldPtr();
-    if (world != nullptr)
+    if (world != 0)
     {
         RenderGlobals *rg = world->worldRenderGlobalsPtr.get();
-        if (rg != nullptr)
+        if (rg != 0)
             conversionMatrix = rg->globalConversionMatrix;
     }
-    if (getSceneFromProject(project)->assemblies().get_by_name("world") == nullptr)
+    if (getSceneFromProject(project)->assemblies().get_by_name("world") == 0)
     {
         asf::auto_release_ptr<asr::Assembly> assembly(asr::AssemblyFactory().create("world", asr::ParamArray()));
         getSceneFromProject(project)->assemblies().insert(assembly);
@@ -181,7 +181,7 @@ MayaObject *getAssemblyMayaObject(MayaObject *mobj)
         sharedPtr<mtap_ObjectAttributes> att = staticPtrCast<mtap_ObjectAttributes>(obj->attributes);
         return att->assemblyObject;
     }
-    return nullptr; // only happens if obj is world
+    return 0; // only happens if obj is world
 }
 
 asr::Assembly *getCreateObjectAssembly(sharedPtr<MayaObject> obj)
@@ -189,10 +189,10 @@ asr::Assembly *getCreateObjectAssembly(sharedPtr<MayaObject> obj)
     sharedPtr<AppleRender::AppleseedRenderer> appleRenderer = staticPtrCast<AppleRender::AppleseedRenderer>(MayaTo::getWorldPtr()->worldRendererPtr);
 
     MayaObject *assemblyObject = getAssemblyMayaObject(obj.get());
-    if (assemblyObject == nullptr)
+    if (assemblyObject == 0)
     {
         Logging::debug("create mesh assemblyPtr == null");
-        return nullptr;
+        return 0;
     }
     MString assemblyName = getAssemblyName(assemblyObject);
     MString assemblyInstanceName = getAssemblyInstanceName(assemblyObject);
@@ -206,7 +206,7 @@ asr::Assembly *getCreateObjectAssembly(sharedPtr<MayaObject> obj)
     if (assemblyName == "world")
         ass = master;
 
-    if (ass == nullptr)
+    if (ass == 0)
     {
         asf::auto_release_ptr<asr::Assembly> assembly(asr::AssemblyFactory().create(assemblyName.asChar(), asr::ParamArray()));
         master->assemblies().insert(assembly);
@@ -224,10 +224,10 @@ asr::AssemblyInstance *getExistingObjectAssemblyInstance(MayaObject *obj)
 {
     sharedPtr<AppleRender::AppleseedRenderer> appleRenderer = staticPtrCast<AppleRender::AppleseedRenderer>(MayaTo::getWorldPtr()->worldRendererPtr);
     MayaObject *assemblyObject = getAssemblyMayaObject(obj);
-    if (assemblyObject == nullptr)
+    if (assemblyObject == 0)
     {
         Logging::debug("create mesh assemblyPtr == null");
-        return nullptr;
+        return 0;
     }
     MString assemblyName = getAssemblyName(obj);
     MString assemblyInstanceName = getAssemblyInstanceName(obj);
@@ -235,8 +235,8 @@ asr::AssemblyInstance *getExistingObjectAssemblyInstance(MayaObject *obj)
     if (assemblyName == "world")
         ass = getMasterAssemblyFromProject(appleRenderer->getProjectPtr());
 
-    if (ass == nullptr)
-        return nullptr;
+    if (ass == 0)
+        return 0;
     return ass->assembly_instances().get_by_name(assemblyInstanceName.asChar());
 }
 
@@ -255,10 +255,10 @@ void mayaColorToFloat(const MColor col, float *floatCol, float *alpha)
 void removeColorEntityIfItExists(const MString colorName)
 {
     sharedPtr<AppleRender::AppleseedRenderer> appleRenderer = staticPtrCast<AppleRender::AppleseedRenderer>(MayaTo::getWorldPtr()->worldRendererPtr);
-    assert(appleRenderer != nullptr);
+    assert(appleRenderer != 0);
     asr::Scene *scene = getSceneFromProject(appleRenderer->getProjectPtr());
     asr::ColorEntity *entity = scene->colors().get_by_name(colorName.asChar());
-    if (entity != nullptr)
+    if (entity != 0)
     {
         scene->colors().remove(entity);
     }
@@ -268,7 +268,7 @@ void defineColor(asr::Project *project, const char *name, MColor color, float in
 {
     asr::Scene *scene = project->get_scene();
     asr::ColorEntity *col = scene->colors().get_by_name(name);
-    if (col != nullptr)
+    if (col != 0)
         scene->colors().remove(col);
 
     float colorDef[3];
@@ -301,23 +301,23 @@ MString colorOrMap(asr::Project *project, MFnDependencyNode& shaderNode, MString
 void removeTextureEntityIfItExists(MString& textureName)
 {
     sharedPtr<AppleRender::AppleseedRenderer> appleRenderer = staticPtrCast<AppleRender::AppleseedRenderer>(MayaTo::getWorldPtr()->worldRendererPtr);
-    assert(appleRenderer != nullptr);
+    assert(appleRenderer != 0);
     asr::Scene *scene = getSceneFromProject(appleRenderer->getProjectPtr());
 
     MString textureInstanceName = textureName + "_texInst";
     asr::Entity *texture = (asr::Entity *)scene->textures().get_by_name(textureName.asChar());
-    if (texture != nullptr)
+    if (texture != 0)
         scene->textures().remove(texture);
 
     asr::TextureInstance *textureInstance = scene->texture_instances().get_by_name(textureInstanceName.asChar());
-    if (textureInstance != nullptr)
+    if (textureInstance != 0)
         scene->texture_instances().remove(textureInstance);
 }
 
 MString defineTexture(MFnDependencyNode& shader, MString& attributeName)
 {
     sharedPtr<AppleRender::AppleseedRenderer> appleRenderer = staticPtrCast<AppleRender::AppleseedRenderer>(MayaTo::getWorldPtr()->worldRendererPtr);
-    assert(appleRenderer != nullptr);
+    assert(appleRenderer != 0);
     asr::Scene *scene = getSceneFromProject(appleRenderer->getProjectPtr());
     asf::SearchPaths &searchPaths = appleRenderer->getProjectPtr()->search_paths();
 

@@ -312,7 +312,7 @@ namespace MAYATO_OSLUTIL{
         ~OSLUtilClass();
 
         OSL::OSLShadingNetworkRenderer *oslRenderer;
-        OSL::ShaderGroup *group = nullptr;
+        OSL::ShaderGroup *group = 0;
         MAYATO_OSL::ProjectionNodeArray projectionNodeArray;
         std::vector<MObject> projectionNodes;
         std::vector<MObject> projectionConnectNodes;

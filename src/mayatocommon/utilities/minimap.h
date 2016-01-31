@@ -85,7 +85,7 @@ template <class T, class S> void MiniMap<T,S>::append(T t, S s)
 
 template <class T, class S> S *MiniMap<T,S>::find(T t)
 {
-    S *s = nullptr;
+    S *s = 0;
     for (size_t i = 0; i < this->tClass.size(); i++)
     {
         if (tClass[i] == t)

@@ -61,7 +61,7 @@ void AppleRender::updateMaterial(MObject materialNode, const asr::Assembly *asse
 
     asr::ShaderGroup *shaderGroup = assembly->shader_groups().get_by_name(shaderGroupName.asChar());
 
-    if (shaderGroup != nullptr)
+    if (shaderGroup != 0)
     {
         shaderGroup->clear();
     }
@@ -107,14 +107,14 @@ void AppleRender::updateMaterial(MObject materialNode, const asr::Assembly *asse
     MString physicalSurfaceName = shadingGroupName + "_physical_surface_shader";
 
     // add shaders only if they do not yet exist
-    if (assembly->surface_shaders().get_by_name(physicalSurfaceName.asChar()) == nullptr)
+    if (assembly->surface_shaders().get_by_name(physicalSurfaceName.asChar()) == 0)
     {
         assembly->surface_shaders().insert(
             asr::PhysicalSurfaceShaderFactory().create(
             physicalSurfaceName.asChar(),
             asr::ParamArray()));
     }
-    if (assembly->materials().get_by_name(shadingGroupName.asChar()) == nullptr)
+    if (assembly->materials().get_by_name(shadingGroupName.asChar()) == 0)
     {
         assembly->materials().insert(
             asr::OSLMaterialFactory().create(
@@ -137,7 +137,7 @@ void AppleRender::AppleseedRenderer::updateMaterial(MObject materialNode)
     asr::Assembly *assembly = getMasterAssemblyFromProject(this->project.get());
     asr::ShaderGroup *shaderGroup = assembly->shader_groups().get_by_name(shaderGroupName.asChar());
 
-    if (shaderGroup != nullptr)
+    if (shaderGroup != 0)
     {
         shaderGroup->clear();
     }
@@ -183,14 +183,14 @@ void AppleRender::AppleseedRenderer::updateMaterial(MObject materialNode)
 
     MString physicalSurfaceName = shadingGroupName + "_physical_surface_shader";
     // add shaders only if they do not yet exist
-    if (assembly->surface_shaders().get_by_name(physicalSurfaceName.asChar()) == nullptr)
+    if (assembly->surface_shaders().get_by_name(physicalSurfaceName.asChar()) == 0)
     {
         assembly->surface_shaders().insert(
             asr::PhysicalSurfaceShaderFactory().create(
             physicalSurfaceName.asChar(),
             asr::ParamArray()));
     }
-    if (assembly->materials().get_by_name(shadingGroupName.asChar()) == nullptr)
+    if (assembly->materials().get_by_name(shadingGroupName.asChar()) == 0)
     {
         assembly->materials().insert(
             asr::OSLMaterialFactory().create(

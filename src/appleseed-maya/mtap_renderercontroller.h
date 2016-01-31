@@ -70,7 +70,7 @@ class mtap_IRendererController : public asr::IRendererController
 
     volatile Status status;
 
-    void (*entityUpdateProc)() = nullptr;
+    void (*entityUpdateProc)() = 0;
 };
 
 #endif

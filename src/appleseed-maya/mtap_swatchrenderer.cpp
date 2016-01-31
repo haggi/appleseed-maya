@@ -52,9 +52,9 @@ mtap_SwatchRendererInterface::mtap_SwatchRendererInterface(MObject dependNode, M
 
 mtap_SwatchRendererInterface::~mtap_SwatchRendererInterface()
 {
-    if (this->imageData != nullptr)
+    if (this->imageData != 0)
         free(this->imageData);
-    this->imageData = nullptr;
+    this->imageData = 0;
     Logging::debug("SwatchRendererInterface deleted.");
 }
 

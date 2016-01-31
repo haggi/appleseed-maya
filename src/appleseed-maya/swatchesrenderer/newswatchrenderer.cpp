@@ -95,7 +95,7 @@ bool NewSwatchRenderer::doIteration()
     AppleseedSwatchRenderer * appleSwRndr = (AppleseedSwatchRenderer *)MayaTo::getObjPtr("appleseedSwatchesRenderer");
     if (appleSwRndr)
     {
-        if (appleSwRndr->mrenderer.get() != nullptr)
+        if (appleSwRndr->mrenderer.get() != 0)
         {
             appleSwRndr->renderSwatch(this);
             image().convertPixelFormat(MImage::kByte);

@@ -83,7 +83,7 @@ AppleseedRenderer::AppleseedRenderer()
 
 AppleseedRenderer::~AppleseedRenderer()
 {
-    if (log_target.get() != nullptr)
+    if (log_target.get() != 0)
     {
         Logging::debug("Unloading logger.");
         asr::global_logger().remove_target(log_target.get());

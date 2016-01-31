@@ -58,7 +58,7 @@ void addObjectIdentifier(int id)
 
 bool MayaObject::isInstanced()
 {
-    return this->dagPath.isInstanced() || (this->instanceNumber > 0) || ((this->attributes != nullptr) && this->attributes->hasInstancerConnection);
+    return this->dagPath.isInstanced() || (this->instanceNumber > 0) || ((this->attributes != 0) && this->attributes->hasInstancerConnection);
 }
 
 bool MayaObject::isLight()
@@ -202,8 +202,8 @@ void MayaObject::initialize()
     this->isInstancerObject = false;
     this->instancerParticleId = -1;
     this->instanceNumber = 0;
-    this->attributes = nullptr;
-    this->origObject = nullptr;
+    this->attributes = 0;
+    this->origObject = 0;
     this->shortName = getObjectName(mobject);
     this->fullName = this->dagPath.fullPathName();
     this->fullNiceName = makeGoodString(this->fullName);
@@ -227,7 +227,7 @@ void MayaObject::initialize()
     this->shadowExcludeList = true; // in most cases only a few objects ignore shadows, so the list is shorter with ignoring objects
     this->animated = this->isObjAnimated();
     this->shapeConnected = this->isShapeConnected();
-    this->parent = nullptr;
+    this->parent = 0;
     this->visible = true;
     this->hasInstancerConnection = false;
     MDagPath dp;

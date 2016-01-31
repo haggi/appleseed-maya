@@ -62,7 +62,7 @@ void AppleseedRenderer::defineLight(sharedPtr<MayaObject> obj)
         MString colorAttribute = obj->shortName + "_intensity";
         defineColor(project.get(), colorAttribute.asChar(), col, intensity);
         int decay = getEnumInt("decayRate", depFn);
-        if (light == nullptr)
+        if (light == 0)
         {
             asf::auto_release_ptr<asr::Light> lp = asf::auto_release_ptr<asr::Light>(
                 asr::PointLightFactory().create(
@@ -93,7 +93,7 @@ void AppleseedRenderer::defineLight(sharedPtr<MayaObject> obj)
         float inner_angle = coneAngle;
         float outer_angle = coneAngle + penumbraAngle;
 
-        if (light == nullptr)
+        if (light == 0)
         {
             asf::auto_release_ptr<asr::Light> lp = asr::SpotLightFactory().create(
                 obj->shortName.asChar(),
@@ -126,7 +126,7 @@ void AppleseedRenderer::defineLight(sharedPtr<MayaObject> obj)
 
         if (!isSunLight(obj->mobject))
         {
-            if (light == nullptr)
+            if (light == 0)
             {
                 asf::auto_release_ptr<asr::Light> lp = asr::DirectionalLightFactory().create(
                     obj->shortName.asChar(),
@@ -204,7 +204,7 @@ void AppleseedRenderer::defineLight(sharedPtr<MayaObject> obj)
             asf::StringDictionary()
             .insert("slot0", "default")));
 
-        if (lightAssemblyInstance != nullptr)
+        if (lightAssemblyInstance != 0)
             fillMatrices(obj, lightAssemblyInstance->transform_sequence());
     }
 }
