@@ -38,8 +38,10 @@ class mtap_IRendererController : public asr::IRendererController
   public:
       mtap_IRendererController()
       {
+          entityUpdateProc = 0;
           status =  asr::IRendererController::ContinueRendering;
-      };
+      }
+
     // Destructor.
     ~mtap_IRendererController() {}
 
@@ -61,16 +63,16 @@ class mtap_IRendererController : public asr::IRendererController
     // This method is called continuously during rendering.
     void on_progress();
 
-    void release(){};
+    void release(){}
 
     Status get_status() const
     {
         return this->status;
-    };
+    }
 
     volatile Status status;
 
-    void (*entityUpdateProc)() = 0;
+    void (*entityUpdateProc)();
 };
 
 #endif

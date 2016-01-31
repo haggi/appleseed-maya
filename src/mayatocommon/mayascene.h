@@ -42,11 +42,16 @@
 
 struct InteractiveElement
 {
+    InteractiveElement()
+    {
+        triggeredFromTransform = false;
+    }
+
     sharedPtr<MayaObject> obj;
     MObject mobj;
     MString name;
     MObject node;
-    bool triggeredFromTransform = false; // to recognize if we have to update the shape or only the instance transform
+    bool triggeredFromTransform; // to recognize if we have to update the shape or only the instance transform
 };
 
 class MayaScene

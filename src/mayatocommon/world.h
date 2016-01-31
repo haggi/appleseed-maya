@@ -85,13 +85,13 @@ class MayaToWorld
     RendererUpAxis internalAxis;
     RendererUpAxis rendererAxis;
 
-    float internalScaleFactor = 1.0f;
-    float rendererScaleFactor = 1.0f;
+    float internalScaleFactor;
+    float rendererScaleFactor;
     float toMillimeters(float mm);
     MMatrix globalConversionMatrix; // for default unit conversion e.g. centimeter to meter
     MMatrix sceneScaleMatrix; // user defined scene scale
-    float scaleFactor = 1.0f;
-    float sceneScale = 1.0f;
+    float scaleFactor;
+    float sceneScale;
 
     void defineGlobalConversionMatrix();
 
@@ -105,9 +105,9 @@ class MayaToWorld
     MStringArray objectNames;
     std::vector<void *> objectPtr;
     MImage previousRenderedImage;
-    bool _canDoIPR = false;
+    bool _canDoIPR;
     bool canDoIPR(){ return _canDoIPR; }
-    void setCanDoIPR(bool yesOrNo) { _canDoIPR = yesOrNo; };
+    void setCanDoIPR(bool yesOrNo) { _canDoIPR = yesOrNo; }
 
     MStringArray shaderSearchPath;
 
@@ -176,6 +176,10 @@ struct CmdArgs
 {
     CmdArgs()
     {
+        userDataInt = 0;
+        userEvent = -1;
+        userDataFloat = 0.0;
+
         MFnDependencyNode defaultGlobals(objectFromName("defaultResolution"));
         width = defaultGlobals.findPlug("width").asInt();
         height = defaultGlobals.findPlug("height").asInt();
@@ -188,9 +192,9 @@ struct CmdArgs
     bool useRenderRegion;
     MDagPath cameraDagPath;
     MayaToWorld::WorldRenderType renderType;
-    int userDataInt = 0;
-    int userEvent = -1;
-    double userDataFloat = 0.0;
+    int userDataInt;
+    int userEvent;
+    double userDataFloat;
     MString userDataString;
 };
 

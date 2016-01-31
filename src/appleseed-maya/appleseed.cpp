@@ -74,6 +74,8 @@ std::vector<asr::Entity *> definedEntities;
 
 AppleseedRenderer::AppleseedRenderer()
 {
+    sceneBuilt = false;
+
     asr::global_logger().set_format(asf::LogMessage::Debug, "");
     log_target = autoPtr<asf::ILogTarget>(asf::create_console_log_target(stdout));
     asr::global_logger().add_target(log_target.get());

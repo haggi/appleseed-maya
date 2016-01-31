@@ -112,7 +112,7 @@ class AppleseedRenderer
     virtual void defineLights();
     void defineLight(sharedPtr<MayaObject> obj);
     virtual void render();
-  
+
     // This method is called before rendering starts.
     // It should prepare all data which can/should be reused during
     // ipr/frame/sequence rendering.
@@ -132,9 +132,9 @@ class AppleseedRenderer
     virtual void updateTransform(sharedPtr<MayaObject> obj);
 
     virtual void abortRendering();
-    virtual void interactiveFbCallback(){};
+    virtual void interactiveFbCallback(){}
     virtual void doInteractiveUpdate();
-    virtual void handleUserEvent(int event, MString strData, float floatData, int intData){};
+    virtual void handleUserEvent(int event, MString strData, float floatData, int intData){}
 
     asf::auto_release_ptr<asr::MeshObject> defineStandardPlane(bool area = false);
     void defineProject();
@@ -143,7 +143,7 @@ class AppleseedRenderer
     void defineOutput();
     void createMesh(sharedPtr<MayaObject> obj, asr::MeshObjectArray& meshArray, bool& isProxyArray);
     void createMesh(sharedPtr<mtap_MayaObject> obj);
-    asr::Project *getProjectPtr(){ return this->project.get(); };
+    asr::Project *getProjectPtr(){ return this->project.get(); }
     asf::StringArray defineMaterial(sharedPtr<mtap_MayaObject> obj);
     void updateMaterial(MObject sufaceShader);
     virtual void preFrame();
@@ -155,7 +155,7 @@ class AppleseedRenderer
     autoPtr<asf::ILogTarget> log_target;
     asf::auto_release_ptr<mtap_ITileCallbackFactory> tileCallbackFac;
     mtap_IRendererController mtap_controller;
-    bool sceneBuilt = false;
+    bool sceneBuilt;
 };
 
 #endif

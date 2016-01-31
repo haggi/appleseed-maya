@@ -46,8 +46,8 @@ class NewSwatchRenderer : public MSwatchRenderBase
     void cancelCurrentSwatchRender();
     void enableSwatchRender(bool enable);
     float *floatPixels;
-    bool renderInProgress = true;
-    bool swatchRenderingDone = false;
+    bool renderInProgress;
+    bool swatchRenderingDone;
     MObject rNode;
     MObject dNode;
 };

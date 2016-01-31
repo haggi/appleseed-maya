@@ -59,6 +59,7 @@ namespace
 
 OSLUtilClass::OSLUtilClass()
 {
+    group = 0;
 }
 
 OSLUtilClass::~OSLUtilClass()
