@@ -27,37 +27,37 @@ def analyzeAttr(attr, indent="\t", name=""):
                         #print option+",",
                         attribute['options'].append(option)
                     #print ""
-                
+
         if attr.has_key("default"):
             #print indent,"Default", attr['default']
             attribute['default'] = attr['default']
         if attr.has_key("help"):
             attribute['help'] = attr['help']
-            
+
         attributeList.append(attribute)
     else:
         for newKey, newAttr in attr.iteritems():
-            #print indent,"Attr",newKey 
+            #print indent,"Attr",newKey
             analyzeAttr(newAttr, indent+"\t", newKey)
 
 for k, m in md.iteritems():
     print "Segment: ", k, m
     #print m
     fh.write(k + " " + str(m) + "\n")
-    
+
     analyzeAttr(m, "\t", k)
-    
-anames = []    
+
+anames = []
 for attr in attributeList:
     print attr['name'], attr['default']
     anames.append(attr['name'])
-    
+
 anames.sort()
 for attr in anames:
-    print attr    
+    print attr
 
-print "-----------------"    
-fh = open(r"H:\UserDatenHaggi\Documents\coding\OpenMaya\src\mayaToAppleseed\src\mtap_common\mtap_renderGlobalsNode.cpp", "r")    
+print "-----------------"
+fh = open(r"H:\UserDatenHaggi\Documents\coding\OpenMaya\src\mayaToAppleseed\src\mtap_common\mtap_renderGlobalsNode.cpp", "r")
 content = fh.readlines()
 fh.close()
 
@@ -68,7 +68,7 @@ for line in content:
         cppnames.append(line.split("::")[-1][:-1])
 cppnames.sort()
 for attr in cppnames:
-    print attr    
+    print attr
 
     #for pkey, param in m.iteritems():
     #    print "\t", pkey, param
@@ -80,7 +80,7 @@ for attr in cppnames:
 #         parameter = param
 #         if not isinstance(param, type({})):
 #             parameter = m
-#         
+#
 #         try:
 #             print "Type", parameter['type']
 #         except:

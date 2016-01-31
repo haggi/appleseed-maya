@@ -4,14 +4,14 @@ import logging
 log = logging.getLogger("ui")
 
 class BaseTemplate(pm.ui.AETemplate):
-    
+
     def addControl(self, control, label=None, **kwargs):
         pm.ui.AETemplate.addControl(self, control, label=label, **kwargs)
-        
+
     def beginLayout(self, name, collapse=True):
         pm.ui.AETemplate.beginLayout(self, name, collapse=collapse)
 
-        
+
 
 class AEasDisneyMaterialTemplate(BaseTemplate):
     def __init__(self, nodeName):
@@ -26,19 +26,19 @@ class AEasDisneyMaterialTemplate(BaseTemplate):
         self.endScrollLayout()
 
     def bumpNew(self, attribute):
-        pm.setUITemplate("attributeEditorTemplate", pushTemplate=True)        
+        pm.setUITemplate("attributeEditorTemplate", pushTemplate=True)
         attName = attribute
-        self.bumpCtrl = pm.attrNavigationControlGrp(attribute=attribute, label="Bump Map") 
-        pm.setUITemplate("attributeEditorTemplate", popTemplate=True)                
-                    
+        self.bumpCtrl = pm.attrNavigationControlGrp(attribute=attribute, label="Bump Map")
+        pm.setUITemplate("attributeEditorTemplate", popTemplate=True)
+
     def bumpReplace(self, attribute):
         if self.bumpCtrl is not None:
-            pm.attrNavigationControlGrp(self.bumpCtrl, edit=True, attribute=attribute) 
-        
+            pm.attrNavigationControlGrp(self.bumpCtrl, edit=True, attribute=attribute)
+
     def buildBody(self, nodeName):
         self.thisNode = pm.PyNode(nodeName)
         self.beginLayout("ShaderSettings" ,collapse=0)
-        
+
         self.addControl("BaseColor", label="Base Color")
         self.addControl("Subsurface", label="Subsurface")
         self.addControl("Metallic", label="Metallic")
@@ -53,4 +53,3 @@ class AEasDisneyMaterialTemplate(BaseTemplate):
         self.callCustom(self.bumpNew, self.bumpReplace,"normalCamera")
 
         self.endLayout()
-        

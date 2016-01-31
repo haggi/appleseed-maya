@@ -10,13 +10,13 @@ def binMeshTranslatorOpts(parent, action, initialSettings, resultCallback):
     print "Action", action
     print "InitialSettings", initialSettings
     print "ResultCallback", resultCallback
-    
+
     useTransform = True
     oneFilePerMesh = False
     createProxies = True
     proxyRes = 0.1
     exportDir = ""
-    
+
     if initialSettings is not None and len(initialSettings) > 0:
         #oneFilePerMesh=0;createProxies=1;proxyRes=0.1;exportDir=;createProxies=1
         opts = initialSettings.split(";")
@@ -30,18 +30,18 @@ def binMeshTranslatorOpts(parent, action, initialSettings, resultCallback):
                 useTransform = int(value)
             if name == "proxyRes":
                 proxyRes = float(proxyRes)
-                
+
     if action == "post":
         print "post action"
-        
+
         pm.setParent(parent)
         with pm.columnLayout(adj = True):
             pm.checkBox("MSH_OPTS_DOTRANSFORM", label = "Use Transform", v=useTransform)
             pm.checkBox("MSH_OPTS_ONEFILE", label = "One File Per Mesh", v=oneFilePerMesh)
             pm.checkBox("MSH_OPTS_DOPROX", label = "Create ProxyFiles", v=createProxies)
             pm.floatFieldGrp("MSH_OPTS_PROXPERC", label="Proxy Resolution", v1 = proxyRes)
-            #pm.textFieldGrp("MSH_OPTS_PATH", label="ExportDir:", text=exportDir) 
-        
+            #pm.textFieldGrp("MSH_OPTS_PATH", label="ExportDir:", text=exportDir)
+
     if action == "query":
         resultOptions = ""
         print "Query action"
@@ -55,14 +55,14 @@ def binMeshTranslatorOpts(parent, action, initialSettings, resultCallback):
         #resultOptions += ";exportDir='{0}'".format(exportDir)
         doTransform = pm.checkBox("MSH_OPTS_DOTRANSFORM", query=True, v=True)
         resultOptions += ";useTransform={0}".format(int(doTransform))
-        
+
         melCmd = '{0} "{1}"'.format(resultCallback,resultOptions)
         pm.mel.eval(melCmd)
-        
+
     return 1
 
 def binMeshTranslatorWrite(fileName, optionString, accessMode):
-    
+
 
     exportPath = fileName
     createProxies = False
@@ -88,7 +88,7 @@ def binMeshTranslatorWrite(fileName, optionString, accessMode):
                 proxyRes = float(proxyRes)
         except:
             pass
-        
+
     if accessMode == "selected":
         print "binMeshTranslatorWrite selected"
         selection = []
@@ -102,7 +102,7 @@ def binMeshTranslatorWrite(fileName, optionString, accessMode):
     if accessMode == "all":
         print "binMeshTranslatorWrite all"
         pm.binMeshWriterCmd(path=exportPath, doProxy=createProxies, percentage=proxyRes, doTransform=useTransform, all=True, oneFilePerMesh=oneFilePerMesh)
-    
+
     return True
 
 def binMeshTranslatorRead(fileName, optionString, accessMode):
@@ -125,9 +125,9 @@ def binMeshTranslatorRead(fileName, optionString, accessMode):
                 proxyRes = float(proxyRes)
         except:
             pass
-        
+
     pm.binMeshReaderCmd(path=importPath)
-    
+
     return True
 
 def binMeshCheckAndCreateShadingGroup(shadingGroup):
@@ -135,7 +135,7 @@ def binMeshCheckAndCreateShadingGroup(shadingGroup):
         print "check ", shadingGroup
         shadingGroup = pm.PyNode(shadingGroup)
     except:
-        log.debug("Shading group {0} does not exist, creating one.".format(shadingGroup)) 
+        log.debug("Shading group {0} does not exist, creating one.".format(shadingGroup))
         shader = pm.shadingNode("appleseedSurfaceShader", asShader=True)
         shadingGroup = pm.sets(renderable=True, noSurfaceShader=True, empty=True, name=shadingGroup)
         shader.outColor >> shadingGroup.surfaceShader
@@ -156,50 +156,46 @@ def listConnections(node, allList, meshList):
                 listConnections(con, allList, meshList)
         else:
             log.debug("Found existing shape, skipping.")
-            
+
 def getConnectedPolyShape(creatorShape):
     try:
         creatorShape = pm.PyNode(creatorShape)
     except:
         return None
-    
+
     meshList = []
     allList = []
     listConnections(creatorShape, allList, meshList)
 
     return meshList
-    
-        
-# perFaceAssingments contains a double list, one face id list for every shading group        
+
+
+# perFaceAssingments contains a double list, one face id list for every shading group
 def binMeshAssignShader(creatorShape = None, shadingGroupList=[], perFaceAssingments=[]):
     if not creatorShape:
         log.error("binMeshAssignShader: No creator shape")
         return
-    
+
     if pm.PyNode(creatorShape).type() != "mtap_standinMeshNode":
         log.error("binMeshAssignShader: Node {0} is not a creator shape".format(creatorShape))
         return
 
-    log.debug("binMeshAssignShader: creatorShape {0}".format(creatorShape))        
+    log.debug("binMeshAssignShader: creatorShape {0}".format(creatorShape))
     polyShapeList = getConnectedPolyShape(creatorShape)
-        
-    for polyShape in polyShapeList:    
-        log.debug("binMeshAssignShader: polyShape {0}".format(polyShape))        
+
+    for polyShape in polyShapeList:
+        log.debug("binMeshAssignShader: polyShape {0}".format(polyShape))
         for index, shadingGroup in enumerate(shadingGroupList):
             binMeshCheckAndCreateShadingGroup(shadingGroup)
-            
+
             assignments = perFaceAssingments[index]
             print assignments
             faceSelection = []
-            
+
             for polyId in assignments:
                 faceSelection.append(polyId)
-            
+
             print "meshShape has", polyShape.numFaces(), "faces. Edeff."
             fs = polyShape.f[faceSelection]
             print "pm.sets('{0}', e=True, forceElement={1})".format(shadingGroup,str(fs))
             pm.sets(shadingGroup, e=True, forceElement=str(fs))
-        
-        
-        
-        

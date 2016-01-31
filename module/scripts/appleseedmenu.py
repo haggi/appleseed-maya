@@ -14,7 +14,7 @@ class BinaryMesh(object):
         self.createStandin = pm.optionVar.get('mtap_binMeshCreateStandin', True)
         self.oneFilePerMesh = pm.optionVar.get('mtap_binMeshOneFilePerMesh', False)
         self.useTransform = pm.optionVar.get('mtap_binMeshUseTransform', False)
-    
+
     def loadStandins(self):
         meshName = self.path.split("/")[-1].replace(".binarymesh", "")
         print "creating stdin node for mesh", meshName
@@ -41,21 +41,21 @@ class StandinOptions(pm.ui.Window):
         self.createStdInUI = None
         self.oneFilePerMeshUI = None
         self.doTransformUI = None
-        
+
         self.initUI()
 
     def updateUI(self):
         pass
-    
+
     def getShadingGroups(self, mesh):
         shadingGroups = mesh.outputs(type="shadingEngine")
         return shadingGroups
 
-    def doit(self, *args):        
+    def doit(self, *args):
         self.getData()
         self.perform()
-        
-    def getData(self, *args):        
+
+    def getData(self, *args):
         path = pm.textFieldButtonGrp(self.pathUI, query=True, text=True)
         prefix = pm.textFieldGrp(self.prefixUI, query=True, text=True)
         doProxy = pm.checkBoxGrp(self.createProxyUI, query=True, value1=True)
@@ -63,7 +63,7 @@ class StandinOptions(pm.ui.Window):
         createStdin = pm.checkBoxGrp(self.createStdInUI, query=True, value1=True)
         oneFilePerMesh = pm.checkBoxGrp(self.oneFilePerMeshUI, query=True, value1=True)
         useTransform = pm.checkBoxGrp(self.doTransformUI, query=True, value1=True)
-                
+
         pm.optionVar['mtap_binMeshExportPath'] = path
         pm.optionVar['mtap_binMeshExportPathPrefix'] = prefix
         pm.optionVar['mtap_binMeshCreateProxy'] = doProxy
@@ -71,12 +71,12 @@ class StandinOptions(pm.ui.Window):
         pm.optionVar['mtap_binMeshCreateStandin'] = createStdin
         pm.optionVar['mtap_binMeshOneFilePerMesh'] = oneFilePerMesh
         pm.optionVar['mtap_binMeshUseTransform'] = useTransform
-    
-    def perform(self, *args):        
+
+    def perform(self, *args):
         selection = []
         for object in pm.ls(sl=True):
             selection.extend(object.getChildren(ad=True, type="mesh"))
-            
+
         if len(selection) == 0:
             log.error("Export standins: No meshes selected.")
             return
@@ -88,10 +88,10 @@ class StandinOptions(pm.ui.Window):
         createStandin = pm.optionVar.get('mtap_binMeshCreateStandin', True)
         oneFilePerMesh = pm.optionVar.get('mtap_binMeshOneFilePerMesh', False)
         useTransform = pm.optionVar.get('mtap_binMeshUseTransform', False)
-                
+
         if not os.path.exists(path):
             os.makedirs(path)
-        
+
         bpath = path + "/" + prefix  + ".binarymesh"
 #TODO: convert namespace to clean name
         print "pm.binMeshWriterCmd({0}, doProxy = {1}, path={2}, doTransform = {3}, percentage={4}, oneFilePerMesh={5})".format(selection, doProxy, bpath, useTransform, percentage, oneFilePerMesh)
@@ -116,12 +116,12 @@ class StandinOptions(pm.ui.Window):
             print "Setting binmesh path to", bpath
             standInMeshNode.binMeshFile.set(bpath)
             standInMeshNode.outputMesh >> standInMesh.inMesh
-                    
+
         self.cancel()
-        
+
     def cancel(self, *args):
         self.delete()
-        
+
     def fileBrowser(self, *args):
         erg = pm.fileDialog2(dialogStyle=2, fileMode=2)
         print "Result", erg
@@ -129,8 +129,8 @@ class StandinOptions(pm.ui.Window):
             if len(erg[0]) > 0:
                 exportPath = erg[0]
                 pm.textFieldButtonGrp(self.pathUI, edit=True, text=exportPath)
-            
-        
+
+
     def initUI(self):
         pm.setUITemplate("DefaultTemplate", pushTemplate=True)
         form = pm.formLayout()
@@ -156,10 +156,10 @@ class StandinOptions(pm.ui.Window):
             with pm.rowColumnLayout(numberOfColumns=2):
                 pm.button(label="Create BinaryMesh", c=self.doit)
                 pm.button(label="Cancel", c=self.cancel)
-            
+
         pm.formLayout(form, edit=True, attachForm=[(StandinLayout, 'top', 5), (StandinLayout, 'bottom', 5), (StandinLayout, 'right', 5), (StandinLayout, 'left', 5)])
         pm.setUITemplate("DefaultTemplate", popTemplate=True)
-            
+
 def createStandin(*args):
     print "create standin", args
     sio = StandinOptions()
@@ -189,12 +189,10 @@ class AppleseedMenu(pm.ui.Menu):
         if pm.menu(name, query=True, exists=True):
             pm.deleteUI(name)
         return super(AppleseedMenu, cls).__new__(cls, name, label="Appleseed", parent=parent, familyImage="appleseed", tearOff=True, allowOptionBoxes=True)
-    
+
     def __init__(self):
         pm.setParent(self, menu=True)
         with pm.menuItem(label="Standins", subMenu=True, tearOff=True):
             pm.menuItem(label="Create Standin", annotation="Standin creation", command=createStandin, stp="python")
             pm.menuItem(optionBox=True, label="Create Standin Options", command=createStandinOptions, stp="python")
             pm.menuItem(label="Read Standin", annotation="Standin creation", command=readStandin, stp="python")
-
-        

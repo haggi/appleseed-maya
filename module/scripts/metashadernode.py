@@ -8,14 +8,14 @@ class MetaClass(OpenMayaMPx.MPxNode):
     @classmethod
     def nodeCreator(cls):
         return OpenMayaMPx.asMPxPtr( cls() )
-    
+
     @classmethod
     def nodeInitializer(cls):
-        
+
         nAttr = om.MFnNumericAttribute()
         sAttr = om.MFnTypedAttribute()
         eAttr = om.MFnEnumAttribute()
-        
+
         def setOutputAttr():
             print "Set output attributes"
             nAttr.setStorable(0)
@@ -25,7 +25,7 @@ class MetaClass(OpenMayaMPx.MPxNode):
 
         for output in cls.data['outputs']:
             print "register OutputAttribute", output
-            if output['type'] == 'output pointer': #this is a OSL closure name 
+            if output['type'] == 'output pointer': #this is a OSL closure name
                 #print "Adding output", output['name']
                 cls.output = nAttr.createColor(output['name'],output['name'])
                 output['attr'] = cls.output
@@ -80,12 +80,12 @@ class MetaClass(OpenMayaMPx.MPxNode):
                     nAttr.setSoftMin(float(inputElement['min']))
                 elif inputElement.has_key('min'):
                     nAttr.setMin(float(inputElement['min']))
-                    
+
                 if inputElement.has_key('max') and inputElement.has_key('hint') and ((inputElement['hint'] == "softminmax") or (inputElement['hint'] == "softmax")):
                     nAttr.setSoftMax(float(inputElement['max']))
                 elif inputElement.has_key('max'):
                     nAttr.setMax(float(inputElement['max']))
-                
+
                 inputElement['attr'] = cls.input
                 cls.addAttribute( cls.input )
                 cls.attributeAffects(cls.input, cls.output)
@@ -104,7 +104,7 @@ class MetaClass(OpenMayaMPx.MPxNode):
                 inputElement['attr'] = cls.input
                 cls.addAttribute( cls.input )
                 cls.attributeAffects(cls.input, cls.output)
-                
+
             if inputElement['type'] == 'string':
                 if inputElement.has_key('options'):
                     entries = ast.literal_eval(inputElement['options'])
@@ -121,13 +121,13 @@ class MetaClass(OpenMayaMPx.MPxNode):
                     else:
                         defaultValue = sDefault.create( "" )
                     cls.input = sAttr.create( inputElement['name'],inputElement['name'], om.MFnData.kString, defaultValue)
-                    
+
                 inputElement['attr'] = cls.input
                 cls.addAttribute( cls.input )
                 cls.attributeAffects(cls.input, cls.output)
-    
+
     def compute(self, plug, dataBlock):
-        
+
         found = False
         for output in type(self).data['outputs']:
             if plug == output['attr']:
@@ -146,7 +146,7 @@ class MetaClass(OpenMayaMPx.MPxNode):
                     found = True
         if not found:
             return om.kUnknownParameter
-    
+
     def __init__(self):
         OpenMayaMPx.MPxNode.__init__(self)
 

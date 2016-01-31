@@ -36,7 +36,7 @@ def registerShadingNodes(plugin):
         if OpenMayaMPx.MFnPlugin.isNodeRegistered(key):
             #log.info("shading node {0} is already registered, skipping.".format(key))
             continue
-        
+
         # at the moment we only care about uberShader for testing
         if key == "uberShader":
             classification = "shader/surface"
@@ -58,11 +58,11 @@ def registerShadingNodes(plugin):
             plugin.registerNode( X.__name__, nodeId, X.nodeCreator, X.nodeInitializer, OpenMayaMPx.MPxNode.kDependNode, classification)
             REGISTERED_NODES[shaderNodeName] = nodeId
 
-    for classification in classifications:            
+    for classification in classifications:
         postCmd = "if( `window -exists createRenderNodeWindow` )  {refreshCreateRenderNodeWindow(\"%s\");}\n" % classification
         om.MGlobal.executeCommand(postCmd)
 
-            
+
 def unregisterShadingNodes(plugin):
     global REGISTERED_NODES
     for key in REGISTERED_NODES.keys():

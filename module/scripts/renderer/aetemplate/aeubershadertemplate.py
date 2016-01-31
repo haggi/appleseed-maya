@@ -8,7 +8,7 @@ class BaseTemplate(pm.ui.AETemplate):
 
     def addControl(self, control, label=None, **kwargs):
         pm.ui.AETemplate.addControl(self, control, label=label, **kwargs)
-    
+
     def beginLayout(self, name, collapse=True):
         pm.ui.AETemplate.beginLayout(self, name, collapse=collapse)
 
@@ -29,39 +29,39 @@ class AEuberShaderTemplate(BaseTemplate):
         self.buildBody(nodeName)
         self.addExtraControls("ExtraControls")
         self.endScrollLayout()
-    
+
     def update(self, nodeName):
         self.thisNode = pm.PyNode(nodeName)
         reflectionEDF = self.thisNode.reflectionMdf.getEnums().keys()[self.thisNode.reflectionMdf.get()]
         self.dimControl(self.thisNode, "roughness1", False)
         if reflectionEDF == "sharp":
             self.dimControl(self.thisNode, "roughness1", True)
-            
+
         refractionMDF = self.thisNode.refractionMdf.getEnums().keys()[self.thisNode.refractionMdf.get()]
         self.dimControl(self.thisNode, "refractionRoughness", False)
         if refractionMDF == "sharp":
             self.dimControl(self.thisNode, "refractionRoughness", True)
-            
+
         self.dimControl(self.thisNode, "SSS1Color", True)
         self.dimControl(self.thisNode, "SSS1RadiusMultiplier", True)
         if self.thisNode.SSS1.get():
             self.dimControl(self.thisNode, "SSS1Color", False)
             self.dimControl(self.thisNode, "SSS1RadiusMultiplier", False)
-            
+
     def updateSpec(self, nodeName):
         self.thisNode = pm.PyNode(nodeName)
-        
+
     def enableSSS(self, nodeName):
         self.thisNode = pm.PyNode(nodeName)
-    
+
     def bumpNew(self, attrName):
         pm.setUITemplate('attributeEditorTemplate', pst=True)
         pm.attrNavigationControlGrp('bumpControl', label="Bump Mapping", at=attrName)
         pm.setUITemplate(ppt=True)
-    
+
     def bumpReplace(self, attrName):
         pm.attrNavigationControlGrp('bumpControl', edit=True, at=attrName)
-    
+
     def buildBody(self, nodeName):
         self.thisNode = pm.PyNode(nodeName)
         self.templateUI = pm.setParent(query=True)
@@ -89,7 +89,7 @@ class AEuberShaderTemplate(BaseTemplate):
         if self.shaderDesc.has_key('translucencyColor'):
             anno = self.shaderDesc['translucencyColor']
         self.addControl("translucencyColor", label="Translucence Color")
-        self.addSeparator()        
+        self.addSeparator()
         if self.shaderDesc.has_key('emissionColor'):
             anno = self.shaderDesc['emissionColor']
         self.addControl("emissionColor", label="Emission Color", changeCommand=self.update)
@@ -97,7 +97,7 @@ class AEuberShaderTemplate(BaseTemplate):
             anno = self.shaderDesc['emissionMultiplier']
         self.addControl("emissionMultiplier", label="Emission Color Multiplier")
         self.endLayout()
-        
+
         self.beginLayout("Specular", collapse=False)
         self.addControl("specular1", label="Specularity", changeCommand=self.update)
         self.addControl("specularColor1", label="Specular Color", changeCommand=self.update)
@@ -109,9 +109,9 @@ class AEuberShaderTemplate(BaseTemplate):
         self.addControl("reflectionMdf", label="Reflection MDF", changeCommand=self.update)
         self.addSeparator()
         self.addControl("specularUseFresnel1", label="Use Fresnel", changeCommand=self.update)
-        self.addControl("reflectivityAtZeroDeg", label="Reflectivity at 0 Deg", changeCommand=self.update)        
+        self.addControl("reflectivityAtZeroDeg", label="Reflectivity at 0 Deg", changeCommand=self.update)
         self.endLayout()
-        
+
         self.beginLayout("Refraction", collapse=False)
         self.addControl("refractivity", label="Refractivity", changeCommand=self.update)
         self.addControl("refractionColor", label="Refraction Color", changeCommand=self.update)
@@ -125,7 +125,7 @@ class AEuberShaderTemplate(BaseTemplate):
         self.addControl("absorptionColor", label="Absorption Color", changeCommand=self.update)
         self.addSeparator()
         self.endLayout()
-                
+
         self.beginLayout("SSS", collapse=False)
         self.addControl("SSS1", label="Enable SSS", changeCommand=self.update)
         self.addControl("SSS1Color", label="SSS Color", changeCommand=self.update)
@@ -134,5 +134,5 @@ class AEuberShaderTemplate(BaseTemplate):
         #self.addControl("SSS1RadiusMultiplier", label="Radius Multiplier", changeCommand=self.update)
         self.addControl("SSS1RadiusMultiplier", label="Radius", changeCommand=self.update)
         self.endLayout()
-        
+
         self.update(nodeName)

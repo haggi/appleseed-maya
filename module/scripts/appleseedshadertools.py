@@ -1,5 +1,5 @@
 import pymel.core as pm
-import logging 
+import logging
 log = logging.getLogger("mtapLogger")
 
 def removeAutoShaderNodes():
@@ -19,7 +19,7 @@ def removeAutoShaderNodes():
             pm.PyNode(origName).outColor >> shadingGroup.surfaceShader
         except:
             log.debug("Reconnecting of orig node " + origName + " failed.")
-            
+
     if len(nodes) > 0:
         pm.delete(nodes)
 
@@ -28,7 +28,7 @@ def createAsMaterialNode(shadingNode):
     mat.rename(str(shadingNode) + "_asMaterial")
     mat.addAttr("AS_AUTO_SHADER")
     return mat
-    
+
 def createAsPhysicalSurfaceNode(shadingNode):
     psh = pm.createNode("asPhysical_surface_shader")
     psh.rename(str(shadingNode) + "_asPhysicalSurface")
@@ -38,7 +38,7 @@ def createAsPhysicalSurfaceNode(shadingNode):
 def createAsBsdfNode(shadingNode):
     bsdfDict = {'lambert' : "asLambertian_brdf",
                 'phong'   : "asSpecular_brdf"}
-    
+
     try:
         bsdf = pm.createNode(bsdfDict[shadingNode.nodeType()])
     except:
@@ -49,31 +49,31 @@ def createAsBsdfNode(shadingNode):
         shadingNode.color.inputs(p=True)[0] >> bsdf.reflectance
     else:
         bsdf.reflectance.set(shadingNode.color.get())
-        
-    #bsdf.reflectance    
+
+    #bsdf.reflectance
     bsdf.rename(str(shadingNode) + "_bsdf")
     bsdf.addAttr("AS_AUTO_SHADER")
     return bsdf
-                
+
 def createAutoShaderNodes():
     removeAutoShaderNodes()
 
     asDependNodes = pm.pluginInfo("mayatoappleseed_maya2014", q=True, dependNode=True)
     shadingGroups = pm.ls(type="shadingEngine")
     supportedNodeTypes = ['lambert', 'phong']
-    
+
     for shadingGroup in shadingGroups:
         if shadingGroup.name() == "initialParticleSE":
             continue
-        
+
         log.debug("Check shadingGroup {0}".format(shadingGroup))
-        
+
         inputs = shadingGroup.surfaceShader.inputs()
         for input in inputs:
             if input.nodeType() in asDependNodes:
                 log.debug("Inputnode {0} is an appleseed shader.".format(input))
                 continue
-            
+
             if input.nodeType() in supportedNodeTypes:
                 log.debug("Creating temp nodes for non appleseed nodeType {0}.".format(input.nodeType()))
                 mat = createAsMaterialNode(input)
@@ -83,7 +83,3 @@ def createAutoShaderNodes():
                 bsdf.outColor >> mat.bsdf
                 mat.outColor >> shadingGroup.surfaceShader
                 print "Connections of mat", mat.inputs()
-                
-                
-                
-                
