@@ -58,7 +58,6 @@ void* BinMeshReaderCmd::creator()
 }
 
 BinMeshReaderCmd::BinMeshReaderCmd() {}
-BinMeshReaderCmd::~BinMeshReaderCmd() {}
 
 MSyntax BinMeshReaderCmd::newSyntax()
 {

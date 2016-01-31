@@ -37,31 +37,34 @@ class polyWriter;
 class MDagPath;
 class MFnDagNode;
 
-class BinMeshTranslator:public MPxFileTranslator {
+class BinMeshTranslator : public MPxFileTranslator
+{
+public:
+    BinMeshTranslator();
 
-    public:
-                                BinMeshTranslator();
-        virtual                 ~BinMeshTranslator();
+    virtual MStatus writer(
+        const MFileObject&                  file,
+        const MString&                      optionsString,
+        MPxFileTranslator::FileAccessMode   mode);
 
-        virtual MStatus         writer (const MFileObject& file,
-                                        const MString& optionsString,
-                                        MPxFileTranslator::FileAccessMode mode);
-        virtual MStatus         reader (const MFileObject& file,
-                                        const MString& optionsString,
-                                        FileAccessMode mode);
-        virtual bool            haveWriteMethod () const;
-        virtual bool            haveReadMethod () const;
-        virtual bool            canBeOpened () const;
-        static void*            creator();
+    virtual MStatus reader(
+        const MFileObject&                  file,
+        const MString&                      optionsString,
+        FileAccessMode                      mode);
 
-        virtual MString         defaultExtension () const;
+    virtual bool haveWriteMethod() const;
+    virtual bool haveReadMethod() const;
+    virtual bool canBeOpened() const;
+    virtual MString defaultExtension() const;
 
+    static void* creator();
 
-    protected:
-        MStatus                 exportObjects(MString mode);
-        MStatus                 importObjects();
-        MString                 fileName;
-        MString                 options;
+private:
+    MStatus exportObjects(MString mode);
+    MStatus importObjects();
+
+    MString fileName;
+    MString options;
 };
 
 #endif

@@ -28,10 +28,20 @@
 
 #include "proxymesh.h"
 #include "utilities/tools.h"
-#include <fstream>
+
 #include <maya/MGlobal.h>
 
-void ProxyMesh::setMin(MPoint vtx)
+namespace asf = foundation;
+
+ProxyMesh::ProxyMesh(float percentage)
+{
+    percentage = percentage;
+    polySizeMultiplier = 1.0f/percentage * 0.5;
+    min = MPoint(1000000.0,1000000.0,1000000.0);
+    max = MPoint(-1000000.0,-1000000.0,-1000000.0);
+}
+
+void ProxyMesh::setMin(const MPoint& vtx)
 {
     if (vtx.x < min.x)
         min.x = vtx.x;
@@ -43,7 +53,7 @@ void ProxyMesh::setMin(MPoint vtx)
         min.z = vtx.z;
 }
 
-void ProxyMesh::setMax(MPoint vtx)
+void ProxyMesh::setMax(const MPoint& vtx)
 {
     if (vtx.x > max.x)
         max.x = vtx.x;
@@ -55,7 +65,7 @@ void ProxyMesh::setMax(MPoint vtx)
         max.z = vtx.z;
 }
 
-void ProxyMesh::setBBox(MPoint vtx)
+void ProxyMesh::setBBox(const MPoint& vtx)
 {
     setMin(vtx);
     setMax(vtx);
@@ -78,7 +88,7 @@ void ProxyMesh::scaleFace(int firstVertexIndex, int numVertices)
     }
 }
 
-void ProxyMesh::addMesh(asf::IMeshWalker& walker)
+void ProxyMesh::addMesh(const asf::IMeshWalker& walker)
 {
     points.append(0,0,0); // bbox min
     points.append(0,0,0); // bbox max both will be filled later
@@ -135,7 +145,7 @@ bboxmax point
 for every point
     points
 */
-void ProxyMesh::writeFile(MString fileName)
+void ProxyMesh::writeFile(const MString& fileName)
 {
     proxyFile.open(fileName.asChar(),  std::ios_base::out | std::ios_base::binary);
 
@@ -172,14 +182,3 @@ void ProxyMesh::writeFile(MString fileName)
     }
 }
 
-ProxyMesh::ProxyMesh(float percentage)
-{
-    this->percentage = percentage;
-    polySizeMultiplier = 1.0f/percentage * 0.5;
-    min = MPoint(1000000.0,1000000.0,1000000.0);
-    max = MPoint(-1000000.0,-1000000.0,-1000000.0);
-}
-
-ProxyMesh::~ProxyMesh()
-{
-}
