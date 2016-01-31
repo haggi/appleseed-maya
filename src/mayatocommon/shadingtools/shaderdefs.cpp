@@ -26,9 +26,6 @@
 // THE SOFTWARE.
 //
 
-/*
-*/
-
 #include "shadingnode.h"
 #include "shaderdefs.h"
 #include "utilities/logging.h"
@@ -57,7 +54,7 @@ ShaderDefinitions::~ShaderDefinitions()
 void ShaderDefinitions::readShaderDefinitions()
 {
     ptree pt;
-    std::string shaderDefFile = (getRendererHome() + "resources/shaderdefinitions.xml").asChar();
+    std::string shaderDefFile = (getRendererHome() + "resources/shaderDefinitions.xml").asChar();
     std::ifstream shaderFile(shaderDefFile.c_str());
     if (!shaderFile.good())
     {
