@@ -49,14 +49,14 @@ BinMeshTranslator::BinMeshTranslator()
 {
 }
 
-MString BinMeshTranslator::defaultExtension() const
-{
-    return "binarymesh";
-}
-
 void* BinMeshTranslator::creator()
 {
     return new BinMeshTranslator();
+}
+
+MString BinMeshTranslator::defaultExtension() const
+{
+    return "binarymesh";
 }
 
 //Summary:  saves a file of a type supported by this translator by traversing
@@ -73,13 +73,13 @@ MStatus BinMeshTranslator::writer(
     const MString&                      opts,
     MPxFileTranslator::FileAccessMode   mode)
 {
-    options = opts;
+    mOptions = opts;
     #if defined (OSMac_)
         char nameBuffer[MAXPATHLEN];
         strcpy (nameBuffer, file.fullName().asChar());
         fileName(nameBuffer);
     #else
-        fileName = file.fullName();
+        mFileName = file.fullName();
     #endif
 
     if (MPxFileTranslator::kExportAccessMode == mode)
@@ -97,24 +97,23 @@ MStatus BinMeshTranslator::writer(
     return MS::kSuccess;
 }
 
-
 MStatus BinMeshTranslator::reader(
     const MFileObject&                  file,
     const MString&                      opts,
     MPxFileTranslator::FileAccessMode   mode)
 {
-    options = opts;
+    mOptions = opts;
     #if defined (OSMac_)
         char nameBuffer[MAXPATHLEN];
         strcpy (nameBuffer, file.fullName().asChar());
         fileName(nameBuffer);
     #else
-        fileName = file.fullName();
+        mFileName = file.fullName();
     #endif
 
-    MGlobal::displayInfo("Options " + options);
+    MGlobal::displayInfo("Options " + mOptions);
 
-    return this->importObjects();
+    return importObjects();
 }
 
 bool BinMeshTranslator::haveWriteMethod() const
@@ -139,8 +138,8 @@ bool BinMeshTranslator::canBeOpened() const
 MStatus BinMeshTranslator::importObjects()
 {
     MString cmd = MString("import binMeshTranslator; binMeshTranslator.binMeshTranslatorRead(");
-    cmd += "'" + fileName + "',";
-    cmd += "'" + options + "',";
+    cmd += "'" + mFileName + "',";
+    cmd += "'" + mOptions + "',";
     cmd += "'read')";
 
     MGlobal::displayInfo(MString("translator cmd: ") + cmd);
@@ -151,11 +150,11 @@ MStatus BinMeshTranslator::importObjects()
 //Args   :  os - an output stream to write to
 //Returns:  MStatus::kSuccess if the method succeeds
 //          MStatus::kFailure if the method fails
-MStatus BinMeshTranslator::exportObjects(MString mode)
+MStatus BinMeshTranslator::exportObjects(const MString& mode)
 {
     MString cmd = MString("import binMeshTranslator; binMeshTranslator.binMeshTranslatorWrite(");
-    cmd += "'" + fileName + "',";
-    cmd += "'" + options + "',";
+    cmd += "'" + mFileName + "',";
+    cmd += "'" + mOptions + "',";
     cmd += "'" + mode + "')";
 
     MGlobal::displayInfo(MString("translator cmd: ") + cmd);

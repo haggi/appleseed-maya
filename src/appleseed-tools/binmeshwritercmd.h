@@ -46,11 +46,11 @@ class  BinMeshWriterCmd: public MPxCommand
 public:
     BinMeshWriterCmd();
 
+    static void* creator();
+
     static MSyntax newSyntax();
 
     MStatus doIt(const MArgList& args);
-
-    static void* creator();
 
 private:
     void printUsage();
@@ -60,12 +60,12 @@ private:
 
     inline void write(const int value)
     {
-        pFile.write(reinterpret_cast<const char *>(&value), sizeof(int));
+        mFile.write(reinterpret_cast<const char *>(&value), sizeof(int));
     }
 
     inline void write(const double value)
     {
-        pFile.write(reinterpret_cast<const char *>(&value), sizeof(double));
+        mFile.write(reinterpret_cast<const char *>(&value), sizeof(double));
     }
 
     inline void write(const MPoint& point)
@@ -81,17 +81,17 @@ private:
             write(points[i]);
     }
 
-    std::fstream    pFile;
-    bool            doProxy;
-    float           percentage;
-    int             nthPoly;
-    MString         path;
-    MString         meshName;
-    MDagPathArray   exportObjects;
-    bool            oneFilePerMesh;
-    bool            doTransform;
-    bool            exportAll;
-    bool            useSmoothPreview;
+    std::fstream    mFile;
+    bool            mDoProxy;
+    float           mPercentage;
+    int             mNthPoly;
+    MString         mPath;
+    MString         mMeshName;
+    MDagPathArray   mExportObjects;
+    bool            mOneFilePerMesh;
+    bool            mDoTransform;
+    bool            mExportAll;
+    bool            mUseSmoothPreview;
 };
 
 #endif

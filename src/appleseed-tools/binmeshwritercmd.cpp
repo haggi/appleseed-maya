@@ -55,6 +55,11 @@ BinMeshWriterCmd::BinMeshWriterCmd()
 {
 }
 
+void* BinMeshWriterCmd::creator()
+{
+    return new BinMeshWriterCmd();
+}
+
 MSyntax BinMeshWriterCmd::newSyntax()
 {
     MSyntax syntax;
@@ -71,11 +76,6 @@ MSyntax BinMeshWriterCmd::newSyntax()
     syntax.useSelectionAsDefault(true);
 
     return syntax;
-}
-
-void* BinMeshWriterCmd::creator()
-{
-    return new BinMeshWriterCmd();
 }
 
 void BinMeshWriterCmd::printUsage()
@@ -95,36 +95,36 @@ void BinMeshWriterCmd::removeSmoothMesh(MDagPath& dagPath)
 
 bool BinMeshWriterCmd::exportBinMeshes()
 {
-    asf::GenericMeshFileWriter globalWriter(this->path.asChar());
+    asf::GenericMeshFileWriter globalWriter(mPath.asChar());
 
-    ProxyMesh globalProxyMesh(this->percentage);
+    ProxyMesh globalProxyMesh(mPercentage);
 
     // transform
     // single files
 
-    for (uint dagPathId = 0; dagPathId < this->exportObjects.length(); dagPathId++)
+    for (uint dagPathId = 0; dagPathId < mExportObjects.length(); dagPathId++)
     {
-        MDagPath dagPath = this->exportObjects[dagPathId];
+        MDagPath dagPath = mExportObjects[dagPathId];
         MString partialPathName = dagPath.partialPathName();
 
         MDagPath origMeshPath = dagPath;
 
         MeshWalker walker(dagPath);
 
-        if (this->doTransform)
+        if (mDoTransform)
             walker.setTransform();
 
-        if (this->oneFilePerMesh)
+        if (mOneFilePerMesh)
         {
             // replace filename.binaraymesh with filename_objname.binarymesh
-            MString perFileMeshPath = pystring::replace(this->path.asChar(), ".binarymesh", "").c_str();
+            MString perFileMeshPath = pystring::replace(mPath.asChar(), ".binarymesh", "").c_str();
             perFileMeshPath += makeGoodString(partialPathName) + ".binarymesh";
             logger.debug(MString("BinMeshWriterCmd::exportBinMeshes - exporting ") + partialPathName + " to  " + perFileMeshPath);
             asf::GenericMeshFileWriter writer(perFileMeshPath.asChar());
             writer.write(walker);
-            if (this->doProxy)
+            if (mDoProxy)
             {
-                ProxyMesh proxyMesh(this->percentage);
+                ProxyMesh proxyMesh(mPercentage);
                 proxyMesh.addMesh(walker);
                 MString proxyFileName = pystring::replace(perFileMeshPath.asChar(), ".binarymesh" , ".proxymesh").c_str();
                 proxyMesh.writeFile(proxyFileName);
@@ -133,14 +133,14 @@ bool BinMeshWriterCmd::exportBinMeshes()
         else
         {
             globalWriter.write(walker);
-            if (this->doProxy)
+            if (mDoProxy)
                 globalProxyMesh.addMesh(walker);
         }
     }
 
-    if (this->doProxy && (!this->oneFilePerMesh))
+    if (mDoProxy && (!mOneFilePerMesh))
     {
-        MString proxyFileName = pystring::replace(this->path.asChar(), ".binarymesh" , ".proxymesh").c_str();
+        MString proxyFileName = pystring::replace(mPath.asChar(), ".binarymesh" , ".proxymesh").c_str();
         globalProxyMesh.writeFile(proxyFileName);
     }
     return true;
@@ -154,79 +154,79 @@ MStatus BinMeshWriterCmd::doIt(const MArgList& args)
 
     MArgDatabase argData(syntax(), args);
 
-    exportAll = false;
+    mExportAll = false;
     if (argData.isFlagSet("-all", &stat))
     {
-        argData.getFlagArgument("-exportAll", 0, exportAll);
-        logger.debug(MString("export all: ") + exportAll);
+        argData.getFlagArgument("-exportAll", 0, mExportAll);
+        logger.debug(MString("export all: ") + mExportAll);
     }
 
-    path = "";
+    mPath = "";
     if (argData.isFlagSet("-path", &stat))
     {
-        argData.getFlagArgument("-path", 0, path);
-        logger.debug(MString("path: ") + path);
+        argData.getFlagArgument("-path", 0, mPath);
+        logger.debug(MString("path: ") + mPath);
     }
 
-    this->doProxy = true;
+    mDoProxy = true;
     if (argData.isFlagSet("-doProxy", &stat))
     {
-        argData.getFlagArgument("-doProxy", 0, this->doProxy);
-        logger.debug(MString("Create proxyFile:") + this->doProxy);
+        argData.getFlagArgument("-doProxy", 0, mDoProxy);
+        logger.debug(MString("Create proxyFile:") + mDoProxy);
     }
 
-    this->percentage = 0.0f;
+    mPercentage = 0.0f;
     if (argData.isFlagSet("-percentage", &stat))
     {
         double p = 0.0;
         argData.getFlagArgument("-percentage", 0, p);
-        percentage = (float)p;
-        logger.debug(MString("percentage: ") + percentage);
-        if (percentage <= 0.0)
-            doProxy = false;
+        mPercentage = (float)p;
+        logger.debug(MString("percentage: ") + mPercentage);
+        if (mPercentage <= 0.0)
+            mDoProxy = false;
     }
 
-    if ((path == ""))
+    if ((mPath == ""))
     {
         MGlobal::displayError("binMeshTranslator failed: no path for export.\n");
         printUsage();
         return  MStatus::kFailure;
     }
 
-    this->oneFilePerMesh = false;
+    mOneFilePerMesh = false;
     if (argData.isFlagSet("-oneFilePerMesh", &stat))
     {
-        argData.getFlagArgument("-oneFilePerMesh", 0, this->oneFilePerMesh);
-        logger.debug(MString("Create one file per mesh: ") + this->oneFilePerMesh);
+        argData.getFlagArgument("-oneFilePerMesh", 0, mOneFilePerMesh);
+        logger.debug(MString("Create one file per mesh: ") + mOneFilePerMesh);
     }
 
-    this->doTransform = true;
+    mDoTransform = true;
     if (argData.isFlagSet("-doTransform", &stat))
     {
-        argData.getFlagArgument("-doTransform", 0, this->doTransform);
-        logger.debug(MString("Use transform: ") + this->doTransform);
+        argData.getFlagArgument("-doTransform", 0, mDoTransform);
+        logger.debug(MString("Use transform: ") + mDoTransform);
     }
 
     getObjectsForExport(args);
-    if (this->exportObjects.length() == 0)
+    if (mExportObjects.length() == 0)
     {
         logger.error("No mesh objects for export found.");
         return MStatus::kFailure;
     }
 
-    this->useSmoothPreview = false;
+    mUseSmoothPreview = false;
     if (argData.isFlagSet("-useSmoothPreview", &stat))
     {
-        argData.getFlagArgument("-useSmoothPreview", 0, this->useSmoothPreview);
-        logger.debug(MString("Use smooth preview: ") + this->useSmoothPreview);
+        argData.getFlagArgument("-useSmoothPreview", 0, mUseSmoothPreview);
+        logger.debug(MString("Use smooth preview: ") + mUseSmoothPreview);
     }
 
     // if we write all objects into one file, is is not useful to ignore the transformation, so we turn it on.
-    if ((!this->oneFilePerMesh) && (this->exportObjects.length() > 1))
+    if ((!mOneFilePerMesh) && (mExportObjects.length() > 1))
     {
-        if (this->doTransform != true)
+        if (mDoTransform != true)
             logger.warning(MString("Do transform is off but we have several meshes in one file and ignoring transform is not useful here -> turning it on."));
-        this->doTransform = true;
+        mDoTransform = true;
     }
 
     exportBinMeshes();
@@ -239,7 +239,7 @@ void BinMeshWriterCmd::getObjectsForExport(const MArgList& args)
 {
     MStatus status;
 
-    if (exportAll)
+    if (mExportAll)
     {
         MStatus status;
 
@@ -263,7 +263,7 @@ void BinMeshWriterCmd::getObjectsForExport(const MArgList& args)
             if (IsVisible(dagPath))
             {
                 if (dagPath.node().hasFn(MFn::kMesh))
-                    this->exportObjects.append(dagPath);
+                    mExportObjects.append(dagPath);
             }
             else
             {
@@ -287,9 +287,9 @@ void BinMeshWriterCmd::getObjectsForExport(const MArgList& args)
                 nodeFn.setObject(dagPath.node());
                 MGlobal::displayInfo(MString("Selected object: ") + nodeFn.name());
                 if (dagPath.node().hasFn(MFn::kMesh))
-                    this->exportObjects.append(dagPath);
+                    mExportObjects.append(dagPath);
             }
-            if (this->exportObjects.length() == 0)
+            if (mExportObjects.length() == 0)
             {
                 logger.error("Not mesh objects selected for export.");
                 return;
