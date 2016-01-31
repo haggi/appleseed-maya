@@ -31,7 +31,6 @@
 
 #include "foundation/mesh/imeshwalker.h"
 
-
 #include <maya/MPointArray.h>
 #include <maya/MFloatVectorArray.h>
 #include <maya/MFloatArray.h>
@@ -54,10 +53,11 @@ struct Face
     MIntArray uvIds;
 };
 
-class MeshWalker : public asf::IMeshWalker
+class MeshWalker
+  : public asf::IMeshWalker
 {
   public:
-    MeshWalker(MDagPath& dagPath);
+    explicit MeshWalker(MDagPath& dagPath);
     MFnMesh         meshFn;
 
     MDagPath meshDagPath;
@@ -75,8 +75,9 @@ class MeshWalker : public asf::IMeshWalker
     std::vector<Face> faceList;
 
     MObject checkSmoothMesh();
-    bool    useSmoothMesh;
+    bool useSmoothMesh;
     void setTransform();
+
     // Return the name of the mesh.
     virtual const char* get_name() const;
 
@@ -110,6 +111,5 @@ class MeshWalker : public asf::IMeshWalker
     // Return the material assigned to a given face.
     virtual size_t get_face_material(const size_t face_index) const;
 };
-
 
 #endif

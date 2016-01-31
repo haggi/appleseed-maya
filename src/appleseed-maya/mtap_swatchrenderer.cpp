@@ -36,31 +36,22 @@
 
 mtap_SwatchRendererInterface::mtap_SwatchRendererInterface(MObject dependNode, MObject renderNode, int imageResolution)
 {
-#ifdef _DEBUG
-    Logging::setLogLevel(Logging::LevelDebug);
-#endif
-
     this->imgDone = false;
     this->inProgress = false;
-
     this->dependNode = dependNode;
     this->renderNode = renderNode;
     this->swatchWidth = imageResolution;
-    this->imageData = (float *)malloc(sizeof(float)* this->swatchWidth * this->swatchWidth * 4);
+    this->imageData = new float[this->swatchWidth * this->swatchWidth];
     memset(this->imageData, 0, sizeof(float)* this->swatchWidth * this->swatchWidth * 4);
 }
 
 mtap_SwatchRendererInterface::~mtap_SwatchRendererInterface()
 {
-    if (this->imageData != 0)
-        free(this->imageData);
-    this->imageData = 0;
-    Logging::debug("SwatchRendererInterface deleted.");
+    delete [] this->imageData;
 }
 
 void mtap_SwatchRendererInterface::init()
 {
-    Logging::debug("SwatchRendererInterface init called.");
 }
 
 void mtap_SwatchRendererInterface::loadGeometry()
@@ -70,17 +61,18 @@ void mtap_SwatchRendererInterface::loadGeometry()
 void mtap_SwatchRendererInterface::fillDummySwatch(MImage& image)
 {
     const int res(swatchWidth);
-    float rndR = rnd();
-    float rndG = rnd();
-    float rndB = rnd();
+    const float rndR = rnd();
+    const float rndG = rnd();
+    const float rndB = rnd();
 
-    float *pixels = image.floatPixels();
-    int index = 0;
+    float* pixels = image.floatPixels();
+    size_t index = 0;
+
     for (int y = 0; y < res; y++)
     {
         for (int x = 0; x < res; x++)
         {
-            float fac = float(y) / res;
+            const float fac = static_cast<float>(y) / res;
             pixels[index++] = fac * rndR;
             pixels[index++] = fac * rndG;
             pixels[index++] = fac * rndB;

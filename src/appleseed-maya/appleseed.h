@@ -29,7 +29,14 @@
 #ifndef MTAP_APPLESEED_H
 #define MTAP_APPLESEED_H
 
-#include "foundation/core/appleseed.h"
+// appleseed-maya headers.
+#include "definitions.h"
+#include "mtap_mayaobject.h"
+#include "mtap_renderercontroller.h"
+#include "mtap_tilecallback.h"
+#include "rendering/renderer.h"
+
+// appleseed.renderer headers.
 #include "renderer/api/bsdf.h"
 #include "renderer/api/camera.h"
 #include "renderer/api/color.h"
@@ -46,6 +53,7 @@
 #include "renderer/api/utility.h"
 
 // appleseed.foundation headers.
+#include "foundation/core/appleseed.h"
 #include "foundation/image/image.h"
 #include "foundation/image/tile.h"
 #include "foundation/math/matrix.h"
@@ -56,27 +64,19 @@
 #include "foundation/utility/autoreleaseptr.h"
 #include "foundation/utility/searchpaths.h"
 
-// Standard headers.
-#include <cstddef>
-#include <cstdio>
-#include <memory>
-#include <string>
-#include <vector>
-
+// Maya headers.
 #include <maya/MString.h>
 #include <maya/MFnDependencyNode.h>
 #include <maya/MFnDagNode.h>
 #include <maya/MDagPath.h>
 #include <maya/MFnMeshData.h>
 
-#include "rendering/renderer.h"
-#include "mtap_tilecallback.h"
-#include "mtap_mayaobject.h"
-#include "mtap_renderercontroller.h"
-
-#include "definitions.h"
-
-// shaderdefs
+// Standard headers.
+#include <cstddef>
+#include <cstdio>
+#include <memory>
+#include <string>
+#include <vector>
 
 #define RENDERGLOBALS_NODE      0x0011CF40
 #define PHYSICAL_SURFACE_SHADER 0x0011CF46
@@ -93,12 +93,11 @@ class mtap_MayaScene;
 class mtap_RenderGlobals;
 class ShadingNode;
 
-#define isBlack(x) ((x.r + x.g + x.b) <= 0.0f)
-
 namespace asf = foundation;
 namespace asr = renderer;
 
-class AppleseedRenderer : public Renderer
+class AppleseedRenderer
+  : public Renderer
 {
   public:
     AppleseedRenderer();
@@ -113,20 +112,25 @@ class AppleseedRenderer : public Renderer
     virtual void defineLights();
     void defineLight(sharedPtr<MayaObject> obj);
     virtual void render();
-    // initializeRenderer is called before rendering starts
-    // it should prepare all data which can/should be reused during
-    // ipr/frame/sequence rendering
+  
+    // This method is called before rendering starts.
+    // It should prepare all data which can/should be reused during
+    // ipr/frame/sequence rendering.
     virtual void initializeRenderer();
-    // unInitializeRenderer is called at the end of rendering.
+
+    // This method is called at the end of rendering.
     virtual void unInitializeRenderer();
-    // updateShape is called during scene updating. If a renderer can update motionblur steps on the fly,
+
+    // This method is called during scene updating. If a renderer can update motionblur steps on the fly,
     // the geometry is defined at the very first step and later this definition will be updated for every motion step.
     // Other renderers will need a complete definition of all motionblur steps at once, so the motion steps will be
     // in the geometry e.g. with obj->addMeshData(); and at the very last step, everything is defined.
     virtual void updateShape(sharedPtr<MayaObject> obj);
+
     // This method is necessary only if the renderer is able to update the transform definition interactively.
     // In other cases, the world space transform will be defined directly during the creation of the geometry.
     virtual void updateTransform(sharedPtr<MayaObject> obj);
+
     virtual void abortRendering();
     virtual void interactiveFbCallback(){};
     virtual void doInteractiveUpdate();

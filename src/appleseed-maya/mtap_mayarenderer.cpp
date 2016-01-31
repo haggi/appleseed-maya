@@ -26,19 +26,26 @@
 // THE SOFTWARE.
 //
 
-#include <maya/MPlugArray.h>
-#include <maya/MPlug.h>
+// appleseed-maya headers.
 #include "mtap_mayarenderer.h"
 #include "utilities/logging.h"
 #include "utilities/attrtools.h"
-#include "appleseedgeometry.h"
 #include "osl/oslutils.h"
 #include "shadingtools/material.h"
 #include "shadingtools/shadingutils.h"
 #include "world.h"
 #include "appleseedmaterial.h"
+#include "renderer/global/globallogger.h"
+#include "renderer/api/environment.h"
+#include "renderer/api/environmentedf.h"
+#include "renderer/api/texture.h"
+#include "renderer/api/environmentshader.h"
+#include "renderer/api/edf.h"
+#include "renderer/modeling/shadergroup/shadergroup.h"
+#include "appleseedutils.h"
+#include "definitions.h"
 
-#include "foundation/core/appleseed.h"
+// appleseed.renderer headers.
 #include "renderer/api/bsdf.h"
 #include "renderer/api/camera.h"
 #include "renderer/api/color.h"
@@ -55,6 +62,7 @@
 #include "renderer/api/utility.h"
 
 // appleseed.foundation headers.
+#include "foundation/core/appleseed.h"
 #include "foundation/image/image.h"
 #include "foundation/image/tile.h"
 #include "foundation/math/matrix.h"
@@ -65,24 +73,17 @@
 #include "foundation/utility/autoreleaseptr.h"
 #include "foundation/utility/searchpaths.h"
 
-#include "renderer/global/globallogger.h"
-#include "renderer/api/environment.h"
-#include "renderer/api/environmentedf.h"
-#include "renderer/api/texture.h"
-#include "renderer/api/environmentshader.h"
-#include "renderer/api/edf.h"
-
-#include <vector>
+// Maya headers.
+#include <maya/MPlugArray.h>
+#include <maya/MPlug.h>
 #include <maya/MGlobal.h>
 #include <maya/MStringArray.h>
 #include <maya/MFnDependencyNode.h>
 #include <boost/thread/locks.hpp>
 #include <boost/thread/mutex.hpp>
 
-#include "renderer/modeling/shadergroup/shadergroup.h"
-#include "appleseedutils.h"
-#include "definitions.h"
-
+// Standard headers.
+#include <vector>
 
 #if MAYA_API_VERSION >= 201600
 
@@ -312,7 +313,7 @@ MStatus mtap_MayaRenderer::translateMesh(const MUuid& id, const MObject& node)
         GETASM()->objects().remove(obj);
         GETASM()->bump_version_id();
     }
-    asf::auto_release_ptr<asr::MeshObject> mesh = MTAP_GEOMETRY::createMesh(mobject);
+    asf::auto_release_ptr<asr::MeshObject> mesh = createMesh(mobject);
     mesh->set_name(meshIdName.asChar());
     GETASM()->objects().insert(asf::auto_release_ptr<asr::Object>(mesh));
 
@@ -339,7 +340,7 @@ MStatus mtap_MayaRenderer::translateLightSource(const MUuid& id, const MObject& 
         if (meshPtr != 0)
             GETASM()->objects().remove(meshPtr);
 
-        asf::auto_release_ptr<asr::MeshObject> plane = MTAP_GEOMETRY::defineStandardPlane();
+        asf::auto_release_ptr<asr::MeshObject> plane = defineStandardPlane();
         plane->set_name(lightIdName.asChar());
         GETASM()->objects().insert(asf::auto_release_ptr<asr::Object>(plane));
 

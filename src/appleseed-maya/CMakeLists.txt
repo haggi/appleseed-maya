@@ -68,8 +68,6 @@ set (sources
     appleseedenvironment.cpp
     appleseedframeoutput.cpp
     appleseedgeo.cpp
-    appleseedgeometry.cpp
-    appleseedgeometry.h
     appleseedinteractiveupdate.cpp
     appleseedlights.cpp
     appleseedmaterial.cpp

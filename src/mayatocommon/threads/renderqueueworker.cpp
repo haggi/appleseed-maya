@@ -51,26 +51,30 @@
 #include "../renderprocess.h"
 
 threadObject RenderQueueWorker::sceneThread;
-static bool userEventFinished = false;
-static int numTiles = 0;
-static int tilesDone = 0;
-static MCallbackId idleCallbackId = 0;
-static MCallbackId computationInterruptCallbackId = 0;
-static MCallbackId sceneCallbackId0 = 0;
-static MCallbackId sceneCallbackId1 = 0;
-static MCallbackId pluginCallbackId = 0;
-static MCallbackId nodeAddedCallbackId = 0;
-static MCallbackId nodeRemovedCallbackId = 0;
-static std::vector<MCallbackId> nodeCallbacks;
-static std::vector<InteractiveElement *> modifiedElementList;
-static clock_t renderStartTime = 0;
-static clock_t renderEndTime = 0;
-static bool IprCallbacksDone = false;
-static std::map<MCallbackId, MObject> objIdMap;
-static std::map<MCallbackId, InteractiveElement *> idInteractiveMap;
 
-static Compute renderComputation = Compute();
-static std::vector<Callback> callbackList;
+namespace
+{
+    bool userEventFinished = false;
+    int numTiles = 0;
+    int tilesDone = 0;
+    MCallbackId idleCallbackId = 0;
+    MCallbackId computationInterruptCallbackId = 0;
+    MCallbackId sceneCallbackId0 = 0;
+    MCallbackId sceneCallbackId1 = 0;
+    MCallbackId pluginCallbackId = 0;
+    MCallbackId nodeAddedCallbackId = 0;
+    MCallbackId nodeRemovedCallbackId = 0;
+    std::vector<MCallbackId> nodeCallbacks;
+    std::vector<InteractiveElement *> modifiedElementList;
+    clock_t renderStartTime = 0;
+    clock_t renderEndTime = 0;
+    bool IprCallbacksDone = false;
+    std::map<MCallbackId, MObject> objIdMap;
+    std::map<MCallbackId, InteractiveElement *> idInteractiveMap;
+
+    Compute renderComputation = Compute();
+    std::vector<Callback> callbackList;
+}
 
 concurrent_queue<Event> *theRenderEventQueue()
 {
@@ -223,7 +227,6 @@ void RenderQueueWorker::addIPRCallbacks()
     nodeRemovedCallbackId = MDGMessage::addNodeRemovedCallback(RenderQueueWorker::IPRNodeRemovedCallback);
 
     IprCallbacksDone = true;
-
 }
 
 void RenderQueueWorker::IPRUpdateCallbacks()
@@ -293,10 +296,6 @@ void  RenderQueueWorker::IPRattributeChangedCallback(MNodeMessage::AttributeMess
     else if (msg & MNodeMessage::kConnectionBroken)
     {
         Logging::debug(MString("IPRattributeChangedCallback. connection broken."));
-    }
-    else
-    {
-        return;
     }
 }
 
@@ -374,7 +373,6 @@ void RenderQueueWorker::IPRNodeAddedCallback(MObject& node, void *userPtr)
             }
         }
     }
-
 }
 
 void RenderQueueWorker::IPRNodeRemovedCallback(MObject& node, void *userPtr)
@@ -457,7 +455,7 @@ void RenderQueueWorker::removeCallbacks()
 void RenderQueueWorker::iprFindLeafNodes()
 {
     sharedPtr<MayaScene> mayaScene = getWorldPtr()->worldScenePtr;
-    static std::map<MCallbackId, InteractiveElement *>::iterator it;
+    std::map<MCallbackId, InteractiveElement *>::iterator it;
     std::vector<InteractiveElement *> leafList;
 
     for (it = idInteractiveMap.begin(); it != idInteractiveMap.end(); it++)
@@ -470,7 +468,7 @@ void RenderQueueWorker::iprFindLeafNodes()
             {
                 if (dagIter.currentItem().hasFn(MFn::kShape))
                 {
-                    static std::map<uint, InteractiveElement>::iterator seIt;
+                    std::map<uint, InteractiveElement>::iterator seIt;
                     for (seIt = mayaScene->interactiveUpdateMap.begin(); seIt != mayaScene->interactiveUpdateMap.end(); seIt++)
                     {
                         if (seIt->second.node.hasFn(MFn::kShape))
@@ -528,12 +526,10 @@ void RenderQueueWorker::IPRNodeDirtyCallback(void *interactiveElement)
     idInteractiveMap[thisId] = userData;
 }
 
-
 void RenderQueueWorker::renderQueueWorkerTimerCallback(float time, float lastTime, void *userPtr)
 {
     RenderQueueWorker::startRenderQueueWorker();
 }
-
 
 void RenderQueueWorker::computationEventThread()
 {
@@ -624,7 +620,6 @@ void RenderQueueWorker::interactiveStartThread()
 
 void RenderQueueWorker::sendFinalizeIfQueueEmpty(void *)
 {
-
     while (theRenderEventQueue()->size() > 0)
         sleepFor(10);
 
@@ -638,9 +633,7 @@ void RenderQueueWorker::iprWaitForFinish(Event e)
 {
     Logging::debug("iprWaitForFinish.");
     while (getWorldPtr()->getRenderState() != MayaToWorld::RSTATENONE)
-    {
         sleepFor(100);
-    }
     Logging::debug("iprWaitForFinish - Renderstate is RSTATENONE, sending event.");
     theRenderEventQueue()->push(e);
 }
@@ -717,7 +710,6 @@ void RenderQueueWorker::startRenderQueueWorker()
                     if (getWorldPtr()->getRenderType() == MayaToWorld::UIRENDER)
                     {
                         renderComputation.beginComputation();
-                        void *data = 0;
                     }
                 }
                 e.type = Event::FRAMERENDER;
@@ -804,7 +796,9 @@ void RenderQueueWorker::startRenderQueueWorker()
                     MGlobal::executePythonCommandOnIdle(captionCmd);
 
                     // clean the queue
-                    while (RenderEventQueue.try_pop(e)){}
+                    while (RenderEventQueue.try_pop(e))
+                    {
+                    }
                 }
 
                 doPostRenderJobs();
@@ -891,7 +885,6 @@ void RenderQueueWorker::startRenderQueueWorker()
             break;
         }
 
-
         if (MGlobal::mayaState() != MGlobal::kBatch)
             break;
     }
@@ -899,7 +892,7 @@ void RenderQueueWorker::startRenderQueueWorker()
 
 RenderQueueWorker::~RenderQueueWorker()
 {
-    // clean the queue
+    // Empty the queue.
     Event e;
     while (RenderEventQueue.try_pop(e)) {}
 }
