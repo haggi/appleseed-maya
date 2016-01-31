@@ -82,6 +82,10 @@ namespace asr = renderer;
 
 AppleseedSwatchRenderer::AppleseedSwatchRenderer()
 {
+    terminateLoop = false;
+    enableSwatchRenderer = true;
+    loopDone = false;
+
     Logging::debug(MString("Initialze appleseed swatch renderer."));
 #if _DEBUG
     log_target = autoPtr<asf::ILogTarget>(asf::create_console_log_target(stdout));

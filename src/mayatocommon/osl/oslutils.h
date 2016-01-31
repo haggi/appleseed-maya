@@ -307,7 +307,7 @@ class OSLUtilClass
     ~OSLUtilClass();
 
     OSLShadingNetworkRenderer *oslRenderer;
-    OSL::ShaderGroup *group = 0;
+    OSL::ShaderGroup *group;
     ProjectionNodeArray projectionNodeArray;
     std::vector<MObject> projectionNodes;
     std::vector<MObject> projectionConnectNodes;

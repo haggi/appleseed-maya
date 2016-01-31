@@ -58,14 +58,14 @@ void addObjectIdentifier(int id)
 
 bool MayaObject::isInstanced()
 {
-    return this->dagPath.isInstanced() || (this->instanceNumber > 0) || ((this->attributes != 0) && this->attributes->hasInstancerConnection);
+    return dagPath.isInstanced() || (instanceNumber > 0) || ((attributes != 0) && attributes->hasInstancerConnection);
 }
 
 bool MayaObject::isLight()
 {
-    if (this->mobject.hasFn(MFn::kLight))
+    if (mobject.hasFn(MFn::kLight))
         return true;
-    MFnDependencyNode depFn(this->mobject);
+    MFnDependencyNode depFn(mobject);
     uint nodeId = depFn.typeId().id();
     for (uint lId = 0; lId < lightIdentifier.size(); lId++)
     {
@@ -80,9 +80,9 @@ bool MayaObject::isLight()
 
 bool MayaObject::isCamera()
 {
-    if (this->mobject.hasFn(MFn::kCamera))
+    if (mobject.hasFn(MFn::kCamera))
     {
-        this->motionBlurred = true;
+        motionBlurred = true;
         return true;
     }
     return false;
@@ -91,20 +91,20 @@ bool MayaObject::isCamera()
 bool MayaObject::isGeo()
 {
 
-    if (this->mobject.hasFn(MFn::kMesh))
+    if (mobject.hasFn(MFn::kMesh))
         return true;
-    if (this->mobject.hasFn(MFn::kNurbsSurface))
+    if (mobject.hasFn(MFn::kNurbsSurface))
         return true;
-    if (this->mobject.hasFn(MFn::kParticle))
+    if (mobject.hasFn(MFn::kParticle))
         return true;
-    if (this->mobject.hasFn(MFn::kSubSurface))
+    if (mobject.hasFn(MFn::kSubSurface))
         return true;
-    if (this->mobject.hasFn(MFn::kNurbsCurve))
+    if (mobject.hasFn(MFn::kNurbsCurve))
         return true;
-    if (this->mobject.hasFn(MFn::kHairSystem))
+    if (mobject.hasFn(MFn::kHairSystem))
         return true;
 
-    MFnDependencyNode depFn(this->mobject);
+    MFnDependencyNode depFn(mobject);
     uint nodeId = depFn.typeId().id();
     for (uint lId = 0; lId < objectIdentifier.size(); lId++)
     {
@@ -119,7 +119,7 @@ bool MayaObject::isGeo()
 
 bool MayaObject::isTransform()
 {
-    if (this->mobject.hasFn(MFn::kTransform))
+    if (mobject.hasFn(MFn::kTransform))
         return true;
     return false;
 }
@@ -129,13 +129,13 @@ void MayaObject::getShadingGroups()
 {
     // get shading groups only for allowed shapes
 
-    if (this->geometryShapeSupported())
+    if (geometryShapeSupported())
     {
-        Logging::debug(MString("getShadingGroups::Supported geo ") + this->shortName);
+        Logging::debug(MString("getShadingGroups::Supported geo ") + shortName);
         // only makes sense if we have a geometry shape.
-        if (this->mobject.hasFn(MFn::kMesh) || this->mobject.hasFn(MFn::kNurbsSurface) || this->mobject.hasFn(MFn::kParticle) || this->mobject.hasFn(MFn::kNParticle))
+        if (mobject.hasFn(MFn::kMesh) || mobject.hasFn(MFn::kNurbsSurface) || mobject.hasFn(MFn::kParticle) || mobject.hasFn(MFn::kNParticle))
         {
-            getObjectShadingGroups(this->dagPath, this->perFaceAssignments, this->shadingGroups, true);
+            getObjectShadingGroups(dagPath, perFaceAssignments, shadingGroups, true);
         }
     }
 }
@@ -145,7 +145,7 @@ bool  MayaObject::isVisiblityAnimated()
 {
     MStatus stat = MStatus::kSuccess;
     bool visibility = true;
-    MDagPath dp = this->dagPath;
+    MDagPath dp = dagPath;
     while (stat == MStatus::kSuccess)
     {
         MFnDependencyNode depFn(dp.node());
@@ -163,8 +163,8 @@ bool  MayaObject::isVisiblityAnimated()
 
 bool  MayaObject::isObjVisible()
 {
-    MFnDagNode dagNode(this->mobject);
-    if (!IsVisible(dagNode) || IsTemplated(dagNode) || !IsInRenderLayer(this->dagPath) || !IsPathVisible(this->dagPath) || !IsLayerVisible(this->dagPath))
+    MFnDagNode dagNode(mobject);
+    if (!IsVisible(dagNode) || IsTemplated(dagNode) || !IsInRenderLayer(dagPath) || !IsPathVisible(dagPath) || !IsLayerVisible(dagPath))
         return false;
     return true;
 }
@@ -177,10 +177,10 @@ bool MayaObject::geometryShapeSupported()
 
 bool MayaObject::shadowMapCastingLight()
 {
-    if (!this->mobject.hasFn(MFn::kLight))
+    if (!mobject.hasFn(MFn::kLight))
         return false;
 
-    MFnDependencyNode lightFn(this->mobject);
+    MFnDependencyNode lightFn(mobject);
 
     bool useDepthMapShadows = false;
     if (!getBool(MString("useDepthMapShadows"), lightFn,  useDepthMapShadows))
@@ -194,47 +194,48 @@ bool MayaObject::shadowMapCastingLight()
 
 void MayaObject::updateObject()
 {
-    this->visible = isObjVisible();
+    visible = isObjVisible();
 }
 
 void MayaObject::initialize()
 {
-    this->isInstancerObject = false;
-    this->instancerParticleId = -1;
-    this->instanceNumber = 0;
-    this->attributes.reset();
-    this->origObject.reset();
-    this->shortName = getObjectName(mobject);
-    this->fullName = this->dagPath.fullPathName();
-    this->fullNiceName = makeGoodString(this->fullName);
-    this->transformMatrices.push_back(this->dagPath.inclusiveMatrix());
-    this->instanceNumber = dagPath.instanceNumber();
+    removed = false;
+    isInstancerObject = false;
+    instancerParticleId = -1;
+    instanceNumber = 0;
+    attributes.reset();
+    origObject.reset();
+    shortName = getObjectName(mobject);
+    fullName = dagPath.fullPathName();
+    fullNiceName = makeGoodString(fullName);
+    transformMatrices.push_back(dagPath.inclusiveMatrix());
+    instanceNumber = dagPath.instanceNumber();
     MFnDependencyNode depFn(mobject);
-    this->motionBlurred = true;
-    this->geometryMotionblur = false;
+    motionBlurred = true;
+    geometryMotionblur = false;
     bool mb = true;
     if (getBool(MString("motionBlur"), depFn, mb))
-        this->motionBlurred = mb;
+        motionBlurred = mb;
     // cameras have motionBlur attribute but it is set to false by default and it is not accessible via UI
     // but we want to have a blurred camera by default.
-    if (this->mobject.hasFn(MFn::kCamera))
-        this->motionBlurred = true;
-    this->perObjectTransformSteps = 1;
-    this->perObjectDeformSteps = 1;
-    this->index = -1;
-    this->shapeConnected = false;
-    this->lightExcludeList = true; // In most cases only a few lights are ignored, so the list is shorter with excluded lights
-    this->shadowExcludeList = true; // in most cases only a few objects ignore shadows, so the list is shorter with ignoring objects
-    this->animated = this->isObjAnimated();
-    this->shapeConnected = this->isShapeConnected();
-    this->parent.reset();
-    this->visible = true;
-    this->hasInstancerConnection = false;
+    if (mobject.hasFn(MFn::kCamera))
+        motionBlurred = true;
+    perObjectTransformSteps = 1;
+    perObjectDeformSteps = 1;
+    index = -1;
+    shapeConnected = false;
+    lightExcludeList = true; // In most cases only a few lights are ignored, so the list is shorter with excluded lights
+    shadowExcludeList = true; // in most cases only a few objects ignore shadows, so the list is shorter with ignoring objects
+    animated = isObjAnimated();
+    shapeConnected = isShapeConnected();
+    parent.reset();
+    visible = true;
+    hasInstancerConnection = false;
     MDagPath dp;
     dp = dagPath;
-    MFnDagNode dagNode(this->mobject);
-    if (!IsVisible(dagNode) || IsTemplated(dagNode) || !IsInRenderLayer(dp) || !IsPathVisible(dp) || !IsLayerVisible(this->dagPath))
-        this->visible = false;
+    MFnDagNode dagNode(mobject);
+    if (!IsVisible(dagNode) || IsTemplated(dagNode) || !IsInRenderLayer(dp) || !IsPathVisible(dp) || !IsLayerVisible(dagPath))
+        visible = false;
 
     // get instancer connection
     MStatus stat;
@@ -254,31 +255,31 @@ void MayaObject::initialize()
                 if (otherSide.hasFn(MFn::kInstancer))
                 {
                     Logging::debug(MString("other side is instancer"));
-                    this->hasInstancerConnection = true;
+                    hasInstancerConnection = true;
                 }
             }
         }
     }
 
-    if (this->mobject.hasFn(MFn::kWorld))
+    if (mobject.hasFn(MFn::kWorld))
     {
-        this->shortName = this->fullName = this->fullNiceName = "world";
+        shortName = fullName = fullNiceName = "world";
     }
 }
 
 MayaObject::MayaObject(MObject& mobject)
 {
-    this->mobject = mobject;
+    mobject = mobject;
     MFnDagNode dagNode(mobject);
-    dagNode.getPath(this->dagPath);
-    this->initialize();
+    dagNode.getPath(dagPath);
+    initialize();
 }
 
 MayaObject::MayaObject(MDagPath& objPath)
 {
-    this->mobject = objPath.node();
-    this->dagPath = objPath;
-    this->initialize();
+    mobject = objPath.node();
+    dagPath = objPath;
+    initialize();
 }
 
 // to check if an object is animated, we need to check e.g. its transform inputs
@@ -288,12 +289,12 @@ bool MayaObject::isObjAnimated()
     MStatus stat;
     bool returnValue = false;
 
-    if (this->instancerParticleId > -1)
+    if (instancerParticleId > -1)
         return true;
 
-    if (this->mobject.hasFn(MFn::kTransform))
+    if (mobject.hasFn(MFn::kTransform))
     {
-        MFnDependencyNode depFn(this->mobject, &stat);
+        MFnDependencyNode depFn(mobject, &stat);
         if (stat)
         {
             MPlugArray connections;
@@ -322,10 +323,10 @@ bool MayaObject::isShapeConnected()
     MStatus stat;
     bool returnValue = false;
     MPlug inPlug;
-    MFnDependencyNode depFn(this->mobject, &stat);
+    MFnDependencyNode depFn(mobject, &stat);
     if (stat)
     {
-        MFn::Type type = this->mobject.apiType();
+        MFn::Type type = mobject.apiType();
         switch (type)
         {
         case MFn::kMesh:
@@ -355,7 +356,7 @@ bool MayaObject::isShapeConnected()
 // if we have a mesh and it is a bifrost mesh it may contain velocity vertex data
 bool MayaObject::hasBifrostVelocityChannel()
 {
-    MFnMesh meshFn(this->mobject);
+    MFnMesh meshFn(mobject);
     int numColorSets = meshFn.numColorSets();
     MStringArray colorSetNames;
     meshFn.getColorSetNames(colorSetNames);
@@ -372,27 +373,27 @@ void MayaObject::addMeshData()
 {
     MeshData mdata;
 
-    if (this->hasBifrostVelocityChannel())
+    if (hasBifrostVelocityChannel())
     {
-        bool doMb = this->motionBlurred;
+        bool doMb = motionBlurred;
         sharedPtr<RenderGlobals> renderGlobals = getWorldPtr()->worldRenderGlobalsPtr;
         doMb = doMb && renderGlobals->doMb;
 
-        Logging::debug(MString("Found bifrost velocity data for object: ") + this->shortName);
-        if ((this->meshDataList.size() == 2) || !doMb)
+        Logging::debug(MString("Found bifrost velocity data for object: ") + shortName);
+        if ((meshDataList.size() == 2) || !doMb)
         {
             Logging::debug("Bifrost mesh already has two motion steps or mb is turned off for it -> skipping");
             return;
         }
 
-        this->getMeshData(mdata.points, mdata.normals);
+        getMeshData(mdata.points, mdata.normals);
 
         // if we have a bifrost velocity channel I suppose this is a bifost mesh and there is no need to
         // save the mesh motion steps because it has changing topology what does not work in most renderers
         // so we save only the very first motion step and derive the other steps from velocity channel.
         // and we simply produce two steps only because everything else would not make sense.
 
-        MFnMesh meshFn(this->mobject);
+        MFnMesh meshFn(mobject);
         if (meshFn.hasColorChannels("bifrostVelocity"))
         {
             MColorArray colors;
@@ -407,31 +408,31 @@ void MayaObject::addMeshData()
                     MVector v = MVector(c.r, c.g, c.b);
                     mdata.points[ptId] -= v * 0.5 / 24.0;
                 }
-                this->meshDataList.push_back(mdata);
+                meshDataList.push_back(mdata);
                 for (uint ptId = 0; ptId < mdata.points.length(); ptId++)
                 {
                     MColor c = colors[ptId];
                     MVector v = MVector(c.r, c.g, c.b);
                     mdata.points[ptId] += v * 0.5 / 24.0;
                 }
-                this->meshDataList.push_back(mdata);
+                meshDataList.push_back(mdata);
             }
         }
         else
         {
             Logging::debug("Bifrost mesh has no velocity data, no motionblur.");
-            if (this->meshDataList.size() == 0)
-                this->meshDataList.push_back(mdata);
+            if (meshDataList.size() == 0)
+                meshDataList.push_back(mdata);
         }
     }
     else
     {
-        this->getMeshData(mdata.points, mdata.normals);
+        getMeshData(mdata.points, mdata.normals);
         int np = mdata.points.length();
-        this->meshDataList.push_back(mdata);
+        meshDataList.push_back(mdata);
 
         std::vector<MeshData>::iterator mdIt;
-        for (mdIt = this->meshDataList.begin(); mdIt != meshDataList.end(); mdIt++)
+        for (mdIt = meshDataList.begin(); mdIt != meshDataList.end(); mdIt++)
         {
             np = mdIt->points.length();
         }
@@ -442,9 +443,9 @@ void MayaObject::addMeshData()
 void MayaObject::getMeshData(MPointArray& points, MFloatVectorArray& normals)
 {
     MStatus stat;
-    MObject meshObject = this->mobject;
+    MObject meshObject = mobject;
     MMeshSmoothOptions options;
-    MFnMesh tmpMesh(this->mobject);
+    MFnMesh tmpMesh(mobject);
     MFnMeshData meshData;
     MObject dataObject;
     MObject smoothedObj;
@@ -485,9 +486,9 @@ void MayaObject::getMeshData(MPointArray& points, MFloatVectorArray& normals, MF
 {
 
     MStatus stat;
-    MObject meshObject = this->mobject;
+    MObject meshObject = mobject;
     MMeshSmoothOptions options;
-    MFnMesh tmpMesh(this->mobject, &stat);
+    MFnMesh tmpMesh(mobject, &stat);
 
     MFnMeshData meshData;
     MObject dataObject;
@@ -533,14 +534,14 @@ void MayaObject::getMeshData(MPointArray& points, MFloatVectorArray& normals, MF
     // to avoid problems I add a default uv coordinate
     if (numUvs == 0)
     {
-        Logging::warning(MString("Object has no uv's: ") + this->shortName);
+        Logging::warning(MString("Object has no uv's: ") + shortName);
         uArray.append(0.0);
         vArray.append(0.0);
     }
     for (uint nid = 0; nid < numNormals; nid++)
     {
         if (normals[nid].length() < 0.1f)
-            Logging::warning(MString("Malformed normal in ") + this->shortName);
+            Logging::warning(MString("Malformed normal in ") + shortName);
     }
     MPointArray triPoints;
     MIntArray triVtxIds;
@@ -555,8 +556,8 @@ void MayaObject::getMeshData(MPointArray& points, MFloatVectorArray& normals, MF
         faceIt.getVertices(faceVtxIds);
 
         int perFaceShadingGroup = 0;
-        if (this->perFaceAssignments.length() > 0)
-            perFaceShadingGroup = this->perFaceAssignments[faceId];
+        if (perFaceAssignments.length() > 0)
+            perFaceShadingGroup = perFaceAssignments[faceId];
 
         MIntArray faceUVIndices;
 

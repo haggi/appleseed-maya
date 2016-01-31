@@ -38,6 +38,9 @@
 
 NewSwatchRenderer::NewSwatchRenderer(MObject dependNode, MObject renderNode, int imageResolution) : MSwatchRenderBase(dependNode, renderNode, imageResolution)
 {
+    renderInProgress = true;
+    swatchRenderingDone = false;
+
     rNode = renderNode;
     dNode = dependNode;
 
