@@ -141,7 +141,7 @@ void RenderQueueWorker::callbackWorker(size_t cbId)
     Logging::debug("callbackWorker finished. Removing callback.");
 }
 
-size_t RenderQueueWorker::registerCallback(std::function<void()> function, unsigned int millisecondsUpdateInterval)
+size_t RenderQueueWorker::registerCallback(boost::function<void()> function, unsigned int millisecondsUpdateInterval)
 {
     Callback cb;
     cb.callbackId = callbackList.size();
@@ -352,7 +352,7 @@ void RenderQueueWorker::IPRNodeAddedCallback(MObject& node, void *userPtr)
     MString tname = getObjectName(transform);
 
     // here the new object is added to the object list and is added to the interactive object list
-    mayaScene->parseSceneHierarchy(dagPath, 0, 0, 0);
+    mayaScene->parseSceneHierarchy(dagPath, 0, sharedPtr<ObjectAttributes>(), sharedPtr<MayaObject>());
 
     // now we readd all interactive objects to the map
     idInteractiveMap.clear();
@@ -570,16 +570,16 @@ void RenderQueueWorker::computationEventThread()
 
 void RenderQueueWorker::renderProcessThread()
 {
-    if (MayaTo::getWorldPtr()->renderType == MayaTo::MayaToWorld::WorldRenderType::IPRRENDER)
+    if (MayaTo::getWorldPtr()->renderType == MayaTo::MayaToWorld::IPRRENDER)
     {
         // the idea is that the renderer waits in IPR mode for an non empty modifiesElementList,
         // it updates the render database with the elements and empties the list which is then free for the next run
-        while ((MayaTo::getWorldPtr()->renderType == MayaTo::MayaToWorld::WorldRenderType::IPRRENDER))
+        while ((MayaTo::getWorldPtr()->renderType == MayaTo::MayaToWorld::IPRRENDER))
         {
             MayaTo::getWorldPtr()->worldRendererPtr->render();
-            while ((modifiedElementList.size() == 0) && (MayaTo::getWorldPtr()->renderType == MayaTo::MayaToWorld::WorldRenderType::IPRRENDER) && (MayaTo::getWorldPtr()->renderState != MayaTo::MayaToWorld::WorldRenderState::RSTATESTOPPED))
+            while ((modifiedElementList.size() == 0) && (MayaTo::getWorldPtr()->renderType == MayaTo::MayaToWorld::IPRRENDER) && (MayaTo::getWorldPtr()->renderState != MayaTo::MayaToWorld::RSTATESTOPPED))
                 sleepFor(100);
-            if ((MayaTo::getWorldPtr()->renderType != MayaTo::MayaToWorld::WorldRenderType::IPRRENDER) || (MayaTo::getWorldPtr()->renderState == MayaTo::MayaToWorld::WorldRenderState::RSTATESTOPPED))
+            if ((MayaTo::getWorldPtr()->renderType != MayaTo::MayaToWorld::IPRRENDER) || (MayaTo::getWorldPtr()->renderState == MayaTo::MayaToWorld::RSTATESTOPPED))
                 break;
             MayaTo::getWorldPtr()->worldRendererPtr->interactiveUpdateList = modifiedElementList;
             MayaTo::getWorldPtr()->worldRendererPtr->doInteractiveUpdate();
@@ -645,7 +645,7 @@ void RenderQueueWorker::sendFinalizeIfQueueEmpty(void *)
 void RenderQueueWorker::iprWaitForFinish(EventQueue::Event e)
 {
     Logging::debug("iprWaitForFinish.");
-    while (MayaTo::getWorldPtr()->getRenderState() != MayaTo::MayaToWorld::WorldRenderState::RSTATENONE)
+    while (MayaTo::getWorldPtr()->getRenderState() != MayaTo::MayaToWorld::RSTATENONE)
     {
         sleepFor(100);
     }
@@ -690,10 +690,10 @@ void RenderQueueWorker::startRenderQueueWorker()
                 MayaTo::getWorldPtr()->setRenderType(e.cmdArgsData->renderType);
 
                 // it is possible that a new ipr rendering is started before another one is completly done, so wait for it
-                if (MayaTo::getWorldPtr()->renderType == MayaTo::MayaToWorld::WorldRenderType::IPRRENDER)
+                if (MayaTo::getWorldPtr()->renderType == MayaTo::MayaToWorld::IPRRENDER)
                 {
                     MayaTo::MayaToWorld::WorldRenderState rs = MayaTo::getWorldPtr()->getRenderState();
-                    if (MayaTo::getWorldPtr()->getRenderState() != MayaTo::MayaToWorld::WorldRenderState::RSTATENONE)
+                    if (MayaTo::getWorldPtr()->getRenderState() != MayaTo::MayaToWorld::RSTATENONE)
                     {
                         threadObject waitThread = threadObject(RenderQueueWorker::iprWaitForFinish, e);
                         waitThread.detach();
@@ -722,7 +722,7 @@ void RenderQueueWorker::startRenderQueueWorker()
                 if (MGlobal::mayaState() != MGlobal::kBatch)
                 {
                     // we only need renderComputation (means esc-able rendering) if we render in UI (==NORMAL)
-                    if (MayaTo::getWorldPtr()->getRenderType() == MayaTo::MayaToWorld::WorldRenderType::UIRENDER)
+                    if (MayaTo::getWorldPtr()->getRenderType() == MayaTo::MayaToWorld::UIRENDER)
                     {
                         renderComputation.beginComputation();
                         void *data = 0;
@@ -795,7 +795,7 @@ void RenderQueueWorker::startRenderQueueWorker()
                 Logging::debug("Event::RENDERDONE");
                 if (MGlobal::mayaState() != MGlobal::kBatch)
                     renderComputation.endComputation();
-                if (MayaTo::getWorldPtr()->renderType == MayaTo::MayaToWorld::WorldRenderType::IPRRENDER)
+                if (MayaTo::getWorldPtr()->renderType == MayaTo::MayaToWorld::IPRRENDER)
                 {
                     RenderQueueWorker::removeCallbacks();
                 }
@@ -838,7 +838,7 @@ void RenderQueueWorker::startRenderQueueWorker()
 
         case EventQueue::Event::IPRSTOP:
             Logging::debug("Event::IPRSTOP");
-            MayaTo::getWorldPtr()->setRenderState(MayaTo::MayaToWorld::WorldRenderState::RSTATESTOPPED);
+            MayaTo::getWorldPtr()->setRenderState(MayaTo::MayaToWorld::RSTATESTOPPED);
             MayaTo::getWorldPtr()->worldRendererPtr->abortRendering();
             break;
 
@@ -846,7 +846,7 @@ void RenderQueueWorker::startRenderQueueWorker()
             {
                 Logging::debug(MString("Event::TILEDONE - queueSize: ") + theRenderEventQueue()->size());
                 RenderQueueWorker::updateRenderView(e);
-                if (MayaTo::getWorldPtr()->renderType != MayaTo::MayaToWorld::WorldRenderType::IPRRENDER)
+                if (MayaTo::getWorldPtr()->renderType != MayaTo::MayaToWorld::IPRRENDER)
                 {
                     tilesDone++;
                     float percentDone = ((float)tilesDone / (float)numTiles) * 100.0;

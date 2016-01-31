@@ -120,13 +120,13 @@ MStatus MayaToAppleseed::doIt(const MArgList& args)
     // I have to request useRenderRegion here because as soon the command is finished,
     // what happens immediatly after the command is put into the queue, the value is
     // set back to false.
-    std::unique_ptr<MayaTo::CmdArgs> cmdArgs(new MayaTo::CmdArgs);
+    std::auto_ptr<MayaTo::CmdArgs> cmdArgs(new MayaTo::CmdArgs);
     MObject drg = objectFromName("defaultRenderGlobals");
     MFnDependencyNode drgfn(drg);
     cmdArgs->useRenderRegion = drgfn.findPlug("useRenderRegion").asBool();
 
     if (argData.isFlagSet("-startIpr", &stat))
-        cmdArgs->renderType = MayaTo::MayaToWorld::WorldRenderType::IPRRENDER;
+        cmdArgs->renderType = MayaTo::MayaToWorld::IPRRENDER;
 
     if (argData.isFlagSet("-width", &stat))
         argData.getFlagArgument("-width", 0, cmdArgs->width);
@@ -146,7 +146,7 @@ MStatus MayaToAppleseed::doIt(const MArgList& args)
     }
 
     EventQueue::Event e;
-    e.cmdArgsData = std::move(cmdArgs);
+    e.cmdArgsData.reset(cmdArgs.release());
     e.type = EventQueue::Event::INITRENDER;
     theRenderEventQueue()->push(e);
 

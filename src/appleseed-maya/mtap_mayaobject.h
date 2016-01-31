@@ -58,7 +58,7 @@ public:
     ~mtap_MayaObject();
 
     virtual bool geometryShapeSupported();
-    virtual sharedPtr<ObjectAttributes> getObjectAttributes(sharedPtr<ObjectAttributes> parentAttributes = 0);
+    virtual sharedPtr<ObjectAttributes> getObjectAttributes(sharedPtr<ObjectAttributes> parentAttributes = sharedPtr<ObjectAttributes>());
     bool needsAssembly();
     void createAssembly();
 };

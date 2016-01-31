@@ -36,6 +36,8 @@
 #include "queue.h"
 #include "definitions.h"
 
+#include "boost/function.hpp"
+
 static EventQueue::concurrent_queue<EventQueue::Event> RenderEventQueue;
 EventQueue::concurrent_queue<EventQueue::Event> *theRenderEventQueue();
 
@@ -47,7 +49,7 @@ struct Callback{
         terminate = false;
     }
     unsigned int millsecondInterval;
-    std::function<void()> functionPointer;
+    boost::function<void()> functionPointer;
     unsigned int callbackId;
     bool terminate;
 };
@@ -83,7 +85,7 @@ public:
     static MString getElapsedTimeString();
     static MString getCaptionString();
     static void updateRenderView(EventQueue::Event& e);
-    static size_t registerCallback(std::function<void()> function, unsigned int millisecondsUpdateInterval = 100);
+    static size_t registerCallback(boost::function<void()> function, unsigned int millisecondsUpdateInterval = 100);
     static void unregisterCallback(size_t cbId);
     static void callbackWorker(size_t cbId);
     static bool iprCallbacksDone();

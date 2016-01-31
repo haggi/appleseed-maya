@@ -69,7 +69,11 @@ void AppleseedRenderer::doInteractiveUpdate()
         if (iElement->node.hasFn(MFn::kPluginDependNode) || iElement->node.hasFn(MFn::kLambert))
         {
             MFnDependencyNode depFn(iElement->node);
-            std::vector<MString> shaderNames = { "asLayeredShader", "uberShader", "asDisneyMaterial" };
+            std::vector<MString> shaderNames;
+            shaderNames.push_back("asLayeredShader");
+            shaderNames.push_back("uberShader");
+            shaderNames.push_back("asDisneyMaterial");
+
             MString typeName = depFn.typeName();
             for (uint si = 0; si < shaderNames.size(); si++)
             {

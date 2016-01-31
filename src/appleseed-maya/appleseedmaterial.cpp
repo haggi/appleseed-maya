@@ -232,7 +232,7 @@ asf::StringArray AppleRender::AppleseedRenderer::defineMaterial(sharedPtr<mtap_M
         }
 
         // if we are in IPR mode, save all translated shading nodes to the interactive update list
-        if (MayaTo::getWorldPtr()->renderType == MayaTo::MayaToWorld::WorldRenderType::IPRRENDER)
+        if (MayaTo::getWorldPtr()->renderType == MayaTo::MayaToWorld::IPRRENDER)
         {
             if (mayaScene)
             {
@@ -243,7 +243,7 @@ asf::StringArray AppleRender::AppleseedRenderer::defineMaterial(sharedPtr<mtap_M
                 iel.node = materialNode;
                 mayaScene->interactiveUpdateMap[mayaScene->interactiveUpdateMap.size()] = iel;
 
-                if (MayaTo::getWorldPtr()->renderState == MayaTo::MayaToWorld::WorldRenderState::RSTATERENDERING)
+                if (MayaTo::getWorldPtr()->renderState == MayaTo::MayaToWorld::RSTATERENDERING)
                 {
                     RenderQueueWorker::IPRUpdateCallbacks();
                 }

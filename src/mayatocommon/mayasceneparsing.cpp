@@ -63,7 +63,7 @@ bool MayaScene::parseSceneHierarchy(MDagPath currentPath, int level, sharedPtr<O
     sharedPtr<ObjectAttributes> currentAttributes = mo->getObjectAttributes(parentAttributes);
     mo->parent = parentObject;
     classifyMayaObject(mo);
-    if (MayaTo::getWorldPtr()->renderType == MayaTo::MayaToWorld::WorldRenderType::IPRRENDER)
+    if (MayaTo::getWorldPtr()->renderType == MayaTo::MayaToWorld::IPRRENDER)
     {
         InteractiveElement iel;
         iel.obj = mo;
@@ -118,13 +118,13 @@ bool MayaScene::parseScene()
     clearObjList(this->lightList);
 
     MDagPath world = getWorld();
-    if (parseSceneHierarchy(world, 0, 0, 0))
+    if (parseSceneHierarchy(world, 0, sharedPtr<ObjectAttributes>(), sharedPtr<MayaObject>()))
     {
         this->parseInstancerNew();
         this->getLightLinking();
         if (this->uiCamera.isValid() && (MGlobal::mayaState() != MGlobal::kBatch))
         {
-            sharedPtr<MayaObject> cam = 0;
+            sharedPtr<MayaObject> cam;
             for (uint camId = 0; camId < this->camList.size(); camId++)
             {
                 if (this->camList[camId]->dagPath == this->uiCamera)
@@ -363,7 +363,7 @@ bool MayaScene::parseInstancerNew()
             int pathStart = pathStartIndices[p];
 
             //  loop through the instanced paths for this particle
-            sharedPtr<ObjectAttributes> currentAttributes = 0;
+            sharedPtr<ObjectAttributes> currentAttributes;
             for (int i = pathStart; i < pathStart + numPaths; i++)
             {
                 int curPathIndex = pathIndices[i];
@@ -375,7 +375,7 @@ bool MayaScene::parseInstancerNew()
 
                 // search for the correct orig MayaObject element
                 // TODO: visibiliy check - necessary?
-                sharedPtr<MayaObject> origObj = 0;
+                sharedPtr<MayaObject> origObj;
                 std::vector<sharedPtr<MayaObject> > ::iterator mIter = origObjects.begin();
                 for (; mIter != origObjects.end(); mIter++)
                 {

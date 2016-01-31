@@ -188,7 +188,7 @@ void AppleseedRenderer::render()
         // Save the project to disk.
         asr::ProjectFileWriter::write(project.ref(), "C:/daten/3dprojects/mayaToAppleseed/renderData/test.appleseed");
 
-        if (MayaTo::getWorldPtr()->getRenderType() == MayaTo::MayaToWorld::WorldRenderType::IPRRENDER)
+        if (MayaTo::getWorldPtr()->getRenderType() == MayaTo::MayaToWorld::IPRRENDER)
         {
             EventQueue::Event e;
             e.type = EventQueue::Event::ADDIPRCALLBACKS;
