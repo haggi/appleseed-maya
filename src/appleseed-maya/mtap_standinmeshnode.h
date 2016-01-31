@@ -50,8 +50,8 @@ struct PolyMaterialAssignments
 class mtap_standinMeshNode : public MPxNode
 {
   public:
-                    mtap_standinMeshNode() {};
-    virtual         ~mtap_standinMeshNode() {};
+                    mtap_standinMeshNode() {}
+    virtual         ~mtap_standinMeshNode() {}
     virtual MStatus compute(const MPlug& plug, MDataBlock& data);
     static  void*   creator();
     static  MStatus initialize();

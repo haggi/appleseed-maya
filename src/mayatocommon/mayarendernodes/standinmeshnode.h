@@ -40,8 +40,8 @@
 class standinMeshNode : public MPxNode
 {
   public:
-                    standinMeshNode() {};
-    virtual         ~standinMeshNode() {};
+                    standinMeshNode() {}
+    virtual         ~standinMeshNode() {}
     virtual MStatus compute(const MPlug& plug, MDataBlock& data);
     static  void*   creator();
     static  MStatus initialize();

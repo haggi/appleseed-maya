@@ -38,7 +38,7 @@ class SwatchRendererInterface
     float *imageData;
     bool imgDone;
     bool inProgress;
-    virtual ~SwatchRendererInterface(){};
+    virtual ~SwatchRendererInterface(){}
     virtual void init() = 0;
     virtual void loadGeometry() = 0;
     virtual void renderSwatch() = 0;

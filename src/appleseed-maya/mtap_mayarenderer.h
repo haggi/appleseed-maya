@@ -52,13 +52,13 @@ class RenderController : public asr::IRendererController
         status = asr::IRendererController::ContinueRendering;
     };
     ~RenderController() {}
-    void on_rendering_begin(){};
-    void on_rendering_success(){};
-    void on_rendering_abort(){};
-    void on_frame_begin(){};
-    void on_frame_end(){};
-    void on_progress(){};
-    void release(){};
+    void on_rendering_begin(){}
+    void on_rendering_success(){}
+    void on_rendering_abort(){}
+    void on_frame_begin(){}
+    void on_frame_end(){}
+    void on_progress(){}
+    void release(){}
     Status get_status() const
     {
         return this->status;
@@ -76,8 +76,8 @@ class TileCallback : public asr::TileCallbackBase
     {}
     virtual ~TileCallback()
     {}
-    virtual void release(){};
-    void pre_render(const size_t x, const size_t y, const size_t width, const size_t height){};
+    virtual void release(){}
+    void pre_render(const size_t x, const size_t y, const size_t width, const size_t height){}
     void post_render(const asr::Frame* frame);
     virtual void post_render_tile(const asr::Frame* frame, const size_t tile_x, const size_t tile_y);
 };

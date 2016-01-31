@@ -31,8 +31,9 @@
 
 #include "shadingtools/material.h"
 
-class mtap_Material : public Material
-{};
-
+class mtap_Material
+  : public Material
+{
+};
 
 #endif

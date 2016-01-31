@@ -37,7 +37,7 @@
 class MayaToRendererCmd : public MPxCommand
 {
   public:
-                    MayaToRendererCmd(){};
+                    MayaToRendererCmd(){}
     virtual         ~MayaToRendererCmd();
     static MSyntax  newSyntax();
 
