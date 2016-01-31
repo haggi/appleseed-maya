@@ -58,8 +58,6 @@
 #include "world.h"
 #include "definitions.h"
 
-static Logging logger;
-
 MayaScene::MayaScene()
 {
     Logging::debug("MayaScene::MayaScene()");

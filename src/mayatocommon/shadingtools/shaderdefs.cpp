@@ -37,9 +37,15 @@
 #include <boost/foreach.hpp>
 #include <boost/optional/optional.hpp>
 
+// Standard headers.
+#include <fstream>
+#include <string>
+
 using boost::property_tree::ptree;
 
-std::vector<ShadingNode> ShaderDefinitions::shadingNodes;
+typedef std::vector<ShadingNode> ShadingNodeVector;
+
+ShadingNodeVector ShaderDefinitions::shadingNodes;
 bool ShaderDefinitions::readDone;
 
 ShaderDefinitions::ShaderDefinitions()
@@ -62,6 +68,7 @@ void ShaderDefinitions::readShaderDefinitions()
         shaderFile.close();
         return;
     }
+
     read_xml(shaderDefFile, pt);
 
     BOOST_FOREACH(ptree::value_type v, pt.get_child("shaders"))
@@ -104,49 +111,37 @@ void ShaderDefinitions::readShaderDefinitions()
     readDone = true;
 }
 
-bool ShaderDefinitions::findShadingNode(MObject node, ShadingNode& snode)
+bool ShaderDefinitions::findShadingNode(const MObject& node, ShadingNode& snode)
+{
+    const MString nodeTypeName = getDepNodeTypeName(node);
+
+    if (findShadingNode(nodeTypeName, snode))
+    {
+        snode.setMObject(node);
+        return true;
+    }
+    else return false;
+}
+
+bool ShaderDefinitions::findShadingNode(const MString& nodeTypeName, ShadingNode& snode)
 {
     if (!ShaderDefinitions::readDone)
         ShaderDefinitions::readShaderDefinitions();
 
-    MString nodeTypeName = getDepNodeTypeName(node);
-    std::vector<ShadingNode>::iterator it;
-    std::vector<ShadingNode> nodes = ShaderDefinitions::shadingNodes;
-
-    for (it = nodes.begin(); it != nodes.end(); it++)
+    for (ShadingNodeVector::iterator i = shadingNodes.begin(), e = shadingNodes.end(); i != e; ++i)
     {
-        ShadingNode sn = *it;
-        if (sn.typeName == nodeTypeName)
+        if (i->typeName == nodeTypeName)
         {
-            snode = sn;
-            snode.setMObject(node);
+            snode = *i;
             return true;
         }
     }
+
     return false;
 }
 
-bool ShaderDefinitions::findShadingNode(MString nodeTypeName, ShadingNode& snode)
-{
-    if (!ShaderDefinitions::readDone)
-        ShaderDefinitions::readShaderDefinitions();
-
-    std::vector<ShadingNode>::iterator it;
-    std::vector<ShadingNode> nodes = ShaderDefinitions::shadingNodes;
-    for (it = nodes.begin(); it != nodes.end(); it++)
-    {
-        ShadingNode sn = *it;
-        if (sn.typeName == nodeTypeName)
-        {
-            snode = sn;
-            return true;
-        }
-    }
-    return false;
-}
-
-bool ShaderDefinitions::shadingNodeSupported(MString typeName)
+bool ShaderDefinitions::shadingNodeSupported(const MString& typeName)
 {
     ShadingNode snode;
-    return (findShadingNode(typeName, snode));
+    return findShadingNode(typeName, snode);
 }

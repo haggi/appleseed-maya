@@ -39,8 +39,6 @@
 
 #include "boost/filesystem.hpp"
 
-static Logging logger;
-
 static std::vector<MObject> projectionNodes;
 static std::vector<MObject> projectionConnectNodes;
 

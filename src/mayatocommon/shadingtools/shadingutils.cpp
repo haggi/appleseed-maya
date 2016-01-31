@@ -38,8 +38,6 @@
 
 #include "utilities/logging.h"
 
-static Logging logger;
-
 bool getObjectShadingGroups(MObject& geoObject, MObject& sGroup, int instId)
 {
 

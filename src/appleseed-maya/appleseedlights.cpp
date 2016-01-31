@@ -41,8 +41,6 @@
 #include "appleseedutils.h"
 #include "renderer/api/edf.h"
 
-static Logging logger;
-
 #define colorAttr(c) (MString("") + c.r + " " + c.g + " " + c.g)
 
 void AppleseedRenderer::defineLight(sharedPtr<MayaObject> obj)

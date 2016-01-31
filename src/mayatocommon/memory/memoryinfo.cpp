@@ -29,6 +29,7 @@
 #include "memoryinfo.h"
 
 #ifdef _WIN32
+
     #include "windows.h"
     #include "psapi.h"
 
@@ -38,19 +39,19 @@
     {
         PROCESS_MEMORY_COUNTERS pmc;
         GetProcessMemoryInfo(GetCurrentProcess(), &pmc, sizeof(pmc));
-        SIZE_T usedMB = pmc.WorkingSetSize / (1024 * 1024);
-        if (startUsage == 0)
-            startUsage = usedMB;
+        size_t usedMB = pmc.WorkingSetSize / (1024 * 1024);
         if (usedMB > peakUsage)
             peakUsage = usedMB;
-        return (usedMB);
+        return usedMB;
     }
 
     size_t getPeakUsage()
     {
-        return (peakUsage);
+        return peakUsage;
     }
+
 #else
+
     size_t getCurrentUsage()
     {
         return 0;
@@ -60,4 +61,5 @@
     {
         return 0;
     }
+
 #endif

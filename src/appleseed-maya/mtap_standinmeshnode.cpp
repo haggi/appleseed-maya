@@ -58,8 +58,6 @@
 #include "utilities/logging.h"
 #include "utilities/tools.h"
 
-static Logging logger;
-
 namespace asf = foundation;
 namespace asr = renderer;
 

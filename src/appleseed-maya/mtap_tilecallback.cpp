@@ -36,8 +36,6 @@
 #include "utilities/logging.h"
 #include "threads/renderqueueworker.h"
 
-static Logging logger;
-
 void mtap_ITileCallback::pre_render(
         const size_t x,
         const size_t y,

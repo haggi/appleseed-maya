@@ -50,8 +50,6 @@
 // Maya headers.
 #include <maya/MFnTransform.h>
 
-static Logging logger;
-
 void AppleseedRenderer::defineEnvironment()
 {
     asr::Scene *scene = project->get_scene();

@@ -67,15 +67,9 @@
 #include "utilities/logging.h"
 #include "appleseedutils.h"
 
-static int tileCount = 0;
-static int tileCountTotal = 0;
-
-std::vector<asr::Entity *> definedEntities;
-
 AppleseedRenderer::AppleseedRenderer()
+  : sceneBuilt(false)
 {
-    sceneBuilt = false;
-
     asr::global_logger().set_format(asf::LogMessage::Debug, "");
     log_target = autoPtr<asf::ILogTarget>(asf::create_console_log_target(stdout));
     asr::global_logger().add_target(log_target.get());
@@ -84,10 +78,7 @@ AppleseedRenderer::AppleseedRenderer()
 AppleseedRenderer::~AppleseedRenderer()
 {
     if (log_target.get() != 0)
-    {
-        Logging::debug("Unloading logger.");
         asr::global_logger().remove_target(log_target.get());
-    }
 }
 
 void AppleseedRenderer::initializeRenderer()

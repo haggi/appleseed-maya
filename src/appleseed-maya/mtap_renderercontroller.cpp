@@ -29,8 +29,6 @@
 #include "mtap_renderercontroller.h"
 #include "utilities/logging.h"
 
-static Logging logger;
-
 void mtap_IRendererController::on_rendering_begin()
 {
     if (this->entityUpdateProc != 0)

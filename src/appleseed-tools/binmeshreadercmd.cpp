@@ -50,10 +50,6 @@
 namespace asr = renderer;
 namespace asf = foundation;
 
-static Logging logger;
-
-BinMeshReaderCmd::BinMeshReaderCmd() {}
-
 void* BinMeshReaderCmd::creator()
 {
     return new BinMeshReaderCmd();
@@ -80,7 +76,7 @@ bool BinMeshReaderCmd::importBinMeshes()
     params.insert("filename", mPath.asChar());
     if (!asr::MeshObjectReader::read(searchPaths, mPath.asChar(), params, meshArray))
     {
-        logger.error(MString("Unable to read meshes from ") + mPath);
+        Logging::error(MString("Unable to read meshes from ") + mPath);
         return false;
     }
 
@@ -146,7 +142,7 @@ MStatus BinMeshReaderCmd::doIt(const MArgList& args)
 {
     MStatus stat = MStatus::kSuccess;
     MGlobal::displayInfo("Executing BinMeshReaderCmd...");
-    logger.setLogLevel(Logging::LevelDebug);
+    Logging::setLogLevel(Logging::LevelDebug);
 
     MArgDatabase argData(syntax(), args);
 
@@ -154,7 +150,7 @@ MStatus BinMeshReaderCmd::doIt(const MArgList& args)
     if (argData.isFlagSet("-path", &stat))
     {
         argData.getFlagArgument("-path", 0, mPath);
-        logger.debug(MString("path: ") + mPath);
+        Logging::debug(MString("path: ") + mPath);
     }
 
     if ((mPath == ""))

@@ -37,8 +37,6 @@
 #include "utilities/logging.h"
 #include "appleseedutils.h"
 
-static Logging logger;
-
 void AppleseedRenderer::updateTransform(sharedPtr<MayaObject> obj)
 {
     Logging::debug(MString("AppleseedRenderer::updateTransform: ") + obj->shortName);

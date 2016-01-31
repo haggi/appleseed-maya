@@ -31,13 +31,13 @@
 #include "maya/MItMeshPolygon.h"
 #include "utilities/logging.h"
 
-static Logging logger;
-
 MeshTranslator::MeshTranslator()
-{}
+{
+}
 
 MeshTranslator::~MeshTranslator()
-{}
+{
+}
 
 MeshTranslator::MeshTranslator(MObject meshMObject)
 {

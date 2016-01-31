@@ -40,7 +40,6 @@
 #include "utilities/pystring.h"
 #include "shadingtools/shaderdefs.h"
 
-static Logging logger;
 ShadingNetwork::ShadingNetwork(MObject& node) : rootNode(node)
 {
     this->rootNodeName = getObjectName(node);
@@ -51,8 +50,9 @@ ShadingNetwork::ShadingNetwork(MObject& node, MString attribute) : rootNode(node
 {
 }
 
-
-ShadingNetwork::ShadingNetwork(){}
+ShadingNetwork::ShadingNetwork()
+{
+}
 
 bool ShadingNetwork::hasValidShadingNodeConnections(ShadingNode& source, ShadingNode& dest)
 {

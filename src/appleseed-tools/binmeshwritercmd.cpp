@@ -46,14 +46,7 @@
 #include "utilities/logging.h"
 #include "utilities/tools.h"
 #include "utilities/attrtools.h"
-
-static Logging logger;
-
 #include "proxymesh.h"
-
-BinMeshWriterCmd::BinMeshWriterCmd()
-{
-}
 
 void* BinMeshWriterCmd::creator()
 {
@@ -119,7 +112,7 @@ bool BinMeshWriterCmd::exportBinMeshes()
             // replace filename.binaraymesh with filename_objname.binarymesh
             MString perFileMeshPath = pystring::replace(mPath.asChar(), ".binarymesh", "").c_str();
             perFileMeshPath += makeGoodString(partialPathName) + ".binarymesh";
-            logger.debug(MString("BinMeshWriterCmd::exportBinMeshes - exporting ") + partialPathName + " to  " + perFileMeshPath);
+            Logging::debug(MString("BinMeshWriterCmd::exportBinMeshes - exporting ") + partialPathName + " to  " + perFileMeshPath);
             asf::GenericMeshFileWriter writer(perFileMeshPath.asChar());
             writer.write(walker);
             if (mDoProxy)
@@ -150,7 +143,7 @@ MStatus BinMeshWriterCmd::doIt(const MArgList& args)
 {
     MStatus stat = MStatus::kSuccess;
     MGlobal::displayInfo("Executing BinMeshWriterCmd...");
-    logger.setLogLevel(Logging::LevelDebug);
+    Logging::setLogLevel(Logging::LevelDebug);
 
     MArgDatabase argData(syntax(), args);
 
@@ -158,21 +151,21 @@ MStatus BinMeshWriterCmd::doIt(const MArgList& args)
     if (argData.isFlagSet("-all", &stat))
     {
         argData.getFlagArgument("-exportAll", 0, mExportAll);
-        logger.debug(MString("export all: ") + mExportAll);
+        Logging::debug(MString("export all: ") + mExportAll);
     }
 
     mPath = "";
     if (argData.isFlagSet("-path", &stat))
     {
         argData.getFlagArgument("-path", 0, mPath);
-        logger.debug(MString("path: ") + mPath);
+        Logging::debug(MString("path: ") + mPath);
     }
 
     mDoProxy = true;
     if (argData.isFlagSet("-doProxy", &stat))
     {
         argData.getFlagArgument("-doProxy", 0, mDoProxy);
-        logger.debug(MString("Create proxyFile:") + mDoProxy);
+        Logging::debug(MString("Create proxyFile:") + mDoProxy);
     }
 
     mPercentage = 0.0f;
@@ -181,7 +174,7 @@ MStatus BinMeshWriterCmd::doIt(const MArgList& args)
         double p = 0.0;
         argData.getFlagArgument("-percentage", 0, p);
         mPercentage = (float)p;
-        logger.debug(MString("percentage: ") + mPercentage);
+        Logging::debug(MString("percentage: ") + mPercentage);
         if (mPercentage <= 0.0)
             mDoProxy = false;
     }
@@ -197,20 +190,20 @@ MStatus BinMeshWriterCmd::doIt(const MArgList& args)
     if (argData.isFlagSet("-oneFilePerMesh", &stat))
     {
         argData.getFlagArgument("-oneFilePerMesh", 0, mOneFilePerMesh);
-        logger.debug(MString("Create one file per mesh: ") + mOneFilePerMesh);
+        Logging::debug(MString("Create one file per mesh: ") + mOneFilePerMesh);
     }
 
     mDoTransform = true;
     if (argData.isFlagSet("-doTransform", &stat))
     {
         argData.getFlagArgument("-doTransform", 0, mDoTransform);
-        logger.debug(MString("Use transform: ") + mDoTransform);
+        Logging::debug(MString("Use transform: ") + mDoTransform);
     }
 
     getObjectsForExport(args);
     if (mExportObjects.length() == 0)
     {
-        logger.error("No mesh objects for export found.");
+        Logging::error("No mesh objects for export found.");
         return MStatus::kFailure;
     }
 
@@ -218,14 +211,14 @@ MStatus BinMeshWriterCmd::doIt(const MArgList& args)
     if (argData.isFlagSet("-useSmoothPreview", &stat))
     {
         argData.getFlagArgument("-useSmoothPreview", 0, mUseSmoothPreview);
-        logger.debug(MString("Use smooth preview: ") + mUseSmoothPreview);
+        Logging::debug(MString("Use smooth preview: ") + mUseSmoothPreview);
     }
 
     // if we write all objects into one file, is is not useful to ignore the transformation, so we turn it on.
     if ((!mOneFilePerMesh) && (mExportObjects.length() > 1))
     {
         if (mDoTransform != true)
-            logger.warning(MString("Do transform is off but we have several meshes in one file and ignoring transform is not useful here -> turning it on."));
+            Logging::warning(MString("Do transform is off but we have several meshes in one file and ignoring transform is not useful here -> turning it on."));
         mDoTransform = true;
     }
 
@@ -267,7 +260,7 @@ void BinMeshWriterCmd::getObjectsForExport(const MArgList& args)
             }
             else
             {
-                logger.debug(MString("Node ") + dagPath.partialPathName() + " is not visible and will not be exported");
+                Logging::debug(MString("Node ") + dagPath.partialPathName() + " is not visible and will not be exported");
             }
         }
 
@@ -291,13 +284,13 @@ void BinMeshWriterCmd::getObjectsForExport(const MArgList& args)
             }
             if (mExportObjects.length() == 0)
             {
-                logger.error("Not mesh objects selected for export.");
+                Logging::error("Not mesh objects selected for export.");
                 return;
             }
         }
         else
         {
-            logger.error("Nothing selected for export.");
+            Logging::error("Nothing selected for export.");
             return;
         }
     }

@@ -42,8 +42,6 @@
 #include "utilities/tools.h"
 #include "utilities/pystring.h"
 
-static Logging logger;
-
 // during creation, the renderGlobals class initializes itself with the
 // necessaray information from the defaultRenderGlobals node
 // All additional information should be done in a derived class

@@ -42,11 +42,10 @@
 
 #include <fstream>
 
-class  BinMeshReaderCmd: public MPxCommand
+class BinMeshReaderCmd
+  : public MPxCommand
 {
   public:
-    BinMeshReaderCmd();
-
     static void* creator();
 
     static MSyntax newSyntax();

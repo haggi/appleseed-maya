@@ -41,8 +41,6 @@
 #include "world.h"
 #include "renderglobals.h"
 
-static Logging logger;
-
 static std::vector<int> lightIdentifier; // plugids for detecting new lighttypes
 static std::vector<int> objectIdentifier; // plugids for detecting new objTypes
 

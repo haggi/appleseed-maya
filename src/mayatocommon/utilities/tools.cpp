@@ -68,9 +68,7 @@ MObject getRenderGlobalsNode()
 
 float rnd()
 {
-    float rm = (float)RAND_MAX;
-    float r  = (float)rand();
-    return(r/rm);
+    return static_cast<float>(rand()) / RAND_MAX;
 }
 
 // replace :,| and . by _ ... the modern version

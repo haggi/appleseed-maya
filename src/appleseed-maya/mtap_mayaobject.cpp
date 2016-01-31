@@ -37,9 +37,6 @@
 #include "definitions.h"
 #include "world.h"
 
-
-static Logging logger;
-
 mtap_ObjectAttributes::mtap_ObjectAttributes()
 {
     needsOwnAssembly = false;
@@ -61,7 +58,7 @@ mtap_ObjectAttributes::mtap_ObjectAttributes(sharedPtr<ObjectAttributes> otherAt
         objectMatrix = other->objectMatrix;
         assemblyObject = other->assemblyObject;
     }
-};
+}
 
 mtap_MayaObject::mtap_MayaObject(MObject& mobject) : MayaObject(mobject)
 {

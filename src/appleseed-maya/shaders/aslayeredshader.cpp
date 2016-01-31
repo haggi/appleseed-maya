@@ -108,7 +108,7 @@ MStatus asLayeredShader::initialize()
     CHECK_MSTATUS(addAttribute(materialEntryMode));
 
     CHECK_MSTATUS(attributeAffects(baseMaterial, outColor));
-    return(MS::kSuccess);
+    return MS::kSuccess;
 }
 
 MStatus asLayeredShader::compute(const MPlug& plug, MDataBlock& block)
@@ -128,8 +128,8 @@ MStatus asLayeredShader::compute(const MPlug& plug, MDataBlock& block)
     }
     else
     {
-        return(MS::kUnknownParameter);
+        return MS::kUnknownParameter;
     }
 
-    return(MS::kSuccess);
+    return MS::kSuccess;
 }

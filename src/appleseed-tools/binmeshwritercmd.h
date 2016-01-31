@@ -41,11 +41,10 @@
 
 #include <fstream>
 
-class  BinMeshWriterCmd: public MPxCommand
+class BinMeshWriterCmd
+  : public MPxCommand
 {
   public:
-    BinMeshWriterCmd();
-
     static void* creator();
 
     static MSyntax newSyntax();

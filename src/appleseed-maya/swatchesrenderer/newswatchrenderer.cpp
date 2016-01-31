@@ -80,8 +80,6 @@ MSwatchRenderBase* NewSwatchRenderer::creator(MObject dependNode, MObject render
     return new NewSwatchRenderer(dependNode, renderNode, imageResolution);
 }
 
-static int dummy = 0;
-
 bool NewSwatchRenderer::doIteration()
 {
 #ifdef _DEBUG
@@ -95,7 +93,7 @@ bool NewSwatchRenderer::doIteration()
         return true;
     }
 
-    AppleseedSwatchRenderer * appleSwRndr = (AppleseedSwatchRenderer *)getObjPtr("appleseedSwatchesRenderer");
+    AppleseedSwatchRenderer* appleSwRndr = (AppleseedSwatchRenderer *)getObjPtr("appleseedSwatchesRenderer");
     if (appleSwRndr)
     {
         if (appleSwRndr->mrenderer.get() != 0)
@@ -110,7 +108,6 @@ bool NewSwatchRenderer::doIteration()
         }
         return true;
     }
-
 
     return false;
 }

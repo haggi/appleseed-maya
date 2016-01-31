@@ -32,8 +32,6 @@
 #include "utilities/pystring.h"
 #include "utilities/logging.h"
 
-static Logging logger;
-
 ShadingNode::ShadingNode(const ShadingNode& other)
 {
     this->mobject = other.mobject;
@@ -56,10 +54,12 @@ ShadingNode::ShadingNode(MObject& mobj)
 }
 
 ShadingNode::ShadingNode()
-{}
+{
+}
 
 ShadingNode::~ShadingNode()
-{}
+{
+}
 
 void ShadingNode::setMObject(MObject mobj)
 {

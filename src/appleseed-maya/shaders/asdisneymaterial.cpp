@@ -475,7 +475,7 @@ MStatus asDisneyMaterial::initialize()
     CHECK_MSTATUS(attributeAffects(aLightBlindData, aOutColor));
     CHECK_MSTATUS(attributeAffects(aLightData, aOutColor));
 
-    return(MS::kSuccess);
+    return MS::kSuccess;
 }
 
 
@@ -583,8 +583,8 @@ MStatus asDisneyMaterial::compute(const MPlug& plug, MDataBlock& block)
             CHECK_MSTATUS(status);
             MFloatVector& outColor = outColorHandle.asFloatVector();
 
-            outColor = resultColor;     // Set the output value
-            outColorHandle.setClean(); // Mark the output value as clean
+            outColor = resultColor;     // set the output value
+            outColorHandle.setClean();  // mark the output value as clean
         }
 
 
@@ -602,14 +602,14 @@ MStatus asDisneyMaterial::compute(const MPlug& plug, MDataBlock& block)
             CHECK_MSTATUS(status);
             MFloatVector& outTrans = outTransHandle.asFloatVector();
 
-            outTrans = transparency;   // Set the output value
-            outTransHandle.setClean(); // Mark the output value as clean
+            outTrans = transparency;    // set the output value
+            outTransHandle.setClean();  // mark the output value as clean
         }
     }
     else
     {
-        return(MS::kUnknownParameter); // We got an unexpected plug
+        return MS::kUnknownParameter;   // we got an unexpected plug
     }
 
-    return(MS::kSuccess);
+    return MS::kSuccess;
 }

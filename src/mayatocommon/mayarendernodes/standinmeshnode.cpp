@@ -50,10 +50,6 @@
 #include "utilities/pystring.h"
 #include "utilities/logging.h"
 
-static Logging logger;
-
-MStatus returnStatus;
-
 #define McheckErr(stat, msg)    \
     if (MS::kSuccess != stat)   \
         return MS::kFailure;
@@ -179,11 +175,11 @@ bool standinMeshNode::checkMeshFileName(MString meshFileName)
 }
 
 MStatus standinMeshNode::compute(const MPlug& plug, MDataBlock& data)
-
 {
     MStatus returnStatus;
 
-    if (plug == outputMesh) {
+    if (plug == outputMesh)
+    {
         /* Get time */
         MDataHandle dataHandle = data.inputValue(time, &returnStatus);
         McheckErr(returnStatus, "Error getting time data handle\n");
@@ -217,8 +213,11 @@ MStatus standinMeshNode::compute(const MPlug& plug, MDataBlock& data)
 
         outputHandle.set(newOutputData);
         data.setClean(plug);
-    } else
+    }
+    else
+    {
         return MS::kUnknownParameter;
+    }
 
     return MS::kSuccess;
 }

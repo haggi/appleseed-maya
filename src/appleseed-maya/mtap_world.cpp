@@ -34,8 +34,6 @@
 #include "swatchesrenderer/appleseedswatchrenderer.h"
 #include "swatchesrenderer/swatchesevent.h"
 
-static Logging logger;
-
 void MayaToWorld::cleanUp()
 {
     AppleseedSwatchRenderer * appleSwRndr = (AppleseedSwatchRenderer *)this->getObjPtr("appleseedSwatchesRenderer");

@@ -34,8 +34,6 @@
 #include "utilities/attrtools.h"
 #include "utilities/tools.h"
 
-static Logging logger;
-
 void RenderGlobals::setRendererUnit()
 {
     this->rendererUnit = MDistance::kMeters;
