@@ -33,12 +33,11 @@
 #include <maya/MTimerMessage.h>
 #include <maya/MStreamUtils.h>
 
-#define COUT(msg) MStreamUtils::stdOutStream() << msg << "\n"
-
 class Logging
 {
-public:
-    enum LogLevel{
+  public:
+    enum LogLevel
+    {
         LevelInfo = 0,
         LevelError = 1,
         LevelWarning = 2,
@@ -46,22 +45,21 @@ public:
         LevelDebug = 4,
         LevelNone = 5
     };
-    enum OutputType{
+
+    enum OutputType
+    {
         ScriptEditor,
         OutputWindow
     };
 
     static void setLogLevel(Logging::LogLevel level);
-    static void info(MString logString);
-    static void warning(MString logString);
-    static void error(MString logString);
-    static void debug(MString logString);
-    static void debugs(MString logString, int level);
-    static void progress(MString logString);
-    static void detail(MString logString);
+    static void info(const MString& message);
+    static void warning(const MString& message);
+    static void error(const MString& message);
+    static void debug(const MString& message);
+    static void progress(const MString& message);
 };
 
-MString makeSpace(int level);
 static  Logging::LogLevel log_level = Logging::LevelInfo;
 static  Logging::OutputType log_outtype = Logging::ScriptEditor;
 

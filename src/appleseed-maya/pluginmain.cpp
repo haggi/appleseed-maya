@@ -50,6 +50,14 @@
 #include "mtap_mayarenderer.h"
 #endif
 
+#ifdef _WIN32
+#define DLLEXPORT __declspec(dllexport)
+#else
+#define DLLEXPORT
+#endif
+
+static const MString commandName("appleseedMaya");
+
 static const MString swatchName("AppleseedRenderSwatch");
 static const MString swatchFullName("swatch/AppleseedRenderSwatch");
 
@@ -60,26 +68,27 @@ static const MString asDisneyMaterialIdFullClassification("shader/surface:Apples
 static const MString asLayeredId("asLayeredId");
 static const MString asLayeredIdFullClassification("shader/surface:Appleseed/material:" + swatchFullName);
 
-MStatus initializePlugin(MObject obj)
+DLLEXPORT MStatus initializePlugin(MObject obj)
 {
-    const MString   UserClassify("shader/surface");
+    const MString UserClassify("shader/surface");
 
-    std::vector<std::string>::iterator it;
-    std::vector<std::string> versions = getFullVersionString();
-    for (it = versions.begin(); it != versions.end(); it++)
-        MGlobal::displayInfo(it->c_str());
+    const std::vector<std::string> versions = getFullVersionString();
+    for (size_t i = 0; i < versions.size(); ++i)
+        MGlobal::displayInfo(versions[i].c_str());
 
-    MStatus   status;
+    MStatus status;
     MFnPlugin plugin(obj, VENDOR, getFullVersionString()[0].c_str(), "Any");
 
-    status = plugin.registerCommand(MAYATOCMDNAME, MayaToAppleseed::creator, MayaToAppleseed::newSyntax);
-    if (!status) {
+    status = plugin.registerCommand(commandName, MayaToAppleseed::creator, MayaToAppleseed::syntaxCreator);
+    if (!status)
+    {
         status.perror("cannot register command: mayatoappleseed");
         return status;
     }
 
     status = plugin.registerNode(MayaToAppleseedGlobalsName, MayaToAppleseedGlobals::id, MayaToAppleseedGlobals::creator, MayaToAppleseedGlobals::initialize);
-    if (!status) {
+    if (!status)
+    {
         status.perror("cannot register node: MayaToAppleseedGlobals");
         return status;
     }
@@ -119,15 +128,17 @@ MStatus initializePlugin(MObject obj)
 
 #if MAYA_API_VERSION >= 201600
     status = plugin.registerRenderer("Appleseed", mtap_MayaRenderer::creator);
-    if (!status) {
+    if (!status)
+    {
         status.perror("cannot register node: Appleseed Maya renderer");
         return status;
     }
 #endif
+
     return status;
 }
 
-MStatus uninitializePlugin(MObject obj)
+DLLEXPORT MStatus uninitializePlugin(MObject obj)
 {
     MStatus   status;
     MFnPlugin plugin(obj);
@@ -136,9 +147,9 @@ MStatus uninitializePlugin(MObject obj)
 
     const MString UserClassify("shader/surface");
 
-    std::cout << "deregister mtap cmd\n";
-    status = plugin.deregisterCommand(MAYATOCMDNAME);
-    if (!status) {
+    status = plugin.deregisterCommand(commandName);
+    if (!status)
+    {
         status.perror("cannot deregister command: MayaToAppleseedCmd");
         return status;
     }
@@ -146,18 +157,18 @@ MStatus uninitializePlugin(MObject obj)
     if (MGlobal::mayaState() != MGlobal::kBatch)
         MSwatchRenderRegister::unregisterSwatchRender(swatchName);
 
-
 #if MAYA_API_VERSION >= 201600
     status = plugin.deregisterRenderer("Corona");
-    if (!status) {
+    if (!status)
+    {
         status.perror("cannot deregister node: Corona Maya renderer");
         return status;
     }
 #endif
 
-    std::cout << "deregister mtap globals\n";
     status = plugin.deregisterNode(MayaToAppleseedGlobals::id);
-    if (!status) {
+    if (!status)
+    {
         status.perror("cannot deregister node: MayaToAppleseedGlobals");
         return status;
     }
@@ -165,13 +176,11 @@ MStatus uninitializePlugin(MObject obj)
     CHECK_MSTATUS(MHWRender::MDrawRegistry::deregisterSurfaceShadingNodeOverrideCreator(asDisneyMaterialIdDrawDBClassification, asDisneyMaterialId));
     CHECK_MSTATUS(plugin.deregisterNode(asDisneyMaterial::id));
 
-    std::cout << "update mtap shader ui\n";
     MString command("if (`window -exists createRenderNodeWindow`) {refreshCreateRenderNodeWindow(\"");
     command += UserClassify;
     command += "\");}\n";
     CHECK_MSTATUS(MGlobal::executeCommand(command));
 
-    std::cout << "minit.unregister()\n";
     MString cmd = MString("import appleseed.mtap_initialize as minit; minit.unregister()");
     status = MGlobal::executePythonCommand(cmd);
     if (!status)

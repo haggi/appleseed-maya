@@ -136,25 +136,30 @@ void AppleseedSwatchRenderer::renderSwatch(NewSwatchRenderer *sr)
 
 void AppleseedSwatchRenderer::fillSwatch(float *pixels)
 {
-    asf::Image& image = project->get_frame()->image();
-    int res = image.properties().m_canvas_height;
-    int chCount = image.properties().m_channel_count;
+    const asf::Image& image = project->get_frame()->image();
+    const size_t res = image.properties().m_canvas_height;
 
-    uint index = 0;
+    assert(image.properties().m_channel_count == 4);
+
+    size_t index = 0;
 
     if (image.properties().m_canvas_height == image.properties().m_tile_height)
     {
         asf::Tile& tile = project->get_frame()->image().tile(0, 0);
-        for (int y = 0; y < res; y++)
-            for (int x = 0; x < res; x++)
-                for (int c = 0; c < 4; c++)
+        for (size_t y = 0; y < res; y++)
+        {
+            for (size_t x = 0; x < res; x++)
+            {
+                for (size_t c = 0; c < 4; c++)
                     pixels[index++] = tile.get_component<float>(x, y, c);
+            }
+        }
     }
     else
     {
-        for (int y = 0; y < res; y++)
+        for (size_t y = 0; y < res; y++)
         {
-            for (int x = 0; x < res; x++)
+            for (size_t x = 0; x < res; x++)
             {
                 asf::Color4f p;
                 image.get_pixel(x, y, p);

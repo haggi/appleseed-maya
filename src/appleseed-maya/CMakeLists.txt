@@ -107,6 +107,7 @@ set (sources
     mtap_tilecallback.h
     mtap_world.cpp
     pluginmain.cpp
+    version.cpp
     version.h
 )
 list (APPEND rendererplugin_sources

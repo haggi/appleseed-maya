@@ -170,7 +170,8 @@ namespace MayaTo{
 
     static MayaToWorld *worldPointer = 0;
 
-    struct CmdArgs{
+    struct CmdArgs
+    {
         CmdArgs()
         {
             MFnDependencyNode defaultGlobals(objectFromName("defaultResolution"));
@@ -179,9 +180,7 @@ namespace MayaTo{
             renderType = MayaToWorld::UIRENDER;
             useRenderRegion = false;
         }
-        ~CmdArgs(){
-            std::cout << "Cmd args are deleted\n";
-        }
+
         int width;
         int height;
         bool useRenderRegion;

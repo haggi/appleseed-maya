@@ -26,54 +26,35 @@
 // THE SOFTWARE.
 //
 
-#ifndef MT_MESH_TRANSLATOR_H
-#define MT_MESH_TRANSLATOR_H
+// Interface header.
+#include "version.h"
 
-#include <string.h>
-#include <maya/MString.h>
-#include <maya/MVectorArray.h>
-#include <maya/MFloatVectorArray.h>
-#include <maya/MIntArray.h>
-#include <maya/MPointArray.h>
-#include <maya/MObject.h>
-#include <vector>
+#include "OpenImageIO/oiioversion.h"
+#include "OSL/oslversion.h"
+#include "boost/version.hpp"
+#include <OpenEXR/ImfVersion.h>
+#include "foundation/core/appleseed.h"
 
-#define CHECK_MSTATUS_AND_RETURNONLY(_status)   \
-{                                               \
-    MStatus _maya_status = (_status);           \
-    if (MStatus::kSuccess != _maya_status)      \
-    {                                           \
-        _maya_status.perror("");                \
-        return;                                 \
-    }                                           \
-}
+#define MTXX_VERSION_MAJOR 0
+#define MTXX_VERSION_MINOR 32
+#define MTXX_VERSION_PATCH 0
+#define MTXX_VERSION_RELEASE_TYPE dev
 
-struct Triangle{
-    int vtxIds[3];
-    int normalIds[3];
-};
+#define MTXX_MAKE_VERSION_STRING2(a, b, c, d) #a "." #b "." #c #d
+#define MTXX_MAKE_VERSION_STRING(a, b, c, d) MTXX_MAKE_VERSION_STRING2(a, b, c, d)
+#define MTXX_VERSION_STRING \
+    MTXX_MAKE_VERSION_STRING(MTXX_VERSION_MAJOR, \
+                             MTXX_VERSION_MINOR, MTXX_VERSION_PATCH, \
+                             MTXX_VERSION_RELEASE_TYPE)
 
-struct Face{
-    std::vector<int> vtxIds;
-    std::vector<int> normalIds;
-};
-
-
-class MeshTranslator
+std::vector<std::string> getFullVersionString()
 {
-public:
-    MeshTranslator();
-    MeshTranslator(MObject meshMObject);
-    ~MeshTranslator();
-    bool isGood();
-
-    std::vector<Triangle> triangleArray;
-    std::vector<Face> faceArray;
-private:
-    MObject meshObject;
-    MFloatVectorArray normals;
-    MPointArray vertices;
-    bool good;
-};
-
-#endif
+    std::vector<std::string> versionData;
+    versionData.push_back(std::string("appleseed-maya: ") + MTXX_VERSION_STRING);
+    versionData.push_back(std::string("appleseed: ") + foundation::Appleseed::get_synthetic_version_string());
+    versionData.push_back(std::string("OpenImageIO: ") + OIIO_VERSION_STRING);
+    versionData.push_back(std::string("OpenEXR: ") + OPENEXR_VERSION_STRING);
+    versionData.push_back(std::string("OSL: ") + OSL_LIBRARY_VERSION_STRING);
+    versionData.push_back(std::string("Boost: ") + BOOST_LIB_VERSION);
+    return versionData;
+}

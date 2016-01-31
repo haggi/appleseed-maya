@@ -34,13 +34,19 @@
 #include "binmeshreadercmd.h"
 
 
-#define VENDOR "haggis vfx & animation"
+#define VENDOR "appleseedhq"
 #define VERSION "1.0"
 #define TRANSLATORNAME "appleseedBinaryMesh"
 #define WRITERNAME "binMeshWriterCmd"
 #define READERNAME "binMeshReaderCmd"
 
-MStatus initializePlugin(MObject obj)
+#ifdef _WIN32
+#define DLLEXPORT __declspec(dllexport)
+#else
+#define DLLEXPORT
+#endif
+
+DLLEXPORT MStatus initializePlugin(MObject obj)
 {
     MStatus status;
     MFnPlugin plugin(obj, VENDOR, VERSION, "Any");
@@ -85,8 +91,7 @@ MStatus initializePlugin(MObject obj)
     return status;
 }
 
-
-MStatus uninitializePlugin(MObject obj)
+DLLEXPORT MStatus uninitializePlugin(MObject obj)
 {
     MStatus   status;
     MFnPlugin plugin(obj);

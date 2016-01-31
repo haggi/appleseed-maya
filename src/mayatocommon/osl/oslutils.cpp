@@ -44,22 +44,18 @@ static Logging logger;
 static std::vector<MObject> projectionNodes;
 static std::vector<MObject> projectionConnectNodes;
 
-
-namespace MAYATO_OSL{
-
-};
-
-inline MString getParamName(MPlug plug)
+namespace
 {
-    MStringArray sa;
-    MStatus stat;
-    if (plug.isElement())
-        plug = plug.array();
-    plug.name().split('.', sa);
-    return sa[sa.length() - 1];
+    MString getParamName(MPlug plug)
+    {
+        MStringArray sa;
+        MStatus stat;
+        if (plug.isElement())
+            plug = plug.array();
+        plug.name().split('.', sa);
+        return sa[sa.length() - 1];
+    }
 }
-
-// ---------------------------------------------------------------------------------------------------------------------------------------------
 
 namespace MAYATO_OSLUTIL{
 
@@ -155,8 +151,6 @@ namespace MAYATO_OSLUTIL{
         }
     }
 
-
-
     void OSLUtilClass::defineOSLParameter(ShaderAttribute& sa, MFnDependencyNode& depFn, MAYATO_OSL::OSLParamArray& paramArray)
     {
         MStatus stat;
@@ -173,7 +167,7 @@ namespace MAYATO_OSLUTIL{
                 Logging::warning(MString("Plug ") + plug.name() + " has more than 10 entries: " + numEntries + ", limiting to " + ARRAY_MAX_ENTRIES);
                 numEntries = ARRAY_MAX_ENTRIES;
             }
-            for (uint i = 0; i < numEntries; i++)
+            for (int i = 0; i < numEntries; i++)
             {
                 MPlug p = plug[i];
                 MString attrName = getCorrectOSLParameterName(p);
@@ -236,7 +230,8 @@ namespace MAYATO_OSLUTIL{
                 MString v = getEnumString(sa.name.c_str(), depFn);
                 paramArray.push_back(MAYATO_OSL::OSLParameter(sa.name.c_str(), v));
             }
-            else{
+            else
+            {
                 MString stringParameter = getString(sa.name.c_str(), depFn);
                 if (sa.name == "fileTextureName")
                 {
@@ -357,7 +352,6 @@ namespace MAYATO_OSLUTIL{
         ca.push_back(c);
     }
 
-
     void OSLUtilClass::createOSLProjectionNodes(MPlug& plug)
     {
         MPlugArray pa;
@@ -371,7 +365,6 @@ namespace MAYATO_OSLUTIL{
     void OSLUtilClass::createOSLProjectionNodes(const MObject& surfaceShaderNode)
     {
         listProjectionHistory(surfaceShaderNode);
-
 
         std::vector<MAYATO_OSL::ProjectionUtil>::iterator it;
         std::vector<MAYATO_OSL::ProjectionUtil> utils = projectionNodeArray;
@@ -415,7 +408,6 @@ namespace MAYATO_OSLUTIL{
             }
         }
     }
-
 
     bool OSLUtilClass::getConnectedPlugs(MPlug plug, MFnDependencyNode& depFn, MPlugArray& sourcePlugs, MPlugArray& destPlugs)
     {
@@ -472,7 +464,6 @@ namespace MAYATO_OSLUTIL{
         {
             if (depFn.typeName() == "bump2d")
             {
-                bool result;
                 int bumpType = getEnumInt("bumpInterp", depFn);
                 // bumpType 0 == default texture bump, type 1 == tangentBased normal, type 2 == object based normal map
                 if (bumpType > 0)
@@ -494,12 +485,12 @@ namespace MAYATO_OSLUTIL{
                             return true;
                         }
                     }
-                    return result;
                 }
             }
         }
         return false;
     }
+
     // check if the attribute is okay.
     // check if it is connected and if the source attribute is okay and supported
     bool OSLUtilClass::getConnectedPlugs(MString attributeName, MFnDependencyNode& depFn, MPlugArray& sourcePlugs, MPlugArray& destPlugs)
@@ -531,7 +522,6 @@ namespace MAYATO_OSLUTIL{
         MPlug destPlug = depFn.findPlug(attributeName);
         if (destPlug.isNull())
             return false;
-
 
         // check if the plug is connected. This can be in multiple ways:
         // 1. The plug itself is connected (should be ignored if the plug is an array plug)
@@ -794,7 +784,6 @@ namespace MAYATO_OSLUTIL{
         }
         connectionList.push_back(c);
     }
-
 
     // we cannot avoid to add some helper nodes in a non correct order.
     // e.g. if we first connect a float to a component, maybe a outAlpha to a color.r, then automatically a

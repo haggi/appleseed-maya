@@ -1185,11 +1185,9 @@ bool getConnectedFileTexturePath(const MString& plugName, MString& nodeName, MSt
 
     MPlug destPlug = parray[0];
     MObject fileNode = destPlug.node();
-    std::cout << "filenode: " << getObjectName(fileNode).asChar() << " plug name " << destPlug.name() << "\n";
 
     if (!fileNode.hasFn(MFn::kFileTexture))
     {
-        std::cout << "node is not from type fileTexture.\n";
         return false;
     }
 
@@ -1198,12 +1196,10 @@ bool getConnectedFileTexturePath(const MString& plugName, MString& nodeName, MSt
 
     if (!stat)
     {
-        std::cout << "fileTextureName not found at fileTexNode.\n";
         return false;
     }
 
     MString fileTextureName = ftn.asString();
-    std::cout << "fileTextureName value: " << fileTextureName.asChar() <<"\n";
     value = fileTextureName;
     outFileNode = fileNode;
     return true;

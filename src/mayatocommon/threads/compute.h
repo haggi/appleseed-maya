@@ -74,7 +74,6 @@ private:
             if (!done && !Compute::checkDone)
                 sleepFor(100);
         }
-        std::cout.flush();
     }
 
 public:

@@ -26,28 +26,28 @@
 // THE SOFTWARE.
 //
 
-#ifndef MTAP_CMD_H
-#define MTAP_CMD_H
+#ifndef MAYATOAPPLESEED_H
+#define MAYATOAPPLESEED_H
 
-#include <string.h>
+// appleseed.foundation headers.
+#include "foundation/platform/compiler.h"
+
+// Maya headers.
 #include <maya/MPxCommand.h>
-#include <maya/MSyntax.h>
-#include <maya/MString.h>
 
-#define MAYATOCMDNAME "mayatoappleseed"
+// Forward declarations.
+class MArgList;
+class MStatus;
+class MSyntax;
 
-class  MayaToAppleseed: public MPxCommand
+class  MayaToAppleseed
+  : public MPxCommand
 {
-public:
-                    MayaToAppleseed();
-    virtual         ~MayaToAppleseed();
-    static MSyntax  newSyntax();
+  public:
+    static MSyntax syntaxCreator();
+    static void* creator();
 
-    MStatus         doIt(const MArgList& args);
-    static void*    creator();
-    void setLogLevel();
-
-private:
+    virtual MStatus doIt(const MArgList& args) APPLESEED_OVERRIDE;
 };
 
-#endif
+#endif  // !MAYATOAPPLESEED_H

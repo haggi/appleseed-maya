@@ -29,9 +29,14 @@
 #ifndef MAYATO_DEFS_H
 #define MAYATO_DEFS_H
 
+#ifdef fsin
+#undef fsin
+#endif
+
 #include "boost/shared_ptr.hpp"
 #include "boost/smart_ptr.hpp"
 #include "boost/thread.hpp"
+
 #define sharedPtr boost::shared_ptr
 #define autoPtr boost::shared_ptr
 #define staticPtrCast boost::static_pointer_cast

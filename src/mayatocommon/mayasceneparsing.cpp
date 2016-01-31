@@ -55,8 +55,6 @@ std::vector<sharedPtr<MayaObject> >  origObjects;
 
 bool MayaScene::parseSceneHierarchy(MDagPath currentPath, int level, sharedPtr<ObjectAttributes> parentAttributes, sharedPtr<MayaObject> parentObject)
 {
-    Logging::debugs(MString("parse: ") + currentPath.fullPathName(), level);
-
     // filter the new hypershade objects away
     if (pystring::find(currentPath.fullPathName().asChar(), "shaderBall") > -1)
         return true;
@@ -73,20 +71,21 @@ bool MayaScene::parseSceneHierarchy(MDagPath currentPath, int level, sharedPtr<O
         iel.node = mo->mobject;
         interactiveUpdateMap[interactiveUpdateMap.size()] = iel;
     }
+
     //
     //  find the original mayaObject for instanced objects. Can be useful later.
     //
 
     if (currentPath.instanceNumber() == 0)
         origObjects.push_back(mo);
-    else{
+    else
+    {
         MFnDagNode node(currentPath.node());
         for (size_t iId = 0; iId < origObjects.size(); iId++)
         {
             MFnDagNode onode(origObjects[iId]->mobject);
             if (onode.object() == node.object())
             {
-                Logging::debugs(MString("Orig Node found:") + onode.fullPathName(), level);
                 mo->origObject = origObjects[iId];
                 break;
             }
@@ -191,7 +190,6 @@ bool MayaScene::updateScene(MFn::Type updateElement)
                 MayaTo::getWorldPtr()->worldRendererPtr->updateTransform(obj);
         }
     }
-
 
     return true;
 }

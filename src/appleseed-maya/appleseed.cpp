@@ -62,7 +62,6 @@
 #include "threads/renderqueueworker.h"
 #include "world.h"
 
-#include <stdio.h>
 #include <iostream>
 
 #include "utilities/logging.h"

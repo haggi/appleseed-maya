@@ -26,55 +26,55 @@
 // THE SOFTWARE.
 //
 
+// Interface header.
 #include "mayatoappleseed.h"
-#include <maya/MGlobal.h>
-#include <maya/MArgDatabase.h>
-#include <maya/MArgList.h>
-#include <maya/MSelectionList.h>
+
+// appleseed-maya headers.
 #include "threads/renderqueueworker.h"
+#include "utilities/attrtools.h"
 #include "utilities/logging.h"
 #include "utilities/tools.h"
-#include "utilities/attrtools.h"
 #include "world.h"
+
+// Maya headers.
+#include <maya/MArgDatabase.h>
+#include <maya/MGlobal.h>
+#include <maya/MSelectionList.h>
+#include <maya/MSyntax.h>
+
+MSyntax MayaToAppleseed::syntaxCreator()
+{
+    MSyntax syntax;
+    syntax.addFlag("-cam", "-camera", MSyntax::kString);
+    syntax.addFlag("-s", "-state");
+    syntax.addFlag("-wi", "-width", MSyntax::kLong);
+    syntax.addFlag("-hi", "-height", MSyntax::kLong);
+    syntax.addFlag("-sar", "-startIpr");
+    syntax.addFlag("-str", "-stopIpr");
+    syntax.addFlag("-par", "-pauseIpr");
+    return syntax;
+}
 
 void* MayaToAppleseed::creator()
 {
     return new MayaToAppleseed();
 }
 
-MayaToAppleseed::MayaToAppleseed() {}
-MayaToAppleseed::~MayaToAppleseed() {}
-
-MSyntax MayaToAppleseed::newSyntax()
+namespace
 {
-    MSyntax syntax;
-    MStatus stat;
-
-    stat = syntax.addFlag("-cam", "-camera", MSyntax::kString);
-    stat = syntax.addFlag("-s", "-state");
-    stat = syntax.addFlag("-wi", "-width", MSyntax::kLong);
-    stat = syntax.addFlag("-hi", "-height", MSyntax::kLong);
-    // Flag -startIPR
-    stat = syntax.addFlag("-sar", "-startIpr");
-    // Flag -stopIPR
-    syntax.addFlag("-str", "-stopIpr");
-    // Flag -pauseIPR
-    syntax.addFlag("-par", "-pauseIpr");
-
-    return syntax;
-}
-
-void MayaToAppleseed::setLogLevel()
-{
-    MObject globalsObj = getRenderGlobalsNode();
-    if (globalsObj == MObject::kNullObj)
+    void setLogLevel()
     {
-        Logging::setLogLevel(Logging::LevelDebug);
-        return;
+        const MObject globalsObj = getRenderGlobalsNode();
+
+        if (globalsObj == MObject::kNullObj)
+            Logging::setLogLevel(Logging::LevelDebug);
+        else
+        {
+            const MFnDependencyNode globalsNode(globalsObj);
+            const int logLevel = getIntAttr("translatorVerbosity", globalsNode, 0);
+            Logging::setLogLevel(static_cast<Logging::LogLevel>(logLevel));
+        }
     }
-    MFnDependencyNode globalsNode(globalsObj);
-    int logLevel = getIntAttr("translatorVerbosity", globalsNode, 0);
-    Logging::setLogLevel((Logging::LogLevel)logLevel);
 }
 
 MStatus MayaToAppleseed::doIt(const MArgList& args)
@@ -88,7 +88,6 @@ MStatus MayaToAppleseed::doIt(const MArgList& args)
 
     if (argData.isFlagSet("-state", &stat))
     {
-        Logging::debug(MString("state: ???"));
         if (MayaTo::getWorldPtr()->renderState == MayaTo::MayaToWorld::RSTATETRANSLATING)
             setResult("rstatetranslating");
         if (MayaTo::getWorldPtr()->renderState == MayaTo::MayaToWorld::RSTATERENDERING)
@@ -104,7 +103,6 @@ MStatus MayaToAppleseed::doIt(const MArgList& args)
 
     if (argData.isFlagSet("-stopIpr", &stat))
     {
-        Logging::debug(MString("-stopIpr"));
         EventQueue::Event e;
         e.type = EventQueue::Event::IPRSTOP;
         theRenderEventQueue()->push(e);
@@ -113,48 +111,37 @@ MStatus MayaToAppleseed::doIt(const MArgList& args)
 
     if (argData.isFlagSet("-pauseIpr", &stat))
     {
-        Logging::debug(MString("-pauseIpr"));
-        Logging::debug(MString("-stopIpr"));
         EventQueue::Event e;
         e.type = EventQueue::Event::IPRPAUSE;
         theRenderEventQueue()->push(e);
         return MS::kSuccess;
     }
 
-    // I have to request useRenderRegion here because as soon the command is finished, what happens immediatly after the command is
-    // put into the queue, the value is set back to false.
+    // I have to request useRenderRegion here because as soon the command is finished,
+    // what happens immediatly after the command is put into the queue, the value is
+    // set back to false.
     std::unique_ptr<MayaTo::CmdArgs> cmdArgs(new MayaTo::CmdArgs);
     MObject drg = objectFromName("defaultRenderGlobals");
     MFnDependencyNode drgfn(drg);
     cmdArgs->useRenderRegion = drgfn.findPlug("useRenderRegion").asBool();
 
-
     if (argData.isFlagSet("-startIpr", &stat))
-    {
-        Logging::debug(MString("-startIpr"));
         cmdArgs->renderType = MayaTo::MayaToWorld::WorldRenderType::IPRRENDER;
-    }
 
     if (argData.isFlagSet("-width", &stat))
-    {
         argData.getFlagArgument("-width", 0, cmdArgs->width);
-        Logging::debug(MString("width: ") + cmdArgs->width);
-    }
 
     if (argData.isFlagSet("-height", &stat))
-    {
         argData.getFlagArgument("-height", 0, cmdArgs->height);
-        Logging::debug(MString("height: ") + cmdArgs->height);
-    }
 
     if (argData.isFlagSet("-camera", &stat))
     {
-        MDagPath camera;
         MSelectionList selectionList;
         argData.getFlagArgument("-camera", 0, selectionList);
-        stat = selectionList.getDagPath(0, camera);
+
+        MDagPath camera;
+        selectionList.getDagPath(0, camera);
         camera.extendToShape();
-        Logging::debug(MString("camera: ") + camera.fullPathName());
         cmdArgs->cameraDagPath = camera;
     }
 
@@ -164,9 +151,7 @@ MStatus MayaToAppleseed::doIt(const MArgList& args)
     theRenderEventQueue()->push(e);
 
     if (MGlobal::mayaState() == MGlobal::kBatch)
-    {
         RenderQueueWorker::startRenderQueueWorker();
-    }
 
     return MStatus::kSuccess;
 }

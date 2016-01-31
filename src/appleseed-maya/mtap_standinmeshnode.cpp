@@ -65,12 +65,9 @@ namespace asr = renderer;
 
 MStatus returnStatus;
 
-#define McheckErr(stat,msg)         \
-    if (MS::kSuccess != stat) {   \
-        cerr << msg;                \
-        return MS::kFailure;        \
-    }
-
+#define McheckErr(stat, msg)    \
+    if (MS::kSuccess != stat)   \
+        return MS::kFailure;
 
 MTypeId mtap_standinMeshNode::id(0x0011CF42);
 
@@ -178,7 +175,7 @@ MObject mtap_standinMeshNode::createMesh(const MTime& time,
         numFaces = numPoints / 3;
         read(min);
         read(max);
-        MGlobal::displayInfo(MString("File successfully opended. File contains: ") + numPoints + " points what means " + numFaces + " triangles");
+        MGlobal::displayInfo(MString("File successfully opened. File contains: ") + numPoints + " points what means " + numFaces + " triangles");
         MPointArray points(numPoints);
         read(points);
         pFile.close();
@@ -203,7 +200,7 @@ MObject mtap_standinMeshNode::createMesh(const MTime& time,
         // create poly structure
         MIntArray faceCounts(numFaces, 3);
         MIntArray faceConnects(numPoints);
-        for (uint i = 0; i < numPoints; i++)
+        for (int i = 0; i < numPoints; i++)
             faceConnects[i] = i;
         newMesh = meshFS.create(numVertices, numFaces, points, faceCounts, faceConnects, outData, &stat);
         if (!stat)
@@ -251,19 +248,14 @@ void mtap_standinMeshNode::createMaterialAssignments()
 
 bool mtap_standinMeshNode::checkMeshFileName(MString meshFileName)
 {
-    // do we have content
     // we need at least .binarymesh == 11 characters
     if (meshFileName.length() < 11)
-    {
-        cerr << "mesh file name has less than 11 characters, what means it has no .binarymesh ending.\n";
         return false;
-    }
 
     return true;
 }
 
 MStatus mtap_standinMeshNode::compute(const MPlug& plug, MDataBlock& data)
-
 {
     MStatus returnStatus;
 

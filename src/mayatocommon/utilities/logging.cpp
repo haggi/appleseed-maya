@@ -30,105 +30,82 @@
 #include "utilities/logging.h"
 #include "memory/memoryinfo.h"
 #include <maya/MGlobal.h>
-#include <stdio.h>
+
+namespace
+{
+    MString get_level_name(const Logging::LogLevel level)
+    {
+        switch (level)
+        {
+          case Logging::LevelInfo: return "info";
+          case Logging::LevelError: return "error";
+          case Logging::LevelWarning: return "warning";
+          case Logging::LevelProgress: return "progress";
+          case Logging::LevelDebug: return "debug";
+          case Logging::LevelNone: return "none";
+          default: return "unknown";
+        }
+    }
+
+    void print(const MString& message)
+    {
+        MStreamUtils::stdOutStream()
+            << MString("Mem: ") << getCurrentUsage() << "MB "
+            << message
+            << "\n";
+    }
+}
 
 void Logging::setLogLevel(Logging::LogLevel level)
 {
-    if (level == Logging::LevelDebug)
-    {
-        MGlobal::displayInfo("Set logging level to DEBUG");
-    }
-    if (level == Logging::LevelInfo)
-    {
-        MGlobal::displayInfo("Set logging level to INFO");
-    }
-    if (level == Logging::LevelWarning)
-    {
-        MGlobal::displayInfo("Set logging level to WARNING");
-    }
-    if (level == Logging::LevelError)
-    {
-        MGlobal::displayInfo("Set logging level to ERROR");
-    }
-    if (level == Logging::LevelProgress)
-    {
-        MGlobal::displayInfo("Set logging level to PROGRESS");
-    }
+    MString level_name = get_level_name(level);
+    level_name.toUpperCase();
+
+    MGlobal::displayInfo("Set logging level to " + level_name);
     log_level = level;
 }
 
-void Logging::info(MString logString)
+void Logging::info(const MString& message)
 {
-    if (log_level == 5)
+    if (log_level == Logging::LevelNone)
         return;
-    MString outString = MString("Mem: ") + getCurrentUsage() + "MB " +  logString;
+
     if (log_level >= Logging::LevelInfo)
-        COUT(outString);
+        print(message);
 }
 
-void Logging::warning(MString logString)
+void Logging::warning(const MString& message)
 {
-    if (log_level == 5)
+    if (log_level == Logging::LevelNone)
         return;
-    MString outString = MString("Mem: ") + getCurrentUsage() + "MB " +  logString;
+
     if (log_level >= Logging::LevelWarning)
-        COUT(outString);
+        print(message);
 }
 
-void Logging::error(MString logString)
+void Logging::error(const MString& message)
 {
-    if (log_level == 5)
+    if (log_level == Logging::LevelNone)
         return;
-    MString outString = MString("Mem: ") + getCurrentUsage() + "MB " +  logString;
+
     if (log_level >= Logging::LevelError)
-    {
-        COUT(outString);
-    }
+        print(message);
 }
 
-void Logging::debug(MString logString)
+void Logging::debug(const MString& message)
 {
-    if (log_level == 5)
+    if (log_level == Logging::LevelNone)
         return;
-    MString outString = MString("Mem: ") + getCurrentUsage() + "MB " +  logString;
+
     if (log_level >= Logging::LevelDebug)
-    {
-        COUT(outString);
-    }
+        print(message);
 }
 
-void Logging::debugs(MString logString, int level)
+void Logging::progress(const MString& message)
 {
-    if (log_level == 5)
+    if (log_level == Logging::LevelNone)
         return;
-    MString outString = MString("Mem: ") + getCurrentUsage() + "MB " + makeSpace(level) + logString;
-    if (log_level >= Logging::LevelDebug)
-    {
-        COUT(outString);
-    }
-}
 
-void Logging::progress(MString logString)
-{
-    if (log_level == 5)
-        return;
-    MString outString = MString("Mem: ") + getCurrentUsage() + "MB " +  logString;
     if (log_level >= Logging::LevelProgress)
-    {
-        COUT(outString);
-    }
-}
-
-void Logging::detail(MString logString)
-{
-    MString outString = MString("Mem: ") + getCurrentUsage() + "MB " +  logString;
-    COUT(outString);
-}
-
-MString makeSpace(int level)
-{
-    MString space;
-    for (int i = 0; i < level; i++)
-        space += "\t";
-    return space;
+        print(message);
 }

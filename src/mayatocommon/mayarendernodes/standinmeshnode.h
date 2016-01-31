@@ -75,9 +75,7 @@ public:
     inline void read(int& value)
     {
         pFile.read(reinterpret_cast<char *>(&value), sizeof(int));
-        cerr << "read int " << value;
     }
-
 
 private:
     MString binmesh_file;

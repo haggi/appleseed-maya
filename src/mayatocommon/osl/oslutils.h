@@ -65,21 +65,24 @@
 
 #define ARRAY_MAX_ENTRIES 10
 
-namespace OSL{
+namespace OSL
+{
     class OSLShadingNetworkRenderer;
 }
 
-namespace MAYATO_OSL{
-
+namespace MAYATO_OSL
+{
     static std::vector<MString> DefinedOSLNodes;
     static std::vector<MString> DefinedOSLSWNodes;
 
-    struct Connection{
+    struct Connection
+    {
         MString sourceNode;
         MString sourceAttribute;
         MString destNode;
         MString destAttribute;
-        MString validateParameter(MString name)
+
+        static MString validateParameter(MString name)
         {
             if (name == "min")
                 return "inMin";
@@ -94,15 +97,19 @@ namespace MAYATO_OSL{
             return name;
         }
 
-        Connection(){};
+        Connection()
+        {
+        }
+
         Connection(MString sn, MString sa, MString dn, MString da)
         {
             sourceNode = validateParameter(sn);
             sourceAttribute = validateParameter(sa);
             destNode = validateParameter(dn);
             destAttribute = validateParameter(da);
-        };
-        bool operator==(Connection const& otherOne)
+        }
+
+        bool operator==(const Connection& otherOne)
         {
             if (sourceNode == otherOne.sourceNode)
                 if (destNode == otherOne.destNode)
@@ -113,19 +120,24 @@ namespace MAYATO_OSL{
         }
     };
 
-    struct SimpleVector{
+    struct SimpleVector
+    {
         float f[3];
     };
-    struct SimpleMatrix{
+
+    struct SimpleMatrix
+    {
         float f[4][4];
     };
 
-    struct OSLParameter{
+    struct OSLParameter
+    {
         MString name;
         OIIO::TypeDesc type;
         MVector mvector;
         boost::variant<int, float, SimpleVector, SimpleMatrix, std::string> value;
-        MString validateParameter(const MString& pname)
+
+        static MString validateParameter(const MString& pname)
         {
             if (pname == "min")
                 return "inMin";
@@ -139,24 +151,28 @@ namespace MAYATO_OSL{
                 return "inColor";
             return pname;
         }
+
         OSLParameter(const MString& pname, float pvalue)
         {
             name = pname;
             value = pvalue;
             type = OSL::TypeDesc::TypeFloat;
         }
+
         OSLParameter(const MString& pname, int pvalue)
         {
             name = pname;
             value = pvalue;
             type = OSL::TypeDesc::TypeInt;
         }
+
         OSLParameter(const MString& pname, const MString& pvalue)
         {
             name = pname;
             value = pvalue.asChar();
             type = OSL::TypeDesc::TypeString;
         }
+
         OSLParameter(const MString& pname, const MVector& pvalue)
         {
             name = validateParameter(pname);
@@ -167,6 +183,7 @@ namespace MAYATO_OSL{
             value = s;
             type = OSL::TypeDesc::TypeVector;
         }
+
         OSLParameter(const MString& pname, const MMatrix& pvalue)
         {
             name = validateParameter(pname);
@@ -175,6 +192,7 @@ namespace MAYATO_OSL{
             value = m;
             type = OSL::TypeDesc::TypeMatrix;
         }
+
         OSLParameter(const MString& pname, const MColor& pvalue)
         {
             name = validateParameter(pname);
@@ -185,36 +203,42 @@ namespace MAYATO_OSL{
             value = s;
             type = OSL::TypeDesc::TypeVector;
         }
+
         OSLParameter(const MString& pname, bool pvalue)
         {
             name = pname;
             value = (int)pvalue;
             type = OSL::TypeDesc::TypeInt;
         }
+
         OSLParameter(const char *pname, float pvalue)
         {
             name = pname;
             value = pvalue;
             type = OSL::TypeDesc::TypeFloat;
         }
+
         OSLParameter(const char *pname, int pvalue)
         {
             name = pname;
             value = pvalue;
             type = OSL::TypeDesc::TypeInt;
         }
+
         OSLParameter(const char *pname, const MString& pvalue)
         {
             name = pname;
             value = pvalue.asChar();
             type = OSL::TypeDesc::TypeString;
         }
+
         OSLParameter(const char *pname, const std::string& pvalue)
         {
             name = pname;
             value = pvalue.c_str();
             type = OSL::TypeDesc::TypeString;
         }
+
         OSLParameter(const char *pname, const MVector& pvalue)
         {
             name = validateParameter(pname);
@@ -235,6 +259,7 @@ namespace MAYATO_OSL{
             value = m;
             type = OSL::TypeDesc::TypeMatrix;
         }
+
         OSLParameter(const char *pname, const MColor& pvalue)
         {
             name = validateParameter(pname);
@@ -245,6 +270,7 @@ namespace MAYATO_OSL{
             value = s;
             type = OSL::TypeDesc::TypeVector;
         }
+
         OSLParameter(const char *pname, bool pvalue)
         {
             name = pname;
@@ -253,7 +279,8 @@ namespace MAYATO_OSL{
         }
     };
 
-    struct ProjectionUtil{
+    struct ProjectionUtil
+    {
         MObjectArray leafNodes;
         MObject projectionNode;
     };
@@ -262,14 +289,13 @@ namespace MAYATO_OSL{
     typedef std::vector<OSLParameter> OSLParamArray;
     typedef std::vector<Connection> ConnectionArray;
 
-    struct OSLNodeStruct{
+    struct OSLNodeStruct
+    {
         MString typeName;
         MString nodeName;
         OSLParamArray paramArray;
     };
 }
-
-
 
 namespace MAYATO_OSLUTIL{
 
