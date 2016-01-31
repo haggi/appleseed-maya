@@ -131,9 +131,9 @@ void mtap_ITileCallback::post_render(
         }
     }
 
-    EventQueue::Event e;
+    Event e;
     e.pixelData = pixelsPtr;
-    e.type = EventQueue::Event::TILEDONE;
+    e.type = Event::TILEDONE;
     e.tile_xmin = 0;
     e.tile_xmax = frame_props.m_canvas_width - 1;
     e.tile_ymin = 0;
@@ -201,9 +201,9 @@ void mtap_ITileCallback::post_render_tile(
     size_t miny = img.properties().m_canvas_height - y1;
     size_t maxy = img.properties().m_canvas_height - y - 1;
 
-    EventQueue::Event e;
+    Event e;
     e.pixelData = pixelsPtr;
-    e.type = EventQueue::Event::TILEDONE;
+    e.type = Event::TILEDONE;
     e.tile_xmin = x;
     e.tile_xmax = x1;
     e.tile_ymin = miny;

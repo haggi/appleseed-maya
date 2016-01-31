@@ -52,9 +52,6 @@
 
 static Logging logger;
 
-using namespace AppleRender;
-
-
 void AppleseedRenderer::defineEnvironment()
 {
     asr::Scene *scene = project->get_scene();

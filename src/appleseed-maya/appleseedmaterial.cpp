@@ -42,9 +42,9 @@
 #include "mayascene.h"
 #include "threads/renderqueueworker.h"
 
-void AppleRender::updateMaterial(MObject materialNode, const asr::Assembly *assembly)
+void updateMaterial(MObject materialNode, const asr::Assembly *assembly)
 {
-    MAYATO_OSLUTIL::OSLUtilClass OSLShaderClass;
+    OSLUtilClass OSLShaderClass;
     MObject surfaceShaderNode = getConnectedInNode(materialNode, "surfaceShader");
     MString surfaceShaderName = getObjectName(surfaceShaderNode);
     MString shadingGroupName = getObjectName(materialNode);
@@ -65,7 +65,8 @@ void AppleRender::updateMaterial(MObject materialNode, const asr::Assembly *asse
     {
         shaderGroup->clear();
     }
-    else{
+    else
+    {
         asf::auto_release_ptr<asr::ShaderGroup> oslShadingGroup = asr::ShaderGroupFactory().create(shaderGroupName.asChar());
         assembly->shader_groups().insert(oslShadingGroup);
         shaderGroup = assembly->shader_groups().get_by_name(shaderGroupName.asChar());
@@ -125,9 +126,9 @@ void AppleRender::updateMaterial(MObject materialNode, const asr::Assembly *asse
     }
 }
 
-void AppleRender::AppleseedRenderer::updateMaterial(MObject materialNode)
+void AppleseedRenderer::updateMaterial(MObject materialNode)
 {
-    MAYATO_OSLUTIL::OSLUtilClass OSLShaderClass;
+    OSLUtilClass OSLShaderClass;
     MObject surfaceShaderNode = getConnectedInNode(materialNode, "surfaceShader");
     MString surfaceShaderName = getObjectName(surfaceShaderNode);
     MString shadingGroupName = getObjectName(materialNode);
@@ -141,7 +142,8 @@ void AppleRender::AppleseedRenderer::updateMaterial(MObject materialNode)
     {
         shaderGroup->clear();
     }
-    else{
+    else
+    {
         asf::auto_release_ptr<asr::ShaderGroup> oslShadingGroup = asr::ShaderGroupFactory().create(shaderGroupName.asChar());
         assembly->shader_groups().insert(oslShadingGroup);
         shaderGroup = assembly->shader_groups().get_by_name(shaderGroupName.asChar());
@@ -202,12 +204,12 @@ void AppleRender::AppleseedRenderer::updateMaterial(MObject materialNode)
 }
 
 
-asf::StringArray AppleRender::AppleseedRenderer::defineMaterial(sharedPtr<mtap_MayaObject> obj)
+asf::StringArray AppleseedRenderer::defineMaterial(sharedPtr<mtap_MayaObject> obj)
 {
     MStatus status;
     asf::StringArray materialNames;
     getObjectShadingGroups(obj->dagPath, obj->perFaceAssignments, obj->shadingGroups, false);
-    sharedPtr<MayaScene> mayaScene = MayaTo::getWorldPtr()->worldScenePtr;
+    sharedPtr<MayaScene> mayaScene = getWorldPtr()->worldScenePtr;
 
     for (uint sgId = 0; sgId < obj->shadingGroups.length(); sgId++)
     {
@@ -232,7 +234,7 @@ asf::StringArray AppleRender::AppleseedRenderer::defineMaterial(sharedPtr<mtap_M
         }
 
         // if we are in IPR mode, save all translated shading nodes to the interactive update list
-        if (MayaTo::getWorldPtr()->renderType == MayaTo::MayaToWorld::IPRRENDER)
+        if (getWorldPtr()->renderType == MayaToWorld::IPRRENDER)
         {
             if (mayaScene)
             {
@@ -243,7 +245,7 @@ asf::StringArray AppleRender::AppleseedRenderer::defineMaterial(sharedPtr<mtap_M
                 iel.node = materialNode;
                 mayaScene->interactiveUpdateMap[mayaScene->interactiveUpdateMap.size()] = iel;
 
-                if (MayaTo::getWorldPtr()->renderState == MayaTo::MayaToWorld::RSTATERENDERING)
+                if (getWorldPtr()->renderState == MayaToWorld::RSTATERENDERING)
                 {
                     RenderQueueWorker::IPRUpdateCallbacks();
                 }

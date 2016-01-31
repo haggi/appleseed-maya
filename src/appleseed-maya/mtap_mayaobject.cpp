@@ -149,7 +149,7 @@ bool mtap_MayaObject::needsAssembly()
     // Maybe I have to parse the hierarchy below and check the nodes for a geometry/camera/light node.
     // So at the moment I let all transform nodes receive their own transforms. This will result in a
     // translation of the complete hierarchy as assemblies/assembly instances.
-    if (MayaTo::getWorldPtr()->renderType == MayaTo::MayaToWorld::IPRRENDER)
+    if (getWorldPtr()->renderType == MayaToWorld::IPRRENDER)
     {
         if (this->isTransform())
         {

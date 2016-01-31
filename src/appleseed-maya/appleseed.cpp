@@ -70,8 +70,6 @@
 static int tileCount = 0;
 static int tileCountTotal = 0;
 
-using namespace AppleRender;
-
 std::vector<asr::Entity *> definedEntities;
 
 AppleseedRenderer::AppleseedRenderer()
@@ -97,10 +95,10 @@ void AppleseedRenderer::initializeRenderer()
     std::string oslShaderPath = (getRendererHome() + "shaders").asChar();
     Logging::debug(MString("setting osl shader search path to: ") + oslShaderPath.c_str());
     project->search_paths().push_back(oslShaderPath.c_str());
-    for (uint i = 0; i < MayaTo::getWorldPtr()->shaderSearchPath.length(); i++)
+    for (uint i = 0; i < getWorldPtr()->shaderSearchPath.length(); i++)
     {
-        Logging::debug(MString("Search path: ") + MayaTo::getWorldPtr()->shaderSearchPath[i]);
-        project->search_paths().push_back(MayaTo::getWorldPtr()->shaderSearchPath[i].asChar());
+        Logging::debug(MString("Search path: ") + getWorldPtr()->shaderSearchPath[i]);
+        project->search_paths().push_back(getWorldPtr()->shaderSearchPath[i].asChar());
     }
     defineConfig();
     defineScene(this->project.get());
@@ -108,8 +106,8 @@ void AppleseedRenderer::initializeRenderer()
 
 void AppleseedRenderer::unInitializeRenderer()
 {
-    MayaTo::getWorldPtr()->setRenderState(MayaTo::MayaToWorld::RSTATEDONE);
-    MayaTo::getWorldPtr()->setRenderType(MayaTo::MayaToWorld::RTYPENONE);
+    getWorldPtr()->setRenderState(MayaToWorld::RSTATEDONE);
+    getWorldPtr()->setRenderType(MayaToWorld::RTYPENONE);
 
     Logging::debug("Releasing project");
     this->project.release();
@@ -137,7 +135,7 @@ void AppleseedRenderer::postFrame()
 {
     Logging::debug("AppleseedRenderer::postFrame");
     // Save the frame to disk.
-    sharedPtr<RenderGlobals> renderGlobals = MayaTo::getWorldPtr()->worldRenderGlobalsPtr;
+    sharedPtr<RenderGlobals> renderGlobals = getWorldPtr()->worldRenderGlobalsPtr;
     renderGlobals->getImageName();
     MString filename = renderGlobals->imageOutputFile.asChar();
     Logging::debug(MString("Saving image as ") + renderGlobals->imageOutputFile);
@@ -170,7 +168,7 @@ void AppleseedRenderer::render()
 
         this->tileCallbackFac.reset(new mtap_ITileCallbackFactory());
 
-        if (MayaTo::getWorldPtr()->getRenderType() == MayaTo::MayaToWorld::IPRRENDER)
+        if (getWorldPtr()->getRenderType() == MayaToWorld::IPRRENDER)
         {
             masterRenderer = autoPtr<asr::MasterRenderer>(new asr::MasterRenderer(
                 this->project.ref(),
@@ -178,7 +176,8 @@ void AppleseedRenderer::render()
                 &mtap_controller,
                 this->tileCallbackFac.get()));
         }
-        else{
+        else
+        {
             masterRenderer = autoPtr<asr::MasterRenderer>(new asr::MasterRenderer(
                 this->project.ref(),
                 this->project->configurations().get_by_name("final")->get_inherited_parameters(),
@@ -188,10 +187,10 @@ void AppleseedRenderer::render()
         // Save the project to disk.
         asr::ProjectFileWriter::write(project.ref(), "C:/daten/3dprojects/mayaToAppleseed/renderData/test.appleseed");
 
-        if (MayaTo::getWorldPtr()->getRenderType() == MayaTo::MayaToWorld::IPRRENDER)
+        if (getWorldPtr()->getRenderType() == MayaToWorld::IPRRENDER)
         {
-            EventQueue::Event e;
-            e.type = EventQueue::Event::ADDIPRCALLBACKS;
+            Event e;
+            e.type = Event::ADDIPRCALLBACKS;
             theRenderEventQueue()->push(e);
             while (!RenderQueueWorker::iprCallbacksDone())
                 sleepFor(10);
@@ -199,7 +198,7 @@ void AppleseedRenderer::render()
         sceneBuilt = true;
     }
 
-    MayaTo::getWorldPtr()->setRenderState(MayaTo::MayaToWorld::RSTATERENDERING);
+    getWorldPtr()->setRenderState(MayaToWorld::RSTATERENDERING);
     mtap_controller.status = asr::IRendererController::ContinueRendering;
     masterRenderer->render();
 }

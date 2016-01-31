@@ -98,9 +98,7 @@ class ShadingNode;
 namespace asf = foundation;
 namespace asr = renderer;
 
-namespace AppleRender
-{
-class AppleseedRenderer : public MayaTo::Renderer
+class AppleseedRenderer : public Renderer
 {
   public:
     AppleseedRenderer();
@@ -155,7 +153,5 @@ class AppleseedRenderer : public MayaTo::Renderer
     mtap_IRendererController mtap_controller;
     bool sceneBuilt = false;
 };
-
-} // namespace AppleRender
 
 #endif

@@ -59,11 +59,11 @@ bool MayaScene::parseSceneHierarchy(MDagPath currentPath, int level, sharedPtr<O
     if (pystring::find(currentPath.fullPathName().asChar(), "shaderBall") > -1)
         return true;
 
-    sharedPtr<MayaObject> mo = MayaTo::MayaObjectFactory().createMayaObject(currentPath);
+    sharedPtr<MayaObject> mo = MayaObjectFactory().createMayaObject(currentPath);
     sharedPtr<ObjectAttributes> currentAttributes = mo->getObjectAttributes(parentAttributes);
     mo->parent = parentObject;
     classifyMayaObject(mo);
-    if (MayaTo::getWorldPtr()->renderType == MayaTo::MayaToWorld::IPRRENDER)
+    if (getWorldPtr()->renderType == MayaToWorld::IPRRENDER)
     {
         InteractiveElement iel;
         iel.obj = mo;
@@ -162,32 +162,32 @@ bool MayaScene::updateScene(MFn::Type updateElement)
         // this part is only used if motionblur is turned on, else we have no MbElement::None
         if (!obj->motionBlurred)
         {
-            if (MayaTo::getWorldPtr()->worldRenderGlobalsPtr->currentMbElement.elementType == MbElement::MotionBlurNone)
+            if (getWorldPtr()->worldRenderGlobalsPtr->currentMbElement.elementType == MbElement::MotionBlurNone)
             {
                 Logging::debug(MString("found non mb element type. Updating non mb objects.") + objId + ": " + obj->dagPath.fullPathName());
                 if (updateElement == MFn::kShape)
-                    MayaTo::getWorldPtr()->worldRendererPtr->updateShape(obj);
+                    getWorldPtr()->worldRendererPtr->updateShape(obj);
                 if (updateElement == MFn::kTransform)
                 {
                     obj->transformMatrices.clear();
-                    MayaTo::getWorldPtr()->worldRendererPtr->updateTransform(obj);
+                    getWorldPtr()->worldRendererPtr->updateTransform(obj);
                     obj->transformMatrices.push_back(obj->dagPath.inclusiveMatrix());
                 }
             }
         }
 
-        if (MayaTo::getWorldPtr()->worldRenderGlobalsPtr->isDeformStep())
+        if (getWorldPtr()->worldRenderGlobalsPtr->isDeformStep())
             if (obj->mobject.hasFn(MFn::kShape))
-                MayaTo::getWorldPtr()->worldRendererPtr->updateShape(obj);
+                getWorldPtr()->worldRendererPtr->updateShape(obj);
 
-        if (MayaTo::getWorldPtr()->worldRenderGlobalsPtr->isTransformStep())
+        if (getWorldPtr()->worldRenderGlobalsPtr->isTransformStep())
         {
-            if (MayaTo::getWorldPtr()->worldRenderGlobalsPtr->isMbStartStep())
+            if (getWorldPtr()->worldRenderGlobalsPtr->isMbStartStep())
                 obj->transformMatrices.clear();
 
             obj->transformMatrices.push_back(obj->dagPath.inclusiveMatrix());
             if (obj->mobject.hasFn(MFn::kTransform))
-                MayaTo::getWorldPtr()->worldRendererPtr->updateTransform(obj);
+                getWorldPtr()->worldRendererPtr->updateTransform(obj);
         }
     }
 
@@ -204,16 +204,16 @@ bool MayaScene::updateScene()
         sharedPtr<MayaObject> obj = this->camList[camId];
         obj->updateObject();
 
-        if (!MayaTo::getWorldPtr()->worldRenderGlobalsPtr->isMbStartStep())
+        if (!getWorldPtr()->worldRenderGlobalsPtr->isMbStartStep())
             if (!obj->motionBlurred)
                 continue;
 
-        if (MayaTo::getWorldPtr()->worldRenderGlobalsPtr->isTransformStep())
+        if (getWorldPtr()->worldRenderGlobalsPtr->isTransformStep())
         {
-            if (MayaTo::getWorldPtr()->worldRenderGlobalsPtr->isMbStartStep())
+            if (getWorldPtr()->worldRenderGlobalsPtr->isMbStartStep())
                 obj->transformMatrices.clear();
             obj->transformMatrices.push_back(obj->dagPath.inclusiveMatrix());
-            MayaTo::getWorldPtr()->worldRendererPtr->updateTransform(obj);
+            getWorldPtr()->worldRendererPtr->updateTransform(obj);
         }
     }
 
@@ -225,20 +225,20 @@ bool MayaScene::updateScene()
         sharedPtr<MayaObject> obj = *mIter;
         obj->updateObject();
 
-        if (!MayaTo::getWorldPtr()->worldRenderGlobalsPtr->isMbStartStep())
+        if (!getWorldPtr()->worldRenderGlobalsPtr->isMbStartStep())
             if (!obj->motionBlurred)
                 continue;
 
-        if (MayaTo::getWorldPtr()->worldRenderGlobalsPtr->isTransformStep())
+        if (getWorldPtr()->worldRenderGlobalsPtr->isTransformStep())
         {
-            if (MayaTo::getWorldPtr()->worldRenderGlobalsPtr->isMbStartStep())
+            if (getWorldPtr()->worldRenderGlobalsPtr->isMbStartStep())
                 obj->transformMatrices.clear();
             obj->transformMatrices.push_back(obj->dagPath.inclusiveMatrix());
-            MayaTo::getWorldPtr()->worldRendererPtr->updateShape(obj);
+            getWorldPtr()->worldRendererPtr->updateShape(obj);
         }
     }
 
-    if (MayaTo::getWorldPtr()->worldRenderGlobalsPtr->isTransformStep())
+    if (getWorldPtr()->worldRenderGlobalsPtr->isTransformStep())
     {
         this->updateInstancer();
     }
@@ -257,7 +257,7 @@ bool MayaScene::updateInstancer()
     Logging::debug("update instancer.");
 
     // updates only required for a transform step
-    if (!MayaTo::getWorldPtr()->worldRenderGlobalsPtr->isTransformStep())
+    if (!getWorldPtr()->worldRenderGlobalsPtr->isTransformStep())
         return true;
 
     size_t numElements = this->instancerNodeElements.size();
@@ -277,11 +277,11 @@ bool MayaScene::updateInstancer()
         instFn.instancesForParticle(obj->instancerParticleId, dagPathArray, matrix);
         for (uint k = 0; k < dagPathArray.length(); k++)
             Logging::debug(MString("Particle mobj id: ") + i + "particle id: " + obj->instancerParticleId + " path id " + k + " - " + dagPathArray[k].fullPathName());
-        if (MayaTo::getWorldPtr()->worldRenderGlobalsPtr->isMbStartStep())
+        if (getWorldPtr()->worldRenderGlobalsPtr->isMbStartStep())
             obj->transformMatrices.clear();
 
         obj->transformMatrices.push_back(origMatrix * matrix);
-        MayaTo::getWorldPtr()->worldRendererPtr->updateTransform(obj);
+        getWorldPtr()->worldRendererPtr->updateTransform(obj);
     }
     return true;
 }
@@ -334,7 +334,8 @@ bool MayaScene::parseInstancerNew()
                         pSystem.rgb(rgbPP);
                     }
                 }
-                else{
+                else
+                {
                     Logging::debug(MString("Could nod get a particleSystem from node "));
                 }
             }
@@ -369,7 +370,7 @@ bool MayaScene::parseInstancerNew()
                 int curPathIndex = pathIndices[i];
                 MDagPath curPath = allPaths[curPathIndex];
 
-                sharedPtr<MayaObject> particleMObject = MayaTo::MayaObjectFactory().createMayaObject(curPath);
+                sharedPtr<MayaObject> particleMObject = MayaObjectFactory().createMayaObject(curPath);
                 MFnDependencyNode pOrigNode(particleMObject->mobject);
                 MObject pOrigObject = pOrigNode.object();
 

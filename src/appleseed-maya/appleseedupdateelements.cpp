@@ -39,8 +39,6 @@
 
 static Logging logger;
 
-using namespace AppleRender;
-
 void AppleseedRenderer::updateTransform(sharedPtr<MayaObject> obj)
 {
     Logging::debug(MString("AppleseedRenderer::updateTransform: ") + obj->shortName);

@@ -222,10 +222,10 @@ void mtap_MayaRenderer::initProject()
         &controller,
         this->tileCallbackFac.get()));
 
-    for (uint i = 0; i < MayaTo::getWorldPtr()->shaderSearchPath.length(); i++)
+    for (uint i = 0; i < getWorldPtr()->shaderSearchPath.length(); i++)
     {
-        Logging::debug(MString("Search path: ") + MayaTo::getWorldPtr()->shaderSearchPath[i]);
-        project->search_paths().push_back(MayaTo::getWorldPtr()->shaderSearchPath[i].asChar());
+        Logging::debug(MString("Search path: ") + getWorldPtr()->shaderSearchPath[i]);
+        project->search_paths().push_back(getWorldPtr()->shaderSearchPath[i].asChar());
     }
 }
 
@@ -540,7 +540,8 @@ MStatus mtap_MayaRenderer::translateShader(const MUuid& id, const MObject& node)
     {
         sgNode = node;
     }
-    else{
+    else
+    {
         MPlugArray pa, paOut;
         MFnDependencyNode depFn(node);
         depFn.getConnections(pa);
@@ -564,7 +565,7 @@ MStatus mtap_MayaRenderer::translateShader(const MUuid& id, const MObject& node)
         }
     }
     asr::Assembly *assembly = GETASM();
-    AppleRender::updateMaterial(sgNode, assembly);
+    updateMaterial(sgNode, assembly);
 
     MObject surfaceShaderNode = getConnectedInNode(sgNode, "surfaceShader");
     MString surfaceShaderName = getObjectName(surfaceShaderNode);
@@ -754,7 +755,8 @@ MStatus mtap_MayaRenderer::endSceneUpdate()
     {
         renderThread = threadObject(startRenderThread, this);
     }
-    else{
+    else
+    {
         ProgressParams progressParams;
         progressParams.progress = 2.0f;
         progress(progressParams);

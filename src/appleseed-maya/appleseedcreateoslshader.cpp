@@ -34,7 +34,7 @@
 #include "OpenImageIO/typedesc.h"
 #include "OSL/oslexec.h"
 
-MString oslTypeToMString(MAYATO_OSL::OSLParameter param)
+MString oslTypeToMString(OSLParameter param)
 {
     MString result;
     void *val = 0;
@@ -50,12 +50,12 @@ MString oslTypeToMString(MAYATO_OSL::OSLParameter param)
     }
     if (param.type == OSL::TypeDesc::TypeVector)
     {
-        MAYATO_OSL::SimpleVector &v = boost::get<MAYATO_OSL::SimpleVector>(param.value);
+        SimpleVector &v = boost::get<SimpleVector>(param.value);
         result = MString("vector ") + v.f[0] + " " + v.f[1] + " " + v.f[2];
     }
     if (param.type == OSL::TypeDesc::TypeColor)
     {
-        MAYATO_OSL::SimpleVector &v = boost::get<MAYATO_OSL::SimpleVector>(param.value);
+        SimpleVector &v = boost::get<SimpleVector>(param.value);
         result = MString("color ") + v.f[0] + " " + v.f[1] + " " + v.f[2];
     }
     if (param.type == OSL::TypeDesc::TypeString)
@@ -68,7 +68,7 @@ MString oslTypeToMString(MAYATO_OSL::OSLParameter param)
     }
     if (param.type == OSL::TypeDesc::TypeMatrix)
     {
-        MAYATO_OSL::SimpleMatrix &v = boost::get<MAYATO_OSL::SimpleMatrix>(param.value);
+        SimpleMatrix &v = boost::get<SimpleMatrix>(param.value);
         result = MString("matrix ") + v.f[0][0] + " " + v.f[0][1] + " " + v.f[0][2] + " " + v.f[0][3] +
             v.f[1][0] + " " + v.f[1][1] + " " + v.f[1][2] + " " + v.f[1][3] +
             v.f[2][0] + " " + v.f[2][1] + " " + v.f[2][2] + " " + v.f[2][3] +
@@ -78,9 +78,9 @@ MString oslTypeToMString(MAYATO_OSL::OSLParameter param)
 }
 
 
-void MAYATO_OSLUTIL::OSLUtilClass::connectOSLShaders(MAYATO_OSL::ConnectionArray& ca)
+void OSLUtilClass::connectOSLShaders(ConnectionArray& ca)
 {
-    std::vector<MAYATO_OSL::Connection>::iterator cIt;
+    std::vector<Connection>::iterator cIt;
     for (cIt = ca.begin(); cIt != ca.end(); cIt++)
     {
         const char *srcLayer = cIt->sourceNode.asChar();
@@ -89,18 +89,18 @@ void MAYATO_OSLUTIL::OSLUtilClass::connectOSLShaders(MAYATO_OSL::ConnectionArray
         MString destAttr = cIt->destAttribute;
         if (destAttr == "color")
             destAttr = "inColor";
-        Logging::debug(MString("MAYATO_OSL::connectOSLShaders ") + srcLayer + "." + srcAttr + " -> " + destLayer + "." + destAttr);
+        Logging::debug(MString("connectOSLShaders ") + srcLayer + "." + srcAttr + " -> " + destLayer + "." + destAttr);
         OSL::ShaderGroup *g = group;
         asr::ShaderGroup *ag = (asr::ShaderGroup *)g;
         ag->add_connection(srcLayer, srcAttr, destLayer, destAttr.asChar());
     }
 }
 
-void MAYATO_OSLUTIL::OSLUtilClass::createOSLShader(MString& shaderNodeType, MString& shaderName, MAYATO_OSL::OSLParamArray& paramArray)
+void OSLUtilClass::createOSLShader(MString& shaderNodeType, MString& shaderName, OSLParamArray& paramArray)
 {
-    Logging::debug(MString("MAYATO_OSL::createOSLShader ") + shaderName);
+    Logging::debug(MString("createOSLShader ") + shaderName);
     asr::ParamArray asParamArray;
-    std::vector<MAYATO_OSL::OSLParameter>::iterator pIt;
+    std::vector<OSLParameter>::iterator pIt;
     for (pIt = paramArray.begin(); pIt != paramArray.end(); pIt++)
     {
         MString pname = pIt->name;
@@ -112,7 +112,7 @@ void MAYATO_OSLUTIL::OSLUtilClass::createOSLShader(MString& shaderNodeType, MStr
         Logging::debug(MString("\tParam ") + pIt->name + " " + paramString);
     }
 
-    Logging::debug(MString("MAYATO_OSL::createOSLShader creating shader node "));
+    Logging::debug(MString("createOSLShader creating shader node "));
     OSL::ShaderGroup *g = group;
     asr::ShaderGroup *ag = (asr::ShaderGroup *)g;
     ag->add_shader("shader", shaderNodeType.asChar(), shaderName.asChar(), asParamArray);

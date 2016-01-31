@@ -39,19 +39,16 @@
 
 class NewSwatchRenderer;
 
-namespace SQueue
+struct SEvent
 {
-    struct SEvent
-    {
-        int height;
-        float *pixels;
-        bool *renderDone;
-        MObject shadingNode;
-        NewSwatchRenderer *swatchRenderer;
-    };
-
-    static concurrent_queue<SEvent> SwatchesQueue;
-    concurrent_queue<SEvent> *getQueue();
+    int height;
+    float *pixels;
+    bool *renderDone;
+    MObject shadingNode;
+    NewSwatchRenderer *swatchRenderer;
 };
+
+static concurrent_queue<SEvent> SwatchesQueue;
+concurrent_queue<SEvent> *getQueue();
 
 #endif

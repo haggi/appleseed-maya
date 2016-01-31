@@ -103,7 +103,6 @@ source_group ("shadingtools" FILES
 set (swatchesrenderer_sources
     swatchesrenderer/newswatchrenderer.h
     swatchesrenderer/swatchesqueue.h
-    swatchesrenderer/swatchgeometry.h
     swatchesrenderer/swatchrenderer.cpp
     swatchesrenderer/swatchrenderer.h
     swatchesrenderer/swatchrendererinterface.h

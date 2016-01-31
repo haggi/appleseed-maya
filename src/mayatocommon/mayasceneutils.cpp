@@ -202,7 +202,7 @@ MString MayaScene::getExportPath(MString ext, MString rendererName)
     pystring::split(currentFile, parts, "/");
     currentFile = pystring::replace(parts.back(), ".ma", "");
     currentFile = pystring::replace(currentFile, ".mb", "");
-    MString scenePath = MayaTo::getWorldPtr()->worldRenderGlobalsPtr->basePath + "/" + rendererName + "/" + currentFile.c_str() + "." + ext;
+    MString scenePath = getWorldPtr()->worldRenderGlobalsPtr->basePath + "/" + rendererName + "/" + currentFile.c_str() + "." + ext;
     return scenePath;
 }
 

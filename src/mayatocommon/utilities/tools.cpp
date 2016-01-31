@@ -238,7 +238,8 @@ MObject getOtherSideNode(const MString& plugName, MObject& thisObject, MStringAr
         int numChildConnects = plug.numConnectedChildren();
         if (numChildConnects == 0)
             return result;
-        else{
+        else
+        {
             for (int i = 0; i < numChildConnects; i++)
             {
                 MPlug child = plug.child(i);
@@ -317,7 +318,8 @@ void getConnectedChildPlugs(const char *attrName, MFnDependencyNode& depFn, bool
                 continue;
             if (!p[i].isCompound())
                 getConnectedChildPlugs(p[i], dest, thisNodePlugs, otherSidePlugs);
-            else{
+            else
+            {
                 if (getAttributeNameFromPlug(p) == MString("colorEntryList"))
                 {
                     getConnectedChildPlugs(p[i].child(1), dest, thisNodePlugs, otherSidePlugs);
@@ -388,7 +390,8 @@ bool isConnected(const char *attrName, MFnDependencyNode& depFn, bool dest, bool
             if (!pa[pId].isDestination())
                 continue;
         }
-        else{
+        else
+        {
             if (!pa[pId].isSource())
                 continue;
         }

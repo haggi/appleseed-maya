@@ -94,7 +94,8 @@ MString getAssemblyName(MayaObject *obj)
             sharedPtr<mtap_MayaObject> orig = staticPtrCast<mtap_MayaObject>(obj->origObject);
             return getAssemblyName(orig.get());
         }
-        else{
+        else
+        {
             Logging::error(MString("Object is instanced but has no orig object --> Problem: ") + obj->fullName);
             return "";
         }
@@ -141,7 +142,7 @@ void defineMasterAssembly(asr::Project *project)
 
     MMatrix conversionMatrix;
     conversionMatrix.setToIdentity();
-    MayaTo::MayaToWorld *world = MayaTo::getWorldPtr();
+    MayaToWorld *world = getWorldPtr();
     if (world != 0)
     {
         RenderGlobals *rg = world->worldRenderGlobalsPtr.get();
@@ -186,7 +187,7 @@ MayaObject *getAssemblyMayaObject(MayaObject *mobj)
 
 asr::Assembly *getCreateObjectAssembly(sharedPtr<MayaObject> obj)
 {
-    sharedPtr<AppleRender::AppleseedRenderer> appleRenderer = staticPtrCast<AppleRender::AppleseedRenderer>(MayaTo::getWorldPtr()->worldRendererPtr);
+    sharedPtr<AppleseedRenderer> appleRenderer = staticPtrCast<AppleseedRenderer>(getWorldPtr()->worldRendererPtr);
 
     MayaObject *assemblyObject = getAssemblyMayaObject(obj.get());
     if (assemblyObject == 0)
@@ -222,7 +223,7 @@ asr::Assembly *getCreateObjectAssembly(sharedPtr<MayaObject> obj)
 
 asr::AssemblyInstance *getExistingObjectAssemblyInstance(MayaObject *obj)
 {
-    sharedPtr<AppleRender::AppleseedRenderer> appleRenderer = staticPtrCast<AppleRender::AppleseedRenderer>(MayaTo::getWorldPtr()->worldRendererPtr);
+    sharedPtr<AppleseedRenderer> appleRenderer = staticPtrCast<AppleseedRenderer>(getWorldPtr()->worldRendererPtr);
     MayaObject *assemblyObject = getAssemblyMayaObject(obj);
     if (assemblyObject == 0)
     {
@@ -254,7 +255,7 @@ void mayaColorToFloat(const MColor col, float *floatCol, float *alpha)
 
 void removeColorEntityIfItExists(const MString colorName)
 {
-    sharedPtr<AppleRender::AppleseedRenderer> appleRenderer = staticPtrCast<AppleRender::AppleseedRenderer>(MayaTo::getWorldPtr()->worldRendererPtr);
+    sharedPtr<AppleseedRenderer> appleRenderer = staticPtrCast<AppleseedRenderer>(getWorldPtr()->worldRendererPtr);
     assert(appleRenderer != 0);
     asr::Scene *scene = getSceneFromProject(appleRenderer->getProjectPtr());
     asr::ColorEntity *entity = scene->colors().get_by_name(colorName.asChar());
@@ -300,7 +301,7 @@ MString colorOrMap(asr::Project *project, MFnDependencyNode& shaderNode, MString
 
 void removeTextureEntityIfItExists(MString& textureName)
 {
-    sharedPtr<AppleRender::AppleseedRenderer> appleRenderer = staticPtrCast<AppleRender::AppleseedRenderer>(MayaTo::getWorldPtr()->worldRendererPtr);
+    sharedPtr<AppleseedRenderer> appleRenderer = staticPtrCast<AppleseedRenderer>(getWorldPtr()->worldRendererPtr);
     assert(appleRenderer != 0);
     asr::Scene *scene = getSceneFromProject(appleRenderer->getProjectPtr());
 
@@ -316,7 +317,7 @@ void removeTextureEntityIfItExists(MString& textureName)
 
 MString defineTexture(MFnDependencyNode& shader, MString& attributeName)
 {
-    sharedPtr<AppleRender::AppleseedRenderer> appleRenderer = staticPtrCast<AppleRender::AppleseedRenderer>(MayaTo::getWorldPtr()->worldRendererPtr);
+    sharedPtr<AppleseedRenderer> appleRenderer = staticPtrCast<AppleseedRenderer>(getWorldPtr()->worldRendererPtr);
     assert(appleRenderer != 0);
     asr::Scene *scene = getSceneFromProject(appleRenderer->getProjectPtr());
     asf::SearchPaths &searchPaths = appleRenderer->getProjectPtr()->search_paths();
@@ -394,12 +395,12 @@ void fillTransformMatrices(MMatrix matrix, asr::AssemblyInstance *assInstance)
 
 void fillMatrices(sharedPtr<MayaObject> obj, asr::TransformSequence& transformSequence)
 {
-    MMatrix conversionMatrix = MayaTo::getWorldPtr()->worldRenderGlobalsPtr->globalConversionMatrix;
-    float scaleFactor = MayaTo::getWorldPtr()->worldRenderGlobalsPtr->scaleFactor;
+    MMatrix conversionMatrix = getWorldPtr()->worldRenderGlobalsPtr->globalConversionMatrix;
+    float scaleFactor = getWorldPtr()->worldRenderGlobalsPtr->scaleFactor;
     transformSequence.clear();
 
     // in ipr mode we have to update the matrix manually
-    if (MayaTo::getWorldPtr()->getRenderType() == MayaTo::MayaToWorld::IPRRENDER)
+    if (getWorldPtr()->getRenderType() == MayaToWorld::IPRRENDER)
     {
         obj->transformMatrices.clear();
         obj->transformMatrices.push_back(obj->dagPath.inclusiveMatrix());
@@ -433,7 +434,7 @@ void fillMatrices(sharedPtr<MayaObject> obj, asr::TransformSequence& transformSe
 void fillTransformMatrices(sharedPtr<MayaObject> obj, asr::Light *light)
 {
     // in ipr mode we have to update the matrix manually
-    if (MayaTo::getWorldPtr()->getRenderType() == MayaTo::MayaToWorld::IPRRENDER)
+    if (getWorldPtr()->getRenderType() == MayaToWorld::IPRRENDER)
     {
         obj->transformMatrices.clear();
         obj->transformMatrices.push_back(obj->dagPath.inclusiveMatrix());

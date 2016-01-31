@@ -88,31 +88,31 @@ MStatus MayaToAppleseed::doIt(const MArgList& args)
 
     if (argData.isFlagSet("-state", &stat))
     {
-        if (MayaTo::getWorldPtr()->renderState == MayaTo::MayaToWorld::RSTATETRANSLATING)
+        if (getWorldPtr()->renderState == MayaToWorld::RSTATETRANSLATING)
             setResult("rstatetranslating");
-        if (MayaTo::getWorldPtr()->renderState == MayaTo::MayaToWorld::RSTATERENDERING)
+        if (getWorldPtr()->renderState == MayaToWorld::RSTATERENDERING)
             setResult("rstaterendering");
-        if (MayaTo::getWorldPtr()->renderState == MayaTo::MayaToWorld::RSTATEDONE)
+        if (getWorldPtr()->renderState == MayaToWorld::RSTATEDONE)
             setResult("rstatedone");
-        if (MayaTo::getWorldPtr()->renderState == MayaTo::MayaToWorld::RSTATENONE)
+        if (getWorldPtr()->renderState == MayaToWorld::RSTATENONE)
             setResult("rstatenone");
-        if (MayaTo::getWorldPtr()->renderState == MayaTo::MayaToWorld::RSTATESTOPPED)
+        if (getWorldPtr()->renderState == MayaToWorld::RSTATESTOPPED)
             setResult("rstatestopped");
         return MS::kSuccess;
     }
 
     if (argData.isFlagSet("-stopIpr", &stat))
     {
-        EventQueue::Event e;
-        e.type = EventQueue::Event::IPRSTOP;
+        Event e;
+        e.type = Event::IPRSTOP;
         theRenderEventQueue()->push(e);
         return MS::kSuccess;
     }
 
     if (argData.isFlagSet("-pauseIpr", &stat))
     {
-        EventQueue::Event e;
-        e.type = EventQueue::Event::IPRPAUSE;
+        Event e;
+        e.type = Event::IPRPAUSE;
         theRenderEventQueue()->push(e);
         return MS::kSuccess;
     }
@@ -120,13 +120,13 @@ MStatus MayaToAppleseed::doIt(const MArgList& args)
     // I have to request useRenderRegion here because as soon the command is finished,
     // what happens immediatly after the command is put into the queue, the value is
     // set back to false.
-    std::auto_ptr<MayaTo::CmdArgs> cmdArgs(new MayaTo::CmdArgs);
+    std::auto_ptr<CmdArgs> cmdArgs(new CmdArgs);
     MObject drg = objectFromName("defaultRenderGlobals");
     MFnDependencyNode drgfn(drg);
     cmdArgs->useRenderRegion = drgfn.findPlug("useRenderRegion").asBool();
 
     if (argData.isFlagSet("-startIpr", &stat))
-        cmdArgs->renderType = MayaTo::MayaToWorld::IPRRENDER;
+        cmdArgs->renderType = MayaToWorld::IPRRENDER;
 
     if (argData.isFlagSet("-width", &stat))
         argData.getFlagArgument("-width", 0, cmdArgs->width);
@@ -145,9 +145,9 @@ MStatus MayaToAppleseed::doIt(const MArgList& args)
         cmdArgs->cameraDagPath = camera;
     }
 
-    EventQueue::Event e;
+    Event e;
     e.cmdArgsData.reset(cmdArgs.release());
-    e.type = EventQueue::Event::INITRENDER;
+    e.type = Event::INITRENDER;
     theRenderEventQueue()->push(e);
 
     if (MGlobal::mayaState() == MGlobal::kBatch)

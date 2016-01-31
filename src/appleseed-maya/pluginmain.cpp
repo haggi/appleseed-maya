@@ -115,9 +115,9 @@ DLLEXPORT MStatus initializePlugin(MObject obj)
         return status;
     }
 
-    MayaTo::defineWorld();
+    defineWorld();
     MString loadPath = plugin.loadPath();
-    MayaTo::getWorldPtr()->shaderSearchPath.append(loadPath);
+    getWorldPtr()->shaderSearchPath.append(loadPath);
 
     if (MGlobal::mayaState() != MGlobal::kBatch)
     {
@@ -141,7 +141,7 @@ DLLEXPORT MStatus uninitializePlugin(MObject obj)
     MStatus   status;
     MFnPlugin plugin(obj);
 
-    MayaTo::deleteWorld();
+    deleteWorld();
 
     const MString UserClassify("shader/surface");
 

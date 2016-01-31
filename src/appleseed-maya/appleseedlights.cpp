@@ -43,7 +43,6 @@
 
 static Logging logger;
 
-using namespace AppleRender;
 #define colorAttr(c) (MString("") + c.r + " " + c.g + " " + c.g)
 
 void AppleseedRenderer::defineLight(sharedPtr<MayaObject> obj)
@@ -215,8 +214,8 @@ void AppleseedRenderer::defineLights()
     MFnDependencyNode rGlNode(getRenderGlobalsNode());
     // first get the globals node and serach for a directional light connection
     MObject coronaGlobals = getRenderGlobalsNode();
-    sharedPtr<RenderGlobals> renderGlobals = MayaTo::getWorldPtr()->worldRenderGlobalsPtr;
-    sharedPtr<MayaScene> mayaScene = MayaTo::getWorldPtr()->worldScenePtr;
+    sharedPtr<RenderGlobals> renderGlobals = getWorldPtr()->worldRenderGlobalsPtr;
+    sharedPtr<MayaScene> mayaScene = getWorldPtr()->worldScenePtr;
 
     std::vector<sharedPtr<MayaObject> >::iterator oIt;
     for (oIt = mayaScene->lightList.begin(); oIt != mayaScene->lightList.end(); oIt++)

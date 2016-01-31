@@ -241,7 +241,8 @@ void MayaObject::initialize()
     MPlug matrixPlug = depFn.findPlug(MString("matrix"), &stat);
     if (!stat)
         Logging::debug(MString("Could not find matrix plug"));
-    else{
+    else
+    {
         MPlugArray outputs;
         if (matrixPlug.isConnected())
         {
@@ -299,7 +300,8 @@ bool MayaObject::isObjAnimated()
             depFn.getConnections(connections);
             if (connections.length() == 0)
                 returnValue = false;
-            else{
+            else
+            {
                 for (uint cId = 0; cId < connections.length(); cId++)
                 {
                     if (connections[cId].isDestination())
@@ -373,7 +375,7 @@ void MayaObject::addMeshData()
     if (this->hasBifrostVelocityChannel())
     {
         bool doMb = this->motionBlurred;
-        sharedPtr<RenderGlobals> renderGlobals = MayaTo::getWorldPtr()->worldRenderGlobalsPtr;
+        sharedPtr<RenderGlobals> renderGlobals = getWorldPtr()->worldRenderGlobalsPtr;
         doMb = doMb && renderGlobals->doMb;
 
         Logging::debug(MString("Found bifrost velocity data for object: ") + this->shortName);
@@ -422,7 +424,8 @@ void MayaObject::addMeshData()
                 this->meshDataList.push_back(mdata);
         }
     }
-    else{
+    else
+    {
         this->getMeshData(mdata.points, mdata.normals);
         int np = mdata.points.length();
         this->meshDataList.push_back(mdata);
@@ -566,7 +569,8 @@ void MayaObject::getMeshData(MPointArray& points, MFloatVectorArray& normals, MF
             {
                 faceUVIndices.append(0);
             }
-            else{
+            else
+            {
                 faceIt.getUVIndex(vtxId, uvIndex);
                 faceUVIndices.append(uvIndex);
             }

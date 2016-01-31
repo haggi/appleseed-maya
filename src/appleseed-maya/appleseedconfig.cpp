@@ -34,8 +34,6 @@
 #include "renderglobals.h"
 #include "world.h"
 
-using namespace AppleRender;
-
 const char *lightingEngines[] = {"pt", "drt", "sppm"};
 const char *bucketOrders[] = { "linear", "spiral", "hilbert", "random" };
 const char *photonTypes[] = { "mono", "poly" };
@@ -49,7 +47,7 @@ void AppleseedRenderer::addRenderParams(asr::ParamArray& paramArray)
     MString bucketOrder = bucketOrders[getEnumInt("tile_ordering", renderGlobalsFn)];
     MString photonType = photonTypes[getEnumInt("photon_type", renderGlobalsFn)];
     MString dlType = dlTypes[getEnumInt("dl_mode", renderGlobalsFn)];
-    sharedPtr<RenderGlobals> renderGlobals = MayaTo::getWorldPtr()->worldRenderGlobalsPtr;
+    sharedPtr<RenderGlobals> renderGlobals = getWorldPtr()->worldRenderGlobalsPtr;
 
     paramArray.insert_path("texture_store.max_size", getIntAttr("texCacheSize", renderGlobalsFn, 128) * 1024 * 1024); // at least 128 MB
 
@@ -99,7 +97,7 @@ void AppleseedRenderer::defineConfig()
 {
     Logging::debug("AppleseedRenderer::defineConfig");
     MFnDependencyNode renderGlobalsFn(getRenderGlobalsNode());
-    sharedPtr<RenderGlobals> renderGlobals = MayaTo::getWorldPtr()->worldRenderGlobalsPtr;
+    sharedPtr<RenderGlobals> renderGlobals = getWorldPtr()->worldRenderGlobalsPtr;
 
     project->add_default_configurations();
     addRenderParams(this->project->configurations().get_by_name("final")->get_parameters());

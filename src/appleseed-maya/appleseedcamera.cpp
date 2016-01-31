@@ -35,8 +35,6 @@
 #include <maya/MFnCamera.h>
 #include "world.h"
 
-using namespace AppleRender;
-
 //  appleseed does not support more than one camera at the moment, so break after the first one.
 //  Cameras are more a mixture between assembly and object. They have a transformation like an assembly but
 //  attributes like an object.
@@ -44,8 +42,8 @@ using namespace AppleRender;
 void AppleseedRenderer::defineCamera(sharedPtr<MayaObject> cam)
 {
     MStatus stat;
-    sharedPtr<MayaScene> mayaScene = MayaTo::getWorldPtr()->worldScenePtr;
-    sharedPtr<RenderGlobals> renderGlobals = MayaTo::getWorldPtr()->worldRenderGlobalsPtr;
+    sharedPtr<MayaScene> mayaScene = getWorldPtr()->worldScenePtr;
+    sharedPtr<RenderGlobals> renderGlobals = getWorldPtr()->worldRenderGlobalsPtr;
 
     asr::Camera *camera = project->get_scene()->get_camera();
     if (camera != 0)
@@ -113,8 +111,8 @@ void AppleseedRenderer::defineCamera(sharedPtr<MayaObject> cam)
 void AppleseedRenderer::defineCamera()
 {
     MStatus stat;
-    sharedPtr<MayaScene> mayaScene = MayaTo::getWorldPtr()->worldScenePtr;
-    sharedPtr<RenderGlobals> renderGlobals = MayaTo::getWorldPtr()->worldRenderGlobalsPtr;
+    sharedPtr<MayaScene> mayaScene = getWorldPtr()->worldScenePtr;
+    sharedPtr<RenderGlobals> renderGlobals = getWorldPtr()->worldRenderGlobalsPtr;
 
     std::vector<sharedPtr<MayaObject> >::iterator oIt;
     for (oIt = mayaScene->camList.begin(); oIt != mayaScene->camList.end(); oIt++)

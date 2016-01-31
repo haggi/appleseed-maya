@@ -32,15 +32,13 @@
 #include "utilities/attrtools.h"
 #include "world.h"
 
-using namespace AppleRender;
-
 void AppleseedRenderer::defineOutput()
 {
     asr::Frame *frame = project->get_frame();
     if (frame == 0)
     {
         MFnDependencyNode depFn(getRenderGlobalsNode());
-        sharedPtr<RenderGlobals> renderGlobals = MayaTo::getWorldPtr()->worldRenderGlobalsPtr;
+        sharedPtr<RenderGlobals> renderGlobals = getWorldPtr()->worldRenderGlobalsPtr;
         Logging::debug("AppleseedRenderer::defineOutput");
         int width, height;
         renderGlobals->getWidthHeight(width, height);

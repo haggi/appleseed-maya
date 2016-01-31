@@ -44,7 +44,6 @@
 #include "definitions.h"
 
 #include "renderer/modeling/object/meshobjectreader.h"
-using namespace AppleRender;
 
 #define MTAP_MESH_STANDIN_ID 0x0011CF7B
 
@@ -62,7 +61,8 @@ asf::auto_release_ptr<asr::MeshObject> AppleseedRenderer::defineStandardPlane(bo
         object->push_vertex(asr::GVector3(1.0f, 1.0f, 0.0f));
         object->push_vertex(asr::GVector3(1.0f, -1.0f, 0.0f));
     }
-    else{
+    else
+    {
         // Vertices.
         object->push_vertex(asr::GVector3(-1.0f, 0.0f, -1.0f));
         object->push_vertex(asr::GVector3(-1.0f, 0.0f, 1.0f));
@@ -74,7 +74,8 @@ asf::auto_release_ptr<asr::MeshObject> AppleseedRenderer::defineStandardPlane(bo
     {
         object->push_vertex_normal(asr::GVector3(0.0f, 0.0f, -1.0f));
     }
-    else{
+    else
+    {
         object->push_vertex_normal(asr::GVector3(0.0f, 1.0f, 0.0f));
     }
     object->push_tex_coords(asr::GVector2(0.0, 0.0));
@@ -259,8 +260,8 @@ void AppleseedRenderer::updateInstance(sharedPtr<MayaObject> mobj)
 
 void AppleseedRenderer::defineGeometry()
 {
-    sharedPtr<MayaScene> mayaScene = MayaTo::getWorldPtr()->worldScenePtr;
-    sharedPtr<RenderGlobals> renderGlobals = MayaTo::getWorldPtr()->worldRenderGlobalsPtr;
+    sharedPtr<MayaScene> mayaScene = getWorldPtr()->worldScenePtr;
+    sharedPtr<RenderGlobals> renderGlobals = getWorldPtr()->worldRenderGlobalsPtr;
     std::vector<sharedPtr<MayaObject> >::iterator oIt;
     for (oIt = mayaScene->objectList.begin(); oIt != mayaScene->objectList.end(); oIt++)
     {

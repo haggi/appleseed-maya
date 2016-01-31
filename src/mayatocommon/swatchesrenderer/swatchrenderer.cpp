@@ -63,20 +63,20 @@ bool SwatchRenderer::doIteration()
     image().create(resolution(), resolution(), 4, MImage::kFloat);
 
     // if another render process is rendering then...
-    MayaTo::MayaToWorld::WorldRenderState rState = MayaTo::getWorldPtr()->getRenderState();
-    MayaTo::MayaToWorld::WorldRenderType rType = MayaTo::getWorldPtr()->getRenderType();
-    if ((rState == MayaTo::MayaToWorld::RSTATERENDERING) || (rType == MayaTo::MayaToWorld::IPRRENDER))
+    MayaToWorld::WorldRenderState rState = getWorldPtr()->getRenderState();
+    MayaToWorld::WorldRenderType rType = getWorldPtr()->getRenderType();
+    if ((rState == MayaToWorld::RSTATERENDERING) || (rType == MayaToWorld::IPRRENDER))
     {
         this->renderInterface->getImageData(this->image()); // copy empty image
         image().convertPixelFormat(MImage::kByte);
         return false;
     }
-    MayaTo::getWorldPtr()->setRenderType(MayaTo::MayaToWorld::SWATCHRENDER);
-    MayaTo::getWorldPtr()->setRenderState(MayaTo::MayaToWorld::RSTATESWATCHRENDERING);
+    getWorldPtr()->setRenderType(MayaToWorld::SWATCHRENDER);
+    getWorldPtr()->setRenderState(MayaToWorld::RSTATESWATCHRENDERING);
     this->renderInterface->renderSwatch();
     this->renderInterface->getImageData(this->image());
     image().convertPixelFormat(MImage::kByte);
-    MayaTo::getWorldPtr()->setRenderState(MayaTo::MayaToWorld::RSTATENONE);
-    MayaTo::getWorldPtr()->setRenderType(MayaTo::MayaToWorld::RTYPENONE);
+    getWorldPtr()->setRenderState(MayaToWorld::RSTATENONE);
+    getWorldPtr()->setRenderType(MayaToWorld::RTYPENONE);
     return true;
 }

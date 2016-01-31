@@ -38,8 +38,8 @@
 
 #include "boost/function.hpp"
 
-static EventQueue::concurrent_queue<EventQueue::Event> RenderEventQueue;
-EventQueue::concurrent_queue<EventQueue::Event> *theRenderEventQueue();
+static concurrent_queue<Event> RenderEventQueue;
+concurrent_queue<Event> *theRenderEventQueue();
 
 struct Callback
 {
@@ -83,24 +83,21 @@ class RenderQueueWorker
     static void setEndTime();
     static MString getElapsedTimeString();
     static MString getCaptionString();
-    static void updateRenderView(EventQueue::Event& e);
+    static void updateRenderView(Event& e);
     static size_t registerCallback(boost::function<void()> function, unsigned int millisecondsUpdateInterval = 100);
     static void unregisterCallback(size_t cbId);
     static void callbackWorker(size_t cbId);
     static bool iprCallbacksDone();
     static void iprFindLeafNodes();
-    static void iprWaitForFinish(EventQueue::Event e);
+    static void iprWaitForFinish(Event e);
 
     static void interactiveStartThread();
 };
 
-namespace EventQueue
+struct RandomPixel
 {
-    struct RandomPixel
-    {
-        RV_PIXEL pixel;
-        int x, y;
-    };
+    RV_PIXEL pixel;
+    int x, y;
 };
 
 std::vector<MObject> *getModifiedObjectList();

@@ -67,7 +67,6 @@
 #include "swatchesevent.h"
 #include "swatchesrenderer/swatchesqueue.h"
 #include "swatchesrenderer/newswatchrenderer.h"
-#include "swatchesrenderer/swatchgeometry.h"
 #include <maya/MFnDependencyNode.h>
 #include "utilities/logging.h"
 #include "utilities/tools.h"
@@ -98,7 +97,8 @@ AppleseedSwatchRenderer::AppleseedSwatchRenderer()
         Logging::error(MString("Unable to load swatch render file correctly: ") + swatchRenderFile);
         return;
     }
-    else{
+    else
+    {
         Logging::info(MString("Successfully loaded swatch render file."));
     }
     MString cmd = MString("import renderer.osltools as osl;osl.getOSODirs();");
@@ -205,18 +205,19 @@ void AppleseedSwatchRenderer::mainLoop()
     Logging::setLogLevel(Logging::LevelDebug);
 #endif
 
-    SQueue::SEvent swatchEvent;
+    SEvent swatchEvent;
     Logging::debug("Starting AppleseedSwatchRenderer main Loop.");
     while (!terminateLoop)
     {
-        SQueue::getQueue()->wait_and_pop(swatchEvent);
+        getQueue()->wait_and_pop(swatchEvent);
 
         if (swatchEvent.renderDone == 0)
         {
             Logging::debug(MString("AppleseedSwatchRenderer main Loop: received a null ptr. Terminating loop"));
             terminateLoop = true;
         }
-        else{
+        else
+        {
             swatchEvent.swatchRenderer->finishParallelRender();
             *swatchEvent.renderDone = true;
         }
@@ -249,7 +250,7 @@ void AppleseedSwatchRenderer::defineMaterial(MObject shadingNode)
                 if (paOut[k].node().hasFn(MFn::kShadingEngine))
                 {
                     MObject outNode = paOut[k].node();
-                    AppleRender::updateMaterial(outNode, assembly);
+                    updateMaterial(outNode, assembly);
                     break;
                 }
             }
@@ -271,7 +272,7 @@ void AppleseedSwatchRenderer::startAppleseedSwatchRender(AppleseedSwatchRenderer
 void AppleseedSwatchRenderer::terminateAppleseedSwatchRender(AppleseedSwatchRenderer *swRend)
 {
     Logging::debug(MString("terminateAppleseedSwatchRender"));
-    SQueue::SEvent swatchEvent;
-    SQueue::SwatchesQueue.push(swatchEvent);
+    SEvent swatchEvent;
+    SwatchesQueue.push(swatchEvent);
     swRend->terminateLoop = true;
 }

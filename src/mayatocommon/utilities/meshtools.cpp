@@ -167,7 +167,8 @@ void getMeshData(MObject& meshObject, MPointArray& points, MFloatVectorArray& no
             {
                 faceUVIndices.append(0);
             }
-            else{
+            else
+            {
                 faceIt.getUVIndex(vtxId, uvIndex);
                 faceUVIndices.append(uvIndex);
             }

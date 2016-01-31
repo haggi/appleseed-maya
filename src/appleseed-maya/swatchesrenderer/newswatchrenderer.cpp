@@ -85,14 +85,14 @@ bool NewSwatchRenderer::doIteration()
     Logging::setLogLevel(Logging::LevelDebug);
 #endif
 
-    if (MayaTo::getWorldPtr()->getRenderType() == MayaTo::MayaToWorld::IPRRENDER)
+    if (getWorldPtr()->getRenderType() == MayaToWorld::IPRRENDER)
     {
         image().create(resolution(), resolution(), 4, MImage::kFloat);
         image().convertPixelFormat(MImage::kByte);
         return true;
     }
 
-    AppleseedSwatchRenderer * appleSwRndr = (AppleseedSwatchRenderer *)MayaTo::getObjPtr("appleseedSwatchesRenderer");
+    AppleseedSwatchRenderer * appleSwRndr = (AppleseedSwatchRenderer *)getObjPtr("appleseedSwatchesRenderer");
     if (appleSwRndr)
     {
         if (appleSwRndr->mrenderer.get() != 0)
@@ -100,7 +100,8 @@ bool NewSwatchRenderer::doIteration()
             appleSwRndr->renderSwatch(this);
             image().convertPixelFormat(MImage::kByte);
         }
-        else{
+        else
+        {
             image().create(resolution(), resolution(), 4, MImage::kFloat);
             image().convertPixelFormat(MImage::kByte);
         }

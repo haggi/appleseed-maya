@@ -163,11 +163,13 @@ void MayaScene::getLightLinking()
                         lightArray.append(tmpLightArray[lp]);
                 }
             }
-            else{
+            else
+            {
                 lightLink.getLinkedLights(obj->dagPath, MObject::kNullObj, lightArray);
             }
         }
-        else{
+        else
+        {
             lightLink.getLinkedLights(obj->dagPath, MObject::kNullObj, lightArray);
         }
         // if one of the light in my scene light list is NOT in the linked light list,

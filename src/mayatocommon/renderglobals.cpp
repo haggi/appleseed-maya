@@ -106,7 +106,8 @@ float RenderGlobals::updateFrameNumber()
         currentFrameNumber = this->frameList[currentFrameIndex++];
         return currentFrameNumber;
     }
-    else{
+    else
+    {
         return this->frameList.back();
     }
 }

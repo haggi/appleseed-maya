@@ -32,8 +32,6 @@
 #include "utilities/tools.h"
 #include "mayascene.h"
 
-using namespace AppleRender;
-
 void AppleseedRenderer::doInteractiveUpdate()
 {
     Logging::debug("AppleseedRenderer::doInteractiveUpdate");
@@ -109,7 +107,8 @@ void AppleseedRenderer::doInteractiveUpdate()
                 fillTransformMatrices(m, assInst);
                 assInst->bump_version_id();
             }
-            else{
+            else
+            {
                 if (obj->instanceNumber == 0)
                     updateGeometry(obj);
                 if (obj->instanceNumber > 0)
