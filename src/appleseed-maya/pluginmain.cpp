@@ -68,69 +68,54 @@ static const MString asDisneyMaterialIdFullClassification("shader/surface:Apples
 static const MString asLayeredId("asLayeredId");
 static const MString asLayeredIdFullClassification("shader/surface:Appleseed/material:" + swatchFullName);
 
+static const MString UserClassify("shader/surface");
+
 DLLEXPORT MStatus initializePlugin(MObject obj)
 {
-    const MString UserClassify("shader/surface");
-
     const std::vector<std::string> versions = getFullVersionString();
     for (size_t i = 0; i < versions.size(); ++i)
         MGlobal::displayInfo(versions[i].c_str());
 
     MStatus status;
-    MFnPlugin plugin(obj, VENDOR, getFullVersionString()[0].c_str(), "Any");
+    MFnPlugin plugin(obj, VENDOR, versions[0].c_str(), "Any");
 
     status = plugin.registerCommand(commandName, MayaToAppleseed::creator, MayaToAppleseed::syntaxCreator);
-    if (!status)
-    {
-        status.perror("cannot register command: mayatoappleseed");
-        return status;
-    }
+    CHECK_MSTATUS_AND_RETURN_IT(status);
 
     status = plugin.registerNode(MayaToAppleseedGlobalsName, MayaToAppleseedGlobals::id, MayaToAppleseedGlobals::creator, MayaToAppleseedGlobals::initialize);
-    if (!status)
-    {
-        status.perror("cannot register node: MayaToAppleseedGlobals");
-        return status;
-    }
+    CHECK_MSTATUS_AND_RETURN_IT(status);
 
-    CHECK_MSTATUS(MHWRender::MDrawRegistry::registerSurfaceShadingNodeOverrideCreator(asDisneyMaterialIdDrawDBClassification, asDisneyMaterialId, asDisneyMaterialOverride::creator));
+    status = MHWRender::MDrawRegistry::registerSurfaceShadingNodeOverrideCreator(asDisneyMaterialIdDrawDBClassification, asDisneyMaterialId, asDisneyMaterialOverride::creator);
+    CHECK_MSTATUS_AND_RETURN_IT(status);
+
     status = plugin.registerNode("asDisneyMaterial", asDisneyMaterial::id, asDisneyMaterial::creator, asDisneyMaterial::initialize, MPxNode::kDependNode, &asDisneyMaterialIdFullClassification);
-    CHECK_MSTATUS(status);
+    CHECK_MSTATUS_AND_RETURN_IT(status);
+
     status = plugin.registerNode("asLayeredShader", asLayeredShader::id, asLayeredShader::creator, asLayeredShader::initialize, MPxNode::kDependNode, &asLayeredIdFullClassification);
-    CHECK_MSTATUS(status);
+    CHECK_MSTATUS_AND_RETURN_IT(status);
 
     MString command("if (`window -exists createRenderNodeWindow`) {refreshCreateRenderNodeWindow(\"");
     command += UserClassify;
     command += "\");}\n";
-    MGlobal::executeCommand(command);
+    status = MGlobal::executeCommand(command);
+    CHECK_MSTATUS_AND_RETURN_IT(status);
 
     setRendererHome(getenv("MTAP_HOME"));
 
-    MString cmd = MString("import appleseed.mtap_initialize as minit; minit.initRenderer()");
     MGlobal::displayInfo("try to register...");
-    status = MGlobal::executePythonCommand(cmd, true, false);
-    if (!status)
-    {
-        status.perror("Problem executing cmd: mtap_initialize.initRenderer()");
-        return status;
-    }
+    status = MGlobal::executePythonCommand("import mtap_initialize as minit; minit.initRenderer()", true, false);
+    CHECK_MSTATUS_AND_RETURN_IT(status);
 
     defineWorld();
-    MString loadPath = plugin.loadPath();
-    getWorldPtr()->shaderSearchPath.append(loadPath);
+
+    getWorldPtr()->shaderSearchPath.append(plugin.loadPath());
 
     if (MGlobal::mayaState() != MGlobal::kBatch)
-    {
         MSwatchRenderRegister::registerSwatchRender(swatchName, NewSwatchRenderer::creator);
-    }
 
 #if MAYA_API_VERSION >= 201600
     status = plugin.registerRenderer("appleseed", mtap_MayaRenderer::creator);
-    if (!status)
-    {
-        status.perror("cannot register node: appleseed Maya renderer");
-        return status;
-    }
+    CHECK_MSTATUS_AND_RETURN_IT(status);
 #endif
 
     return status;
@@ -138,54 +123,39 @@ DLLEXPORT MStatus initializePlugin(MObject obj)
 
 DLLEXPORT MStatus uninitializePlugin(MObject obj)
 {
-    MStatus   status;
+    MStatus status;
     MFnPlugin plugin(obj);
 
     deleteWorld();
 
-    const MString UserClassify("shader/surface");
-
     status = plugin.deregisterCommand(commandName);
-    if (!status)
-    {
-        status.perror("cannot deregister command: MayaToAppleseedCmd");
-        return status;
-    }
+    CHECK_MSTATUS_AND_RETURN_IT(status);
 
     if (MGlobal::mayaState() != MGlobal::kBatch)
         MSwatchRenderRegister::unregisterSwatchRender(swatchName);
 
 #if MAYA_API_VERSION >= 201600
-    status = plugin.deregisterRenderer("Corona");
-    if (!status)
-    {
-        status.perror("cannot deregister node: Corona Maya renderer");
-        return status;
-    }
+    status = plugin.deregisterRenderer("appleseed");
+    CHECK_MSTATUS_AND_RETURN_IT(status);
 #endif
 
     status = plugin.deregisterNode(MayaToAppleseedGlobals::id);
-    if (!status)
-    {
-        status.perror("cannot deregister node: MayaToAppleseedGlobals");
-        return status;
-    }
+    CHECK_MSTATUS_AND_RETURN_IT(status);
 
-    CHECK_MSTATUS(MHWRender::MDrawRegistry::deregisterSurfaceShadingNodeOverrideCreator(asDisneyMaterialIdDrawDBClassification, asDisneyMaterialId));
-    CHECK_MSTATUS(plugin.deregisterNode(asDisneyMaterial::id));
+    status = MHWRender::MDrawRegistry::deregisterSurfaceShadingNodeOverrideCreator(asDisneyMaterialIdDrawDBClassification, asDisneyMaterialId);
+    CHECK_MSTATUS_AND_RETURN_IT(status);
+
+    status = plugin.deregisterNode(asDisneyMaterial::id);
+    CHECK_MSTATUS_AND_RETURN_IT(status);
 
     MString command("if (`window -exists createRenderNodeWindow`) {refreshCreateRenderNodeWindow(\"");
     command += UserClassify;
     command += "\");}\n";
-    CHECK_MSTATUS(MGlobal::executeCommand(command));
+    status = MGlobal::executeCommand(command);
+    CHECK_MSTATUS_AND_RETURN_IT(status);
 
-    MString cmd = MString("import appleseed.mtap_initialize as minit; minit.unregister()");
-    status = MGlobal::executePythonCommand(cmd);
-    if (!status)
-    {
-        status.perror("Problem executing cmd: mtap_initialize.unregister()");
-        return status;
-    }
+    status = MGlobal::executePythonCommand("import mtap_initialize as minit; minit.unregister()");
+    CHECK_MSTATUS_AND_RETURN_IT(status);
 
     return status;
 }
