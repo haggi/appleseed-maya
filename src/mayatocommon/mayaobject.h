@@ -81,7 +81,7 @@ class MayaObject : public MBoundingBox
     MString fullNiceName;
     int index;
     MDagPath dagPath;
-    bool removed = false; // in IPR we simply flag an object as removed instead of really removing it
+    bool removed; // in IPR we simply flag an object as removed instead of really removing it
     sharedPtr<ObjectAttributes> attributes;
 
     std::vector<MDagPath> linkedLights; // for objects - light linking

@@ -85,6 +85,12 @@ void MayaToWorld::beforeExitCallback(void *ptr)
 
 MayaToWorld::MayaToWorld()
 {
+    internalScaleFactor = 1.0f;
+    rendererScaleFactor = 1.0f;
+    scaleFactor = 1.0f;
+    sceneScale = 1.0f;
+    _canDoIPR = false;
+
     MStatus stat;
 
     // in batch mode we do not need any renderView callbacks, and timer callbacks do not work anyway in batch

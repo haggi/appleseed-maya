@@ -292,7 +292,7 @@ MStatus MayaToAppleseedGlobals::initialize()
 
     AOVs = mAttr.create("AOVs", "AOVs");
     mAttr.setArray(true);
-    mAttr.indexMatters(false);
+    mAttr.indexMatters();
     CHECK_MSTATUS(addAttribute(AOVs));
 
     ground_albedo = nAttr.create("ground_albedo", "ground_albedo",  MFnNumericData::kFloat, .0f);
