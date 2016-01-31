@@ -7,9 +7,7 @@ import shutil
 import sys
 import xml.etree.cElementTree as ET
 import xml.dom.minidom as minidom
-#from test.badsyntax_future3 import result
 
-#global shader dictionary
 SHADER_DICT = {}
 
 log = logging.getLogger("renderLogger")
@@ -50,7 +48,7 @@ def getOSODirs(renderer = "appleseed"):
     try:
         shaderDir = os.environ['{0}_OSL_SHADERS_LOCATION'.format(renderer.upper())]
     except KeyError:
-        shaderDir = path.path(__file__).parent() + "/shaders"
+        shaderDir = path.path(__file__).parent + "/shaders"
         print "Error: there is no environmentvariable called OSL_SHADERS_LOCATION. Please create one and point it to the base shader dir."
     osoDirs = set()
     for root, dirname, files in os.walk(shaderDir):
@@ -63,7 +61,7 @@ def getOSOFiles(renderer = "appleseed"):
     try:
         shaderDir = os.environ['{0}_OSL_SHADERS_LOCATION'.format(renderer.upper())]
     except KeyError:
-        shaderDir = path.path(__file__).parent() + "/shaders"
+        shaderDir = path.path(__file__).parent + "/shaders"
         print "Error: there is no environmentvariable called OSL_SHADERS_LOCATION. Please create one and point it to the base shader dir."
 
     osoFiles = set()
@@ -77,7 +75,7 @@ def getOSLFiles(renderer = "appleseed"):
     try:
         shaderDir = os.environ['{0}_OSL_SHADERS_LOCATION'.format(renderer.upper())]
     except KeyError:
-        shaderDir = path.path(__file__).parent() + "/shaders"
+        shaderDir = path.path(__file__).parent + "/shaders"
         print "Error: there is no environmentvariable called OSL_SHADERS_LOCATION. Please create one and point it to the base shader dir."
 
     osoFiles = set()
