@@ -182,13 +182,13 @@ def readStandin(*args):
 
 
 class AppleseedMenu(pm.ui.Menu):
-    """Custom Appleseed menu"""
+    """Custom appleseed menu"""
     def __new__(cls, *args, **kwargs):
         name = "appleseedMenu"
         parent = kwargs.pop("parent", "MayaWindow")
         if pm.menu(name, query=True, exists=True):
             pm.deleteUI(name)
-        return super(AppleseedMenu, cls).__new__(cls, name, label="Appleseed", parent=parent, familyImage="appleseed", tearOff=True, allowOptionBoxes=True)
+        return super(AppleseedMenu, cls).__new__(cls, name, label="appleseed", parent=parent, familyImage="appleseed", tearOff=True, allowOptionBoxes=True)
 
     def __init__(self):
         pm.setParent(self, menu=True)

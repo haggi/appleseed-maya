@@ -1,30 +1,7 @@
 import path
 import xml.etree.ElementTree as ET
 
-def luxMatTextFile():
-    file = open(r"C:\Users\haggi\coding\OpenMaya\src\mayaToLux\vs2010\sourceCodeDocs\Textures.txt", "r")
-    content = file.readlines()
-    file.close()
-
-    for line in content:
-        line = line.strip()
-        erg = line.split("::")
-        l = line
-        if len(erg) > 1:
-            l = erg[1]
-        l = l.strip()
-        erg = l.split()
-        pname = ""
-        ptype = ""
-
-        if len(erg) > 1:
-            pname = erg[0]
-            ptype = erg[1]
-        print line
-        print pname, ptype
-
 def getElements(elementList, child):
-
     elementList[child.attrib['model']] = {}
     for parameter in child:
         #print "\t", parameter.tag, parameter.attrib['name']
@@ -79,8 +56,8 @@ def getElements(elementList, child):
 
 
 def getShadersFromXML():
-    p = "D:/install/3d/Appleseed/inputMeta.xml"
-    #p = "D:/install/3d/Appleseed/inputMetaTst.xml"
+    p = "D:/install/3d/appleseed/inputMeta.xml"
+    #p = "D:/install/3d/appleseed/inputMetaTst.xml"
     tree = ET.parse(p)
     root = tree.getroot()
 
@@ -155,4 +132,3 @@ def getShadersFromXML():
 
 if __name__ == "__main__":
     getShadersFromXML()
-    #luxMatTextFile()

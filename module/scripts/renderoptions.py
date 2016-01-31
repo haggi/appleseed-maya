@@ -1,11 +1,11 @@
 import sys
 import os
 
-sys.path.append("C:/daten/install/3d/Appleseed/appleseed/bin")
-sys.path.append("C:/daten/install/3d/Appleseed/appleseed/bin/appleseed")
+sys.path.append("C:/daten/install/3d/appleseed/appleseed/bin")
+sys.path.append("C:/daten/install/3d/appleseed/appleseed/bin/appleseed")
 
-os.environ["PYTHONPATH"] = os.environ["PYTHONPATH"] + ";C:/daten/install/3d/Appleseed/appleseed/bin/appleseed"
-os.environ["PATH"] = os.environ["PYTHONPATH"] + ";C:/daten/install/3d/Appleseed/appleseed/bin"
+os.environ["PYTHONPATH"] = os.environ["PYTHONPATH"] + ";C:/daten/install/3d/appleseed/appleseed/bin/appleseed"
+os.environ["PATH"] = os.environ["PYTHONPATH"] + ";C:/daten/install/3d/appleseed/appleseed/bin"
 
 import appleseed
 

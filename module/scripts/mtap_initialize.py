@@ -16,7 +16,7 @@ reload(renderer)
 
 log = logging.getLogger("mtapLogger")
 
-RENDERER_NAME = "Appleseed"
+RENDERER_NAME = "appleseed"
 
 class AppleseedRenderer(renderer.MayaToRenderer):
     theRendererInstance = None
@@ -491,7 +491,7 @@ class AppleseedRenderer(renderer.MayaToRenderer):
             self.imageFormats.extend(iList)
 
     def registerNodeExtensions(self):
-        """Register Appleseed specific node extensions. e.g. camera type, diaphram_blades and others
+        """Register appleseed specific node extensions. e.g. camera type, diaphram_blades and others
         """
         # we will have a thinlens camera only
         # pm.addExtension(nodeType="camera", longName="mtap_cameraType", attributeType="enum", enumName="Pinhole:Thinlens", defaultValue = 0)
@@ -639,7 +639,7 @@ AETemplates directory, the automatic loading will not work. So I replace it with
 """
 
 def loadAETemplates():
-    rendererName = "Appleseed"
+    rendererName = "appleseed"
     aeDir = path.path(__file__).dirname() + "/aetemplate/"
     for d in aeDir.listdir("*.py"):
         if d.endswith("template.py"):
@@ -666,7 +666,7 @@ def theRenderer():
 
 def initRenderer():
     try:
-        log.debug("Init renderer Appleseed")
+        log.debug("Init renderer appleseed")
         theRenderer().registerRenderer()
         if not pm.about(batch=True):
             loadAETemplates()
@@ -674,7 +674,7 @@ def initRenderer():
         loadPlugins()
     except:
         traceback.print_exc(file=sys.__stderr__)
-        log.error("Init renderer Appleseed FAILED")
+        log.error("Init renderer appleseed FAILED")
 
 def unregister():
     theRenderer().removeRendererMenu()
