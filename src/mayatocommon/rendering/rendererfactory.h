@@ -37,7 +37,7 @@ namespace MayaTo
 {
     class MayaRendererFactory
     {
-    public:
+      public:
         void createRenderer();
         sharedPtr<Renderer> getRenderer();
         void deleteRenderer();

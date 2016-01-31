@@ -48,20 +48,21 @@
     }                                           \
 }
 
-struct Triangle{
+struct Triangle
+{
     int vtxIds[3];
     int normalIds[3];
 };
 
-struct Face{
+struct Face
+{
     std::vector<int> vtxIds;
     std::vector<int> normalIds;
 };
 
-
 class MeshTranslator
 {
-public:
+  public:
     MeshTranslator();
     MeshTranslator(MObject meshMObject);
     ~MeshTranslator();
@@ -69,7 +70,8 @@ public:
 
     std::vector<Triangle> triangleArray;
     std::vector<Face> faceArray;
-private:
+
+  private:
     MObject meshObject;
     MFloatVectorArray normals;
     MPointArray vertices;

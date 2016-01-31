@@ -154,12 +154,6 @@ void RenderQueueWorker::unregisterCallback(size_t callbackId)
     callbackList[callbackId].terminate = true;
 }
 
-void RenderQueueWorker::addDefaultCallbacks()
-{}
-void RenderQueueWorker::removeDefaultCallbacks()
-{}
-
-
 //
 // basic idea:
 //      all important messages like update framebuffer, stop rendering etc. are sent via events to the message queue

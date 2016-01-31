@@ -33,7 +33,7 @@
 
 class mtap_SwatchRendererInterface : SwatchRendererInterface
 {
-public:
+  public:
     mtap_SwatchRendererInterface(MObject dependNode, MObject renderNode, int imageResolution);
     ~mtap_SwatchRendererInterface();
     MObject renderNode;

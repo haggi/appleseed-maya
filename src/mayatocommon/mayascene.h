@@ -41,8 +41,8 @@
 #include "definitions.h"
 #include "utilities/minimap.h"
 
-struct InteractiveElement{
-
+struct InteractiveElement
+{
     sharedPtr<MayaObject> obj;
     MObject mobj;
     MString name;
@@ -52,15 +52,17 @@ struct InteractiveElement{
 
 class MayaScene
 {
-public:
-    enum RenderType{
+  public:
+    enum RenderType
+    {
         NORMAL,
         IPR,
         NONE,
         BATCH
     };
 
-    enum RenderState{
+    enum RenderState
+    {
         START = 0,
         TRANSLATE = 1,
         RENDERING = 2,

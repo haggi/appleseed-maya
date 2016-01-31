@@ -38,7 +38,7 @@ namespace asr = renderer;
 
 class mtap_ITileCallback : public asr::ITileCallback
 {
-public:
+  public:
     // Delete this instance.
     virtual void release(){ delete this;};
 
@@ -63,7 +63,7 @@ public:
 
 class mtap_ITileCallbackFactory : public asr::ITileCallbackFactory
 {
-public:
+  public:
     virtual asr::ITileCallback* create();
     virtual void release(){delete this;};
 };

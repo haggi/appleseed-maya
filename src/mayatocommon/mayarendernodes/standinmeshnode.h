@@ -39,7 +39,7 @@
 
 class standinMeshNode : public MPxNode
 {
-public:
+  public:
                     standinMeshNode() {};
     virtual         ~standinMeshNode() {};
     virtual MStatus compute(const MPlug& plug, MDataBlock& data);
@@ -77,7 +77,7 @@ public:
         pFile.read(reinterpret_cast<char *>(&value), sizeof(int));
     }
 
-private:
+  private:
     MString binmesh_file;
     float   percent_display;
     float   poly_size_multiplier;
@@ -88,7 +88,7 @@ private:
     MIntArray        numFaces;
     MIntArray        faceConnects;
 
-protected:
+  protected:
     MObject createMesh(const MTime& time, MObject& outData, MStatus& stat);
 };
 

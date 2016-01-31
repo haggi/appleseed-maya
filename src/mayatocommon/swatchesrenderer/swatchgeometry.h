@@ -34,8 +34,8 @@
 #include <maya/MVectorArray.h>
 #include <maya/MFloatArray.h>
 
-namespace SwatchRenderGeometry{
-
+namespace SwatchRenderGeometry
+{
     MPointArray previewSphereShapeVertices(382);
     MVectorArray previewSphereShapeNormals(382);
     MFloatArray previewSphereShapeu(439);

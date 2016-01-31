@@ -37,13 +37,12 @@ class SwatchRendererInterface;
 
 class SwatchRenderer: public MSwatchRenderBase
 {
-
-public:
+  public:
     SwatchRenderer(MObject dependNode, MObject renderNode, int imageResolution);
     ~SwatchRenderer();
     static MSwatchRenderBase* creator(MObject dependNode, MObject renderNode, int imageResolution);
     virtual bool doIteration();
-public:
+
     SwatchRendererInterface *renderInterface;
 };
 

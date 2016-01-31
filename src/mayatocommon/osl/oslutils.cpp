@@ -57,8 +57,8 @@ namespace
     }
 }
 
-namespace MAYATO_OSLUTIL{
-
+namespace MAYATO_OSLUTIL
+{
     OSLUtilClass::OSLUtilClass()
     {}
     OSLUtilClass::~OSLUtilClass()

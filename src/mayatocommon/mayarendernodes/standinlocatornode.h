@@ -51,7 +51,7 @@
 
 class StandinLocatorNode : public MPxLocatorNode
 {
-    public:
+  public:
                       StandinLocatorNode();
     virtual           ~StandinLocatorNode();
 
@@ -64,7 +64,7 @@ class StandinLocatorNode : public MPxLocatorNode
 
     static MStatus    initialize();
 
-    private:
+  private:
     // Inputs
     static MObject  bboxMin;
     static MObject  bboxMax;

@@ -44,7 +44,7 @@
 
 class  BinMeshReaderCmd: public MPxCommand
 {
-public:
+  public:
     BinMeshReaderCmd();
 
     static void* creator();
@@ -53,7 +53,7 @@ public:
 
     MStatus doIt(const MArgList& args);
 
-private:
+  private:
     void printUsage();
     bool importBinMeshes();
 

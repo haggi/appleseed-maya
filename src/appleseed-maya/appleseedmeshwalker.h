@@ -47,7 +47,8 @@
 
 namespace asf = foundation;
 
-struct Face{
+struct Face
+{
     MIntArray vtxIds;
     MIntArray normalIds;
     MIntArray uvIds;
@@ -55,7 +56,7 @@ struct Face{
 
 class MeshWalker : public asf::IMeshWalker
 {
-public:
+  public:
     MeshWalker(MDagPath& dagPath);
     MFnMesh         meshFn;
 

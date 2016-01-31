@@ -41,7 +41,8 @@
 static EventQueue::concurrent_queue<EventQueue::Event> RenderEventQueue;
 EventQueue::concurrent_queue<EventQueue::Event> *theRenderEventQueue();
 
-struct Callback{
+struct Callback
+{
     Callback()
     {
         millsecondInterval = 100;
@@ -56,11 +57,9 @@ struct Callback{
 
 class RenderQueueWorker
 {
-public:
+  public:
     RenderQueueWorker();
     ~RenderQueueWorker();
-    static void addDefaultCallbacks();
-    static void removeDefaultCallbacks();
     static void addIPRCallbacks();
     static void removeCallbacks();
     static void startRenderQueueWorker();
@@ -93,12 +92,12 @@ public:
     static void iprWaitForFinish(EventQueue::Event e);
 
     static void interactiveStartThread();
-private:
-
 };
 
-namespace EventQueue{
-    struct RandomPixel{
+namespace EventQueue
+{
+    struct RandomPixel
+    {
         RV_PIXEL pixel;
         int x, y;
     };

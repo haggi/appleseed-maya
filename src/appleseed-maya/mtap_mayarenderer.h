@@ -46,7 +46,7 @@ namespace asr = renderer;
 
 class RenderController : public asr::IRendererController
 {
-public:
+  public:
     RenderController()
     {
         status = asr::IRendererController::ContinueRendering;
@@ -70,7 +70,7 @@ class mtap_MayaRenderer;
 
 class TileCallback : public asr::TileCallbackBase
 {
-public:
+  public:
     mtap_MayaRenderer *renderer;
     explicit TileCallback(mtap_MayaRenderer *mrenderer) : renderer(mrenderer)
     {}
@@ -84,7 +84,7 @@ public:
 
 class TileCallbackFactory : public asr::ITileCallbackFactory
 {
-public:
+  public:
     TileCallback *tileCallback;
     explicit TileCallbackFactory(mtap_MayaRenderer *renderer)
     {
@@ -104,7 +104,8 @@ public:
 #if MAYA_API_VERSION >= 201600
 #include <maya/MPxRenderer.h>
 
-struct IdNameStruct{
+struct IdNameStruct
+{
     MUuid id;
     MString name; // in appleseed objects must have unique names
     MObject mobject; // I need to know if I have a light or a mesh or a camera
@@ -112,7 +113,7 @@ struct IdNameStruct{
 
 class mtap_MayaRenderer : public MPxRenderer
 {
-public:
+  public:
     RefreshParams refreshParams;
     float* rb = 0;
     int tileSize = 32;
@@ -152,7 +153,7 @@ public:
     void copyFrameToBuffer(float *frame, int w, int h);
     void render();
 
-private:
+  private:
     int width, height;
     //Render output buffer, it is R32G32B32A32_FLOAT format.
     threadObject renderThread;

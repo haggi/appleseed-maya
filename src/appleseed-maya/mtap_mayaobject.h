@@ -42,7 +42,7 @@ class mtap_MayaObject;
 
 class mtap_ObjectAttributes : public ObjectAttributes
 {
-public:
+  public:
     mtap_ObjectAttributes();
     mtap_ObjectAttributes(sharedPtr<ObjectAttributes>);
     bool needsOwnAssembly;
@@ -52,7 +52,7 @@ public:
 
 class mtap_MayaObject : public MayaObject
 {
-public:
+  public:
     mtap_MayaObject(MObject&);
     mtap_MayaObject(MDagPath&);
     ~mtap_MayaObject();

@@ -35,8 +35,9 @@
 #include "swatchesrenderer/swatchesevent.h"
 
 static Logging logger;
-namespace MayaTo{
 
+namespace MayaTo
+{
     void MayaToWorld::cleanUp()
     {
         AppleseedSwatchRenderer * appleSwRndr = (AppleseedSwatchRenderer *)this->getObjPtr("appleseedSwatchesRenderer");
@@ -98,5 +99,4 @@ namespace MayaTo{
     {
         this->rendererAxis = ZUp;
     }
-
 }

@@ -41,14 +41,14 @@
 
 class ProxyMesh
 {
-public:
+  public:
     ProxyMesh(float mPercentage);
 
     void addMesh(const foundation::IMeshWalker& walker);
 
     void writeFile(const MString& fileName);
 
-private:
+  private:
     inline void write(const double value)
     {
         mProxyFile.write(reinterpret_cast<const char *>(&value), sizeof(double));

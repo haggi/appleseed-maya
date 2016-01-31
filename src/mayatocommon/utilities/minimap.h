@@ -35,13 +35,14 @@
 
 template <class T, class S> class MiniMap
 {
-public:
+  public:
     void append(T t, S s);
     S *find(T t);
     void clear();
     int len();
     S *get(int i);
-private:
+
+  private:
     std::vector<T> tClass;
     std::vector<S> sClass;
 };

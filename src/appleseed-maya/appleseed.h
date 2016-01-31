@@ -103,7 +103,7 @@ namespace AppleRender
 {
 class AppleseedRenderer : public MayaTo::Renderer
 {
-public:
+  public:
     AppleseedRenderer();
     ~AppleseedRenderer();
 
@@ -148,7 +148,7 @@ public:
     virtual void preFrame();
     virtual void postFrame();
 
-private:
+  private:
     asf::auto_release_ptr<asr::Project> project;
     autoPtr<asr::MasterRenderer> masterRenderer;
     autoPtr<asf::ILogTarget> log_target;

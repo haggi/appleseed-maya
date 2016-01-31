@@ -33,7 +33,7 @@
 
 class SwatchRendererInterface
 {
-public:
+  public:
     int swatchWidth;
     float *imageData;
     bool imgDone;

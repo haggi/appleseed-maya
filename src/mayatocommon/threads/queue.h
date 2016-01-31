@@ -40,7 +40,8 @@ namespace EventQueue
 {
     struct Event
     {
-        enum Types{
+        enum Types
+        {
             INTERRUPT = 0,
             TILEDONE = 1,
             FRAMEDONE = 2,
@@ -65,10 +66,13 @@ namespace EventQueue
             ADDIPRCALLBACKS = 21,
             FRAMERENDER = 22
         };
-        enum PixelMode{
+
+        enum PixelMode
+        {
             RECT = 0,
             PIXELS = 1
         };
+
         Types type;
         PixelMode pixelMode;
         size_t numPixels;
@@ -96,11 +100,12 @@ namespace EventQueue
 template<typename Data>
 class concurrent_queue
 {
-private:
+  private:
     std::queue<Data> the_queue;
     mutable boost::mutex the_mutex;
     boost::condition_variable the_condition_variable;
-public:
+
+  public:
     void push(Data const& data)
     {
         boost::mutex::scoped_lock lock(the_mutex);

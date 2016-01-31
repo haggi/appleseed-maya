@@ -37,7 +37,7 @@
 
 class MayaRenderGlobalsNode : public MPxNode
 {
-public:
+  public:
                         MayaRenderGlobalsNode();
     virtual             ~MayaRenderGlobalsNode();
 
@@ -50,8 +50,7 @@ public:
     MStringArray    imageFormatList;
     MStringArray    filterTypeList;
 
-private:
-
+  private:
     static    MObject adaptiveSampling;
     // sampling adaptive
     static    MObject minSamples;
@@ -105,7 +104,7 @@ private:
     static    MObject optimizedTexturePath;
     static    MObject useOptimizedTextures;
 
-public:
+  public:
     int      defaultEnumFilterType;
 
 };

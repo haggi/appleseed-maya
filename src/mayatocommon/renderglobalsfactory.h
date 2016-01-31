@@ -37,7 +37,7 @@ namespace MayaTo
 {
     class RenderGlobalsFactory
     {
-    public:
+      public:
         void createRenderGlobals();
         sharedPtr<RenderGlobals> getRenderGlobals();
         void deleteRenderGlobals();

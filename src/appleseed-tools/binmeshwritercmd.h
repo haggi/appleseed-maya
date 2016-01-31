@@ -43,7 +43,7 @@
 
 class  BinMeshWriterCmd: public MPxCommand
 {
-public:
+  public:
     BinMeshWriterCmd();
 
     static void* creator();
@@ -52,7 +52,7 @@ public:
 
     MStatus doIt(const MArgList& args);
 
-private:
+  private:
     void printUsage();
     bool exportBinMeshes();
     void getObjectsForExport(const MArgList& args);

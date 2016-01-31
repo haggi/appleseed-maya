@@ -53,7 +53,8 @@ class Material;
 // translation process. e.g. Corona needs all motion mesh informations during
 // mesh definition and cannot modify it with additional motion steps.
 // So we use this struct to collect the necessary deform informations.
-struct MeshData{
+struct MeshData
+{
     MPointArray points;
     MFloatVectorArray normals;
 };
@@ -62,19 +63,18 @@ struct MeshData{
 // an attribute will be created with its parent as argument so it can copy the interesting data
 class ObjectAttributes
 {
-public:
+  public:
     bool hasInstancerConnection;
     // perParticleInfos - first try, need to find a intelligent way to find the correct values.
     MColor colorOverride;
     bool hasColorOverride;
     float opacityOverride;
     MMatrix objectMatrix;
-private:
 };
 
 class MayaObject : public MBoundingBox
 {
-public:
+  public:
     MObject mobject;
     MString shortName;
     MString fullName;

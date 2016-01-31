@@ -49,7 +49,7 @@
 
 class asDisneyMaterialOverride : public MHWRender::MPxSurfaceShadingNodeOverride
 {
-public:
+  public:
     static MHWRender::MPxSurfaceShadingNodeOverride* creator(const MObject& obj);
 
     virtual ~asDisneyMaterialOverride();
@@ -64,7 +64,7 @@ public:
     virtual MString transparencyParameter() const;
     virtual MString bumpAttribute() const;
 
-private:
+  private:
     asDisneyMaterialOverride(const MObject& obj);
 };
 

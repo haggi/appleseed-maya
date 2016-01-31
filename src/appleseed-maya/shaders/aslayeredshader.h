@@ -29,11 +29,9 @@
 #include <maya/MPxNode.h>
 #include <maya/MTypeId.h>
 
-// Plugin asLayeredShader  Shader Class //
-
 class asLayeredShader : public MPxNode
 {
-public:
+  public:
     asLayeredShader();
     virtual         ~asLayeredShader();
 
@@ -44,7 +42,7 @@ public:
 
     static  MTypeId   id;
 
-protected:
+  protected:
     static    MObject baseMaterial;
     static    MObject materialEntryMtl;
     static    MObject materialEntryMsk;

@@ -35,7 +35,7 @@
 
 class mtap_StandinLocator : public StandinLocatorNode
 {
-public:
+  public:
     mtap_StandinLocator();
     virtual ~mtap_StandinLocator();
 

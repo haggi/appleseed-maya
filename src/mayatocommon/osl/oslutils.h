@@ -297,17 +297,20 @@ namespace MAYATO_OSL
     };
 }
 
-namespace MAYATO_OSLUTIL{
-
-    enum ConnectionType{
+namespace MAYATO_OSLUTIL
+{
+    enum ConnectionType
+    {
         SCALAR_TO_SCALAR = 0, // outAlpha -> maskMultiplier
         VECTOR_TO_VECTOR,     // outColor -> diffuseColor
         SCALAR_TO_COMP,       // outAlpha -> diffuseColorR
         COMP_TO_SCALAR,       // outColorR -> maskMultiplier
         COMP_TO_COMP          // outColorR -> diffuseColorG
     };
-    class OSLUtilClass{
-    public:
+
+    class OSLUtilClass
+    {
+      public:
         OSLUtilClass();
         ~OSLUtilClass();
 

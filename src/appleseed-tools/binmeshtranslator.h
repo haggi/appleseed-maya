@@ -39,7 +39,7 @@ class MFnDagNode;
 
 class BinMeshTranslator : public MPxFileTranslator
 {
-public:
+  public:
     BinMeshTranslator();
 
     static void* creator();
@@ -59,7 +59,7 @@ public:
     virtual bool canBeOpened() const;
     virtual MString defaultExtension() const;
 
-private:
+  private:
     MStatus exportObjects(const MString& mode);
     MStatus importObjects();
 

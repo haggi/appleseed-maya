@@ -43,7 +43,7 @@
 
 class asDisneyMaterial : public MPxNode
 {
-public:
+  public:
                     asDisneyMaterial();
     virtual         ~asDisneyMaterial();
 
@@ -68,8 +68,7 @@ public:
 
     static  MTypeId   id;  // The IFF type id
 
-protected:
-
+  protected:
     static MObject  BaseColor;
     static MObject  Subsurface;
     static MObject  Metallic;

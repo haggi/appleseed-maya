@@ -35,8 +35,7 @@
 
 class NewSwatchRenderer : public MSwatchRenderBase
 {
-
-public:
+  public:
     NewSwatchRenderer(MObject dependNode, MObject renderNode, int imageResolution);
     ~NewSwatchRenderer();
     static MSwatchRenderBase* creator(MObject dependNode, MObject renderNode, int imageResolution);

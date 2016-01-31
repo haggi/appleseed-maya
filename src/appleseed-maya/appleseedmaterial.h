@@ -31,7 +31,9 @@
 
 #include "renderer/api/material.h"
 
-namespace AppleRender{
+namespace AppleRender
+{
     void updateMaterial(MObject materialNode, const asr::Assembly *assembly);
 }
+
 #endif

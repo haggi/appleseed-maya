@@ -35,8 +35,8 @@
 #include "utilities/logging.h"
 #include "threads/renderqueueworker.h"
 
-namespace RenderProcess{
-
+namespace RenderProcess
+{
     void doPreRenderJobs()
     {
     }
@@ -140,5 +140,4 @@ namespace RenderProcess{
     void render()
     {
     }
-
 }

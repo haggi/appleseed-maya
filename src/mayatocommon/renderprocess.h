@@ -29,7 +29,8 @@
 #ifndef RENDERPROCESS_H
 #define RENDERPROCESS_H
 
-namespace RenderProcess{
+namespace RenderProcess
+{
     void doPreRenderJobs();
     void doPreFrameJobs();
     void doRenderPreFrameJobs();
@@ -39,6 +40,5 @@ namespace RenderProcess{
     void doPrepareFrame();
     void render();
 }
-
 
 #endif

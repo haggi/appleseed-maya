@@ -146,7 +146,7 @@ typedef std::vector<ShadingNode> ShadingNodeList;
 
 class ShadingNetwork
 {
-public:
+  public:
     SNODE_LIST shaderList;
     MObject rootNode;
     MString rootNodeName;
@@ -160,10 +160,9 @@ public:
     bool hasValidShadingNodeConnections(ShadingNode& source, ShadingNode& dest);
 };
 
-
 class Material
 {
-public:
+  public:
     // here we save all nodes for a certain shader type connection
     ShadingNetwork surfaceShaderNet;
     ShadingNetwork volumeShaderNet;
@@ -181,7 +180,7 @@ public:
     bool isLight(MObject& obj);
     void parseNetworks();
 
-private:
+  private:
     void parseNetwork(MObject& shaderNode, ShadingNetwork& network);
     bool alreadyDefined(ShadingNode& sn, ShadingNetwork& network);
     void checkNodeList(MObjectArray& nodeList);

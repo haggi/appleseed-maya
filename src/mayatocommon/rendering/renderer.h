@@ -38,11 +38,11 @@ class MayaObject;
 class MObject;
 struct InteractiveElement;
 
-namespace MayaTo{
-
-    class Renderer{
-
-    public:
+namespace MayaTo
+{
+    class Renderer
+    {
+      public:
         std::vector<InteractiveElement *>  interactiveUpdateList;
         virtual ~Renderer() {};
         virtual void defineCamera() = 0;
@@ -76,8 +76,6 @@ namespace MayaTo{
         virtual void handleUserEvent(int event, MString strData, float floatData, int intData) = 0;
         virtual void preFrame(){};
         virtual void postFrame(){};
-    private:
-
     };
 }
 

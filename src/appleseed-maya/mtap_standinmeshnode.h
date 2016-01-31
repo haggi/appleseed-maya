@@ -49,7 +49,7 @@ struct PolyMaterialAssignments
 
 class mtap_standinMeshNode : public MPxNode
 {
-public:
+  public:
                     mtap_standinMeshNode() {};
     virtual         ~mtap_standinMeshNode() {};
     virtual MStatus compute(const MPlug& plug, MDataBlock& data);
@@ -98,8 +98,7 @@ public:
         value = characters;
     }
 
-
-private:
+  private:
     MString binmesh_file;
     float   percent_display;
     float   poly_size_multiplier;
@@ -112,9 +111,8 @@ private:
 
     void    createMaterialAssignments();
 
-protected:
+  protected:
     MObject createMesh(const MTime& time, MObject& outData, MStatus& stat);
 };
-
 
 #endif

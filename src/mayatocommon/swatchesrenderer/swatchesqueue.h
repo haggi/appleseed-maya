@@ -41,11 +41,12 @@ namespace SQueue
     template<typename Data>
     class concurrent_queue
     {
-    private:
+      private:
         std::queue<Data> the_queue;
         mutable boost::mutex the_mutex;
         boost::condition_variable my_condition_variable;
-    public:
+
+      public:
         void push(Data const& data)
         {
             boost::mutex::scoped_lock lock(the_mutex);

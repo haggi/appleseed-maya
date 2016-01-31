@@ -50,7 +50,7 @@ static MString releaseWaitCursorCmd = "import pymel.core as pm;pm.waitCursor(sta
 
 class Compute
 {
-private:
+  private:
     static bool escPressed;
     static bool autoexit;
     static bool checkDone;
@@ -77,7 +77,7 @@ private:
         }
     }
 
-public:
+  public:
     Compute()
     {
         Compute::escPressed = false;

@@ -35,7 +35,7 @@ const MString MayaToAppleseedGlobalsName = "appleseedGlobals";
 
 class MayaToAppleseedGlobals : public MayaRenderGlobalsNode
 {
-public:
+  public:
                         MayaToAppleseedGlobals();
     virtual             ~MayaToAppleseedGlobals();
 
@@ -44,7 +44,7 @@ public:
 
     static  MTypeId     id;
 
-private:
+  private:
     static    MObject bitdepth;
     static    MObject colorSpace;
     static    MObject clamping;
@@ -114,7 +114,6 @@ private:
     static    MObject max_photons_per_estimate;
     static    MObject photons_per_pass;
     static    MObject photon_type;
-
 };
 
 #endif

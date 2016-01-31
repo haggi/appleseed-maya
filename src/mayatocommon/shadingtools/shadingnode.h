@@ -40,7 +40,9 @@ struct ShaderAttribute
 {
     ShaderAttribute()
     {}
-    enum AttributeType {
+
+    enum AttributeType
+    {
         NONE=0,
         MESSAGE,
         FLOAT,
@@ -50,6 +52,7 @@ struct ShaderAttribute
         BOOL,
         MATRIX
     };
+
     std::string name;
     std::string type;
     std::string hint;
@@ -61,7 +64,7 @@ struct ShaderAttribute
 
 class ShadingNode
 {
-public:
+  public:
     MString typeName; //Lambert, MultiplyDivide
     MString fullName; //myLambert1, mdivi_number_123
     MObject mobject;
@@ -92,7 +95,6 @@ public:
     {
         outputAttributes.push_back(att);
     }
-private:
 };
 
 #endif

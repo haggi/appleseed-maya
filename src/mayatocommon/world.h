@@ -44,22 +44,25 @@
 class MayaScene;
 class RenderGlobals;
 
-namespace MayaTo{
-
+namespace MayaTo
+{
     class MayaToWorld
     {
-    public:
+      public:
         MayaToWorld();
         virtual ~MayaToWorld();
 
-        enum WorldRenderType{
+        enum WorldRenderType
+        {
             RTYPENONE = 0,
             SWATCHRENDER,
             UIRENDER,
             BATCHRENDER,
             IPRRENDER
         };
-        enum WorldRenderState{
+
+        enum WorldRenderState
+        {
             RSTATENONE = 0,
             RSTATERENDERING,
             RSTATESWATCHRENDERING,
@@ -72,7 +75,8 @@ namespace MayaTo{
         WorldRenderType renderType;
         WorldRenderState renderState;
 
-        enum RendererUpAxis{
+        enum RendererUpAxis
+        {
             XUp,
             YUp,
             ZUp

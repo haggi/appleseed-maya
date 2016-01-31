@@ -38,7 +38,7 @@ class ShadingNode;
 
 class ShaderDefinitions
 {
-public:
+  public:
     static std::vector<ShadingNode> shadingNodes;
     static bool readDone;
 

@@ -33,7 +33,7 @@
 
 class mtap_ShadingNode : public ShadingNode
 {
-public:
+  public:
     mtap_ShadingNode();
     mtap_ShadingNode(ShadingNode& other);
 

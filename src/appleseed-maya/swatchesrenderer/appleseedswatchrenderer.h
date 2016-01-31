@@ -44,7 +44,7 @@ class NewSwatchRenderer;
 
 class AppleseedSwatchRenderer
 {
-public:
+  public:
     AppleseedSwatchRenderer();
     ~AppleseedSwatchRenderer();
     void mainLoop();

@@ -48,8 +48,9 @@
 
 class RenderPass
 {
-public:
-    enum RenderPassType{
+  public:
+    enum RenderPassType
+    {
         PassNone,
         PhotonGI,
         PhotonCaustic,
@@ -58,7 +59,8 @@ public:
         Beauty
     };
 
-    enum EvalFrequency{
+    enum EvalFrequency
+    {
         FrequencyNone,
         OncePerFrame,
         OncePerJob
@@ -80,9 +82,9 @@ public:
 // So I create this as as global framework option
 class MbElement
 {
-public:
-
-    enum Type{
+  public:
+    enum Type
+    {
         MotionBlurXForm,
         MotionBlurGeo,
         MotionBlurBoth,
@@ -106,8 +108,10 @@ public:
     double m_time;
 };
 
-struct RenderType{
-    enum RType{
+struct RenderType
+{
+    enum RType
+    {
         FINAL,
         INTERACTIVE
     };
@@ -115,9 +119,9 @@ struct RenderType{
 
 class RenderGlobals
 {
-public:
-
-    enum RendererUpAxis{
+  public:
+    enum RendererUpAxis
+    {
         XUp,
         YUp,
         ZUp
@@ -146,11 +150,12 @@ public:
     bool inBatch;
     RenderType::RType renderType;
 
-private:
+  private:
     int imgWidth;
     int imgHeight;
     int currentFrameIndex;
-public:
+
+  public:
     void setWidth(int w) { this->imgWidth = w; };
     void setHeight(int h) { this->imgHeight = h; };
     void setWidthHeight(int w, int h) { this->imgWidth = w; this->imgHeight = h; };
@@ -215,14 +220,14 @@ public:
     MString preRenderLayerScript;
     MString postRenderLayerScript;
 
-private:
+  private:
     bool    useRenderRegion;
     int     regionLeft;
     int     regionRight;
     int     regionBottom;
     int     regionTop;
 
-public:
+  public:
     void checkRenderRegion();
     void setUseRenderRegion(bool useRegion){ useRenderRegion = useRegion; checkRenderRegion(); };
     bool getUseRenderRegion() { return useRenderRegion; };

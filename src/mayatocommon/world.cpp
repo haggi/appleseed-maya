@@ -38,7 +38,8 @@
 static MCallbackId timerCallbackId = 0;
 static MCallbackId beforeExitId = 0;
 
-namespace MayaTo{
+namespace MayaTo
+{
     MCallbackId MayaToWorld::afterOpenCallbackId;
     MCallbackId MayaToWorld::afterNewCallbackId;
 
