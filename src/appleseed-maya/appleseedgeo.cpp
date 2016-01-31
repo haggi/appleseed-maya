@@ -168,7 +168,7 @@ void AppleseedRenderer::createMesh(sharedPtr<mtap_MayaObject> obj)
 
     asr::MeshObject *meshPtr = (asr::MeshObject *)ass->objects().get_by_name(meshFullName.asChar());
 
-    if (meshPtr != nullptr)
+    if (meshPtr != 0)
     {
         Logging::debug(MString("Mesh object ") + meshFullName + " is already defined, removing...");
         ass->objects().remove(meshPtr);
@@ -190,7 +190,7 @@ void AppleseedRenderer::createMesh(sharedPtr<mtap_MayaObject> obj)
     addVisibilityFlags(obj, objInstanceParamArray);
 
     asr::ObjectInstance *oinst = ass->object_instances().get_by_name(objectInstanceName.asChar());
-    if (oinst != nullptr)
+    if (oinst != 0)
     {
         Logging::debug(MString("Mesh object instance ") + objectInstanceName + " is already defined, removing...");
         ass->object_instances().remove(oinst);
@@ -238,7 +238,7 @@ void AppleseedRenderer::updateInstance(sharedPtr<MayaObject> mobj)
     if (mobj->instanceNumber > 0)
     {
         MayaObject *assemblyObject = getAssemblyMayaObject(obj.get());
-        if (assemblyObject == nullptr)
+        if (assemblyObject == 0)
         {
             Logging::debug("create mesh assemblyPtr == null");
             return;
@@ -285,7 +285,7 @@ void AppleseedRenderer::defineGeometry()
             continue;
 
         MayaObject *assemblyObject = getAssemblyMayaObject(obj.get());
-        if (assemblyObject == nullptr)
+        if (assemblyObject == 0)
         {
             Logging::debug("create mesh assemblyPtr == null");
             continue;

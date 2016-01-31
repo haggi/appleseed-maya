@@ -225,10 +225,10 @@ void RenderQueueWorker::addIPRCallbacks()
         }
     }
 
-    idleCallbackId = MTimerMessage::addTimerCallback(0.2, RenderQueueWorker::IPRIdleCallback, nullptr, &stat);
-    sceneCallbackId0 = MSceneMessage::addCallback(MSceneMessage::kBeforeNew, RenderQueueWorker::sceneCallback, nullptr, &stat);
-    sceneCallbackId1 = MSceneMessage::addCallback(MSceneMessage::kBeforeOpen, RenderQueueWorker::sceneCallback, nullptr, &stat);
-    pluginCallbackId = MSceneMessage::addCallback(MSceneMessage::kBeforePluginUnload, RenderQueueWorker::sceneCallback, nullptr, &stat);
+    idleCallbackId = MTimerMessage::addTimerCallback(0.2, RenderQueueWorker::IPRIdleCallback, 0, &stat);
+    sceneCallbackId0 = MSceneMessage::addCallback(MSceneMessage::kBeforeNew, RenderQueueWorker::sceneCallback, 0, &stat);
+    sceneCallbackId1 = MSceneMessage::addCallback(MSceneMessage::kBeforeOpen, RenderQueueWorker::sceneCallback, 0, &stat);
+    pluginCallbackId = MSceneMessage::addCallback(MSceneMessage::kBeforePluginUnload, RenderQueueWorker::sceneCallback, 0, &stat);
     nodeAddedCallbackId = MDGMessage::addNodeAddedCallback(RenderQueueWorker::IPRNodeAddedCallback);
     nodeRemovedCallbackId = MDGMessage::addNodeRemovedCallback(RenderQueueWorker::IPRNodeRemovedCallback);
 
@@ -352,12 +352,12 @@ void RenderQueueWorker::IPRNodeAddedCallback(MObject& node, void *userPtr)
     MString tname = getObjectName(transform);
 
     // here the new object is added to the object list and is added to the interactive object list
-    mayaScene->parseSceneHierarchy(dagPath, 0, nullptr, nullptr);
+    mayaScene->parseSceneHierarchy(dagPath, 0, 0, 0);
 
     // now we readd all interactive objects to the map
     idInteractiveMap.clear();
     MCallbackId transformId = 0;
-    InteractiveElement *userData = nullptr;
+    InteractiveElement *userData = 0;
     std::map<uint, InteractiveElement>::reverse_iterator riter;
     for (riter = mayaScene->interactiveUpdateMap.rbegin(); riter != mayaScene->interactiveUpdateMap.rend(); riter++)
     {
@@ -636,7 +636,7 @@ void RenderQueueWorker::sendFinalizeIfQueueEmpty(void *)
     while (theRenderEventQueue()->size() > 0)
         sleepFor(10);
 
-    Logging::debug("sendFinalizeIfQueueEmpty: queue is nullptr, sending finalize.");
+    Logging::debug("sendFinalizeIfQueueEmpty: queue is 0, sending finalize.");
     EventQueue::Event e;
     e.type = EventQueue::Event::FINISH;
     theRenderEventQueue()->push(e);
@@ -725,7 +725,7 @@ void RenderQueueWorker::startRenderQueueWorker()
                     if (MayaTo::getWorldPtr()->getRenderType() == MayaTo::MayaToWorld::WorldRenderType::UIRENDER)
                     {
                         renderComputation.beginComputation();
-                        void *data = nullptr;
+                        void *data = 0;
                     }
                 }
                 e.type = EventQueue::Event::FRAMERENDER;
@@ -886,7 +886,7 @@ void RenderQueueWorker::startRenderQueueWorker()
                     Logging::error("Event::USER:: cmdArgsData - not defined.");
                     break;
                 }
-                if (MayaTo::getWorldPtr()->worldRendererPtr == nullptr)
+                if (MayaTo::getWorldPtr()->worldRendererPtr == 0)
                 {
                     Logging::error("Event::USER:: no renderer defined. Please render an image.");
                 }

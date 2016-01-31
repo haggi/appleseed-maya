@@ -47,23 +47,22 @@
 #include "utilities/logging.h"
 #include "utilities/tools.h"
 
-static Logging logger;
-
 namespace asr = renderer;
 namespace asf = foundation;
+
+static Logging logger;
+
+BinMeshReaderCmd::BinMeshReaderCmd() {}
 
 void* BinMeshReaderCmd::creator()
 {
     return new BinMeshReaderCmd();
 }
 
-BinMeshReaderCmd::BinMeshReaderCmd() {}
-
 MSyntax BinMeshReaderCmd::newSyntax()
 {
     MSyntax syntax;
-    MStatus stat;
-    stat = syntax.addFlag("-pa", "-path", MSyntax::kString);
+    MStatus stat = syntax.addFlag("-pa", "-path", MSyntax::kString);
     return syntax;
 }
 
@@ -75,14 +74,13 @@ void BinMeshReaderCmd::printUsage()
 bool BinMeshReaderCmd::importBinMeshes()
 {
     asf::SearchPaths searchPaths;
-
     asr::MeshObjectArray meshArray;
 
     asr::ParamArray params;
-    params.insert("filename", path.asChar());
-    if (!asr::MeshObjectReader::read(searchPaths, path.asChar(), params, meshArray))
+    params.insert("filename", mPath.asChar());
+    if (!asr::MeshObjectReader::read(searchPaths, mPath.asChar(), params, meshArray))
     {
-        logger.error(MString("Unable to read meshes from ") + path);
+        logger.error(MString("Unable to read meshes from ") + mPath);
         return false;
     }
 
@@ -152,14 +150,14 @@ MStatus BinMeshReaderCmd::doIt(const MArgList& args)
 
     MArgDatabase argData(syntax(), args);
 
-    path = "";
+    mPath = "";
     if (argData.isFlagSet("-path", &stat))
     {
-        argData.getFlagArgument("-path", 0, path);
-        logger.debug(MString("path: ") + path);
+        argData.getFlagArgument("-path", 0, mPath);
+        logger.debug(MString("path: ") + mPath);
     }
 
-    if ((path == ""))
+    if ((mPath == ""))
     {
         MGlobal::displayError("binMeshTranslator failed: no path for export.\n");
         printUsage();

@@ -42,7 +42,7 @@
 class ProxyMesh
 {
 public:
-    ProxyMesh(float percentage);
+    ProxyMesh(float mPercentage);
 
     void addMesh(const foundation::IMeshWalker& walker);
 
@@ -51,7 +51,7 @@ public:
 private:
     inline void write(const double value)
     {
-        proxyFile.write(reinterpret_cast<const char *>(&value), sizeof(double));
+        mProxyFile.write(reinterpret_cast<const char *>(&value), sizeof(double));
     }
 
     inline void write(const MPoint& point)
@@ -69,13 +69,13 @@ private:
 
     inline void write(const int value)
     {
-        proxyFile.write(reinterpret_cast<const char *>(&value), sizeof(int));
+        mProxyFile.write(reinterpret_cast<const char *>(&value), sizeof(int));
     }
 
     inline void write(const MString& value)
     {
         write((int)value.length());
-        proxyFile.write(value.asChar(), value.length());
+        mProxyFile.write(value.asChar(), value.length());
     }
 
     void setMin(const MPoint& vtx);
@@ -83,14 +83,14 @@ private:
     void setBBox(const MPoint& vtx);
     void scaleFace(int firstVtxIndex, int numVertices);
 
-    float   percentage;
-    float   polySizeMultiplier;
-    MPointArray points;
-    MPoint min, max;
-    std::fstream proxyFile;
-    MStringArray shadingGroupNames;
-    MIntArray polyShaderIds;
-    MIntArray objectShaderStartId;
+    float   mPercentage;
+    float   mPolySizeMultiplier;
+    MPointArray mPoints;
+    MPoint mMin, mMax;
+    std::fstream mProxyFile;
+    MStringArray mShadingGroupNames;
+    MIntArray mPolyShaderIds;
+    MIntArray mObjectShaderStartId;
 };
 
 #endif

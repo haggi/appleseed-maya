@@ -44,7 +44,7 @@ mtap_ObjectAttributes::mtap_ObjectAttributes()
 {
     needsOwnAssembly = false;
     objectMatrix.setToIdentity();
-    this->assemblyObject = nullptr;
+    assemblyObject = 0;
 }
 
 mtap_ObjectAttributes::mtap_ObjectAttributes(sharedPtr<ObjectAttributes> otherAttr)
@@ -53,7 +53,7 @@ mtap_ObjectAttributes::mtap_ObjectAttributes(sharedPtr<ObjectAttributes> otherAt
 
     this->hasInstancerConnection = false;
     objectMatrix.setToIdentity();
-    this->assemblyObject = nullptr;
+    assemblyObject = 0;
 
     if (other)
     {

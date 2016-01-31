@@ -37,7 +37,7 @@
 MString oslTypeToMString(MAYATO_OSL::OSLParameter param)
 {
     MString result;
-    void *val = nullptr;
+    void *val = 0;
     if (param.type == OSL::TypeDesc::TypeFloat)
     {
         result = "float ";

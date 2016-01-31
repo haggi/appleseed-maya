@@ -114,7 +114,7 @@ class mtap_MayaRenderer : public MPxRenderer
 {
 public:
     RefreshParams refreshParams;
-    float* rb = nullptr;
+    float* rb = 0;
     int tileSize = 32;
     int initialSize = 256;
     mtap_MayaRenderer();

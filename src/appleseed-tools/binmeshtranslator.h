@@ -42,6 +42,8 @@ class BinMeshTranslator : public MPxFileTranslator
 public:
     BinMeshTranslator();
 
+    static void* creator();
+
     virtual MStatus writer(
         const MFileObject&                  file,
         const MString&                      optionsString,
@@ -57,14 +59,12 @@ public:
     virtual bool canBeOpened() const;
     virtual MString defaultExtension() const;
 
-    static void* creator();
-
 private:
-    MStatus exportObjects(MString mode);
+    MStatus exportObjects(const MString& mode);
     MStatus importObjects();
 
-    MString fileName;
-    MString options;
+    MString mFileName;
+    MString mOptions;
 };
 
 #endif

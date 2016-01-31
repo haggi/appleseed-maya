@@ -33,7 +33,7 @@ static Logging logger;
 
 void mtap_IRendererController::on_rendering_begin()
 {
-    if (this->entityUpdateProc != nullptr)
+    if (this->entityUpdateProc != 0)
     {
         this->entityUpdateProc();
     }

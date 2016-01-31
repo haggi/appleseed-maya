@@ -37,7 +37,7 @@ using namespace AppleRender;
 void AppleseedRenderer::defineOutput()
 {
     asr::Frame *frame = project->get_frame();
-    if (frame == nullptr)
+    if (frame == 0)
     {
         MFnDependencyNode depFn(getRenderGlobalsNode());
         sharedPtr<RenderGlobals> renderGlobals = MayaTo::getWorldPtr()->worldRenderGlobalsPtr;

@@ -311,7 +311,7 @@ void Material::parseNetworks()
         if (miMaterialShaderNode != MObject::kNullObj)
             surfaceShaderNode = miMaterialShaderNode;
 
-        ShadingNode *sn = nullptr;
+        ShadingNode *sn = 0;
         this->parseNetwork(surfaceShaderNode, this->surfaceShaderNet);
     }
 
@@ -321,7 +321,7 @@ void Material::parseNetworks()
     {
         if (miVolumeShaderNode != MObject::kNullObj)
             volumeShaderNode = miVolumeShaderNode;
-        ShadingNode *sn = nullptr;
+        ShadingNode *sn = 0;
         this->parseNetwork(miVolumeShaderNode, this->volumeShaderNet);
     }
 
@@ -332,14 +332,14 @@ void Material::parseNetworks()
         if (miDisplacementShaderNode != MObject::kNullObj)
             displacementShaderNode = miDisplacementShaderNode;
 
-        ShadingNode *sn = nullptr;
+        ShadingNode *sn = 0;
         this->parseNetwork(displacementShaderNode, this->displacementShaderNet);
     }
 
     // read light shader hierarchy
     if ((this->shadingEngineNode != MObject::kNullObj) && (this->shadingEngineNode.hasFn(MFn::kLight)))
     {
-        ShadingNode *sn = nullptr;
+        ShadingNode *sn = 0;
         this->parseNetwork(this->shadingEngineNode, this->lightShaderNet);
     }
     cleanNetwork(this->surfaceShaderNet);

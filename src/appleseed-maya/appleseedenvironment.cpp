@@ -91,8 +91,8 @@ void AppleseedRenderer::defineEnvironment()
 
     asf::auto_release_ptr<asr::EnvironmentEDF> environmentEDF;
 
-    bool updateSkyShader = (scene->environment_shaders().get_by_name("sky_shader") != nullptr);
-    bool updateSkyEdf = (scene->environment_edfs().get_by_name("sky_edf") != nullptr);
+    bool updateSkyShader = (scene->environment_shaders().get_by_name("sky_shader") != 0);
+    bool updateSkyEdf = (scene->environment_edfs().get_by_name("sky_edf") != 0);
 
     switch (environmentType)
     {
@@ -228,13 +228,13 @@ void AppleseedRenderer::defineEnvironment()
     };
 
     asr::EnvironmentEDF *sky = scene->environment_edfs().get_by_name("sky_edf");
-    if (sky != nullptr)
+    if (sky != 0)
         scene->environment_edfs().remove(sky);
 
     scene->environment_edfs().insert(environmentEDF);
 
     // Create an environment shader called "sky_shader" and insert it into the scene.
-    if (scene->environment_shaders().get_by_name("sky_shader") != nullptr)
+    if (scene->environment_shaders().get_by_name("sky_shader") != 0)
     {
         asr::EnvironmentShader *skyShader = scene->environment_shaders().get_by_name("sky_shader");
         scene->environment_shaders().remove(skyShader);

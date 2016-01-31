@@ -95,7 +95,7 @@ void AppleseedRenderer::doInteractiveUpdate()
                 MStatus stat;
 
                 asr::AssemblyInstance *assInst = getExistingObjectAssemblyInstance(obj.get());
-                if (assInst == nullptr)
+                if (assInst == 0)
                     continue;
 
                 MMatrix m = iElement->obj->dagPath.inclusiveMatrix(&stat);

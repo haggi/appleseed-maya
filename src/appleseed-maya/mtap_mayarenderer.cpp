@@ -146,12 +146,12 @@ void mtap_MayaRenderer::initEnv()
         );
 
     asr::EnvironmentEDF *sky = project->get_scene()->environment_edfs().get_by_name("sky_edf");
-    if (sky != nullptr)
+    if (sky != 0)
         project->get_scene()->environment_edfs().remove(sky);
     project->get_scene()->environment_edfs().insert(environmentEDF);
 
     asr::EnvironmentShader *shader = project->get_scene()->environment_shaders().get_by_name("sky_shader");
-    if (shader != nullptr)
+    if (shader != 0)
         project->get_scene()->environment_shaders().remove(shader);
 
     project->get_scene()->environment_shaders().insert(
@@ -289,7 +289,7 @@ MStatus mtap_MayaRenderer::beginSceneUpdate()
     controller.status = asr::IRendererController::AbortRendering;
     if (renderThread.joinable())
         renderThread.join();
-    if (project.get() == nullptr)
+    if (project.get() == 0)
         initProject();
     project->get_frame()->clear_main_image();
 
@@ -306,7 +306,7 @@ MStatus mtap_MayaRenderer::translateMesh(const MUuid& id, const MObject& node)
     Logging::debug(MString("translateMesh ") + meshIdName);
 
     asr::Object *obj = GETASM()->objects().get_by_name(meshIdName.asChar());
-    if (obj != nullptr)
+    if (obj != 0)
     {
         Logging::debug(MString("Mesh object ") + meshName + " is already defined, removing...");
         GETASM()->objects().remove(obj);
@@ -336,7 +336,7 @@ MStatus mtap_MayaRenderer::translateLightSource(const MUuid& id, const MObject& 
     if (node.hasFn(MFn::kAreaLight))
     {
         asr::MeshObject *meshPtr = (asr::MeshObject *)GETASM()->objects().get_by_name(lightIdName.asChar());
-        if (meshPtr != nullptr)
+        if (meshPtr != 0)
             GETASM()->objects().remove(meshPtr);
 
         asf::auto_release_ptr<asr::MeshObject> plane = MTAP_GEOMETRY::defineStandardPlane();
@@ -355,14 +355,14 @@ MStatus mtap_MayaRenderer::translateLightSource(const MUuid& id, const MObject& 
         edfParams.insert("radiance", areaLightColorName.asChar());
 
         asr::EDF *edfPtr = GETASM()->edfs().get_by_name(edfName.asChar());
-        if (edfPtr != nullptr)
+        if (edfPtr != 0)
             GETASM()->edfs().remove(edfPtr);
 
         asf::auto_release_ptr<asr::EDF> edf = asr::DiffuseEDFFactory().create(edfName.asChar(), edfParams);
         GETASM()->edfs().insert(edf);
 
         asr::SurfaceShader *ss = GETASM()->surface_shaders().get_by_name(physicalSurfaceName.asChar());
-        if (ss != nullptr)
+        if (ss != 0)
             GETASM()->surface_shaders().remove(ss);
 
         GETASM()->surface_shaders().insert(
@@ -371,7 +371,7 @@ MStatus mtap_MayaRenderer::translateLightSource(const MUuid& id, const MObject& 
             asr::ParamArray()));
 
         asr::Material *ma = GETASM()->materials().get_by_name(areaLightMaterialName.asChar());
-        if (ma != nullptr)
+        if (ma != 0)
             GETASM()->materials().remove(ma);
 
         GETASM()->materials().insert(
@@ -467,7 +467,7 @@ MStatus mtap_MayaRenderer::translateTransform(const MUuid& id, const MUuid& chil
     if (idNameObj.mobject.hasFn(MFn::kMesh))
     {
         asr::ObjectInstance *objInst = GETASM()->object_instances().get_by_name(elementInstName.asChar());
-        if (objInst != nullptr)
+        if (objInst != 0)
         {
             Logging::debug(MString("Removing already existing inst object: ") + elementInstName);
             GETASM()->object_instances().remove(objInst);
@@ -499,7 +499,7 @@ MStatus mtap_MayaRenderer::translateTransform(const MUuid& id, const MUuid& chil
         MMatrixToAMatrix(lightMatrix, appleMatrix);
 
         asr::ObjectInstance *objInst = GETASM()->object_instances().get_by_name(elementInstName.asChar());
-        if (objInst != nullptr)
+        if (objInst != 0)
         {
             Logging::debug(MString("Removing already existing inst object: ") + elementInstName);
             GETASM()->object_instances().remove(objInst);
@@ -612,7 +612,7 @@ MStatus mtap_MayaRenderer::setProperty(const MUuid& id, const MString& name, con
                 {
                     Logging::debug(MString("Setting environment image file to: ") + value);
                     asr::Texture *tex = project->get_scene()->textures().get_by_name("envTex");
-                    if (tex != nullptr)
+                    if (tex != 0)
                     {
                         Logging::debug(MString("Removing already existing env texture."));
                         project->get_scene()->textures().remove(tex);
@@ -683,7 +683,7 @@ MStatus mtap_MayaRenderer::setShader(const MUuid& id, const MUuid& shaderId)
 
 
     asr::ObjectInstance *objInstance = GETASM()->object_instances().get_by_name(objElement.name.asChar());
-    if (objInstance != nullptr)
+    if (objInstance != 0)
         objInstance->get_front_material_mappings().insert("slot0", shaderElement.name.asChar());
     else
         Logging::debug(MString("unable to assign shader "));
@@ -716,7 +716,7 @@ MStatus mtap_MayaRenderer::setResolution(unsigned int w, unsigned int h)
 
     asr::Camera *cam = project->get_scene()->get_camera();
     MString camName = "";
-    if (cam != nullptr)
+    if (cam != 0)
     {
         camName = project->get_scene()->get_camera()->get_name();
         asr::ParamArray &camParams = cam->get_parameters();

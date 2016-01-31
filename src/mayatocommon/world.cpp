@@ -44,23 +44,23 @@ namespace MayaTo{
 
     void *getObjPtr(MString name)
     {
-        if (worldPointer != nullptr)
+        if (worldPointer != 0)
             return MayaTo::getWorldPtr()->getObjPtr(name);
-        return nullptr;
+        return 0;
     }
 
 
     static void addObjectPtr(MString name, void *ptr)
     {
-        if (worldPointer != nullptr)
+        if (worldPointer != 0)
             worldPointer->addObjectPtr(name, ptr);
     }
 
     void deleteWorld()
     {
-        if (worldPointer != nullptr)
+        if (worldPointer != 0)
             delete worldPointer;
-        worldPointer = nullptr;
+        worldPointer = 0;
     }
 
     void defineWorld()
@@ -91,22 +91,22 @@ namespace MayaTo{
 
         // in batch mode we do not need any renderView callbacks, and timer callbacks do not work anyway in batch
         if (MGlobal::mayaState() != MGlobal::kBatch)
-            timerCallbackId = MTimerMessage::addTimerCallback(0.001, RenderQueueWorker::renderQueueWorkerTimerCallback, nullptr);
-        MayaToWorld::afterNewCallbackId = MSceneMessage::addCallback(MSceneMessage::kAfterOpen, MayaToWorld::callAfterOpenCallback, nullptr, &stat);
+            timerCallbackId = MTimerMessage::addTimerCallback(0.001, RenderQueueWorker::renderQueueWorkerTimerCallback, 0);
+        MayaToWorld::afterNewCallbackId = MSceneMessage::addCallback(MSceneMessage::kAfterOpen, MayaToWorld::callAfterOpenCallback, 0, &stat);
 
         initialize();
         renderType = WorldRenderType::RTYPENONE;
         renderState = WorldRenderState::RSTATENONE;
-        worldScenePtr = nullptr;
-        worldRendererPtr = nullptr;
-        worldRenderGlobalsPtr = nullptr;
+        worldScenePtr = 0;
+        worldRendererPtr = 0;
+        worldRenderGlobalsPtr = 0;
         defineGlobalConversionMatrix();
 
     };
 
     MayaToWorld::~MayaToWorld()
     {
-        MayaToWorld::beforeExitCallback(nullptr);
+        MayaToWorld::beforeExitCallback(0);
     }
 
     void MayaToWorld::initializeScene()
