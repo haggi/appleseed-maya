@@ -136,7 +136,7 @@ public:
                     MFloatArray& v, MIntArray& triPointIndices, MIntArray& triNormalIndices,
                     MIntArray& triUvIndices, MIntArray& triMatIndices); // all triIndices contain per vertex indices except the triMatIndices, this is per face
     virtual bool geometryShapeSupported();
-    virtual sharedPtr<ObjectAttributes> getObjectAttributes(sharedPtr<ObjectAttributes> parentAttributes = 0) = 0;
+    virtual sharedPtr<ObjectAttributes> getObjectAttributes(sharedPtr<ObjectAttributes> parentAttributes = sharedPtr<ObjectAttributes>()) = 0;
 
     sharedPtr<MayaObject> parent;
     sharedPtr<MayaObject> origObject; // this is necessary for instanced objects that have to access the original objects data

@@ -38,11 +38,12 @@ I hope this one works better, or at least as expected.
 #include <windows.h>
 #endif
 #include <iostream>
-#include <chrono>
 #include <maya/MComputation.h>
 #include <maya/MRenderView.h>
 #include <maya/MGlobal.h>
 #include "definitions.h"
+
+#include "boost/chrono.hpp"
 
 static MString setWaitCursorCmd = "import pymel.core as pm;pm.waitCursor(state=True);";
 static MString releaseWaitCursorCmd = "import pymel.core as pm;pm.waitCursor(state=False);pm.refresh()";

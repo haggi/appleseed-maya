@@ -43,7 +43,7 @@
 void defineDefaultMaterial(asr::Project *project)
 {
     asr::Assembly *assembly = getMasterAssemblyFromProject(project);
-    MColor gray = { 0.5f, 0.5f, 0.5f };
+    MColor gray(0.5f, 0.5f, 0.5f);
     defineColor(project, "gray", gray, 1.0f);
 
     // Create a BRDF called "diffuse_gray_brdf" and insert it into the assembly.
@@ -399,7 +399,7 @@ void fillMatrices(sharedPtr<MayaObject> obj, asr::TransformSequence& transformSe
     transformSequence.clear();
 
     // in ipr mode we have to update the matrix manually
-    if (MayaTo::getWorldPtr()->getRenderType() == MayaTo::MayaToWorld::WorldRenderType::IPRRENDER)
+    if (MayaTo::getWorldPtr()->getRenderType() == MayaTo::MayaToWorld::IPRRENDER)
     {
         obj->transformMatrices.clear();
         obj->transformMatrices.push_back(obj->dagPath.inclusiveMatrix());
@@ -433,7 +433,7 @@ void fillMatrices(sharedPtr<MayaObject> obj, asr::TransformSequence& transformSe
 void fillTransformMatrices(sharedPtr<MayaObject> obj, asr::Light *light)
 {
     // in ipr mode we have to update the matrix manually
-    if (MayaTo::getWorldPtr()->getRenderType() == MayaTo::MayaToWorld::WorldRenderType::IPRRENDER)
+    if (MayaTo::getWorldPtr()->getRenderType() == MayaTo::MayaToWorld::IPRRENDER)
     {
         obj->transformMatrices.clear();
         obj->transformMatrices.push_back(obj->dagPath.inclusiveMatrix());

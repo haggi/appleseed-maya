@@ -95,14 +95,13 @@ namespace MayaTo{
         MayaToWorld::afterNewCallbackId = MSceneMessage::addCallback(MSceneMessage::kAfterOpen, MayaToWorld::callAfterOpenCallback, 0, &stat);
 
         initialize();
-        renderType = WorldRenderType::RTYPENONE;
-        renderState = WorldRenderState::RSTATENONE;
-        worldScenePtr = 0;
-        worldRendererPtr = 0;
-        worldRenderGlobalsPtr = 0;
+        renderType = RTYPENONE;
+        renderState = RSTATENONE;
+        worldScenePtr.reset();
+        worldRendererPtr.reset();
+        worldRenderGlobalsPtr.reset();
         defineGlobalConversionMatrix();
-
-    };
+    }
 
     MayaToWorld::~MayaToWorld()
     {
