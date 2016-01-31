@@ -181,7 +181,12 @@ MStatus MayaRenderGlobalsNode::initialize()
     CHECK_MSTATUS(addAttribute(geotimesamples));
 
 
+#ifdef _WIN32
     MString numCpu = getenv("NUMBER_OF_PROCESSORS");
+#else
+    MString numCpu("1");
+#endif
+
     int numberOfProcessors = numCpu.asInt();
     threads = nAttr.create("threads", "threads", MFnNumericData::kInt, numberOfProcessors);
     nAttr.setMin(1);
