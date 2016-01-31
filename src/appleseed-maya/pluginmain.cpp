@@ -104,8 +104,6 @@ DLLEXPORT MStatus initializePlugin(MObject obj)
     command += "\");}\n";
     MGlobal::executeCommand(command);
 
-    setRendererName("Appleseed");
-    setRendererShortCutName("mtap");
     setRendererHome(getenv("MTAP_HOME"));
 
     MString cmd = MString("import appleseed.mtap_initialize as minit; minit.initRenderer()");
@@ -127,10 +125,10 @@ DLLEXPORT MStatus initializePlugin(MObject obj)
     }
 
 #if MAYA_API_VERSION >= 201600
-    status = plugin.registerRenderer("Appleseed", mtap_MayaRenderer::creator);
+    status = plugin.registerRenderer("appleseed", mtap_MayaRenderer::creator);
     if (!status)
     {
-        status.perror("cannot register node: Appleseed Maya renderer");
+        status.perror("cannot register node: appleseed Maya renderer");
         return status;
     }
 #endif

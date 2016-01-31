@@ -26,26 +26,29 @@
 // THE SOFTWARE.
 //
 
+// appleseed-maya headers.
+#include "utilities/tools.h"
+#include "utilities/attrtools.h"
+#include "utilities/logging.h"
 #include "appleseed.h"
+#include "appleseedutils.h"
+#include "mayascene.h"
+#include "world.h"
 
-#include <maya/MFnTransform.h>
-
+// appleseed.renderer headers.
 #include "renderer/api/environment.h"
 #include "renderer/api/environmentedf.h"
 #include "renderer/api/texture.h"
 #include "renderer/api/environmentshader.h"
 #include "renderer/api/edf.h"
-#include "renderer/modeling/environmentedf/oslenvironmentedf.h"
+#include "renderer/api/shadergroup.h"
 #include "renderer/modeling/environmentedf/sphericalcoordinates.h"
-#include "renderer/modeling/shadergroup/shadergroup.h"
 
-#include "appleseedutils.h"
+// appleseed.foundation headers.
+#include "foundation/math/scalar.h"
 
-#include "utilities/tools.h"
-#include "utilities/attrtools.h"
-#include "utilities/logging.h"
-#include "mayascene.h"
-#include "world.h"
+// Maya headers.
+#include <maya/MFnTransform.h>
 
 static Logging logger;
 
@@ -171,9 +174,9 @@ void AppleseedRenderer::defineEnvironment()
                     unitVector.y = sunOrient.y;
                     unitVector.z = sunOrient.z;
                     asr::unit_vector_to_angles(unitVector, theta, phi);
-                    theta = 90.0f - RadToDeg(theta);
+                    theta = 90.0f - asf::rad_to_deg(theta);
                     theta = theta;
-                    sun_phi = RadToDeg(phi);
+                    sun_phi = asf::rad_to_deg(phi);
                 }
             }
             else

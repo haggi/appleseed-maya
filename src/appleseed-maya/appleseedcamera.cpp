@@ -36,8 +36,8 @@
 #include "world.h"
 
 using namespace AppleRender;
-//
-//  Appleseed does not support more than one camera at the moment, so break after the first one.
+
+//  appleseed does not support more than one camera at the moment, so break after the first one.
 //  Cameras are more a mixture between assembly and object. They have a transformation like an assembly but
 //  attributes like an object.
 
@@ -106,7 +106,6 @@ void AppleseedRenderer::defineCamera(sharedPtr<MayaObject> cam)
         project->get_scene()->set_camera(appleCam);
         camera = project->get_scene()->get_camera();
     }
-
 
     fillMatrices(cam, camera->transform_sequence());
 }

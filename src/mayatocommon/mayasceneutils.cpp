@@ -174,7 +174,7 @@ bool MayaScene::isLight(MObject obj)
 
 void  MayaScene::classifyMayaObject(sharedPtr<MayaObject> obj)
 {
-    if (isCamera(obj->mobject))
+    if (obj->mobject.hasFn(MFn::kCamera))
     {
         this->camList.push_back(obj);
         return;

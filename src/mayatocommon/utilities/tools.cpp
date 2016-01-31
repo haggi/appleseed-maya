@@ -51,54 +51,11 @@ bool isCameraRenderable(MObject obj)
     return false;
 }
 
-bool isCamera(MObject obj)
-{
-    if (obj.hasFn(MFn::kCamera))
-    {
-        return true;
-    }
-    return false;
-}
-
-float clamp(float x, float minv, float maxv)
-{
-    if (x > maxv)
-        return maxv;
-    if (x < minv)
-        return minv;
-    return x;
-}
-
-float smoothstep(float edge0, float edge1, float x)
-{
-    x = clamp((x - edge0) / (edge1 - edge0), 0.0, 1.0);
-    return x*x*(3 - 2 * x);
-}
-
-void setRendererName(MString rname)
-{
-    RendererName = rname;
-}
-
-void setRendererShortCutName(MString rname)
-{
-    RendererShortCut = rname;
-}
-
 void setRendererHome(MString home)
 {
     RendererHome = home;
 }
 
-MString getRendererName()
-{
-    return RendererName;
-}
-
-MString getRendererShortCutName()
-{
-    return RendererShortCut;
-}
 MString getRendererHome()
 {
     return RendererHome;
@@ -106,38 +63,14 @@ MString getRendererHome()
 
 MObject getRenderGlobalsNode()
 {
-    MString globalsNodeName = MString(pystring::lower(getRendererName().asChar()).c_str()) + "Globals";
-    return objectFromName(globalsNodeName);
+    return objectFromName("appleseedGlobals");
 }
-
 
 float rnd()
 {
     float rm = (float)RAND_MAX;
     float r  = (float)rand();
     return(r/rm);
-}
-
-float srnd()
-{
-    float rm = (float)RAND_MAX;
-    float r  = (float)rand();
-    return(((r/rm) - 0.5f) * 2.0f);
-}
-
-
-void rowToColumn(MMatrix& from, MMatrix& to, bool transRev)
-{
-    for (int i = 0; i < 4; i++)
-        for (int k = 0; k < 4; k++)
-            to[k][i] = from[i][k];
-
-    if (transRev)
-    {
-        double t = to[3][0];
-        to[3][0] = to[3][2];
-        to[3][2] = t;
-    }
 }
 
 // replace :,| and . by _ ... the modern version
@@ -149,68 +82,6 @@ MString makeGoodString(const MString& oldString)
     newString = pystring::replace(newString, "|", "_");
     newString = pystring::replace(newString, ".", "_");
     return MString(newString.c_str());
-}
-
-// from bla|blubb|dingensShape make /bla/blubb/dingensShape
-MString makeHierarchyString(MString& oldString)
-{
-    std::string old(oldString.asChar());
-    std::string newString;
-    newString = pystring::replace(old, "|", "/");
-    newString = pystring::replace(newString, ":", "_");
-    if (!pystring::startswith(newString, "/"))
-        newString = std::string("/") + newString;
-    return MString(newString.c_str());
-}
-MString makeGoodHierarchyString(MString& oldString)
-{
-    MString returnString, workString = oldString;
-    MStringArray stringArray;
-    workString.split('|', stringArray);
-    if (stringArray.length() == 0)
-        workString = oldString;
-    else
-        workString.clear();
-    for (uint i = 0; i < stringArray.length(); i++)
-    {
-        if (i > 0)
-            workString += "/" + stringArray[i];
-        else{
-            workString = "/";
-            workString += stringArray[i];
-        }
-    }
-    return workString;
-}
-
-MString getPlugName(MString& longPlugname)
-{
-    MStringArray stringArray;
-    longPlugname.split('.', stringArray);
-    if (stringArray.length() > 0)
-        return(stringArray[stringArray.length() - 1]);
-    else
-        return(MString(""));
-}
-
-bool checkDirectory(MString& path)
-{
-#ifdef _WIN32
-    // check if directory already exists 0 -> exists, != 0 -> Problem
-    if (_access(path.asChar(), 0) != 0)
-    {
-        MGlobal::displayInfo("Directory " + path + " seems not to exist, trying to create");
-        if (_mkdir(path.asChar()) != 0)
-        {
-            MGlobal::displayInfo("Problem creating directory " + path);
-            return false;
-        }
-        MGlobal::displayInfo("Directory " + path + " successfully created.");
-    }
-    return true;
-#else
-    return false;
-#endif
 }
 
 bool IsPathVisible(MDagPath& dp)
@@ -321,7 +192,6 @@ bool IsLayerVisible(MDagPath& dp)
    return true;
 }
 
-
 bool IsInRenderLayer(MDagPath& dagPath)
 {
    MObject renderLayerObj = MFnRenderLayer::currentLayer();
@@ -332,90 +202,6 @@ bool IsInRenderLayer(MDagPath& dagPath)
    else
       return false;
 }
-
-bool CheckVisibility(MDagPath& dagPath)
-{
-    MFnDagNode node(dagPath);
-    if (!IsPathVisible(dagPath))
-        return false;
-    return true;
-}
-
-MObject getTransformNode(MDagPath& dagPath)
-{
-    MFnDagNode node;
-    MStatus stat = MStatus::kSuccess;
-    while (stat == MStatus::kSuccess)
-    {
-        MFnDagNode node;
-        node.setObject(dagPath.node());
-        if (dagPath.node().hasFn(MFn::kTransform))
-            return dagPath.node();
-        stat = dagPath.pop();
-    }
-    return MObject::kNullObj;
-}
-
-// return the first connected object set
-MObject getConnectedObjSet(MDagPath& dagPath)
-{
-    MFnDagNode node;
-    MStatus stat = MStatus::kSuccess;
-    while (stat == MStatus::kSuccess)
-    {
-        MFnDagNode node;
-        node.setObject(dagPath.node());
-        if (dagPath.node().hasFn(MFn::kTransform))
-        {
-            MFnDependencyNode depFn(dagPath.node());
-            MPlug instObjGrps = depFn.findPlug("instObjGroups");
-            if (!instObjGrps.isNull())
-            {
-                if (instObjGrps.numElements() > 0)
-                {
-                    for (uint i = 0; i < instObjGrps.numElements(); i++)
-                    {
-                        if (instObjGrps[i].isConnected())
-                        {
-                            MPlugArray outPlugs;
-                            instObjGrps[i].connectedTo(outPlugs, false, true);
-                            if (outPlugs.length() > 0)
-                            {
-                                for (uint k = 0; k < outPlugs.length(); k++)
-                                {
-                                    if (outPlugs[k].node().hasFn(MFn::kSet))
-                                    {
-                                        if (MFnDependencyNode(outPlugs[k].node()).typeName() == "objectSet")
-                                        {
-                                            return outPlugs[k].node();
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        stat = dagPath.pop();
-    }
-    return MObject::kNullObj;
-}
-
-MString matrixToString(MMatrix& matrix)
-{
-    MString matString("");
-    for (int i = 0; i < 4; i++)
-    {
-        for (int j = 0; j < 4; j++)
-        {
-            matString += MString(" ") + matrix[i][j];
-        }
-        matString += "\n";
-    }
-    return matString;
-}
-
 
 MObject getUpstreamMesh(MString& outputPlugName, MObject thisObject)
 {
@@ -438,41 +224,6 @@ MObject getOtherSideNode(const MString& plugName, MObject& thisObject)
         return result;
     MPlug otherSidePlug = plugArray[0];
     result = otherSidePlug.node();
-    return result;
-}
-
-MObject getOtherSideSourceNode(const MString& plugName, MObject& thisObject, bool checkChildren, MString& outPlugName)
-{
-    MStatus stat;
-    MObject result = MObject::kNullObj;
-    MFnDependencyNode depFn(thisObject, &stat); if (stat != MStatus::kSuccess) return result;
-    MPlugArray pa;
-    depFn.getConnections(pa);
-    MPlug connectedPlug;
-    for (uint pId = 0; pId < pa.length(); pId++)
-    {
-        MPlug plug = pa[pId];
-        if (!plug.isDestination())
-            continue;
-        while (plug.isChild())
-        {
-            plug = plug.parent();
-        }
-        if ((getAttributeNameFromPlug(plug) == plugName) || (getAttributeNameFromPlug(plug) == plugName.substring(0, plugName.length()-4)))
-        {
-            connectedPlug = pa[pId];
-        }
-    }
-    if (connectedPlug.isNull())
-        return result;
-    connectedPlug.connectedTo(pa, true, false, &stat); if (stat != MStatus::kSuccess) return result;
-    if (pa.length() == 0)
-        return result;
-    MPlug otherSidePlug = pa[0];
-    result = otherSidePlug.node();
-    outPlugName = getAttributeNameFromPlug(otherSidePlug);
-    if (otherSidePlug.isChild())
-        outPlugName = getAttributeNameFromPlug(otherSidePlug.parent());
     return result;
 }
 
@@ -576,54 +327,7 @@ void getConnectedChildPlugs(const char *attrName, MFnDependencyNode& depFn, bool
     }
 }
 
-void getDirectConnectedPlugs(const char *attrName, MFnDependencyNode& depFn, bool dest, MPlugArray& thisNodePlugs, MPlugArray& otherSidePlugs)
-{
-    MPlug thisPlug = depFn.findPlug(attrName);
-    if (!thisPlug.isArray())
-    {
-        if (thisPlug.isConnected())
-        {
-            thisNodePlugs.append(thisPlug);
-            otherSidePlugs.append(getDirectConnectedPlug(thisPlug, dest));
-        }
-        return;
-    }
-    for (uint i = 0; i < thisPlug.numElements(); i++)
-    {
-        if (thisPlug.isCompound())
-        {
-            // we only support simple compounds like colorListEntry
-            if (MString(attrName) == MString("colorEntryList"))
-            {
-                MPlug element = thisPlug[i];
-                if (element.child(0).isConnected())
-                {
-                    MPlug connectedPlug = element.child(0);
-                    thisNodePlugs.append(connectedPlug);
-                    otherSidePlugs.append(getDirectConnectedPlug(connectedPlug, dest));
-                }
-                if (element.child(1).isConnected())
-                {
-                    MPlug connectedPlug = element.child(1);
-                    thisNodePlugs.append(connectedPlug);
-                    otherSidePlugs.append(getDirectConnectedPlug(connectedPlug, dest));
-                }
-            }
-        }
-        else{
-            if (!thisPlug[i].isConnected())
-            {
-                continue;
-            }
-            MPlug connectedPlug = thisPlug[i];
-            thisNodePlugs.append(connectedPlug);
-            otherSidePlugs.append(getDirectConnectedPlug(connectedPlug, dest));
-        }
-    }
-
-}
-
-int physicalIndex(MPlug& p)
+int physicalIndex(const MPlug& p)
 {
     MPlug parent = p;
     while (parent.isChild())
@@ -638,8 +342,10 @@ int physicalIndex(MPlug& p)
     MPlug arrayPlug = parent.array();
 
     for (uint i = 0; i < arrayPlug.numElements(); i++)
+    {
         if (arrayPlug[i].logicalIndex() == parent.logicalIndex())
             return i;
+    }
 
     return -1;
 }
@@ -656,10 +362,6 @@ MPlug getDirectConnectedPlug(const MPlug& plug, bool dest)
         returnPlug = pa[0];
     }
     return returnPlug;
-}
-
-void getConnectedChildrenPlugs(const char *attrName, MFnDependencyNode& depFn, bool dest, MPlugArray& connectedChildren)
-{
 }
 
 bool isConnected(const char *attrName, MFnDependencyNode& depFn, bool dest, bool primaryChild = false)
@@ -762,26 +464,6 @@ MObject getConnectedInNode(const MObject& thisObject, const char *attrName)
     return connectedPlugs[0].node();
 }
 
-void getConnectedNodes(MObject& thisObject, MObjectArray& nodeList)
-{
-    MFnDependencyNode depFn(thisObject);
-    MPlugArray connectedPlugs;
-    depFn.getConnections(connectedPlugs);
-    int numConnections = connectedPlugs.length();
-
-    for (int i = 0; i <  numConnections; i++)
-    {
-        // check for incoming connections only. Outgoing connections are not relevant
-        MPlug plug = connectedPlugs[i];
-        // an plug can be source AND destination at the same time, like the displacement attribute of a displacementShader
-        if (plug.isSource() && !plug.isDestination())
-            continue;
-        MObject plugObject = getOtherSideNode(plug);
-        if (plugObject != MObject::kNullObj)
-            nodeList.append(plugObject);
-    }
-}
-
 // get direct connections and primary children connections for such plugs like color, vector, point
 void getConnectedInNodes(MPlug& plug, MObjectArray& nodeList)
 {
@@ -876,7 +558,6 @@ bool getConnectedInPlugs(MObject& thisObject, MPlugArray& inPlugs, MPlugArray& o
     return true;
 }
 
-
 bool getConnectedInPlugs(MObject& thisObject, MPlugArray& inPlugs)
 {
     MStatus stat;
@@ -891,56 +572,6 @@ bool getConnectedInPlugs(MObject& thisObject, MPlugArray& inPlugs)
     return true;
 }
 
-bool getConnectedOutPlugs(MObject& thisObject, MPlugArray& outPlugs)
-{
-    MStatus stat;
-    bool result = false;
-    MFnDependencyNode depFn(thisObject, &stat); if (stat != MStatus::kSuccess) return result;
-    MPlugArray pa;
-    depFn.getConnections(pa);
-    for (uint i = 0; i < pa.length(); i++)
-        if (pa[i].isSource())
-            outPlugs.append(pa[i]);
-
-    return true;
-}
-
-bool hasPlug(MObject& thisObject, const MString& plugName)
-{
-    MStatus stat;
-    MFnDependencyNode depFn(thisObject, &stat); if (stat != MStatus::kSuccess) return false;
-    MPlug plug = depFn.findPlug(plugName, &stat);
-    if (stat != MStatus::kSuccess)
-        return false;
-    else
-        return true;
-    return false;
-}
-
-
-bool getOtherSidePlugName(const MString& plugName, MObject& thisObject, MString& otherSidePlugName)
-{
-    MStatus stat;
-    MFnDependencyNode depFn(thisObject, &stat); if (stat != MStatus::kSuccess) return false;
-    MPlug plug = depFn.findPlug(plugName, &stat);   if (stat != MStatus::kSuccess) return false;
-    MPlugArray plugArray;
-    plug.connectedTo(plugArray, 1, 0, &stat);if (stat != MStatus::kSuccess) return false;
-    if (plugArray.length() == 0)
-        return false;
-    MPlug otherSidePlug = plugArray[0];
-    otherSidePlugName = otherSidePlug.name();
-    return true;
-}
-
-MString getObjectName(MObject& mobject)
-{
-    if (mobject == MObject::kNullObj)
-        return "";
-
-    MFnDependencyNode depFn(mobject);
-    return depFn.name();
-}
-
 MString getObjectName(const MObject& mobject)
 {
     if (mobject == MObject::kNullObj)
@@ -950,53 +581,10 @@ MString getObjectName(const MObject& mobject)
     return depFn.name();
 }
 
-MString getDepNodeTypeName(MObject mobject)
+MString getDepNodeTypeName(const MObject& mobject)
 {
     MFnDependencyNode depFn(mobject);
     return depFn.typeName();
-}
-
-MString pointToUnderscore(MString& inString)
-{
-    std::string ss(inString.asChar());
-    ss = pystring::replace(ss, ".", "_");
-    return MString(ss.c_str());
-}
-
-void writeTMatrixList(std::ofstream& outFile, std::vector<MMatrix>& transformMatrices, bool inverse, float scaleFactor)
-{
-    for (int matrixId = 0; matrixId < transformMatrices.size(); matrixId++)
-    {
-        MMatrix tm = transformMatrices[matrixId];
-        if (inverse)
-            tm = tm.inverse();
-
-        if (matrixId == 0)
-        {
-            outFile << "\t\tray_transform " << matrixToString(tm) << "\n"; // normal transform
-        }
-        else{
-            outFile << "\t\tray_mtransform " << matrixToString(tm) << "\n"; // motion transform
-        }
-    }
-}
-
-void writeTMatrixList(std::ofstream *outFile, std::vector<MMatrix>& transformMatrices, bool inverse, float scaleFactor)
-{
-    for (int matrixId = 0; matrixId < transformMatrices.size(); matrixId++)
-    {
-        MMatrix tm = transformMatrices[matrixId];
-        if (inverse)
-            tm = tm.inverse();
-
-        if (matrixId == 0)
-        {
-            *outFile << "\t\tray_transform " << matrixToString(tm) << "\n"; // normal transform
-        }
-        else{
-            *outFile << "\t\tray_mtransform " << matrixToString(tm) << "\n"; // motion transform
-        }
-    }
 }
 
 MString lightColorAsString(MFnDependencyNode& depFn)
@@ -1007,13 +595,6 @@ MString lightColorAsString(MFnDependencyNode& depFn)
     getColor(MString("color"), depFn, color);
     MString colorString = MString("") + color.r * intensity + " " + color.g * intensity + " " + color.b * intensity + " ";
     return colorString;
-}
-float shadowColorIntensity(MFnDependencyNode& depFn)
-{
-    MColor shadowColor;
-    getColor(MString("shadColor"), depFn, shadowColor);
-    float shadowI = 1.0f - ((shadowColor.r + shadowColor.g + shadowColor.b) / 3.0f);
-    return shadowI;
 }
 
 MObject objectFromName(MString name)
@@ -1035,26 +616,6 @@ MObject objectFromName(MString name)
     // Successful.
     stat = MStatus::kSuccess;
     return obj;
-}
-
-
-void posFromMatrix(MMatrix& matrix, MVector& pos)
-{
-    pos.x = matrix[3][0];
-    pos.y = matrix[3][1];
-    pos.z = matrix[3][2];
-}
-
-void posRotFromMatrix(MMatrix& matrix, MPoint& pos, MVector& rot)
-{
-    MTransformationMatrix tm(matrix);
-    MTransformationMatrix::RotationOrder order = MTransformationMatrix::kXYZ;
-    double rotation[3];
-    tm.getRotation(rotation, order, MSpace::kWorld);
-    rot.x = rotation[0];
-    rot.y = rotation[1];
-    rot.z = rotation[2];
-    pos = tm.getTranslation(MSpace::kWorld);
 }
 
 void posRotSclFromMatrix(MMatrix& matrix, MPoint& pos, MVector& rot, MVector& scl)
@@ -1089,38 +650,6 @@ void posRotSclFromMatrix(MMatrix& matrix, MPoint& pos, MPoint& rot, MPoint& scl)
     scl.x = scaling[0];
     scl.y = scaling[1];
     scl.z = scaling[2];
-}
-
-MObject getConnectedFileTextureObject(const MString& plugName, MFnDependencyNode& depFn)
-{
-    MStatus stat;
-    MString path = "";
-    MPlug plug = depFn.findPlug(plugName, &stat);
-    if (!stat)
-        return MObject::kNullObj;
-    if (plug.isConnected())
-    {
-        MPlugArray parray;
-        plug.connectedTo(parray, true, false, &stat);
-        if (!stat)
-            return MObject::kNullObj;
-
-        if (parray.length() == 0)
-            return MObject::kNullObj;
-
-        MPlug destPlug = parray[0];
-        MObject fileNode = destPlug.node();
-        if (!fileNode.hasFn(MFn::kFileTexture))
-        {
-            return MObject::kNullObj;
-        }
-        else
-        {
-            return fileNode;
-        }
-
-    }
-    return MObject::kNullObj;
 }
 
 MString getConnectedFileTexturePath(const MString& plugName, MFnDependencyNode& depFn)
@@ -1205,7 +734,6 @@ bool getConnectedFileTexturePath(const MString& plugName, MString& nodeName, MSt
     return true;
 }
 
-
 bool findCamera(MDagPath& dagPath)
 {
     if (dagPath.node().hasFn(MFn::kCamera))
@@ -1244,23 +772,6 @@ bool isLightTransform(MDagPath& dagPath)
     return false;
 }
 
-bool isCameraTransform(MDagPath& dagPath)
-{
-    uint numChilds = dagPath.childCount();
-    for (uint chId = 0; chId < numChilds; chId++)
-    {
-        MDagPath childPath = dagPath;
-        MStatus stat = childPath.push(dagPath.child(chId));
-        if (!stat)
-        {
-            continue;
-        }
-        if (childPath.node().hasFn(MFn::kCamera))
-            return true;
-    }
-    return false;
-}
-
 void makeUniqueArray(MObjectArray& oa)
 {
     MObjectArray tmpArray;
@@ -1281,16 +792,6 @@ void makeUniqueArray(MObjectArray& oa)
     oa = tmpArray;
 }
 
-bool isObjectInList(MObject obj, MObjectArray& objectArray)
-{
-    for (uint oId = 0; oId < objectArray.length(); oId++)
-    {
-        if (objectArray[oId] == obj)
-            return true;
-    }
-    return false;
-}
-
 bool isPlugInList(MObject obj, MPlugArray& plugArray)
 {
     for (uint oId = 0; oId < plugArray.length(); oId++)
@@ -1303,7 +804,6 @@ bool isPlugInList(MObject obj, MPlugArray& plugArray)
 
 void findConnectedNodeTypes(uint nodeId, MObject thisObject, MObjectArray& connectedElements, MPlugArray& completeList, bool upstream)
 {
-
     MGlobal::displayInfo(MString("thisNode: ") + getObjectName(thisObject));
 
     MString name = getObjectName(thisObject);
@@ -1347,9 +847,7 @@ void findConnectedNodeTypes(uint nodeId, MObject thisObject, MObjectArray& conne
             findConnectedNodeTypes(nodeId, otherSidePlugs[cplugId].node(), connectedElements, completeList, upstream);
         }
     }
-
 }
-
 
 void findConnectedNodeTypes(uint nodeId, MObject thisObject, MObjectArray& connecedElements, bool upstream)
 {
@@ -1361,95 +859,6 @@ MString getAttributeNameFromPlug(const MPlug& plug)
 {
     MFnAttribute att(plug.attribute());
     return att.name();
-}
-
-
-MObject getConnectedShadingEngine(MObject node)
-{
-    MObject se = MObject::kNullObj;
-
-    MFnDependencyNode depFn(node);
-    MPlugArray plugArray;
-    depFn.getConnections(plugArray);
-    for (uint i = 0; i < plugArray.length(); i++)
-    {
-        if (plugArray[i].isSource())
-        {
-            MPlugArray desArray;
-            plugArray[i].connectedTo(desArray, false, true);
-            for(uint k = 0; k < desArray.length(); k++)
-            {
-                if (desArray[k].node().hasFn(MFn::kShadingEngine))
-                {
-                    se = desArray[k].node();
-                }
-            }
-        }
-    }
-
-    return se;
-}
-
-
-void getMatrixComponents(MMatrix& matrix, MPoint& pos, MPoint& rot, MPoint& scale)
-{
-    MTransformationMatrix objTMatrix(matrix);
-    double rotation[3] = {0,0,0};
-    MTransformationMatrix::RotationOrder rotOrder =  MTransformationMatrix::kXYZ;
-    objTMatrix.getRotation(rotation, rotOrder, MSpace::kWorld);
-    MVector position = objTMatrix.getTranslation(MSpace::kWorld);
-    double scal[3];
-    objTMatrix.getScale(scal, MSpace::kWorld);
-    rot.x = rotation[0];
-    rot.y = rotation[1];
-    rot.z = rotation[2];
-    pos.x = position.x;
-    pos.y = position.y;
-    pos.z = position.z;
-    scale.x = scal[0];
-    scale.y = scal[1];
-    scale.z = scal[2];
-}
-
-void getUVFromConnectedTexturePlacementNode(MObject fileTextureNode, float inU, float inV, float& outU, float& outV)
-{
-    MObject texPlaceObj = getConnectedInNode(fileTextureNode, "uvCoord");
-    outU = inU;
-    outV = outV;
-    if (texPlaceObj == MObject::kNullObj)
-        return;
-
-    double offsetU = 0.0;
-    double offsetV = 0.0;
-
-    MFnDependencyNode texPlaceNode(texPlaceObj);
-    getDouble(MString("offsetU"), texPlaceNode, offsetU);
-    getDouble(MString("offsetV"), texPlaceNode, offsetV);
-    float repeatU = 1.0f, repeatV = 1.0f, rotateUV = 0.0f;
-    getFloat("repeatU",  texPlaceNode, repeatU);
-    getFloat("repeatV",  texPlaceNode, repeatV);
-    getFloat("rotateUV",  texPlaceNode, rotateUV);
-
-    MMatrix rotationMatrix;
-    rotationMatrix.setToIdentity();
-    rotationMatrix[0][0] =  cos(rotateUV) * repeatU;
-    rotationMatrix[1][0] = -sin(rotateUV) * repeatU;
-    rotationMatrix[0][1] =  sin(rotateUV) * repeatV;
-    rotationMatrix[1][1] =  cos(rotateUV) * repeatV;
-
-    MVector uv(inU - 0.5, inV - 0.5, 0.0);
-    uv = uv * rotationMatrix;
-    uv.x += 0.5;
-    uv.y += 0.5;
-
-    uv.x *= repeatU;
-    uv.y *= repeatV;
-
-    uv.x += offsetU;
-    uv.y += offsetV;
-
-    outU = uv.x;
-    outV = uv.y;
 }
 
 void uniqueMObjectArray(MObjectArray& cleanMe)
@@ -1470,33 +879,6 @@ void uniqueMObjectArray(MObjectArray& cleanMe)
             tmpArray.append(cleanMe[i]);
     }
     cleanMe = tmpArray;
-}
-
-MPlug getParentPlug(MPlug& p)
-{
-    MPlug tmp = p;
-    while (tmp.isChild())
-        tmp = tmp.parent();
-    return tmp;
-}
-
-bool isChildOf(MPlug& parent, MPlug& child)
-{
-    for (uint i = 0; i < parent.numChildren(); i++)
-        if (parent.child(i) == child)
-            return true;
-    return false;
-}
-
-MDagPath getDagPathFromName(MString name)
-{
-    MDagPath dagPath;
-    MSelectionList sList;
-    if (MGlobal::getSelectionListByName(name, sList))
-    {
-        sList.getDagPath(0, dagPath);
-    }
-    return dagPath;
 }
 
 bool isSunLight(MObject& obj)

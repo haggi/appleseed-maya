@@ -121,14 +121,10 @@ MString RenderQueueWorker::getElapsedTimeString()
 
 MString RenderQueueWorker::getCaptionString()
 {
-    MString captionString;
-    MString frameString = MString("Frame ") + MayaTo::getWorldPtr()->worldRenderGlobalsPtr->getFrameNumber();
-    MString timeString = getElapsedTimeString();
-    size_t mem =  getPeakUsage();
-    MString memUnit = "MB";
-    MString memoryString = MString("Mem: ") + mem + memUnit;
-    captionString = MString("(") + getRendererName() + ")\\n" + frameString + "  " + timeString + "  " + memoryString;
-    return captionString;
+    const MString frameString = MString("Frame ") + MayaTo::getWorldPtr()->worldRenderGlobalsPtr->getFrameNumber();
+    const MString timeString = getElapsedTimeString();
+    const MString memoryString = MString("Mem: ") + getPeakUsage() + "MB";
+    return MString("(appleseed)\\n") + frameString + "  " + timeString + "  " + memoryString;
 }
 
 void RenderQueueWorker::callbackWorker(size_t cbId)
