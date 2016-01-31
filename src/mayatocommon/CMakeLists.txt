@@ -150,7 +150,6 @@ set (utilities_sources
     utilities/logging.h
     utilities/meshtools.cpp
     utilities/meshtools.h
-    utilities/minimap.h
     utilities/pystring.cpp
     utilities/pystring.h
     utilities/tools.cpp

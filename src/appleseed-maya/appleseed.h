@@ -74,7 +74,6 @@
 #include "mtap_mayaobject.h"
 #include "mtap_renderercontroller.h"
 
-#include "utilities/minimap.h"
 #include "definitions.h"
 
 // shaderdefs

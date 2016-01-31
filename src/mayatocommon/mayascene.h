@@ -39,7 +39,6 @@
 #include "renderglobals.h"
 #include "mayaobject.h"
 #include "definitions.h"
-#include "utilities/minimap.h"
 
 struct InteractiveElement
 {
@@ -82,9 +81,6 @@ class MayaScene
     std::vector<sharedPtr<MayaObject> >  lightList;
     std::vector<sharedPtr<MayaObject> >  instancerNodeElements; // so its easier to update them
     std::vector<MDagPath> instancerDagPathList;
-
-    MiniMap<MObject, sharedPtr<MayaObject> > mayaObjMObjMap;
-
 
     float currentFrame;
     bool parseSceneHierarchy(MDagPath currentObject, int level, sharedPtr<ObjectAttributes> attr, sharedPtr<MayaObject> parentObject); // new, parse whole scene as hierarchy and save/analyze objects
