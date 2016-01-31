@@ -38,45 +38,50 @@
 #include <maya/MPointArray.h>
 #include <maya/MObjectArray.h>
 #include <maya/MDagPathArray.h>
+
 #include <fstream>
 
 class  BinMeshWriterCmd: public MPxCommand
 {
 public:
-                    BinMeshWriterCmd();
-    virtual         ~BinMeshWriterCmd();
-    static MSyntax  newSyntax();
+    BinMeshWriterCmd();
 
-    MStatus         doIt(const MArgList& args);
-    static void*    creator();
-    void            printUsage();
-    bool            exportBinMeshes();
-    void            getObjectsForExport(const MArgList& args);
-    void            removeSmoothMesh(MDagPath& dagPath);
+    static MSyntax newSyntax();
 
-    std::fstream    pFile;
+    MStatus doIt(const MArgList& args);
 
-    inline void write(double value)
-    {
-        pFile.write(reinterpret_cast<char *>(&value), sizeof(double));
-    }
-    inline void write(MPoint point)
-    {
-        for (uint i = 0; i < 3; i++)
-            this->write(point[i]);
-    }
-    inline void write(MPointArray points)
-    {
-        for (uint i = 0; i < points.length(); i++)
-            this->write(points[i]);
-    }
-    inline void write(int value)
-    {
-        pFile.write(reinterpret_cast<char *>(&value), sizeof(int));
-    }
-
+    static void* creator();
 
 private:
+    void printUsage();
+    bool exportBinMeshes();
+    void getObjectsForExport(const MArgList& args);
+    void removeSmoothMesh(MDagPath& dagPath);
+
+    inline void write(const int value)
+    {
+        pFile.write(reinterpret_cast<const char *>(&value), sizeof(int));
+    }
+
+    inline void write(const double value)
+    {
+        pFile.write(reinterpret_cast<const char *>(&value), sizeof(double));
+    }
+
+    inline void write(const MPoint& point)
+    {
+        write(point.x);
+        write(point.y);
+        write(point.z);
+    }
+
+    inline void write(const MPointArray& points)
+    {
+        for (size_t i = 0, e = points.length(); i < e; ++i)
+            write(points[i]);
+    }
+
+    std::fstream    pFile;
     bool            doProxy;
     float           percentage;
     int             nthPoly;
@@ -87,7 +92,6 @@ private:
     bool            doTransform;
     bool            exportAll;
     bool            useSmoothPreview;
-
 };
 
 #endif

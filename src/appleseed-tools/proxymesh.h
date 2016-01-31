@@ -30,19 +30,59 @@
 #define AS_TOOLS_PROXYMESH
 
 #include "foundation/mesh/imeshwalker.h"
+
 #include <maya/MPoint.h>
 #include <maya/MPointArray.h>
 #include <maya/MString.h>
 #include <maya/MStringArray.h>
 #include <maya/MIntArray.h>
+
 #include <fstream>
-
-namespace asf = foundation;
-
 
 class ProxyMesh
 {
 public:
+    ProxyMesh(float percentage);
+
+    void addMesh(const foundation::IMeshWalker& walker);
+
+    void writeFile(const MString& fileName);
+
+private:
+    inline void write(const double value)
+    {
+        proxyFile.write(reinterpret_cast<const char *>(&value), sizeof(double));
+    }
+
+    inline void write(const MPoint& point)
+    {
+        write(point.x);
+        write(point.y);
+        write(point.z);
+    }
+
+    inline void write(const MPointArray& points)
+    {
+        for (size_t i = 0, e = points.length(); i < e; ++i)
+            write(points[i]);
+    }
+
+    inline void write(const int value)
+    {
+        proxyFile.write(reinterpret_cast<const char *>(&value), sizeof(int));
+    }
+
+    inline void write(const MString& value)
+    {
+        write((int)value.length());
+        proxyFile.write(value.asChar(), value.length());
+    }
+
+    void setMin(const MPoint& vtx);
+    void setMax(const MPoint& vtx);
+    void setBBox(const MPoint& vtx);
+    void scaleFace(int firstVtxIndex, int numVertices);
+
     float   percentage;
     float   polySizeMultiplier;
     MPointArray points;
@@ -51,39 +91,6 @@ public:
     MStringArray shadingGroupNames;
     MIntArray polyShaderIds;
     MIntArray objectShaderStartId;
-
-    inline void write(double value)
-    {
-        proxyFile.write(reinterpret_cast<char *>(&value), sizeof(double));
-    }
-    inline void write(MPoint point)
-    {
-        for (uint i = 0; i < 3; i++)
-            this->write(point[i]);
-    }
-    inline void write(MPointArray points)
-    {
-        for (uint i = 0; i < points.length(); i++)
-            this->write(points[i]);
-    }
-    inline void write(int value)
-    {
-        proxyFile.write(reinterpret_cast<char *>(&value), sizeof(int));
-    }
-    inline void write(MString value)
-    {
-        this->write((int)value.length());
-        proxyFile.write(value.asChar(), value.length());
-    }
-
-    void setMin(MPoint vtx);
-    void setMax(MPoint vtx);
-    void setBBox(MPoint vtx);
-    void addMesh(asf::IMeshWalker& walker);
-    void writeFile(MString fileName);
-    void scaleFace(int firstVtxIndex, int numVertices);
-    ProxyMesh(float percentage);
-    ~ProxyMesh();
 };
 
 #endif

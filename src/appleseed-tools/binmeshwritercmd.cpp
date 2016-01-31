@@ -51,14 +51,9 @@ static Logging logger;
 
 #include "proxymesh.h"
 
-
-void* BinMeshWriterCmd::creator()
+BinMeshWriterCmd::BinMeshWriterCmd()
 {
-    return new BinMeshWriterCmd();
 }
-
-BinMeshWriterCmd::BinMeshWriterCmd() {}
-BinMeshWriterCmd::~BinMeshWriterCmd() {}
 
 MSyntax BinMeshWriterCmd::newSyntax()
 {
@@ -76,6 +71,11 @@ MSyntax BinMeshWriterCmd::newSyntax()
     syntax.useSelectionAsDefault(true);
 
     return syntax;
+}
+
+void* BinMeshWriterCmd::creator()
+{
+    return new BinMeshWriterCmd();
 }
 
 void BinMeshWriterCmd::printUsage()
