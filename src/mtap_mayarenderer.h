@@ -36,10 +36,10 @@
 #include "foundation/image/tile.h"
 
 #include <maya/MTypes.h>
-#include <map>
-//#include <mutex>
 
-#include "definitions.h"
+// Standard headers.
+#include <map>
+#include <memory>
 
 namespace asf = foundation;
 namespace asr = renderer;
@@ -158,8 +158,7 @@ class mtap_MayaRenderer : public MPxRenderer
     //Render output buffer, it is R32G32B32A32_FLOAT format.
     boost::thread renderThread;
     asf::auto_release_ptr<asr::Project> project;
-    autoPtr<asf::ILogTarget> log_target;
-    autoPtr<asr::MasterRenderer> mrenderer;
+    std::auto_ptr<asr::MasterRenderer> mrenderer;
     asf::auto_release_ptr<TileCallbackFactory> tileCallbackFac;
     RenderController controller;
     MUuid lastShapeId; // save the last shape id, needed by translateTransform

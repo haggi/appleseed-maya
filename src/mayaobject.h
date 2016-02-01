@@ -29,9 +29,6 @@
 #ifndef MAYA_OBJECT_H
 #define MAYA_OBJECT_H
 
-// appleseed-maya headers.
-#include "definitions.h"
-
 // Maya headers.
 #include <maya/MObject.h>
 #include <maya/MObjectArray.h>
@@ -45,6 +42,9 @@
 #include <maya/MString.h>
 #include <maya/MMatrix.h>
 #include <maya/MColor.h>
+
+// Boost headers.
+#include "boost/shared_ptr.hpp"
 
 // Standard headers.
 #include <vector>
@@ -95,7 +95,6 @@ class MayaObject
     bool shadowExcludeList; // if true the shadowObjects contains objects which ignores shadows from the current light
     std::vector<MDagPath> castNoShadowObjects; // for lights - shadow linking
     std::vector<boost::shared_ptr<MayaObject> >  excludedObjects; // for lights - excluded objects
-
 
     std::vector<MString> exportFileNames; // for every mb step complete filename for every exported shape file
     std::vector<MString> hierarchyNames; // for every geo mb step I have one name, /obj/cube0, /obj/cube1...

@@ -172,13 +172,10 @@ set (sources
     binmeshtranslator.h
     binmeshwritercmd.cpp
     binmeshwritercmd.h
-    definitions.h
     mayaobject.cpp
     mayaobject.h
     mayascene.cpp
     mayascene.h
-    mayascenefactory.cpp
-    mayascenefactory.h
     mayasceneparsing.cpp
     mayasceneutils.cpp
     mayatoappleseed.cpp

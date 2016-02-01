@@ -41,7 +41,8 @@ I hope this one works better, or at least as expected.
 #include <maya/MComputation.h>
 #include <maya/MRenderView.h>
 #include <maya/MGlobal.h>
-#include "definitions.h"
+
+#include "foundation/platform/thread.h"
 
 #include "boost/chrono.hpp"
 
@@ -73,7 +74,7 @@ class Compute
             }
 #endif
             if (!done && !Compute::checkDone)
-                sleepFor(100);
+                foundation::sleep(100);
         }
     }
 

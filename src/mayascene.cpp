@@ -55,7 +55,6 @@
 #include "shadingtools/shadingutils.h"
 #include "threads/renderqueueworker.h"
 #include "world.h"
-#include "definitions.h"
 
 MayaScene::MayaScene()
 {

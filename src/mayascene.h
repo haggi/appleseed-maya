@@ -38,7 +38,6 @@
 
 #include "renderglobals.h"
 #include "mayaobject.h"
-#include "definitions.h"
 
 class InteractiveElement
 {

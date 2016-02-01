@@ -44,21 +44,20 @@
 #include "renderqueueworker.h"
 #include "utilities/logging.h"
 #include "utilities/tools.h"
-#include "mayascenefactory.h"
 #include "memory/memoryinfo.h"
 #include "../mayascene.h"
 #include "../world.h"
 #include "../renderprocess.h"
 
+#include "foundation/platform/thread.h"
+
 boost::thread RenderQueueWorker::sceneThread;
 
 namespace
 {
-    bool userEventFinished = false;
     int numTiles = 0;
     int tilesDone = 0;
     MCallbackId idleCallbackId = 0;
-    MCallbackId computationInterruptCallbackId = 0;
     MCallbackId sceneCallbackId0 = 0;
     MCallbackId sceneCallbackId1 = 0;
     MCallbackId pluginCallbackId = 0;
@@ -72,7 +71,7 @@ namespace
     std::map<MCallbackId, MObject> objIdMap;
     std::map<MCallbackId, InteractiveElement *> idInteractiveMap;
 
-    Compute renderComputation = Compute();
+    Compute renderComputation;
     std::vector<Callback> callbackList;
 }
 
@@ -136,7 +135,7 @@ void RenderQueueWorker::callbackWorker(size_t cbId)
     while (callbackList[cbId].terminate == false)
     {
         callbackList[cbId].functionPointer();
-        sleepFor(callbackList[cbId].millsecondInterval);
+        foundation::sleep(callbackList[cbId].millsecondInterval);
     }
     Logging::debug("callbackWorker finished. Removing callback.");
 }
@@ -497,7 +496,7 @@ void RenderQueueWorker::iprFindLeafNodes()
     // it updates the render database with the elements and empties the list which is then free for the next run
     // todo: maybe use wait for variables.
     while (modifiedElementList.size() > 0)
-        sleepFor(100);
+        asf::sleep(100);
 
     std::vector<InteractiveElement *>::iterator llIt;
     for (llIt = leafList.begin(); llIt != leafList.end(); llIt++)
@@ -550,7 +549,7 @@ void RenderQueueWorker::computationEventThread()
             theRenderEventQueue()->push(e);
         }
         if (!done)
-            sleepFor(100);
+            asf::sleep(100);
         else
             Logging::debug("computationEventThread done");
     }
@@ -566,7 +565,7 @@ void RenderQueueWorker::renderProcessThread()
         {
             getWorldPtr()->worldRendererPtr->render();
             while ((modifiedElementList.size() == 0) && (getWorldPtr()->renderType == MayaToWorld::IPRRENDER) && (getWorldPtr()->renderState != MayaToWorld::RSTATESTOPPED))
-                sleepFor(100);
+                asf::sleep(100);
             if ((getWorldPtr()->renderType != MayaToWorld::IPRRENDER) || (getWorldPtr()->renderState == MayaToWorld::RSTATESTOPPED))
                 break;
             getWorldPtr()->worldRendererPtr->interactiveUpdateList = modifiedElementList;
@@ -621,7 +620,7 @@ void RenderQueueWorker::interactiveStartThread()
 void RenderQueueWorker::sendFinalizeIfQueueEmpty(void *)
 {
     while (theRenderEventQueue()->size() > 0)
-        sleepFor(10);
+        asf::sleep(10);
 
     Logging::debug("sendFinalizeIfQueueEmpty: queue is 0, sending finalize.");
     Event e;
@@ -633,7 +632,7 @@ void RenderQueueWorker::iprWaitForFinish(Event e)
 {
     Logging::debug("iprWaitForFinish.");
     while (getWorldPtr()->getRenderState() != MayaToWorld::RSTATENONE)
-        sleepFor(100);
+        asf::sleep(100);
     Logging::debug("iprWaitForFinish - Renderstate is RSTATENONE, sending event.");
     theRenderEventQueue()->push(e);
 }

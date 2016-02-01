@@ -30,7 +30,6 @@
 #define MTAP_APPLESEED_H
 
 // appleseed-maya headers.
-#include "definitions.h"
 #include "mtap_mayaobject.h"
 #include "mtap_renderercontroller.h"
 #include "mtap_tilecallback.h"
@@ -162,8 +161,8 @@ class AppleseedRenderer
 
   private:
     asf::auto_release_ptr<asr::Project> project;
-    autoPtr<asr::MasterRenderer> masterRenderer;
-    autoPtr<asf::ILogTarget> log_target;
+    std::auto_ptr<asr::MasterRenderer> masterRenderer;
+    std::auto_ptr<asf::ILogTarget> log_target;
     asf::auto_release_ptr<mtap_ITileCallbackFactory> tileCallbackFac;
     mtap_IRendererController mtap_controller;
     bool sceneBuilt;

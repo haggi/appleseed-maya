@@ -32,7 +32,6 @@
 #include <maya/MMatrix.h>
 
 #include "mayaobject.h"
-#include "definitions.h"
 #include "renderer/api/scene.h"
 
 namespace asr = renderer;

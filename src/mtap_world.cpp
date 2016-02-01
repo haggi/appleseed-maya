@@ -27,7 +27,6 @@
 //
 
 #include "world.h"
-#include "mayascenefactory.h"
 #include "renderglobalsfactory.h"
 #include "utilities/logging.h"
 #include <maya/MGlobal.h>
@@ -43,9 +42,8 @@ void MayaToWorld::cleanUp()
 
 void MayaToWorld::cleanUpAfterRender()
 {
-    // after a normal rendering we do not need the maya scene data any more
-    // remove it to save memory
-    MayaSceneFactory().deleteMayaScene();
+    // After a normal rendering we do not need the Maya scene data any more. Remove it to save memory.
+    getWorldPtr()->worldScenePtr.reset();
 }
 
 void MayaToWorld::initialize()

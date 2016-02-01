@@ -87,12 +87,6 @@ AppleseedSwatchRenderer::AppleseedSwatchRenderer()
   , enableSwatchRenderer(true)
   , loopDone(false)
 {
-#if _DEBUG
-    log_target = autoPtr<asf::ILogTarget>(asf::create_console_log_target(stdout));
-    asr::global_logger().add_target(log_target.get());
-    RENDERER_LOG_INFO("loading project file %s...", "This is a test");
-#endif
-
     MString swatchRenderFile = getRendererHome() + "resources/swatchRender.xml";
     MString schemaPath = getRendererHome() + "schemas/project.xsd";
     project = asr::ProjectFileReader().read(swatchRenderFile.asChar(), schemaPath.asChar());
@@ -113,10 +107,11 @@ AppleseedSwatchRenderer::AppleseedSwatchRenderer()
         project->search_paths().push_back(oslDirs[i].asChar());
     }
 
-    mrenderer = autoPtr<asr::MasterRenderer>(new asr::MasterRenderer(
-        project.ref(),
-        project->configurations().get_by_name("final")->get_inherited_parameters(),
-        &renderer_controller));
+    mrenderer.reset(
+        new asr::MasterRenderer(
+            project.ref(),
+            project->configurations().get_by_name("final")->get_inherited_parameters(),
+            &renderer_controller));
 }
 
 AppleseedSwatchRenderer::~AppleseedSwatchRenderer()
@@ -125,17 +120,10 @@ AppleseedSwatchRenderer::~AppleseedSwatchRenderer()
 
     // todo: wasn't this supposed to be project.reset()?
     project.release();
-
-#if _DEBUG
-    asr::global_logger().remove_target(log_target.get());
-#endif
 }
 
 void AppleseedSwatchRenderer::renderSwatch(NewSwatchRenderer *sr)
 {
-    if (!mrenderer.get())
-        return;
-
     int res(sr->resolution());
     this->setSize(res);
     this->setShader(sr->dNode);
@@ -229,9 +217,6 @@ void AppleseedSwatchRenderer::mainLoop()
 
 void AppleseedSwatchRenderer::defineMaterial(MObject shadingNode)
 {
-    if (!mrenderer.get())
-        return;
-
     MStatus status;
     // to use the unified material function we need the shading group
     // this works only for surface shaders, textures can be handled differently later

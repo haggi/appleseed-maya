@@ -34,7 +34,6 @@
 #include "utilities/logging.h"
 #include "utilities/tools.h"
 #include "appleseedutils.h"
-#include "definitions.h"
 #include "world.h"
 
 mtap_ObjectAttributes::mtap_ObjectAttributes()

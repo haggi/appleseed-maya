@@ -43,7 +43,6 @@
 #include "renderer/api/edf.h"
 #include "renderer/modeling/shadergroup/shadergroup.h"
 #include "appleseedutils.h"
-#include "definitions.h"
 
 // appleseed.renderer headers.
 #include "renderer/api/bsdf.h"
@@ -100,7 +99,6 @@ mtap_MayaRenderer::mtap_MayaRenderer()
 
 mtap_MayaRenderer::~mtap_MayaRenderer()
 {
-    asr::global_logger().remove_target(log_target.get());
     mrenderer.reset();
     project.release();
     objectArray.clear();
@@ -216,11 +214,12 @@ void mtap_MayaRenderer::initProject()
 
     this->tileCallbackFac.reset(new TileCallbackFactory(this));
 
-    mrenderer = autoPtr<asr::MasterRenderer>(new asr::MasterRenderer(
-        this->project.ref(),
-        this->project->configurations().get_by_name("interactive")->get_inherited_parameters(),
-        &controller,
-        this->tileCallbackFac.get()));
+    mrenderer.reset(
+        new asr::MasterRenderer(
+            this->project.ref(),
+            this->project->configurations().get_by_name("interactive")->get_inherited_parameters(),
+            &controller,
+            this->tileCallbackFac.get()));
 
     for (uint i = 0; i < getWorldPtr()->shaderSearchPath.length(); i++)
     {
@@ -250,14 +249,11 @@ void mtap_MayaRenderer::render()
         mrenderer->render();
     else
         return;
-#ifdef _DEBUG
-    asr::ProjectFileWriter::write(project.ref(), "C:/daten/3dprojects/mayaToAppleseed/renderData/mayaRenderer.xml");
-#endif
+
     Logging::debug("renderthread done.");
 
     pp.progress = 2.0;
     progress(pp);
-
 }
 
 static void startRenderThread(mtap_MayaRenderer* renderPtr)
@@ -273,6 +269,7 @@ MStatus mtap_MayaRenderer::startAsync(const JobParams& params)
     asyncStarted = true;
     return MStatus::kSuccess;
 };
+
 MStatus mtap_MayaRenderer::stopAsync()
 {
     Logging::debug("stopAsync");

@@ -26,14 +26,17 @@
 // THE SOFTWARE.
 //
 
-#include "world.h"
-#include <maya/MSceneMessage.h>
-#include <maya/MGlobal.h>
-#include "mayascenefactory.h"
-#include "renderglobalsfactory.h"
+// appleseed-maya headers.
 #include "threads/renderqueueworker.h"
 #include "utilities/logging.h"
 #include "appleseed.h"
+#include "mayascene.h"
+#include "renderglobalsfactory.h"
+#include "world.h"
+
+// Maya headers.
+#include <maya/MSceneMessage.h>
+#include <maya/MGlobal.h>
 
 static MCallbackId timerCallbackId = 0;
 static MCallbackId beforeExitId = 0;
@@ -114,7 +117,7 @@ MayaToWorld::~MayaToWorld()
 
 void MayaToWorld::initializeScene()
 {
-    MayaSceneFactory().createMayaScene();
+    getWorldPtr()->worldScenePtr.reset(new MayaScene());
 }
 
 void MayaToWorld::initializeRenderGlobals()

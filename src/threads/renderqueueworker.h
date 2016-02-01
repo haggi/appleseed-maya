@@ -34,7 +34,6 @@
 #include <maya/MNodeMessage.h>
 #include <map>
 #include "queue.h"
-#include "definitions.h"
 
 #include "boost/function.hpp"
 

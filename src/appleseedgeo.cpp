@@ -41,7 +41,6 @@
 #include "utilities/logging.h"
 #include "appleseedutils.h"
 #include "world.h"
-#include "definitions.h"
 
 #include "renderer/modeling/object/meshobjectreader.h"
 

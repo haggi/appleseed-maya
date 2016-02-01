@@ -38,6 +38,8 @@
 
 #include "renderer/modeling/environmentedf/sphericalcoordinates.h"
 
+#include "foundation/platform/thread.h"
+
 #include <maya/MFnDependencyNode.h>
 #include <maya/MFnMesh.h>
 #include <maya/MItMeshPolygon.h>
@@ -71,7 +73,7 @@ AppleseedRenderer::AppleseedRenderer()
   : sceneBuilt(false)
 {
     asr::global_logger().set_format(asf::LogMessage::Debug, "");
-    log_target = autoPtr<asf::ILogTarget>(asf::create_console_log_target(stdout));
+    log_target.reset(asf::create_console_log_target(stdout));
     asr::global_logger().add_target(log_target.get());
 }
 
@@ -179,7 +181,7 @@ void AppleseedRenderer::render()
             theRenderEventQueue()->push(e);
 
             while (!RenderQueueWorker::iprCallbacksDone())
-                sleepFor(10);
+                asf::sleep(10);
         }
 
         sceneBuilt = true;
