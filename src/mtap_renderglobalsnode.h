@@ -29,7 +29,7 @@
 #ifndef MTAP_GLOBALS_H
 #define MTAP_GLOBALS_H
 
-#include "mayarendernodes/renderglobalsnode.h"
+#include "mayarendernodes/mayarenderglobalsnode.h"
 
 class MayaToAppleseedGlobals : public MayaRenderGlobalsNode
 {

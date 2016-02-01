@@ -31,8 +31,8 @@ include_directories (
 )
 
 set (mayarendernodes_sources
-    mayarendernodes/renderglobalsnode.cpp
-    mayarendernodes/renderglobalsnode.h
+    mayarendernodes/mayarenderglobalsnode.cpp
+    mayarendernodes/mayarenderglobalsnode.h
     mayarendernodes/standinlocatornode.cpp
     mayarendernodes/standinlocatornode.h
 )
@@ -72,8 +72,8 @@ source_group ("shaders" FILES
 set (shadingtools_sources
     shadingtools/material.cpp
     shadingtools/material.h
-    shadingtools/shaderdefs.cpp
-    shadingtools/shaderdefs.h
+    shadingtools/shaderdefinitions.cpp
+    shadingtools/shaderdefinitions.h
     shadingtools/shadingnode.cpp
     shadingtools/shadingnode.h
     shadingtools/shadingutils.cpp
@@ -92,7 +92,6 @@ set (swatchesrenderer_sources
     swatchesrenderer/newswatchrenderer.cpp
     swatchesrenderer/newswatchrenderer.h
     swatchesrenderer/swatchesevent.h
-    swatchesrenderer/swatchesqueue.h
 )
 list (APPEND appleseedmaya_sources
     ${swatchesrenderer_sources}
@@ -118,6 +117,7 @@ source_group ("threads" FILES
 set (utilities_sources
     utilities/attrtools.cpp
     utilities/attrtools.h
+    utilities/concurrentqueue.h
     utilities/logging.cpp
     utilities/logging.h
     utilities/meshtools.cpp

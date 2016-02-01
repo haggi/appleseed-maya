@@ -30,7 +30,7 @@
 #include "appleseedutils.h"
 #include "appleseedmaterial.h"
 #include "shadingtools/material.h"
-#include "shadingtools/shaderdefs.h"
+#include "shadingtools/shaderdefinitions.h"
 #include "shadingtools/shadingutils.h"
 #include "renderer/modeling/shadergroup/shadergroup.h"
 #include "utilities/logging.h"

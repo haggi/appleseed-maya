@@ -34,7 +34,7 @@
 #include "utilities/tools.h"
 #include "utilities/attrtools.h"
 #include "utilities/pystring.h"
-#include "shadingtools/shaderdefs.h"
+#include "shadingtools/shaderdefinitions.h"
 #include "world.h"
 
 #include "boost/filesystem.hpp"

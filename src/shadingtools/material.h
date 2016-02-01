@@ -172,9 +172,7 @@ class Material
     MObject shadingEngineNode;
     MString materialName;
 
-    Material();
-    Material(MObject& shadingEngine);
-    ~Material();
+    explicit Material(MObject& shadingEngine);
 
     void printNodes(ShadingNetwork& network);
     bool isLight(MObject& obj);

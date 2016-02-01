@@ -27,7 +27,7 @@
 //
 
 #include "shadingnode.h"
-#include "shaderdefs.h"
+#include "shaderdefinitions.h"
 #include "utilities/logging.h"
 #include "utilities/tools.h"
 #include "utilities/pystring.h"

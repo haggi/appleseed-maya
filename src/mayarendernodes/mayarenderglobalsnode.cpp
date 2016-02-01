@@ -35,15 +35,15 @@
 #include <maya/MGlobal.h>
 #include <maya/MFnPluginData.h>
 #include <maya/MPlug.h>
-#include "renderglobalsnode.h"
+#include "mayarenderglobalsnode.h"
 
-    // sampling adaptive
+// sampling adaptive
 MObject MayaRenderGlobalsNode::adaptiveSampling;
 
 MObject MayaRenderGlobalsNode::minSamples;
 MObject MayaRenderGlobalsNode::maxSamples;
 
-    // sampling raster based
+// sampling raster based
 MObject MayaRenderGlobalsNode::samplesX;
 MObject MayaRenderGlobalsNode::samplesY;
 
@@ -122,7 +122,6 @@ void *MayaRenderGlobalsNode::creator()
 
 MStatus MayaRenderGlobalsNode::initialize()
 {
-
     MFnNumericAttribute nAttr;
     MFnTypedAttribute tAttr;
     MFnGenericAttribute gAttr;
