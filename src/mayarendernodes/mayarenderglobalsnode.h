@@ -29,11 +29,10 @@
 #ifndef MT_GLOBALS_H
 #define MT_GLOBALS_H
 
-#include <maya/MTypeId.h>
-#include <maya/MString.h>
-#include <maya/MStringArray.h>
 #include <maya/MPxNode.h>
-
+#include <maya/MStatus.h>
+#include <maya/MStringArray.h>
+#include <maya/MTypeId.h>
 
 class MayaRenderGlobalsNode : public MPxNode
 {

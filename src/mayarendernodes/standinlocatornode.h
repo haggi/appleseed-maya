@@ -46,7 +46,6 @@
 #include <maya/MVector.h>
 #include <maya/MColor.h>
 #include <maya/MDistance.h>
-#include <math.h>
 
 class StandinLocatorNode
   : public MPxLocatorNode
