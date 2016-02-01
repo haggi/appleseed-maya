@@ -34,7 +34,6 @@
 #include "mtap_mayaobject.h"
 #include "mtap_renderercontroller.h"
 #include "mtap_tilecallback.h"
-#include "rendering/renderer.h"
 
 // appleseed.renderer headers.
 #include "renderer/api/bsdf.h"
@@ -88,7 +87,10 @@
 #define DIAGNOSTIC_SHADER       0x0011CF44
 #define SMOKE_SHADER            0x0011CF47
 
-
+// Forward declarations.
+class InteractiveElement;
+class MayaObject;
+class MObject;
 class mtap_MayaScene;
 class mtap_RenderGlobals;
 class ShadingNode;
@@ -97,44 +99,53 @@ namespace asf = foundation;
 namespace asr = renderer;
 
 class AppleseedRenderer
-  : public Renderer
 {
   public:
+    std::vector<InteractiveElement *> interactiveUpdateList;
+
     AppleseedRenderer();
     ~AppleseedRenderer();
 
-    virtual void defineCamera();
+    void defineCamera();
     void defineCamera(sharedPtr<MayaObject> obj);
-    virtual void defineEnvironment();
-    virtual void defineGeometry();
+    void defineEnvironment();
+    void defineGeometry();
     void updateGeometry(sharedPtr<MayaObject> obj);
     void updateInstance(sharedPtr<MayaObject> obj);
-    virtual void defineLights();
+    void defineLights();
     void defineLight(sharedPtr<MayaObject> obj);
-    virtual void render();
+    void render();
 
     // This method is called before rendering starts.
     // It should prepare all data which can/should be reused during
-    // ipr/frame/sequence rendering.
-    virtual void initializeRenderer();
+    // IPR/frame/sequence rendering.
+    void initializeRenderer();
 
     // This method is called at the end of rendering.
-    virtual void unInitializeRenderer();
+    void unInitializeRenderer();
 
     // This method is called during scene updating. If a renderer can update motionblur steps on the fly,
     // the geometry is defined at the very first step and later this definition will be updated for every motion step.
     // Other renderers will need a complete definition of all motionblur steps at once, so the motion steps will be
     // in the geometry e.g. with obj->addMeshData(); and at the very last step, everything is defined.
-    virtual void updateShape(sharedPtr<MayaObject> obj);
+    void updateShape(sharedPtr<MayaObject> obj);
 
     // This method is necessary only if the renderer is able to update the transform definition interactively.
     // In other cases, the world space transform will be defined directly during the creation of the geometry.
-    virtual void updateTransform(sharedPtr<MayaObject> obj);
+    void updateTransform(sharedPtr<MayaObject> obj);
 
-    virtual void abortRendering();
-    virtual void interactiveFbCallback(){}
-    virtual void doInteractiveUpdate();
-    virtual void handleUserEvent(int event, MString strData, float floatData, int intData){}
+    void abortRendering();
+
+    // This method can be called after a rendering is finished and
+    // the user wants to modify the color mapping of the final rendering.
+    // All interactive callbacks should be pushed into the worker queue with INTERACTIVEFBCALLBACK so that we don't get
+    // any race conditions if the callback takes longer than the next call.
+    void interactiveFbCallback() {}
+
+    // Make an interactive update of the scene. Before this call the interactiveUpdateList should be filled appropriately.
+    void doInteractiveUpdate();
+
+    void handleUserEvent(int event, MString strData, float floatData, int intData){}
 
     asf::auto_release_ptr<asr::MeshObject> defineStandardPlane(bool area = false);
     void defineProject();
@@ -146,8 +157,8 @@ class AppleseedRenderer
     asr::Project *getProjectPtr(){ return this->project.get(); }
     asf::StringArray defineMaterial(sharedPtr<mtap_MayaObject> obj);
     void updateMaterial(MObject sufaceShader);
-    virtual void preFrame();
-    virtual void postFrame();
+    void preFrame();
+    void postFrame();
 
   private:
     asf::auto_release_ptr<asr::Project> project;

@@ -69,20 +69,6 @@ source_group ("osl" FILES
     ${osl_sources}
 )
 
-set (rendering_sources
-    rendering/mayarenderer.cpp
-    rendering/mayarenderer.h
-    rendering/renderer.cpp
-    rendering/renderer.h
-    rendering/rendererfactory.h
-)
-list (APPEND appleseedmaya_sources
-    ${rendering_sources}
-)
-source_group ("rendering" FILES
-    ${rendering_sources}
-)
-
 set (shaders_sources
     shaders/asdisneymaterial.cpp
     shaders/asdisneymaterial.h
@@ -185,7 +171,6 @@ set (sources
     appleseedmaterial.h
     appleseedmeshwalker.cpp
     appleseedmeshwalker.h
-    appleseedrendererfactory.cpp
     appleseedupdateelements.cpp
     appleseedutils.cpp
     appleseedutils.h

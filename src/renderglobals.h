@@ -132,7 +132,6 @@ class RenderGlobals
 
     float internalScaleFactor;
     float rendererScaleFactor;
-    float toMillimeters(float mm);
 
     MObject renderGlobalsMobject;
     bool good;

@@ -39,7 +39,7 @@
 #include <maya/MTimerMessage.h>
 #include <maya/MDistance.h>
 #include "utilities/tools.h"
-#include "rendering/renderer.h"
+#include "appleseed.h"
 
 class MayaScene;
 class RenderGlobals;
@@ -87,7 +87,6 @@ class MayaToWorld
 
     float internalScaleFactor;
     float rendererScaleFactor;
-    float toMillimeters(float mm);
     MMatrix globalConversionMatrix; // for default unit conversion e.g. centimeter to meter
     MMatrix sceneScaleMatrix; // user defined scene scale
     float scaleFactor;
@@ -99,7 +98,7 @@ class MayaToWorld
     virtual void setRendererAxis();
 
     sharedPtr<MayaScene> worldScenePtr;
-    sharedPtr<Renderer> worldRendererPtr;
+    sharedPtr<AppleseedRenderer> worldRendererPtr;
     sharedPtr<RenderGlobals> worldRenderGlobalsPtr;
 
     MStringArray objectNames;

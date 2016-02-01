@@ -49,7 +49,6 @@
 #include "utilities/logging.h"
 #include "utilities/tools.h"
 #include "utilities/pystring.h"
-#include "rendering/renderer.h"
 
 std::vector<sharedPtr<MayaObject> >  origObjects;
 

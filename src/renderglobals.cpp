@@ -110,11 +110,6 @@ float RenderGlobals::updateFrameNumber()
     }
 }
 
-float RenderGlobals::toMillimeters(float mm)
-{
-    return mm * 1.0/rendererScaleFactor;
-}
-
 void RenderGlobals::defineGlobalConversionMatrix()
 {
     globalConversionMatrix.setToIdentity();

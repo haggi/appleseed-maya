@@ -40,18 +40,19 @@
 #include "mayaobject.h"
 #include "definitions.h"
 
-struct InteractiveElement
+class InteractiveElement
 {
-    InteractiveElement()
-    {
-        triggeredFromTransform = false;
-    }
-
+  public:
     sharedPtr<MayaObject> obj;
     MObject mobj;
     MString name;
     MObject node;
     bool triggeredFromTransform; // to recognize if we have to update the shape or only the instance transform
+
+    InteractiveElement()
+    {
+        triggeredFromTransform = false;
+    }
 };
 
 class MayaScene

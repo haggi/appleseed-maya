@@ -54,7 +54,6 @@
 #include "utilities/pystring.h"
 #include "shadingtools/shadingutils.h"
 #include "threads/renderqueueworker.h"
-#include "rendering/renderer.h"
 #include "world.h"
 #include "definitions.h"
 

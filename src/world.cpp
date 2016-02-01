@@ -31,9 +31,9 @@
 #include <maya/MGlobal.h>
 #include "mayascenefactory.h"
 #include "renderglobalsfactory.h"
-#include "rendering/rendererfactory.h"
 #include "threads/renderqueueworker.h"
 #include "utilities/logging.h"
+#include "appleseed.h"
 
 static MCallbackId timerCallbackId = 0;
 static MCallbackId beforeExitId = 0;
@@ -124,7 +124,7 @@ void MayaToWorld::initializeRenderGlobals()
 
 void MayaToWorld::initializeRenderer()
 {
-    MayaRendererFactory().createRenderer();
+    getWorldPtr()->worldRendererPtr.reset(new AppleseedRenderer());
 }
 
 void MayaToWorld::initializeRenderEnvironment()
@@ -132,11 +132,6 @@ void MayaToWorld::initializeRenderEnvironment()
     this->initializeRenderGlobals();
     this->initializeScene();
     this->initializeRenderer();
-}
-
-float MayaToWorld::toMillimeters(float mm)
-{
-    return mm * 1.0 / rendererScaleFactor;
 }
 
 void MayaToWorld::defineGlobalConversionMatrix()
