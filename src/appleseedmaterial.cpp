@@ -204,7 +204,7 @@ void AppleseedRenderer::updateMaterial(MObject materialNode)
 }
 
 
-asf::StringArray AppleseedRenderer::defineMaterial(boost::shared_ptr<mtap_MayaObject> obj)
+asf::StringArray AppleseedRenderer::defineMaterial(boost::shared_ptr<MayaObject> obj)
 {
     MStatus status;
     asf::StringArray materialNames;

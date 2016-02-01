@@ -28,12 +28,7 @@
 
 #include "standinlocatornode.h"
 
-//#include <maya/MFnStringData.h>
-//#include <maya/MFnDependencyNode.h>
-//#include <maya/MGlobal.h>
-//#include <maya/MDoubleArray.h>
-//#include <maya/MSelectionList.h>
-//#include "utilities/pystring.h"
+#include <maya/MFnDependencyNode.h>
 
 MObject  StandinLocatorNode::bboxMin;
 MObject  StandinLocatorNode::bboxMax;
@@ -43,6 +38,13 @@ MObject  StandinLocatorNode::percentDisplay;
 MObject  StandinLocatorNode::elementSize;
 
 MObject  StandinLocatorNode::dummyOutput;
+
+void StandinLocatorNode::postConstructor()
+{
+    setMPSafe(true);
+    MFnDependencyNode nodefn(thisMObject());
+    nodefn.setName("mtap_standinShape#");
+}
 
 MStatus StandinLocatorNode::initialize()
 {
@@ -175,14 +177,4 @@ MBoundingBox StandinLocatorNode::boundingBox() const
     MPoint corner2(0.5, 0.5, 0.5);
 
     return MBoundingBox(corner1, corner2);
-}
-
-
-StandinLocatorNode::StandinLocatorNode()
-{
-}
-
-
-StandinLocatorNode::~StandinLocatorNode()
-{
 }

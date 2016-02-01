@@ -219,15 +219,13 @@ void AppleseedRenderer::defineLights()
     for (oIt = mayaScene->lightList.begin(); oIt != mayaScene->lightList.end(); oIt++)
     {
         boost::shared_ptr<MayaObject> mobj = *oIt;
-        boost::shared_ptr<mtap_MayaObject> obj(boost::static_pointer_cast<mtap_MayaObject>(mobj));
 
-        if (!obj->visible)
+        if (!mobj->visible)
             continue;
 
-        if (isSunLight(obj->mobject))
+        if (isSunLight(mobj->mobject))
             continue;
 
-        defineLight(obj);
+        defineLight(mobj);
     }
-
 }

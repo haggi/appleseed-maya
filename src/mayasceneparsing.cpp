@@ -27,6 +27,14 @@
 //
 
 #include "mayascene.h"
+
+// appleseed-maya headers.
+#include "world.h"
+#include "utilities/logging.h"
+#include "utilities/tools.h"
+#include "utilities/pystring.h"
+
+// Maya headers.
 #include <maya/MDagPath.h>
 #include <maya/MItDag.h>
 #include <maya/MFnDagNode.h>
@@ -44,11 +52,6 @@
 #include <maya/MRenderView.h>
 #include <maya/MVectorArray.h>
 #include <maya/MFileIO.h>
-#include "world.h"
-#include "mayaobjectfactory.h"
-#include "utilities/logging.h"
-#include "utilities/tools.h"
-#include "utilities/pystring.h"
 
 std::vector<boost::shared_ptr<MayaObject> >  origObjects;
 
@@ -58,7 +61,7 @@ bool MayaScene::parseSceneHierarchy(MDagPath currentPath, int level, boost::shar
     if (pystring::find(currentPath.fullPathName().asChar(), "shaderBall") > -1)
         return true;
 
-    boost::shared_ptr<MayaObject> mo = MayaObjectFactory().createMayaObject(currentPath);
+    boost::shared_ptr<MayaObject> mo(new MayaObject(currentPath));
     boost::shared_ptr<ObjectAttributes> currentAttributes = mo->getObjectAttributes(parentAttributes);
     mo->parent = parentObject;
     classifyMayaObject(mo);
@@ -369,7 +372,7 @@ bool MayaScene::parseInstancerNew()
                 int curPathIndex = pathIndices[i];
                 MDagPath curPath = allPaths[curPathIndex];
 
-                boost::shared_ptr<MayaObject> particleMObject = MayaObjectFactory().createMayaObject(curPath);
+                boost::shared_ptr<MayaObject> particleMObject(new MayaObject(curPath));
                 MFnDependencyNode pOrigNode(particleMObject->mobject);
                 MObject pOrigObject = pOrigNode.object();
 

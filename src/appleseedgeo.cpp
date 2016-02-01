@@ -91,7 +91,7 @@ asf::auto_release_ptr<asr::MeshObject> AppleseedRenderer::defineStandardPlane(bo
 
 }
 
-void AppleseedRenderer::createMesh(boost::shared_ptr<mtap_MayaObject> obj)
+void AppleseedRenderer::createMesh(boost::shared_ptr<MayaObject> obj)
 {
 
     // If the mesh has an attribute called "mtap_standin_path" and it contains a valid entry, then try to read the
@@ -205,15 +205,11 @@ void AppleseedRenderer::createMesh(boost::shared_ptr<mtap_MayaObject> obj)
         asf::Transformd::from_local_to_parent(appleMatrix),
         asf::StringDictionary()
         .insert("slot0", "default")));
-
-
 }
 
 void AppleseedRenderer::updateGeometry(boost::shared_ptr<MayaObject> mobj)
 {
-    boost::shared_ptr<mtap_MayaObject> obj = boost::static_pointer_cast<mtap_MayaObject>(mobj);
-
-    if (!obj->isObjVisible())
+    if (!mobj->isObjVisible())
         return;
 
     if (!mobj->mobject.hasFn(MFn::kMesh))
@@ -221,31 +217,29 @@ void AppleseedRenderer::updateGeometry(boost::shared_ptr<MayaObject> mobj)
 
     if (mobj->instanceNumber == 0)
     {
-        createMesh(obj);
-        defineMaterial(obj);
-        return;
+        createMesh(mobj);
+        defineMaterial(mobj);
     }
 }
 
 void AppleseedRenderer::updateInstance(boost::shared_ptr<MayaObject> mobj)
 {
-    boost::shared_ptr<mtap_MayaObject> obj = boost::static_pointer_cast<mtap_MayaObject>(mobj);
-    if (obj->dagPath.node().hasFn(MFn::kWorld))
+    if (mobj->dagPath.node().hasFn(MFn::kWorld))
         return;
 
-    if (!obj->isObjVisible())
+    if (!mobj->isObjVisible())
         return;
 
     if (mobj->instanceNumber > 0)
     {
-        MayaObject *assemblyObject = getAssemblyMayaObject(obj.get());
+        MayaObject *assemblyObject = getAssemblyMayaObject(mobj.get());
         if (assemblyObject == 0)
         {
             Logging::debug("create mesh assemblyPtr == null");
             return;
         }
         MString assemblyName = getAssemblyName(assemblyObject);
-        MString assemblyInstanceName = getAssemblyInstanceName(obj.get());
+        MString assemblyInstanceName = getAssemblyInstanceName(mobj.get());
 
         asf::auto_release_ptr<asr::AssemblyInstance> assemblyInstance(
             asr::AssemblyInstanceFactory::create(
@@ -253,7 +247,7 @@ void AppleseedRenderer::updateInstance(boost::shared_ptr<MayaObject> mobj)
             asr::ParamArray(),
             assemblyName.asChar()));
         asr::TransformSequence &ts = assemblyInstance->transform_sequence();
-        fillMatrices(obj, ts);
+        fillMatrices(mobj, ts);
         getMasterAssemblyFromProject(this->project.get())->assembly_instances().insert(assemblyInstance);
     }
 }
@@ -279,20 +273,21 @@ void AppleseedRenderer::defineGeometry()
     for (oIt = mayaScene->instancerNodeElements.begin(); oIt != mayaScene->instancerNodeElements.end(); oIt++)
     {
         boost::shared_ptr<MayaObject> mobj = *oIt;
-        boost::shared_ptr<mtap_MayaObject> obj = boost::static_pointer_cast<mtap_MayaObject>(mobj);
-        if (obj->dagPath.node().hasFn(MFn::kWorld))
+
+        if (mobj->dagPath.node().hasFn(MFn::kWorld))
             continue;
-        if (obj->instanceNumber == 0)
+        if (mobj->instanceNumber == 0)
             continue;
 
-        MayaObject *assemblyObject = getAssemblyMayaObject(obj.get());
+        MayaObject* assemblyObject = getAssemblyMayaObject(mobj.get());
         if (assemblyObject == 0)
         {
             Logging::debug("create mesh assemblyPtr == null");
             continue;
         }
+
         MString assemblyName = getAssemblyName(assemblyObject);
-        MString assemblyInstanceName = getAssemblyInstanceName(obj.get());
+        MString assemblyInstanceName = getAssemblyInstanceName(mobj.get());
 
         asf::auto_release_ptr<asr::AssemblyInstance> assemblyInstance(
             asr::AssemblyInstanceFactory::create(
@@ -300,7 +295,7 @@ void AppleseedRenderer::defineGeometry()
             asr::ParamArray(),
             assemblyName.asChar()));
         asr::TransformSequence &ts = assemblyInstance->transform_sequence();
-        fillMatrices(obj, ts);
+        fillMatrices(mobj, ts);
         getMasterAssemblyFromProject(this->project.get())->assembly_instances().insert(assemblyInstance);
     }
 }

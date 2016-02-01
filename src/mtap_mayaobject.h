@@ -38,8 +38,6 @@
 namespace asr = renderer;
 namespace asf = foundation;
 
-class mtap_MayaObject;
-
 class mtap_ObjectAttributes : public ObjectAttributes
 {
   public:
@@ -48,19 +46,6 @@ class mtap_ObjectAttributes : public ObjectAttributes
     bool needsOwnAssembly;
     MMatrix objectMatrix;
     MayaObject *assemblyObject; // mayaObject above for which an assembly will be created
-};
-
-class mtap_MayaObject : public MayaObject
-{
-  public:
-    mtap_MayaObject(MObject&);
-    mtap_MayaObject(MDagPath&);
-    ~mtap_MayaObject();
-
-    virtual bool geometryShapeSupported();
-    virtual boost::shared_ptr<ObjectAttributes> getObjectAttributes(boost::shared_ptr<ObjectAttributes> parentAttributes = boost::shared_ptr<ObjectAttributes>());
-    bool needsAssembly();
-    void createAssembly();
 };
 
 #endif

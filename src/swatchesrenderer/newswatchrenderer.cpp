@@ -28,29 +28,18 @@
 
 #include "swatchesrenderer/newswatchrenderer.h"
 #include "swatchesrenderer/swatchesqueue.h"
+#include "appleseedswatchrenderer.h"
 #include "swatchesevent.h"
-#include <maya/MFnDependencyNode.h>
 #include "utilities/logging.h"
 #include "utilities/tools.h"
 #include "world.h"
 
-#include "appleseedswatchrenderer.h"
-
-NewSwatchRenderer::NewSwatchRenderer(MObject dependNode, MObject renderNode, int imageResolution) : MSwatchRenderBase(dependNode, renderNode, imageResolution)
-{
-    renderInProgress = true;
-    swatchRenderingDone = false;
-
-    rNode = renderNode;
-    dNode = dependNode;
-
-#ifdef _DEBUG
-    Logging::setLogLevel(Logging::LevelDebug);
-#endif
-    Logging::debug(MString("NewSwatchRenderer: dependNode: ") + MFnDependencyNode(dependNode).name() + " renderNode: " + MFnDependencyNode(renderNode).name());
-}
-
-NewSwatchRenderer::~NewSwatchRenderer()
+NewSwatchRenderer::NewSwatchRenderer(MObject dependNode, MObject renderNode, int imageResolution)
+  : MSwatchRenderBase(dependNode, renderNode, imageResolution)
+  , renderInProgress(true)
+  , swatchRenderingDone(false)
+  , rNode(renderNode)
+  , dNode(dependNode)
 {
 }
 
@@ -58,21 +47,15 @@ bool NewSwatchRenderer::renderParallel()
 {
     return false;
 }
+
 void NewSwatchRenderer::finishParallelRender()
 {
     Logging::debug(MString("finishParallelRender called."));
 }
+
 void NewSwatchRenderer::cancelParallelRendering()
 {
     Logging::debug(MString("cancelParallelRendering called."));
-}
-void NewSwatchRenderer::cancelCurrentSwatchRender()
-{
-    Logging::debug(MString("cancelCurrentSwatchRender called."));
-}
-void NewSwatchRenderer::enableSwatchRender(bool enable)
-{
-    Logging::debug(MString("enableSwatchRender called with: ") + enable);
 }
 
 MSwatchRenderBase* NewSwatchRenderer::creator(MObject dependNode, MObject renderNode, int imageResolution)
@@ -82,10 +65,6 @@ MSwatchRenderBase* NewSwatchRenderer::creator(MObject dependNode, MObject render
 
 bool NewSwatchRenderer::doIteration()
 {
-#ifdef _DEBUG
-    Logging::setLogLevel(Logging::LevelDebug);
-#endif
-
     if (getWorldPtr()->getRenderType() == MayaToWorld::IPRRENDER)
     {
         image().create(resolution(), resolution(), 4, MImage::kFloat);
@@ -93,12 +72,14 @@ bool NewSwatchRenderer::doIteration()
         return true;
     }
 
-    AppleseedSwatchRenderer* appleSwRndr = (AppleseedSwatchRenderer *)getObjPtr("appleseedSwatchesRenderer");
-    if (appleSwRndr)
+    AppleseedSwatchRenderer* swatchRenderer =
+        static_cast<AppleseedSwatchRenderer*>(getObjPtr("appleseedSwatchesRenderer"));
+
+    if (swatchRenderer)
     {
-        if (appleSwRndr->mrenderer.get() != 0)
+        if (swatchRenderer->mrenderer.get() != 0)
         {
-            appleSwRndr->renderSwatch(this);
+            swatchRenderer->renderSwatch(this);
             image().convertPixelFormat(MImage::kByte);
         }
         else

@@ -26,13 +26,17 @@
 // THE SOFTWARE.
 //
 
+// Interface header.
 #include "appleseedswatchrenderer.h"
 
-#include "foundation/core/appleseed.h"
+// appleseed.renderer headers.
 #include "renderer/api/bsdf.h"
 #include "renderer/api/camera.h"
 #include "renderer/api/color.h"
+#include "renderer/api/edf.h"
 #include "renderer/api/environment.h"
+#include "renderer/api/environmentedf.h"
+#include "renderer/api/environmentshader.h"
 #include "renderer/api/frame.h"
 #include "renderer/api/light.h"
 #include "renderer/api/log.h"
@@ -41,10 +45,13 @@
 #include "renderer/api/project.h"
 #include "renderer/api/rendering.h"
 #include "renderer/api/scene.h"
+#include "renderer/api/shadergroup.h"
 #include "renderer/api/surfaceshader.h"
+#include "renderer/api/texture.h"
 #include "renderer/api/utility.h"
 
 // appleseed.foundation headers.
+#include "foundation/core/appleseed.h"
 #include "foundation/image/image.h"
 #include "foundation/image/tile.h"
 #include "foundation/math/matrix.h"
@@ -55,38 +62,31 @@
 #include "foundation/utility/autoreleaseptr.h"
 #include "foundation/utility/searchpaths.h"
 
-#include "renderer/global/globallogger.h"
-#include "renderer/api/environment.h"
-#include "renderer/api/environmentedf.h"
-#include "renderer/api/texture.h"
-#include "renderer/api/environmentshader.h"
-#include "renderer/api/edf.h"
-
-#include "renderer/modeling/shadergroup/shadergroup.h"
-
-#include "swatchesevent.h"
-#include "swatchesrenderer/swatchesqueue.h"
-#include "swatchesrenderer/newswatchrenderer.h"
-#include <maya/MFnDependencyNode.h>
-#include "utilities/logging.h"
-#include "utilities/tools.h"
+// appleseed-maya headers.
+#include "../appleseedmaterial.h"
 #include "osl/oslutils.h"
 #include "shadingtools/material.h"
-#include "../appleseedmaterial.h"
 #include "shadingtools/shadingutils.h"
+#include "swatchesrenderer/newswatchrenderer.h"
+#include "swatchesrenderer/swatchesqueue.h"
+#include "utilities/logging.h"
+#include "utilities/tools.h"
+#include "swatchesevent.h"
 #include "world.h"
+
+// Maya headers.
+#include <maya/MFnDependencyNode.h>
 #include <maya/MGlobal.h>
+#include <maya/MPlugArray.h>
 
 namespace asf = foundation;
 namespace asr = renderer;
 
 AppleseedSwatchRenderer::AppleseedSwatchRenderer()
+  : terminateLoop(false)
+  , enableSwatchRenderer(true)
+  , loopDone(false)
 {
-    terminateLoop = false;
-    enableSwatchRenderer = true;
-    loopDone = false;
-
-    Logging::debug(MString("Initialze appleseed swatch renderer."));
 #if _DEBUG
     log_target = autoPtr<asf::ILogTarget>(asf::create_console_log_target(stdout));
     asr::global_logger().add_target(log_target.get());
@@ -105,7 +105,7 @@ AppleseedSwatchRenderer::AppleseedSwatchRenderer()
     {
         Logging::info(MString("Successfully loaded swatch render file."));
     }
-    MString cmd = MString("import renderer.osltools as osl;osl.getOSODirs();");
+    MString cmd = MString("import renderer.osltools as osl; osl.getOSODirs();");
     MStringArray oslDirs;
     MGlobal::executePythonCommand(cmd, oslDirs, false, false);
     for (uint i = 0; i < oslDirs.length(); i++)
@@ -119,8 +119,16 @@ AppleseedSwatchRenderer::AppleseedSwatchRenderer()
         &renderer_controller));
 }
 
-void AppleseedSwatchRenderer::renderSwatch()
+AppleseedSwatchRenderer::~AppleseedSwatchRenderer()
 {
+    terminateAppleseedSwatchRender(this);
+
+    // todo: wasn't this supposed to be project.reset()?
+    project.release();
+
+#if _DEBUG
+    asr::global_logger().remove_target(log_target.get());
+#endif
 }
 
 void AppleseedSwatchRenderer::renderSwatch(NewSwatchRenderer *sr)
@@ -193,16 +201,6 @@ void AppleseedSwatchRenderer::setShader(MObject shader)
     this->defineMaterial(shader);
 }
 
-AppleseedSwatchRenderer::~AppleseedSwatchRenderer()
-{
-    terminateAppleseedSwatchRender(this);
-    project.release();
-#if _DEBUG
-    asr::global_logger().remove_target(log_target.get());
-#endif
-    Logging::debug("Removing AppleseedSwatchRenderer.");
-}
-
 void AppleseedSwatchRenderer::mainLoop()
 {
 #ifdef _DEBUG
@@ -228,7 +226,6 @@ void AppleseedSwatchRenderer::mainLoop()
     }
     loopDone = true;
 }
-
 
 void AppleseedSwatchRenderer::defineMaterial(MObject shadingNode)
 {

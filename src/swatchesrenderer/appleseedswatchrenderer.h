@@ -47,10 +47,10 @@ class AppleseedSwatchRenderer
   public:
     AppleseedSwatchRenderer();
     ~AppleseedSwatchRenderer();
+
     void mainLoop();
     void setSize(int size);
     void setShader(MObject shader);
-    void renderSwatch();
     void renderSwatch(NewSwatchRenderer *sr);
     void fillSwatch(float *pixels);
     bool terminateLoop;
@@ -69,6 +69,5 @@ class AppleseedSwatchRenderer
     void defineMaterial(MObject shadingNode);
 
 };
-
 
 #endif

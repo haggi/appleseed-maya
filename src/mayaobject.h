@@ -29,8 +29,10 @@
 #ifndef MAYA_OBJECT_H
 #define MAYA_OBJECT_H
 
-#include <vector>
-#include <memory>
+// appleseed-maya headers.
+#include "definitions.h"
+
+// Maya headers.
 #include <maya/MObject.h>
 #include <maya/MObjectArray.h>
 #include <maya/MIntArray.h>
@@ -44,9 +46,11 @@
 #include <maya/MMatrix.h>
 #include <maya/MColor.h>
 
-#include "definitions.h"
+// Standard headers.
+#include <vector>
+#include <memory>
 
-class MayaScene;
+// Forward declarations.
 class Material;
 
 // not all renderers can define a mesh and then upate it later in the
@@ -72,7 +76,8 @@ class ObjectAttributes
     MMatrix objectMatrix;
 };
 
-class MayaObject : public MBoundingBox
+class MayaObject
+  : public MBoundingBox
 {
   public:
     MObject mobject;
@@ -135,19 +140,23 @@ class MayaObject : public MBoundingBox
     void getMeshData(MPointArray& point, MFloatVectorArray& normals, MFloatArray& u,
                     MFloatArray& v, MIntArray& triPointIndices, MIntArray& triNormalIndices,
                     MIntArray& triUvIndices, MIntArray& triMatIndices); // all triIndices contain per vertex indices except the triMatIndices, this is per face
-    virtual bool geometryShapeSupported();
-    virtual boost::shared_ptr<ObjectAttributes> getObjectAttributes(boost::shared_ptr<ObjectAttributes> parentAttributes = boost::shared_ptr<ObjectAttributes>()) = 0;
+
+    bool geometryShapeSupported();
+
+    boost::shared_ptr<ObjectAttributes> getObjectAttributes(
+        boost::shared_ptr<ObjectAttributes> parentAttributes = boost::shared_ptr<ObjectAttributes>());
 
     boost::shared_ptr<MayaObject> parent;
     boost::shared_ptr<MayaObject> origObject; // this is necessary for instanced objects that have to access the original objects data
+
     MayaObject(MObject& mobject);
     MayaObject(MDagPath& objPath);
-    virtual ~MayaObject();
+
     void initialize();
     void updateObject();
-};
 
-void addLightIdentifier(int id);
-void addObjectIdentifier(int id);
+  private:
+    bool needsAssembly();
+};
 
 #endif

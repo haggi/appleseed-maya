@@ -49,20 +49,21 @@
 #include <maya/MDistance.h>
 #include <math.h>
 
-class StandinLocatorNode : public MPxLocatorNode
+class StandinLocatorNode
+  : public MPxLocatorNode
 {
   public:
-                      StandinLocatorNode();
-    virtual           ~StandinLocatorNode();
+    virtual void draw(
+        M3dView&                view,
+        const MDagPath&         path,
+        M3dView::DisplayStyle   style,
+        M3dView::DisplayStatus  status);
 
-    virtual void            draw(M3dView & view, const MDagPath & path,
-                                  M3dView::DisplayStyle style,
-                                  M3dView::DisplayStatus status);
+    virtual void postConstructor();
+    virtual bool isBounded() const;
+    virtual MBoundingBox boundingBox() const;
 
-    virtual bool            isBounded() const;
-    virtual MBoundingBox    boundingBox() const;
-
-    static MStatus    initialize();
+    static MStatus initialize();
 
   private:
     // Inputs

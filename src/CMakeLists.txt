@@ -105,7 +105,6 @@ set (swatchesrenderer_sources
     swatchesrenderer/swatchesevent.cpp
     swatchesrenderer/swatchesevent.h
     swatchesrenderer/swatchesqueue.h
-    swatchesrenderer/swatchrendererinterface.h
 )
 list (APPEND appleseedmaya_sources
     ${swatchesrenderer_sources}
@@ -176,7 +175,6 @@ set (sources
     definitions.h
     mayaobject.cpp
     mayaobject.h
-    mayaobjectfactory.h
     mayascene.cpp
     mayascene.h
     mayascenefactory.cpp
@@ -189,7 +187,6 @@ set (sources
     mtap_material.h
     mtap_mayaobject.cpp
     mtap_mayaobject.h
-    mtap_mayaobjectfactory.cpp
     mtap_mayarenderer.cpp
     mtap_mayarenderer.h
     mtap_renderercontroller.cpp
@@ -199,8 +196,6 @@ set (sources
     mtap_renderglobalsnode.h
     mtap_shadingnode.cpp
     mtap_shadingnode.h
-    mtap_standinlocator.cpp
-    mtap_standinlocator.h
     mtap_standinmeshnode.cpp
     mtap_standinmeshnode.h
     mtap_tilecallback.cpp

@@ -77,16 +77,14 @@ void AppleseedRenderer::doInteractiveUpdate()
             {
                 if (typeName == shaderNames[si])
                 {
-                    boost::shared_ptr<mtap_MayaObject> obj = boost::static_pointer_cast<mtap_MayaObject>(iElement->obj);
                     Logging::debug(MString("AppleseedRenderer::doInteractiveUpdate - found shader.") + iElement->name);
-                    this->defineMaterial(obj);
+                    this->defineMaterial(iElement->obj);
                 }
             }
         }
         if (iElement->node.hasFn(MFn::kMesh))
         {
-            boost::shared_ptr<mtap_MayaObject> obj = boost::static_pointer_cast<mtap_MayaObject>(iElement->obj);
-            if (obj->removed)
+            if (iElement->obj->removed)
             {
                 continue;
             }
@@ -96,7 +94,7 @@ void AppleseedRenderer::doInteractiveUpdate()
                 Logging::debug(MString("AppleseedRenderer::doInteractiveUpdate mesh ") + iElement->name + " ieNodeName " + getObjectName(iElement->node) + " objDagPath " + iElement->obj->dagPath.fullPathName());
                 MStatus stat;
 
-                asr::AssemblyInstance *assInst = getExistingObjectAssemblyInstance(obj.get());
+                asr::AssemblyInstance *assInst = getExistingObjectAssemblyInstance(iElement->obj.get());
                 if (assInst == 0)
                     continue;
 
@@ -109,10 +107,10 @@ void AppleseedRenderer::doInteractiveUpdate()
             }
             else
             {
-                if (obj->instanceNumber == 0)
-                    updateGeometry(obj);
-                if (obj->instanceNumber > 0)
-                    updateInstance(obj);
+                if (iElement->obj->instanceNumber == 0)
+                    updateGeometry(iElement->obj);
+                if (iElement->obj->instanceNumber > 0)
+                    updateInstance(iElement->obj);
             }
         }
     }

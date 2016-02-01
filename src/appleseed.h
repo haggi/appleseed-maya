@@ -153,9 +153,9 @@ class AppleseedRenderer
     void defineConfig();
     void defineOutput();
     void createMesh(boost::shared_ptr<MayaObject> obj, asr::MeshObjectArray& meshArray, bool& isProxyArray);
-    void createMesh(boost::shared_ptr<mtap_MayaObject> obj);
+    void createMesh(boost::shared_ptr<MayaObject> obj);
     asr::Project *getProjectPtr(){ return this->project.get(); }
-    asf::StringArray defineMaterial(boost::shared_ptr<mtap_MayaObject> obj);
+    asf::StringArray defineMaterial(boost::shared_ptr<MayaObject> obj);
     void updateMaterial(MObject sufaceShader);
     void preFrame();
     void postFrame();

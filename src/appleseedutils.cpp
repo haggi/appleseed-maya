@@ -91,8 +91,7 @@ MString getAssemblyName(MayaObject *obj)
     {
         if (obj->origObject)
         {
-            boost::shared_ptr<mtap_MayaObject> orig = boost::static_pointer_cast<mtap_MayaObject>(obj->origObject);
-            return getAssemblyName(orig.get());
+            return getAssemblyName(obj->origObject.get());
         }
         else
         {

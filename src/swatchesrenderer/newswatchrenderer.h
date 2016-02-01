@@ -29,27 +29,33 @@
 #ifndef MAYATO_NEWSWATCHRENDER_H
 #define MAYATO_NEWSWATCHRENDER_H
 
-#include <maya/MSwatchRenderBase.h>
-#include <maya/MString.h>
-#include <maya/MPlugArray.h>
+// appleseed.foundation headers.
+#include "foundation/platform/compiler.h"
 
-class NewSwatchRenderer : public MSwatchRenderBase
+// Maya headers.
+#include <maya/MSwatchRenderBase.h>
+
+class NewSwatchRenderer
+  : public MSwatchRenderBase
 {
   public:
-    NewSwatchRenderer(MObject dependNode, MObject renderNode, int imageResolution);
-    ~NewSwatchRenderer();
+    MObject dNode;
+
     static MSwatchRenderBase* creator(MObject dependNode, MObject renderNode, int imageResolution);
-    virtual bool doIteration();
-    virtual bool renderParallel();
+
+    NewSwatchRenderer(MObject dependNode, MObject renderNode, int imageResolution);
+
+    virtual bool doIteration() APPLESEED_OVERRIDE;
+    virtual bool renderParallel() APPLESEED_OVERRIDE;
+    virtual void cancelParallelRendering() APPLESEED_OVERRIDE;
+
     void finishParallelRender();
-    void cancelParallelRendering();
-    void cancelCurrentSwatchRender();
-    void enableSwatchRender(bool enable);
+
+  private:
     float *floatPixels;
     bool renderInProgress;
     bool swatchRenderingDone;
     MObject rNode;
-    MObject dNode;
 };
 
 #endif
