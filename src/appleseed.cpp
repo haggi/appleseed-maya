@@ -56,7 +56,6 @@
 
 #include "utilities/tools.h"
 #include "utilities/attrtools.h"
-#include "threads/threads.h"
 #include "threads/queue.h"
 #include "utilities/pystring.h"
 #include "mayascene.h"

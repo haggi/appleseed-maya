@@ -91,7 +91,6 @@ set (swatchesrenderer_sources
     swatchesrenderer/appleseedswatchrenderer.h
     swatchesrenderer/newswatchrenderer.cpp
     swatchesrenderer/newswatchrenderer.h
-    swatchesrenderer/swatchesevent.cpp
     swatchesrenderer/swatchesevent.h
     swatchesrenderer/swatchesqueue.h
 )
@@ -103,13 +102,11 @@ source_group ("swatchesrenderer" FILES
 )
 
 set (threads_sources
-    threads/compute.cpp
     threads/compute.h
     threads/queue.cpp
     threads/queue.h
     threads/renderqueueworker.cpp
     threads/renderqueueworker.h
-    threads/threads.h
 )
 list (APPEND appleseedmaya_sources
     ${threads_sources}
@@ -169,8 +166,6 @@ set (sources
     mayasceneutils.cpp
     mayatoappleseed.cpp
     mayatoappleseed.h
-    mtap_material.cpp
-    mtap_material.h
     mtap_mayaobject.cpp
     mtap_mayaobject.h
     mtap_mayarenderer.cpp
@@ -180,8 +175,6 @@ set (sources
     mtap_renderglobals.cpp
     mtap_renderglobalsnode.cpp
     mtap_renderglobalsnode.h
-    mtap_shadingnode.cpp
-    mtap_shadingnode.h
     mtap_standinmeshnode.cpp
     mtap_standinmeshnode.h
     mtap_tilecallback.cpp

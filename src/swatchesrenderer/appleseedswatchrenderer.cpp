@@ -199,7 +199,7 @@ void AppleseedSwatchRenderer::mainLoop()
     Logging::debug("Starting AppleseedSwatchRenderer main Loop.");
     while (!terminateLoop)
     {
-        getQueue()->wait_and_pop(swatchEvent);
+        SwatchesQueue.wait_and_pop(swatchEvent);
 
         if (swatchEvent.renderDone == 0)
         {
