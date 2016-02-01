@@ -31,9 +31,9 @@
 
 void mtap_IRendererController::on_rendering_begin()
 {
-    if (this->entityUpdateProc != 0)
+    if (m_entityUpdateProc != 0)
     {
-        this->entityUpdateProc();
+        m_entityUpdateProc();
     }
 }
 
@@ -47,7 +47,7 @@ void mtap_IRendererController::on_rendering_abort()
 
 void mtap_IRendererController::on_frame_begin()
 {
-    this->status = IRendererController::ContinueRendering;
+    m_status = IRendererController::ContinueRendering;
 }
 
 void mtap_IRendererController::on_frame_end()
