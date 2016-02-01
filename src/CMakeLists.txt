@@ -31,14 +31,10 @@ include_directories (
 )
 
 set (mayarendernodes_sources
-    mayarendernodes/rendercmd.cpp
-    mayarendernodes/rendercmd.h
     mayarendernodes/renderglobalsnode.cpp
     mayarendernodes/renderglobalsnode.h
     mayarendernodes/standinlocatornode.cpp
     mayarendernodes/standinlocatornode.h
-    mayarendernodes/standinmeshnode.cpp
-    mayarendernodes/standinmeshnode.h
 )
 list (APPEND appleseedmaya_sources
     ${mayarendernodes_sources}
@@ -109,10 +105,7 @@ set (swatchesrenderer_sources
     swatchesrenderer/swatchesevent.cpp
     swatchesrenderer/swatchesevent.h
     swatchesrenderer/swatchesqueue.h
-    swatchesrenderer/swatchrenderer.cpp
-    swatchesrenderer/swatchrenderer.h
     swatchesrenderer/swatchrendererinterface.h
-    swatchesrenderer/swatchrendererinterfacefactory.h
 )
 list (APPEND appleseedmaya_sources
     ${swatchesrenderer_sources}
@@ -210,9 +203,6 @@ set (sources
     mtap_standinlocator.h
     mtap_standinmeshnode.cpp
     mtap_standinmeshnode.h
-    mtap_swatchrenderer.cpp
-    mtap_swatchrenderer.h
-    mtap_swatchrendererinterfacefactory.cpp
     mtap_tilecallback.cpp
     mtap_tilecallback.h
     mtap_world.cpp

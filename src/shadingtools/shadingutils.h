@@ -38,7 +38,4 @@ bool getObjectShadingGroups(MDagPath& shapeObjectDP, MIntArray& perFaceAssignmen
 bool getObjectShadingGroups(MDagPath& shapeObjectDP, MObject& shadingGroup);
 bool getObjectShadingGroups(MObject& geoObject, MObject& sGroup, int instId);
 
-
-
-
 #endif

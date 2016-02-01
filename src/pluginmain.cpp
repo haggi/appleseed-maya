@@ -29,7 +29,6 @@
 // appleseed-maya headers.
 #include "mayatoappleseed.h"
 #include "mtap_renderglobalsnode.h"
-#include "swatchesrenderer/swatchrenderer.h"
 #include "swatchesrenderer/newswatchrenderer.h"
 #if MAYA_API_VERSION >= 201600
 #include "mtap_mayarenderer.h"
@@ -53,9 +52,9 @@
 #include <maya/MSwatchRenderRegister.h>
 
 #ifdef _WIN32
-#define DLLEXPORT __declspec(dllexport)
+#define APPLESEEDMAYA_DLL_EXPORT __declspec(dllexport)
 #else
-#define DLLEXPORT
+#define APPLESEEDMAYA_DLL_EXPORT
 #endif
 
 static const MString swatchName("AppleseedRenderSwatch");
@@ -67,7 +66,7 @@ static const MString asDisneyMaterialIdFullClassification("shader/surface:Apples
 static const MString asLayeredId("asLayeredId");
 static const MString asLayeredIdFullClassification("shader/surface:Appleseed/material:" + swatchFullName);
 
-DLLEXPORT MStatus initializePlugin(MObject obj)
+APPLESEEDMAYA_DLL_EXPORT MStatus initializePlugin(MObject obj)
 {
     MGlobal::displayInfo("Initializing appleseed-maya plugin...");
 
@@ -179,7 +178,7 @@ DLLEXPORT MStatus initializePlugin(MObject obj)
     return status;
 }
 
-DLLEXPORT MStatus uninitializePlugin(MObject obj)
+APPLESEEDMAYA_DLL_EXPORT MStatus uninitializePlugin(MObject obj)
 {
     MGlobal::displayInfo("Shutting down appleseed-maya plugin...");
 
