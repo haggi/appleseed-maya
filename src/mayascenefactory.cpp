@@ -33,10 +33,10 @@
 
 void MayaSceneFactory::createMayaScene()
 {
-    getWorldPtr()->worldScenePtr = sharedPtr<MayaScene> (new MayaScene());
+    getWorldPtr()->worldScenePtr = boost::shared_ptr<MayaScene> (new MayaScene());
 }
 
-sharedPtr<MayaScene> MayaSceneFactory::getMayaScene()
+boost::shared_ptr<MayaScene> MayaSceneFactory::getMayaScene()
 {
     return getWorldPtr()->worldScenePtr;
 }

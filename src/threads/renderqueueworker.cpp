@@ -50,7 +50,7 @@
 #include "../world.h"
 #include "../renderprocess.h"
 
-threadObject RenderQueueWorker::sceneThread;
+boost::thread RenderQueueWorker::sceneThread;
 
 namespace
 {
@@ -148,7 +148,7 @@ size_t RenderQueueWorker::registerCallback(boost::function<void()> function, uns
     cb.functionPointer = function;
     cb.millsecondInterval = millisecondsUpdateInterval;
     callbackList.push_back(cb);
-    threadObject t(callbackWorker, cb.callbackId);
+    boost::thread t(callbackWorker, cb.callbackId);
     t.detach();
     return cb.callbackId;
 }
@@ -182,7 +182,7 @@ void RenderQueueWorker::addIPRCallbacks()
 {
     MStatus stat;
     IprCallbacksDone = false;
-    sharedPtr<MayaScene> mayaScene = getWorldPtr()->worldScenePtr;
+    boost::shared_ptr<MayaScene> mayaScene = getWorldPtr()->worldScenePtr;
 
     std::map<uint, InteractiveElement>::iterator ite;
     std::map<uint, InteractiveElement> ielements = mayaScene->interactiveUpdateMap;
@@ -232,7 +232,7 @@ void RenderQueueWorker::addIPRCallbacks()
 void RenderQueueWorker::IPRUpdateCallbacks()
 {
     MStatus stat;
-    sharedPtr<MayaScene> mayaScene = getWorldPtr()->worldScenePtr;
+    boost::shared_ptr<MayaScene> mayaScene = getWorldPtr()->worldScenePtr;
 
     for (size_t elementId = 0; elementId < mayaScene->interactiveUpdateMap.size(); elementId++)
     {
@@ -265,7 +265,7 @@ void  RenderQueueWorker::IPRattributeChangedCallback(MNodeMessage::AttributeMess
 {
     Logging::debug(MString("IPRattributeChangedCallback. attribA: ") + plug.name() + " attribB: " + otherPlug.name());
     InteractiveElement *userData = (InteractiveElement *)element;
-    sharedPtr<MayaScene> mayaScene = getWorldPtr()->worldScenePtr;
+    boost::shared_ptr<MayaScene> mayaScene = getWorldPtr()->worldScenePtr;
 
     if (!userData->obj)
         return;
@@ -312,7 +312,7 @@ void  RenderQueueWorker::IPRattributeChangedCallback(MNodeMessage::AttributeMess
 void RenderQueueWorker::IPRNodeAddedCallback(MObject& node, void *userPtr)
 {
     Logging::debug(MString("IPRNodeAddedCallback. Node: ") + getObjectName(node));
-    sharedPtr<MayaScene> mayaScene = getWorldPtr()->worldScenePtr;
+    boost::shared_ptr<MayaScene> mayaScene = getWorldPtr()->worldScenePtr;
     MStatus stat;
 
     if (node.hasFn(MFn::kTransform))
@@ -342,7 +342,7 @@ void RenderQueueWorker::IPRNodeAddedCallback(MObject& node, void *userPtr)
     MString tname = getObjectName(transform);
 
     // here the new object is added to the object list and is added to the interactive object list
-    mayaScene->parseSceneHierarchy(dagPath, 0, sharedPtr<ObjectAttributes>(), sharedPtr<MayaObject>());
+    mayaScene->parseSceneHierarchy(dagPath, 0, boost::shared_ptr<ObjectAttributes>(), boost::shared_ptr<MayaObject>());
 
     // now we readd all interactive objects to the map
     idInteractiveMap.clear();
@@ -395,7 +395,7 @@ void RenderQueueWorker::IPRNodeRemovedCallback(MObject& node, void *userPtr)
         objIdMap.erase(nodeCallbackId);
 
     // get the MayaObject element and mark it as removed.
-    sharedPtr<MayaScene> mayaScene = getWorldPtr()->worldScenePtr;
+    boost::shared_ptr<MayaScene> mayaScene = getWorldPtr()->worldScenePtr;
     std::map<uint, InteractiveElement>::iterator iter;
     for (iter = mayaScene->interactiveUpdateMap.begin(); iter != mayaScene->interactiveUpdateMap.end(); iter++)
     {
@@ -454,7 +454,7 @@ void RenderQueueWorker::removeCallbacks()
 
 void RenderQueueWorker::iprFindLeafNodes()
 {
-    sharedPtr<MayaScene> mayaScene = getWorldPtr()->worldScenePtr;
+    boost::shared_ptr<MayaScene> mayaScene = getWorldPtr()->worldScenePtr;
     std::map<MCallbackId, InteractiveElement *>::iterator it;
     std::vector<InteractiveElement *> leafList;
 
@@ -495,7 +495,7 @@ void RenderQueueWorker::iprFindLeafNodes()
 
     // the idea is that the renderer waits in IPR mode for an non empty modifiesElementList,
     // it updates the render database with the elements and empties the list which is then free for the next run
-    // TODO: maybe use wait for variables
+    // todo: maybe use wait for variables.
     while (modifiedElementList.size() > 0)
         sleepFor(100);
 
@@ -587,7 +587,7 @@ void RenderQueueWorker::renderProcessThread()
 
 void RenderQueueWorker::updateRenderView(Event& e)
 {
-    sharedPtr<RenderGlobals> renderGlobals = getWorldPtr()->worldRenderGlobalsPtr;
+    boost::shared_ptr<RenderGlobals> renderGlobals = getWorldPtr()->worldRenderGlobalsPtr;
     int width, height;
     renderGlobals->getWidthHeight(width, height);
 
@@ -680,7 +680,7 @@ void RenderQueueWorker::startRenderQueueWorker()
                     MayaToWorld::WorldRenderState rs = getWorldPtr()->getRenderState();
                     if (getWorldPtr()->getRenderState() != MayaToWorld::RSTATENONE)
                     {
-                        threadObject waitThread = threadObject(RenderQueueWorker::iprWaitForFinish, e);
+                        boost::thread waitThread = boost::thread(RenderQueueWorker::iprWaitForFinish, e);
                         waitThread.detach();
                         break;
                     }
@@ -702,7 +702,7 @@ void RenderQueueWorker::startRenderQueueWorker()
                     status = MRenderView::startRender(width, height, true, true);
                 }
                 getWorldPtr()->setRenderState(MayaToWorld::RSTATETRANSLATING);
-                sharedPtr<MayaScene> mayaScene = getWorldPtr()->worldScenePtr;
+                boost::shared_ptr<MayaScene> mayaScene = getWorldPtr()->worldScenePtr;
 
                 if (MGlobal::mayaState() != MGlobal::kBatch)
                 {
@@ -717,7 +717,7 @@ void RenderQueueWorker::startRenderQueueWorker()
 
                 if (MGlobal::mayaState() != MGlobal::kBatch)
                 {
-                    threadObject cet = threadObject(RenderQueueWorker::computationEventThread);
+                    boost::thread cet = boost::thread(RenderQueueWorker::computationEventThread);
                     cet.detach();
                 }
 
@@ -743,7 +743,7 @@ void RenderQueueWorker::startRenderQueueWorker()
                     doPreFrameJobs(); // preRenderScript etc.
                     doPrepareFrame(); // parse scene and update objects
                     doRenderPreFrameJobs(); // call renderers pre frame jobs
-                    RenderQueueWorker::sceneThread = threadObject(RenderQueueWorker::renderProcessThread);
+                    RenderQueueWorker::sceneThread = boost::thread(RenderQueueWorker::renderProcessThread);
                 }
                 else
                 {

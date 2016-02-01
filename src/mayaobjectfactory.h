@@ -39,8 +39,8 @@ class MayaObject;
 class MayaObjectFactory
 {
   public:
-    sharedPtr<MayaObject> createMayaObject(MObject& mobject);
-    sharedPtr<MayaObject> createMayaObject(MDagPath& objPath);
+    boost::shared_ptr<MayaObject> createMayaObject(MObject& mobject);
+    boost::shared_ptr<MayaObject> createMayaObject(MDagPath& objPath);
 };
 
 #endif

@@ -32,10 +32,10 @@
 
 void RenderGlobalsFactory::createRenderGlobals()
 {
-    getWorldPtr()->worldRenderGlobalsPtr = sharedPtr<RenderGlobals> (new RenderGlobals());
+    getWorldPtr()->worldRenderGlobalsPtr = boost::shared_ptr<RenderGlobals> (new RenderGlobals());
 }
 
-sharedPtr<RenderGlobals> RenderGlobalsFactory::getRenderGlobals()
+boost::shared_ptr<RenderGlobals> RenderGlobalsFactory::getRenderGlobals()
 {
     return getWorldPtr()->worldRenderGlobalsPtr;
 }

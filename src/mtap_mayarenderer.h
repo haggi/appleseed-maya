@@ -156,7 +156,7 @@ class mtap_MayaRenderer : public MPxRenderer
   private:
     int width, height;
     //Render output buffer, it is R32G32B32A32_FLOAT format.
-    threadObject renderThread;
+    boost::thread renderThread;
     asf::auto_release_ptr<asr::Project> project;
     autoPtr<asf::ILogTarget> log_target;
     autoPtr<asr::MasterRenderer> mrenderer;

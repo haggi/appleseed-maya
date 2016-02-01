@@ -43,7 +43,7 @@
 class InteractiveElement
 {
   public:
-    sharedPtr<MayaObject> obj;
+    boost::shared_ptr<MayaObject> obj;
     MObject mobj;
     MString name;
     MObject node;
@@ -82,14 +82,14 @@ class MayaScene
     std::vector<int> lightIdentifier; // plugids for detecting new lighttypes
     std::vector<int> objectIdentifier; // plugids for detecting new objTypes
     std::vector<MObject> mObjectList;
-    std::vector<sharedPtr<MayaObject> >  objectList;
-    std::vector<sharedPtr<MayaObject> >  camList;
-    std::vector<sharedPtr<MayaObject> >  lightList;
-    std::vector<sharedPtr<MayaObject> >  instancerNodeElements; // so its easier to update them
+    std::vector<boost::shared_ptr<MayaObject> >  objectList;
+    std::vector<boost::shared_ptr<MayaObject> >  camList;
+    std::vector<boost::shared_ptr<MayaObject> >  lightList;
+    std::vector<boost::shared_ptr<MayaObject> >  instancerNodeElements; // so its easier to update them
     std::vector<MDagPath> instancerDagPathList;
 
     float currentFrame;
-    bool parseSceneHierarchy(MDagPath currentObject, int level, sharedPtr<ObjectAttributes> attr, sharedPtr<MayaObject> parentObject); // new, parse whole scene as hierarchy and save/analyze objects
+    bool parseSceneHierarchy(MDagPath currentObject, int level, boost::shared_ptr<ObjectAttributes> attr, boost::shared_ptr<MayaObject> parentObject); // new, parse whole scene as hierarchy and save/analyze objects
     bool parseScene();
     bool renderingStarted;
     bool parseInstancerNew(); // parse only particle instancer nodes, its a bit more complex
@@ -107,24 +107,24 @@ class MayaScene
     MString getFileName();
 
     void clearInstancerNodeList();
-    void clearObjList(std::vector<sharedPtr<MayaObject> > & objList);
-    void clearObjList(std::vector<sharedPtr<MayaObject> > & objList, sharedPtr<MayaObject> notThisOne);
-    bool lightObjectIsInLinkedLightList(sharedPtr<MayaObject> lightObject, MDagPathArray& linkedLightsArray);
+    void clearObjList(std::vector<boost::shared_ptr<MayaObject> > & objList);
+    void clearObjList(std::vector<boost::shared_ptr<MayaObject> > & objList, boost::shared_ptr<MayaObject> notThisOne);
+    bool lightObjectIsInLinkedLightList(boost::shared_ptr<MayaObject> lightObject, MDagPathArray& linkedLightsArray);
     void getLightLinking();
     bool listContainsAllLights(MDagPathArray& linkedLights, MDagPathArray& excludedLights);
     MDagPath getWorld();
 
     void getPasses();
     void setCurrentCamera(MDagPath camera);
-    void checkParent(sharedPtr<MayaObject> obj);
+    void checkParent(boost::shared_ptr<MayaObject> obj);
 
-    void classifyMayaObject(sharedPtr<MayaObject> obj);
+    void classifyMayaObject(boost::shared_ptr<MayaObject> obj);
     bool isGeo(MObject obj);
     bool isLight(MObject obj);
 
     void setRenderType(RenderType rtype);
-    sharedPtr<MayaObject> getObject(MObject obj);
-    sharedPtr<MayaObject> getObject(MDagPath dp);
+    boost::shared_ptr<MayaObject> getObject(MObject obj);
+    boost::shared_ptr<MayaObject> getObject(MDagPath dp);
     void init();
     MayaScene();
     ~MayaScene();

@@ -43,7 +43,7 @@
 
 #define colorAttr(c) (MString("") + c.r + " " + c.g + " " + c.g)
 
-void AppleseedRenderer::defineLight(sharedPtr<MayaObject> obj)
+void AppleseedRenderer::defineLight(boost::shared_ptr<MayaObject> obj)
 {
     asr::Assembly *lightAssembly = getCreateObjectAssembly(obj);
     asr::AssemblyInstance *lightAssemblyInstance = getExistingObjectAssemblyInstance(obj.get());
@@ -212,14 +212,14 @@ void AppleseedRenderer::defineLights()
     MFnDependencyNode rGlNode(getRenderGlobalsNode());
     // first get the globals node and serach for a directional light connection
     MObject coronaGlobals = getRenderGlobalsNode();
-    sharedPtr<RenderGlobals> renderGlobals = getWorldPtr()->worldRenderGlobalsPtr;
-    sharedPtr<MayaScene> mayaScene = getWorldPtr()->worldScenePtr;
+    boost::shared_ptr<RenderGlobals> renderGlobals = getWorldPtr()->worldRenderGlobalsPtr;
+    boost::shared_ptr<MayaScene> mayaScene = getWorldPtr()->worldScenePtr;
 
-    std::vector<sharedPtr<MayaObject> >::iterator oIt;
+    std::vector<boost::shared_ptr<MayaObject> >::iterator oIt;
     for (oIt = mayaScene->lightList.begin(); oIt != mayaScene->lightList.end(); oIt++)
     {
-        sharedPtr<MayaObject> mobj = *oIt;
-        sharedPtr<mtap_MayaObject> obj(staticPtrCast<mtap_MayaObject>(mobj));
+        boost::shared_ptr<MayaObject> mobj = *oIt;
+        boost::shared_ptr<mtap_MayaObject> obj(boost::static_pointer_cast<mtap_MayaObject>(mobj));
 
         if (!obj->visible)
             continue;

@@ -54,7 +54,7 @@ class Compute
     static bool escPressed;
     static bool autoexit;
     static bool checkDone;
-    static threadObject checkThread;
+    static boost::thread checkThread;
     static bool usewaitcursor;
 #ifdef _WIN32
     static HWND windowHandle;
@@ -92,7 +92,7 @@ class Compute
         Compute::checkDone = false;
         Compute::usewaitcursor = useWaitCursor;
         Compute::autoexit = autoExit;
-        Compute::checkThread = threadObject(checkInterrupt);
+        Compute::checkThread = boost::thread(checkInterrupt);
 
 #ifdef _WIN32
         Compute::windowHandle = GetForegroundWindow();
@@ -131,7 +131,7 @@ bool Compute::escPressed = false;
 bool Compute::autoexit = false;
 bool Compute::checkDone = false;
 bool Compute::usewaitcursor = false;
-threadObject Compute::checkThread;
+boost::thread Compute::checkThread;
 
 #ifdef _WIN32
 HWND Compute::windowHandle = 0;

@@ -91,7 +91,7 @@ MString getAssemblyName(MayaObject *obj)
     {
         if (obj->origObject)
         {
-            sharedPtr<mtap_MayaObject> orig = staticPtrCast<mtap_MayaObject>(obj->origObject);
+            boost::shared_ptr<mtap_MayaObject> orig = boost::static_pointer_cast<mtap_MayaObject>(obj->origObject);
             return getAssemblyName(orig.get());
         }
         else
@@ -179,15 +179,15 @@ MayaObject *getAssemblyMayaObject(MayaObject *mobj)
 
     if (obj->attributes)
     {
-        sharedPtr<mtap_ObjectAttributes> att = staticPtrCast<mtap_ObjectAttributes>(obj->attributes);
+        boost::shared_ptr<mtap_ObjectAttributes> att = boost::static_pointer_cast<mtap_ObjectAttributes>(obj->attributes);
         return att->assemblyObject;
     }
     return 0; // only happens if obj is world
 }
 
-asr::Assembly *getCreateObjectAssembly(sharedPtr<MayaObject> obj)
+asr::Assembly *getCreateObjectAssembly(boost::shared_ptr<MayaObject> obj)
 {
-    sharedPtr<AppleseedRenderer> appleRenderer = staticPtrCast<AppleseedRenderer>(getWorldPtr()->worldRendererPtr);
+    boost::shared_ptr<AppleseedRenderer> appleRenderer = boost::static_pointer_cast<AppleseedRenderer>(getWorldPtr()->worldRendererPtr);
 
     MayaObject *assemblyObject = getAssemblyMayaObject(obj.get());
     if (assemblyObject == 0)
@@ -223,7 +223,7 @@ asr::Assembly *getCreateObjectAssembly(sharedPtr<MayaObject> obj)
 
 asr::AssemblyInstance *getExistingObjectAssemblyInstance(MayaObject *obj)
 {
-    sharedPtr<AppleseedRenderer> appleRenderer = staticPtrCast<AppleseedRenderer>(getWorldPtr()->worldRendererPtr);
+    boost::shared_ptr<AppleseedRenderer> appleRenderer = boost::static_pointer_cast<AppleseedRenderer>(getWorldPtr()->worldRendererPtr);
     MayaObject *assemblyObject = getAssemblyMayaObject(obj);
     if (assemblyObject == 0)
     {
@@ -255,7 +255,7 @@ void mayaColorToFloat(const MColor col, float *floatCol, float *alpha)
 
 void removeColorEntityIfItExists(const MString colorName)
 {
-    sharedPtr<AppleseedRenderer> appleRenderer = staticPtrCast<AppleseedRenderer>(getWorldPtr()->worldRendererPtr);
+    boost::shared_ptr<AppleseedRenderer> appleRenderer = boost::static_pointer_cast<AppleseedRenderer>(getWorldPtr()->worldRendererPtr);
     assert(appleRenderer != 0);
     asr::Scene *scene = getSceneFromProject(appleRenderer->getProjectPtr());
     asr::ColorEntity *entity = scene->colors().get_by_name(colorName.asChar());
@@ -301,7 +301,7 @@ MString colorOrMap(asr::Project *project, MFnDependencyNode& shaderNode, MString
 
 void removeTextureEntityIfItExists(MString& textureName)
 {
-    sharedPtr<AppleseedRenderer> appleRenderer = staticPtrCast<AppleseedRenderer>(getWorldPtr()->worldRendererPtr);
+    boost::shared_ptr<AppleseedRenderer> appleRenderer = boost::static_pointer_cast<AppleseedRenderer>(getWorldPtr()->worldRendererPtr);
     assert(appleRenderer != 0);
     asr::Scene *scene = getSceneFromProject(appleRenderer->getProjectPtr());
 
@@ -317,7 +317,7 @@ void removeTextureEntityIfItExists(MString& textureName)
 
 MString defineTexture(MFnDependencyNode& shader, MString& attributeName)
 {
-    sharedPtr<AppleseedRenderer> appleRenderer = staticPtrCast<AppleseedRenderer>(getWorldPtr()->worldRendererPtr);
+    boost::shared_ptr<AppleseedRenderer> appleRenderer = boost::static_pointer_cast<AppleseedRenderer>(getWorldPtr()->worldRendererPtr);
     assert(appleRenderer != 0);
     asr::Scene *scene = getSceneFromProject(appleRenderer->getProjectPtr());
     asf::SearchPaths &searchPaths = appleRenderer->getProjectPtr()->search_paths();
@@ -393,7 +393,7 @@ void fillTransformMatrices(MMatrix matrix, asr::AssemblyInstance *assInstance)
             asf::Transformd::from_local_to_parent(appMatrix));
 }
 
-void fillMatrices(sharedPtr<MayaObject> obj, asr::TransformSequence& transformSequence)
+void fillMatrices(boost::shared_ptr<MayaObject> obj, asr::TransformSequence& transformSequence)
 {
     MMatrix conversionMatrix = getWorldPtr()->worldRenderGlobalsPtr->globalConversionMatrix;
     float scaleFactor = getWorldPtr()->worldRenderGlobalsPtr->scaleFactor;
@@ -431,7 +431,7 @@ void fillMatrices(sharedPtr<MayaObject> obj, asr::TransformSequence& transformSe
             asf::Transformd::from_local_to_parent(appMatrix));
     }
 }
-void fillTransformMatrices(sharedPtr<MayaObject> obj, asr::Light *light)
+void fillTransformMatrices(boost::shared_ptr<MayaObject> obj, asr::Light *light)
 {
     // in ipr mode we have to update the matrix manually
     if (getWorldPtr()->getRenderType() == MayaToWorld::IPRRENDER)
@@ -532,7 +532,7 @@ void addVisibilityFlags(MObject& obj, asr::ParamArray& paramArray)
     }
 }
 
-void addVisibilityFlags(sharedPtr<MayaObject> obj, asr::ParamArray& paramArray)
+void addVisibilityFlags(boost::shared_ptr<MayaObject> obj, asr::ParamArray& paramArray)
 {
     addVisibilityFlags(obj->mobject, paramArray);
 }

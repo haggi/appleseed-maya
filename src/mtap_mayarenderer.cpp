@@ -100,9 +100,8 @@ mtap_MayaRenderer::mtap_MayaRenderer()
 
 mtap_MayaRenderer::~mtap_MayaRenderer()
 {
-    Logging::debug("~mtap_MayaRenderer");
     asr::global_logger().remove_target(log_target.get());
-    releasePtr(mrenderer);
+    mrenderer.reset();
     project.release();
     objectArray.clear();
 }
@@ -754,7 +753,7 @@ MStatus mtap_MayaRenderer::endSceneUpdate()
 
     if (asyncStarted)
     {
-        renderThread = threadObject(startRenderThread, this);
+        renderThread = boost::thread(startRenderThread, this);
     }
     else
     {
@@ -856,7 +855,7 @@ void TileCallback::post_render(const asr::Frame* frame)
 
     Logging::debug(MString("TileCallback:: wh ") + width + " " + height + " tileSize " + tileSize);
 
-    sharedPtr<float> buffer = sharedPtr<float>(new float[numPixels * kNumChannels]);
+    boost::shared_ptr<float> buffer = boost::shared_ptr<float>(new float[numPixels * kNumChannels]);
     float *rb = buffer.get();
 
     for (int tile_x = 0; tile_x < frame_props.m_tile_count_x; tile_x++)

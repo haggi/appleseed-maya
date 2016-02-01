@@ -77,7 +77,7 @@ void AppleseedRenderer::doInteractiveUpdate()
             {
                 if (typeName == shaderNames[si])
                 {
-                    sharedPtr<mtap_MayaObject> obj = staticPtrCast<mtap_MayaObject>(iElement->obj);
+                    boost::shared_ptr<mtap_MayaObject> obj = boost::static_pointer_cast<mtap_MayaObject>(iElement->obj);
                     Logging::debug(MString("AppleseedRenderer::doInteractiveUpdate - found shader.") + iElement->name);
                     this->defineMaterial(obj);
                 }
@@ -85,7 +85,7 @@ void AppleseedRenderer::doInteractiveUpdate()
         }
         if (iElement->node.hasFn(MFn::kMesh))
         {
-            sharedPtr<mtap_MayaObject> obj = staticPtrCast<mtap_MayaObject>(iElement->obj);
+            boost::shared_ptr<mtap_MayaObject> obj = boost::static_pointer_cast<mtap_MayaObject>(iElement->obj);
             if (obj->removed)
             {
                 continue;

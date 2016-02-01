@@ -44,7 +44,7 @@ class mtap_ObjectAttributes : public ObjectAttributes
 {
   public:
     mtap_ObjectAttributes();
-    mtap_ObjectAttributes(sharedPtr<ObjectAttributes>);
+    mtap_ObjectAttributes(boost::shared_ptr<ObjectAttributes>);
     bool needsOwnAssembly;
     MMatrix objectMatrix;
     MayaObject *assemblyObject; // mayaObject above for which an assembly will be created
@@ -58,7 +58,7 @@ class mtap_MayaObject : public MayaObject
     ~mtap_MayaObject();
 
     virtual bool geometryShapeSupported();
-    virtual sharedPtr<ObjectAttributes> getObjectAttributes(sharedPtr<ObjectAttributes> parentAttributes = sharedPtr<ObjectAttributes>());
+    virtual boost::shared_ptr<ObjectAttributes> getObjectAttributes(boost::shared_ptr<ObjectAttributes> parentAttributes = boost::shared_ptr<ObjectAttributes>());
     bool needsAssembly();
     void createAssembly();
 };

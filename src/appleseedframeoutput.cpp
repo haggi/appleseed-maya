@@ -38,7 +38,7 @@ void AppleseedRenderer::defineOutput()
     if (frame == 0)
     {
         MFnDependencyNode depFn(getRenderGlobalsNode());
-        sharedPtr<RenderGlobals> renderGlobals = getWorldPtr()->worldRenderGlobalsPtr;
+        boost::shared_ptr<RenderGlobals> renderGlobals = getWorldPtr()->worldRenderGlobalsPtr;
         Logging::debug("AppleseedRenderer::defineOutput");
         int width, height;
         renderGlobals->getWidthHeight(width, height);

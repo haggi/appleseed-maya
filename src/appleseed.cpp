@@ -102,9 +102,8 @@ void AppleseedRenderer::unInitializeRenderer()
     getWorldPtr()->setRenderState(MayaToWorld::RSTATEDONE);
     getWorldPtr()->setRenderType(MayaToWorld::RTYPENONE);
 
-    Logging::debug("Releasing project");
+    // todo: isn't this supposed to be reset()?
     this->project.release();
-    Logging::debug("Releasing done.");
 }
 
 void AppleseedRenderer::defineProject()
@@ -120,15 +119,13 @@ void AppleseedRenderer::defineProject()
 
 void AppleseedRenderer::preFrame()
 {
-    Logging::debug("AppleseedRenderer::preFrame");
     defineProject();
 }
 
 void AppleseedRenderer::postFrame()
 {
-    Logging::debug("AppleseedRenderer::postFrame");
     // Save the frame to disk.
-    sharedPtr<RenderGlobals> renderGlobals = getWorldPtr()->worldRenderGlobalsPtr;
+    boost::shared_ptr<RenderGlobals> renderGlobals = getWorldPtr()->worldRenderGlobalsPtr;
     renderGlobals->getImageName();
     MString filename = renderGlobals->imageOutputFile.asChar();
     Logging::debug(MString("Saving image as ") + renderGlobals->imageOutputFile);
@@ -139,65 +136,62 @@ void AppleseedRenderer::postFrame()
     // because the masterRenderer still have references to the shading groups which are defined in the world assembly. If the masterRenderer is deleted
     // AFTER the assembly it tries to access non existent shadingGroups.
     if (renderGlobals->currentFrameNumber == renderGlobals->frameList.back())
-    {
-        releasePtr(masterRenderer);
-    }
+        masterRenderer.reset();
 
     asf::UniqueID aiuid = project->get_scene()->assembly_instances().get_by_name("world_Inst")->get_uid();
     asf::UniqueID auid = project->get_scene()->assemblies().get_by_name("world")->get_uid();
     project->get_scene()->assembly_instances().remove(aiuid);
     project->get_scene()->assemblies().remove(auid);
     asr::Assembly *worldass = project->get_scene()->assemblies().get_by_name("world");
-
 }
 
 void AppleseedRenderer::render()
 {
     Logging::debug("AppleseedRenderer::render");
+
     if (!sceneBuilt)
     {
-
-        RENDERER_LOG_INFO("%s", asf::Appleseed::get_synthetic_version_string());
-
         this->tileCallbackFac.reset(new mtap_ITileCallbackFactory());
 
         if (getWorldPtr()->getRenderType() == MayaToWorld::IPRRENDER)
         {
-            masterRenderer = autoPtr<asr::MasterRenderer>(new asr::MasterRenderer(
-                this->project.ref(),
-                this->project->configurations().get_by_name("interactive")->get_inherited_parameters(),
-                &mtap_controller,
-                this->tileCallbackFac.get()));
+            masterRenderer.reset(
+                new asr::MasterRenderer(
+                    this->project.ref(),
+                    this->project->configurations().get_by_name("interactive")->get_inherited_parameters(),
+                    &mtap_controller,
+                    this->tileCallbackFac.get()));
         }
         else
         {
-            masterRenderer = autoPtr<asr::MasterRenderer>(new asr::MasterRenderer(
-                this->project.ref(),
-                this->project->configurations().get_by_name("final")->get_inherited_parameters(),
-                &mtap_controller,
-                this->tileCallbackFac.get()));
+            masterRenderer.reset(
+                new asr::MasterRenderer(
+                    this->project.ref(),
+                    this->project->configurations().get_by_name("final")->get_inherited_parameters(),
+                    &mtap_controller,
+                    this->tileCallbackFac.get()));
         }
-        // Save the project to disk.
-        asr::ProjectFileWriter::write(project.ref(), "C:/daten/3dprojects/mayaToAppleseed/renderData/test.appleseed");
 
         if (getWorldPtr()->getRenderType() == MayaToWorld::IPRRENDER)
         {
             Event e;
             e.type = Event::ADDIPRCALLBACKS;
             theRenderEventQueue()->push(e);
+
             while (!RenderQueueWorker::iprCallbacksDone())
                 sleepFor(10);
         }
+
         sceneBuilt = true;
     }
 
     getWorldPtr()->setRenderState(MayaToWorld::RSTATERENDERING);
     mtap_controller.status = asr::IRendererController::ContinueRendering;
+
     masterRenderer->render();
 }
 
 void AppleseedRenderer::abortRendering()
 {
-    Logging::debug(MString("abortRendering"));
     mtap_controller.status = asr::IRendererController::AbortRendering;
 }

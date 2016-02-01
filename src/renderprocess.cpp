@@ -68,14 +68,14 @@ void doPostRenderJobs()
 void doPrepareFrame()
 {
     float currentFrame = getWorldPtr()->worldRenderGlobalsPtr->getFrameNumber();
-    sharedPtr<MayaScene> mayaScene = getWorldPtr()->worldScenePtr;
+    boost::shared_ptr<MayaScene> mayaScene = getWorldPtr()->worldScenePtr;
     Logging::progress(MString("\n========== doPrepareFrame ") + currentFrame + " ==============\n");
 
     mayaScene->parseScene(); // all lists are cleaned and refilled with the current scene content
-    std::vector<sharedPtr<MayaObject> >::iterator oIt;
+    std::vector<boost::shared_ptr<MayaObject> >::iterator oIt;
     for (oIt = mayaScene->camList.begin(); oIt != mayaScene->camList.end(); oIt++)
     {
-        sharedPtr<MayaObject> camera = *oIt;
+        boost::shared_ptr<MayaObject> camera = *oIt;
         if (!isCameraRenderable(camera->mobject) && (!(camera->dagPath == mayaScene->uiCamera)))
         {
             Logging::debug(MString("Camera ") + camera->shortName + " is not renderable, skipping.");

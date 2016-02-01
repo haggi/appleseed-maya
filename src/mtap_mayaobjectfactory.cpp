@@ -29,12 +29,12 @@
 #include "mayaobjectfactory.h"
 #include "mtap_mayaobject.h"
 
-sharedPtr<MayaObject> MayaObjectFactory::createMayaObject(MObject& mobject)
+boost::shared_ptr<MayaObject> MayaObjectFactory::createMayaObject(MObject& mobject)
 {
-    return sharedPtr<MayaObject>(new mtap_MayaObject(mobject));
+    return boost::shared_ptr<MayaObject>(new mtap_MayaObject(mobject));
 }
 
-sharedPtr<MayaObject> MayaObjectFactory::createMayaObject(MDagPath& objPath)
+boost::shared_ptr<MayaObject> MayaObjectFactory::createMayaObject(MDagPath& objPath)
 {
-    return sharedPtr<MayaObject>(new mtap_MayaObject(objPath));
+    return boost::shared_ptr<MayaObject>(new mtap_MayaObject(objPath));
 }

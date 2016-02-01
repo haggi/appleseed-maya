@@ -63,7 +63,7 @@ void MayaToWorld::initialize()
     AppleseedSwatchRenderer *appleSwRndr = new AppleseedSwatchRenderer();
 
     this->addObjectPtr("appleseedSwatchesRenderer", appleSwRndr);
-    threadObject swatchRenderThread(AppleseedSwatchRenderer::startAppleseedSwatchRender, appleSwRndr);
+    boost::thread swatchRenderThread(AppleseedSwatchRenderer::startAppleseedSwatchRender, appleSwRndr);
     swatchRenderThread.detach();
 }
 

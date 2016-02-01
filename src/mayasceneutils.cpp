@@ -40,9 +40,9 @@
 #include "world.h"
 
 
-sharedPtr<MayaObject> MayaScene::getObject(MObject obj)
+boost::shared_ptr<MayaObject> MayaScene::getObject(MObject obj)
 {
-    sharedPtr<MayaObject> mo;
+    boost::shared_ptr<MayaObject> mo;
     size_t numobjects = this->objectList.size();
     for (size_t objId = 0; objId < numobjects; objId++)
     {
@@ -52,9 +52,9 @@ sharedPtr<MayaObject> MayaScene::getObject(MObject obj)
     return mo;
 }
 
-sharedPtr<MayaObject> MayaScene::getObject(MDagPath dp)
+boost::shared_ptr<MayaObject> MayaScene::getObject(MDagPath dp)
 {
-    sharedPtr<MayaObject> mo;
+    boost::shared_ptr<MayaObject> mo;
     size_t numobjects = this->objectList.size();
     for (size_t objId = 0; objId < numobjects; objId++)
     {
@@ -64,15 +64,15 @@ sharedPtr<MayaObject> MayaScene::getObject(MDagPath dp)
     return mo;
 }
 
-void MayaScene::clearObjList(std::vector<sharedPtr<MayaObject> > & objList)
+void MayaScene::clearObjList(std::vector<boost::shared_ptr<MayaObject> > & objList)
 {
     objList.clear();
 }
 
-void MayaScene::clearObjList(std::vector<sharedPtr<MayaObject> > & objList, sharedPtr<MayaObject> notThisOne)
+void MayaScene::clearObjList(std::vector<boost::shared_ptr<MayaObject> > & objList, boost::shared_ptr<MayaObject> notThisOne)
 {
     size_t numElements = objList.size();
-    sharedPtr<MayaObject> tmpCopy;
+    boost::shared_ptr<MayaObject> tmpCopy;
     for (size_t i = 0; i < numElements; i++)
     {
         if (objList[i] == notThisOne)
@@ -89,11 +89,11 @@ void MayaScene::setCurrentCamera(MDagPath camDagPath)
     this->uiCamera = camDagPath;
 }
 
-std::vector<sharedPtr<MayaObject> >  parentList;
+std::vector<boost::shared_ptr<MayaObject> >  parentList;
 
-void MayaScene::checkParent(sharedPtr<MayaObject> obj)
+void MayaScene::checkParent(boost::shared_ptr<MayaObject> obj)
 {
-    std::vector<sharedPtr<MayaObject> >::iterator iter;
+    std::vector<boost::shared_ptr<MayaObject> >::iterator iter;
     MFnDagNode node(obj->mobject);
     if (node.parentCount() == 0)
     {
@@ -172,7 +172,7 @@ bool MayaScene::isLight(MObject obj)
     return false;
 }
 
-void  MayaScene::classifyMayaObject(sharedPtr<MayaObject> obj)
+void  MayaScene::classifyMayaObject(boost::shared_ptr<MayaObject> obj)
 {
     if (obj->mobject.hasFn(MFn::kCamera))
     {

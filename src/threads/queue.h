@@ -79,8 +79,8 @@ struct Event
     // of the original what means I would have to move the move the unique_ptr<>
     // of a const object because it is automatically created Event(const & Event) and const
     // elements cannot be modified so I have to use another way here
-    sharedPtr<RV_PIXEL> pixelData;
-    sharedPtr<CmdArgs> cmdArgsData;
+    boost::shared_ptr<RV_PIXEL> pixelData;
+    boost::shared_ptr<CmdArgs> cmdArgsData;
 
     size_t tile_xmin, tile_xmax, tile_ymin, tile_ymax;
     Event()

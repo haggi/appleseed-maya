@@ -37,7 +37,7 @@ class MayaSceneFactory
 {
   public:
     void createMayaScene();
-    sharedPtr<MayaScene> getMayaScene();
+    boost::shared_ptr<MayaScene> getMayaScene();
     void deleteMayaScene();
 };
 

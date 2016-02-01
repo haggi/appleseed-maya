@@ -374,7 +374,7 @@ void MayaObject::addMeshData()
     if (hasBifrostVelocityChannel())
     {
         bool doMb = motionBlurred;
-        sharedPtr<RenderGlobals> renderGlobals = getWorldPtr()->worldRenderGlobalsPtr;
+        boost::shared_ptr<RenderGlobals> renderGlobals = getWorldPtr()->worldRenderGlobalsPtr;
         doMb = doMb && renderGlobals->doMb;
 
         Logging::debug(MString("Found bifrost velocity data for object: ") + shortName);

@@ -91,7 +91,7 @@ asf::auto_release_ptr<asr::MeshObject> AppleseedRenderer::defineStandardPlane(bo
 
 }
 
-void AppleseedRenderer::createMesh(sharedPtr<mtap_MayaObject> obj)
+void AppleseedRenderer::createMesh(boost::shared_ptr<mtap_MayaObject> obj)
 {
 
     // If the mesh has an attribute called "mtap_standin_path" and it contains a valid entry, then try to read the
@@ -209,9 +209,9 @@ void AppleseedRenderer::createMesh(sharedPtr<mtap_MayaObject> obj)
 
 }
 
-void AppleseedRenderer::updateGeometry(sharedPtr<MayaObject> mobj)
+void AppleseedRenderer::updateGeometry(boost::shared_ptr<MayaObject> mobj)
 {
-    sharedPtr<mtap_MayaObject> obj = staticPtrCast<mtap_MayaObject>(mobj);
+    boost::shared_ptr<mtap_MayaObject> obj = boost::static_pointer_cast<mtap_MayaObject>(mobj);
 
     if (!obj->isObjVisible())
         return;
@@ -227,9 +227,9 @@ void AppleseedRenderer::updateGeometry(sharedPtr<MayaObject> mobj)
     }
 }
 
-void AppleseedRenderer::updateInstance(sharedPtr<MayaObject> mobj)
+void AppleseedRenderer::updateInstance(boost::shared_ptr<MayaObject> mobj)
 {
-    sharedPtr<mtap_MayaObject> obj = staticPtrCast<mtap_MayaObject>(mobj);
+    boost::shared_ptr<mtap_MayaObject> obj = boost::static_pointer_cast<mtap_MayaObject>(mobj);
     if (obj->dagPath.node().hasFn(MFn::kWorld))
         return;
 
@@ -260,26 +260,26 @@ void AppleseedRenderer::updateInstance(sharedPtr<MayaObject> mobj)
 
 void AppleseedRenderer::defineGeometry()
 {
-    sharedPtr<MayaScene> mayaScene = getWorldPtr()->worldScenePtr;
-    sharedPtr<RenderGlobals> renderGlobals = getWorldPtr()->worldRenderGlobalsPtr;
-    std::vector<sharedPtr<MayaObject> >::iterator oIt;
+    boost::shared_ptr<MayaScene> mayaScene = getWorldPtr()->worldScenePtr;
+    boost::shared_ptr<RenderGlobals> renderGlobals = getWorldPtr()->worldRenderGlobalsPtr;
+    std::vector<boost::shared_ptr<MayaObject> >::iterator oIt;
     for (oIt = mayaScene->objectList.begin(); oIt != mayaScene->objectList.end(); oIt++)
     {
-        sharedPtr<MayaObject> mobj = *oIt;
+        boost::shared_ptr<MayaObject> mobj = *oIt;
         updateGeometry(mobj);
     }
 
     // create assembly instances
     for (oIt = mayaScene->objectList.begin(); oIt != mayaScene->objectList.end(); oIt++)
     {
-        sharedPtr<MayaObject> mobj = *oIt;
+        boost::shared_ptr<MayaObject> mobj = *oIt;
         updateInstance(mobj);
     }
 
     for (oIt = mayaScene->instancerNodeElements.begin(); oIt != mayaScene->instancerNodeElements.end(); oIt++)
     {
-        sharedPtr<MayaObject> mobj = *oIt;
-        sharedPtr<mtap_MayaObject> obj = staticPtrCast<mtap_MayaObject>(mobj);
+        boost::shared_ptr<MayaObject> mobj = *oIt;
+        boost::shared_ptr<mtap_MayaObject> obj = boost::static_pointer_cast<mtap_MayaObject>(mobj);
         if (obj->dagPath.node().hasFn(MFn::kWorld))
             continue;
         if (obj->instanceNumber == 0)

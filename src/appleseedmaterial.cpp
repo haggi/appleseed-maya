@@ -204,12 +204,12 @@ void AppleseedRenderer::updateMaterial(MObject materialNode)
 }
 
 
-asf::StringArray AppleseedRenderer::defineMaterial(sharedPtr<mtap_MayaObject> obj)
+asf::StringArray AppleseedRenderer::defineMaterial(boost::shared_ptr<mtap_MayaObject> obj)
 {
     MStatus status;
     asf::StringArray materialNames;
     getObjectShadingGroups(obj->dagPath, obj->perFaceAssignments, obj->shadingGroups, false);
-    sharedPtr<MayaScene> mayaScene = getWorldPtr()->worldScenePtr;
+    boost::shared_ptr<MayaScene> mayaScene = getWorldPtr()->worldScenePtr;
 
     for (uint sgId = 0; sgId < obj->shadingGroups.length(); sgId++)
     {

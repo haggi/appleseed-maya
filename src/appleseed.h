@@ -107,13 +107,13 @@ class AppleseedRenderer
     ~AppleseedRenderer();
 
     void defineCamera();
-    void defineCamera(sharedPtr<MayaObject> obj);
+    void defineCamera(boost::shared_ptr<MayaObject> obj);
     void defineEnvironment();
     void defineGeometry();
-    void updateGeometry(sharedPtr<MayaObject> obj);
-    void updateInstance(sharedPtr<MayaObject> obj);
+    void updateGeometry(boost::shared_ptr<MayaObject> obj);
+    void updateInstance(boost::shared_ptr<MayaObject> obj);
     void defineLights();
-    void defineLight(sharedPtr<MayaObject> obj);
+    void defineLight(boost::shared_ptr<MayaObject> obj);
     void render();
 
     // This method is called before rendering starts.
@@ -128,11 +128,11 @@ class AppleseedRenderer
     // the geometry is defined at the very first step and later this definition will be updated for every motion step.
     // Other renderers will need a complete definition of all motionblur steps at once, so the motion steps will be
     // in the geometry e.g. with obj->addMeshData(); and at the very last step, everything is defined.
-    void updateShape(sharedPtr<MayaObject> obj);
+    void updateShape(boost::shared_ptr<MayaObject> obj);
 
     // This method is necessary only if the renderer is able to update the transform definition interactively.
     // In other cases, the world space transform will be defined directly during the creation of the geometry.
-    void updateTransform(sharedPtr<MayaObject> obj);
+    void updateTransform(boost::shared_ptr<MayaObject> obj);
 
     void abortRendering();
 
@@ -152,10 +152,10 @@ class AppleseedRenderer
     void addRenderParams(asr::ParamArray& paramArray);//add current render settings to all render configurations
     void defineConfig();
     void defineOutput();
-    void createMesh(sharedPtr<MayaObject> obj, asr::MeshObjectArray& meshArray, bool& isProxyArray);
-    void createMesh(sharedPtr<mtap_MayaObject> obj);
+    void createMesh(boost::shared_ptr<MayaObject> obj, asr::MeshObjectArray& meshArray, bool& isProxyArray);
+    void createMesh(boost::shared_ptr<mtap_MayaObject> obj);
     asr::Project *getProjectPtr(){ return this->project.get(); }
-    asf::StringArray defineMaterial(sharedPtr<mtap_MayaObject> obj);
+    asf::StringArray defineMaterial(boost::shared_ptr<mtap_MayaObject> obj);
     void updateMaterial(MObject sufaceShader);
     void preFrame();
     void postFrame();

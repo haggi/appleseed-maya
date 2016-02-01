@@ -755,7 +755,7 @@ bool findCamera(MDagPath& dagPath)
     return false;
 }
 
-// TODO extend with own light extensions
+// todo: extend with own light extensions.
 bool isLightTransform(MDagPath& dagPath)
 {
     uint numChilds = dagPath.childCount();

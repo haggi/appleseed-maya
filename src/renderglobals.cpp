@@ -262,7 +262,7 @@ bool RenderGlobals::getMbSteps()
         return true;
     }
 
-    //TODO: make motionblur calculation time dependent instead of frame dependent
+    // todo: make motionblur calculation time-dependent instead of frame-dependent.
 
     double shutterDist = this->motionBlurRange;
     MString info;

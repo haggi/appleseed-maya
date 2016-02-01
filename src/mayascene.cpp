@@ -108,7 +108,7 @@ bool MayaScene::listContainsAllLights(MDagPathArray& linkedLights, MDagPathArray
     return true;
 }
 
-bool MayaScene::lightObjectIsInLinkedLightList(sharedPtr<MayaObject> lightObject, MDagPathArray& linkedLightsArray)
+bool MayaScene::lightObjectIsInLinkedLightList(boost::shared_ptr<MayaObject> lightObject, MDagPathArray& linkedLightsArray)
 {
     for (uint lId = 0; lId < linkedLightsArray.length(); lId++)
     {
@@ -128,10 +128,10 @@ void MayaScene::getLightLinking()
     bool parseStatus;
     parseStatus = lightLink.parseLinks(MObject::kNullObj);
 
-    std::vector<sharedPtr<MayaObject> >::iterator oIt;
+    std::vector<boost::shared_ptr<MayaObject> >::iterator oIt;
     for (oIt = objectList.begin(); oIt != objectList.end(); oIt++)
     {
-        sharedPtr<MayaObject> obj = *oIt;
+        boost::shared_ptr<MayaObject> obj = *oIt;
         MDagPathArray lightArray;
 
         if (!obj->mobject.hasFn(MFn::kMesh) && !obj->mobject.hasFn(MFn::kNurbsSurface) && !obj->mobject.hasFn(MFn::kNurbsCurve))

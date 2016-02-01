@@ -97,9 +97,9 @@ class MayaToWorld
     virtual void setRendererUnit();
     virtual void setRendererAxis();
 
-    sharedPtr<MayaScene> worldScenePtr;
-    sharedPtr<AppleseedRenderer> worldRendererPtr;
-    sharedPtr<RenderGlobals> worldRenderGlobalsPtr;
+    boost::shared_ptr<MayaScene> worldScenePtr;
+    boost::shared_ptr<AppleseedRenderer> worldRendererPtr;
+    boost::shared_ptr<RenderGlobals> worldRenderGlobalsPtr;
 
     MStringArray objectNames;
     std::vector<void *> objectPtr;

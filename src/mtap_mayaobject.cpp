@@ -44,9 +44,9 @@ mtap_ObjectAttributes::mtap_ObjectAttributes()
     assemblyObject = 0;
 }
 
-mtap_ObjectAttributes::mtap_ObjectAttributes(sharedPtr<ObjectAttributes> otherAttr)
+mtap_ObjectAttributes::mtap_ObjectAttributes(boost::shared_ptr<ObjectAttributes> otherAttr)
 {
-    sharedPtr<mtap_ObjectAttributes> other = staticPtrCast<mtap_ObjectAttributes>(otherAttr);
+    boost::shared_ptr<mtap_ObjectAttributes> other = boost::static_pointer_cast<mtap_ObjectAttributes>(otherAttr);
 
     this->hasInstancerConnection = false;
     objectMatrix.setToIdentity();
@@ -92,9 +92,9 @@ bool mtap_MayaObject::geometryShapeSupported()
 //  e.g. lets say we assign a color to the top node of a hierarchy. Then all child nodes will be
 //  called and this method is used.
 //
-sharedPtr<ObjectAttributes>mtap_MayaObject::getObjectAttributes(sharedPtr<ObjectAttributes> parentAttributes)
+boost::shared_ptr<ObjectAttributes>mtap_MayaObject::getObjectAttributes(boost::shared_ptr<ObjectAttributes> parentAttributes)
 {
-    sharedPtr<mtap_ObjectAttributes> myAttributes = sharedPtr<mtap_ObjectAttributes>(new mtap_ObjectAttributes(parentAttributes));
+    boost::shared_ptr<mtap_ObjectAttributes> myAttributes = boost::shared_ptr<mtap_ObjectAttributes>(new mtap_ObjectAttributes(parentAttributes));
 
     if (this->hasInstancerConnection)
     {

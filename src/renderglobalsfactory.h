@@ -37,7 +37,7 @@ class RenderGlobalsFactory
 {
   public:
     void createRenderGlobals();
-    sharedPtr<RenderGlobals> getRenderGlobals();
+    boost::shared_ptr<RenderGlobals> getRenderGlobals();
     void deleteRenderGlobals();
 };
 

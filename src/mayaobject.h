@@ -82,14 +82,14 @@ class MayaObject : public MBoundingBox
     int index;
     MDagPath dagPath;
     bool removed; // in IPR we simply flag an object as removed instead of really removing it
-    sharedPtr<ObjectAttributes> attributes;
+    boost::shared_ptr<ObjectAttributes> attributes;
 
     std::vector<MDagPath> linkedLights; // for objects - light linking
     bool lightExcludeList; // if true the linkedLights list contains excluded lights, else included lights
     std::vector<MDagPath> shadowObjects; // for lights - shadow linking
     bool shadowExcludeList; // if true the shadowObjects contains objects which ignores shadows from the current light
     std::vector<MDagPath> castNoShadowObjects; // for lights - shadow linking
-    std::vector<sharedPtr<MayaObject> >  excludedObjects; // for lights - excluded objects
+    std::vector<boost::shared_ptr<MayaObject> >  excludedObjects; // for lights - excluded objects
 
 
     std::vector<MString> exportFileNames; // for every mb step complete filename for every exported shape file
@@ -100,7 +100,7 @@ class MayaObject : public MBoundingBox
     std::vector<MeshData> meshDataList;
     MObjectArray shadingGroups;
     MIntArray perFaceAssignments;
-    std::vector<sharedPtr<Material> > materialList; // for every shading group connected to the shape, we have a material
+    std::vector<boost::shared_ptr<Material> > materialList; // for every shading group connected to the shape, we have a material
 
     // instancer node attributes
     MMatrix instancerMatrix; // matrix of instancer node and paricle node
@@ -136,10 +136,10 @@ class MayaObject : public MBoundingBox
                     MFloatArray& v, MIntArray& triPointIndices, MIntArray& triNormalIndices,
                     MIntArray& triUvIndices, MIntArray& triMatIndices); // all triIndices contain per vertex indices except the triMatIndices, this is per face
     virtual bool geometryShapeSupported();
-    virtual sharedPtr<ObjectAttributes> getObjectAttributes(sharedPtr<ObjectAttributes> parentAttributes = sharedPtr<ObjectAttributes>()) = 0;
+    virtual boost::shared_ptr<ObjectAttributes> getObjectAttributes(boost::shared_ptr<ObjectAttributes> parentAttributes = boost::shared_ptr<ObjectAttributes>()) = 0;
 
-    sharedPtr<MayaObject> parent;
-    sharedPtr<MayaObject> origObject; // this is necessary for instanced objects that have to access the original objects data
+    boost::shared_ptr<MayaObject> parent;
+    boost::shared_ptr<MayaObject> origObject; // this is necessary for instanced objects that have to access the original objects data
     MayaObject(MObject& mobject);
     MayaObject(MDagPath& objPath);
     virtual ~MayaObject();

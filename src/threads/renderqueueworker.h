@@ -76,7 +76,7 @@ class RenderQueueWorker
     static void sceneCallback(void *);
     static void pluginUnloadCallback(void *);
     static void computationEventThread();
-    static threadObject sceneThread;
+    static boost::thread sceneThread;
     static void renderProcessThread();
     static void sendFinalizeIfQueueEmpty(void *);
     static void setStartTime();

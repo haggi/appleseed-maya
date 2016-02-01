@@ -37,12 +37,12 @@
 #include "utilities/logging.h"
 #include "appleseedutils.h"
 
-void AppleseedRenderer::updateTransform(sharedPtr<MayaObject> obj)
+void AppleseedRenderer::updateTransform(boost::shared_ptr<MayaObject> obj)
 {
     Logging::debug(MString("AppleseedRenderer::updateTransform: ") + obj->shortName);
 }
 
-void AppleseedRenderer::updateShape(sharedPtr<MayaObject> obj)
+void AppleseedRenderer::updateShape(boost::shared_ptr<MayaObject> obj)
 {
     Logging::debug(MString("AppleseedRenderer::updateShape: ") + obj->shortName);
 }
