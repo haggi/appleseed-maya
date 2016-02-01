@@ -68,7 +68,6 @@
 #include "shadingtools/material.h"
 #include "shadingtools/shadingutils.h"
 #include "swatchesrenderer/newswatchrenderer.h"
-#include "swatchesrenderer/swatchesqueue.h"
 #include "utilities/logging.h"
 #include "utilities/tools.h"
 #include "swatchesevent.h"
@@ -195,7 +194,7 @@ void AppleseedSwatchRenderer::mainLoop()
     Logging::setLogLevel(Logging::LevelDebug);
 #endif
 
-    SEvent swatchEvent;
+    SwatchesEvent swatchEvent;
     Logging::debug("Starting AppleseedSwatchRenderer main Loop.");
     while (!terminateLoop)
     {
@@ -258,7 +257,7 @@ void AppleseedSwatchRenderer::startAppleseedSwatchRender(AppleseedSwatchRenderer
 void AppleseedSwatchRenderer::terminateAppleseedSwatchRender(AppleseedSwatchRenderer *swRend)
 {
     Logging::debug(MString("terminateAppleseedSwatchRender"));
-    SEvent swatchEvent;
+    SwatchesEvent swatchEvent;
     SwatchesQueue.push(swatchEvent);
     swRend->terminateLoop = true;
 }

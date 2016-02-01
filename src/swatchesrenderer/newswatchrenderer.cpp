@@ -27,7 +27,6 @@
 //
 
 #include "swatchesrenderer/newswatchrenderer.h"
-#include "swatchesrenderer/swatchesqueue.h"
 #include "appleseedswatchrenderer.h"
 #include "swatchesevent.h"
 #include "utilities/logging.h"

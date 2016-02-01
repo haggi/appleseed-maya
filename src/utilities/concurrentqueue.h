@@ -29,14 +29,14 @@
 #ifndef MTAP_QUEUE_H
 #define MTAP_QUEUE_H
 
-#include <memory>
-#include <queue>
-#include "boost/thread/mutex.hpp"
+// Boost headers.
 #include "boost/thread/condition_variable.hpp"
-#include <maya/MObject.h>
-#include <maya/MImage.h>
+#include "boost/thread/mutex.hpp"
 
-template<typename Data>
+// Standard headers.
+#include <queue>
+
+template <typename Data>
 class concurrent_queue
 {
   private:

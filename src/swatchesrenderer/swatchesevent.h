@@ -29,17 +29,16 @@
 #ifndef MTAP_SWEVENT_H
 #define MTAP_SWEVENT_H
 
-#include <memory>
-#include <queue>
-#include "boost/thread/mutex.hpp"
-#include "boost/thread/condition_variable.hpp"
-#include <maya/MObject.h>
-#include <maya/MImage.h>
-#include "swatchesrenderer/swatchesqueue.h"
+// appleseed-maya headers.
+#include "utilities/concurrentqueue.h"
 
+// Maya headers.
+#include <maya/MObject.h>
+
+// Forward declarations.
 class NewSwatchRenderer;
 
-struct SEvent
+struct SwatchesEvent
 {
     int height;
     float *pixels;
@@ -48,7 +47,6 @@ struct SEvent
     NewSwatchRenderer *swatchRenderer;
 };
 
-static concurrent_queue<SEvent> SwatchesQueue;
-concurrent_queue<SEvent> *getQueue();
+static concurrent_queue<SwatchesEvent> SwatchesQueue;
 
 #endif
