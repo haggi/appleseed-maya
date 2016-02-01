@@ -43,17 +43,6 @@ source_group ("mayarendernodes" FILES
     ${mayarendernodes_sources}
 )
 
-set (memory_sources
-    memory/memoryinfo.cpp
-    memory/memoryinfo.h
-)
-list (APPEND appleseedmaya_sources
-    ${memory_sources}
-)
-source_group ("memory" FILES
-    ${memory_sources}
-)
-
 set (osl_sources
     osl/oslutils.cpp
     osl/oslutils.h

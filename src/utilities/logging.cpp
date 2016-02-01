@@ -26,9 +26,15 @@
 // THE SOFTWARE.
 //
 
+// appleseed-maya headers.
 #include "threads/queue.h"
 #include "utilities/logging.h"
-#include "memory/memoryinfo.h"
+
+// appleseed.foundation headers.
+#include "foundation/platform/system.h"
+#include "foundation/platform/types.h"
+
+// Maya headers.
 #include <maya/MGlobal.h>
 
 namespace
@@ -49,8 +55,10 @@ namespace
 
     void print(const MString& message)
     {
+        const foundation::uint64 memory_size = foundation::System::get_process_virtual_memory_size() / (1024 * 1024);
+
         MStreamUtils::stdOutStream()
-            << MString("Mem: ") << getCurrentUsage() << "MB "
+            << "Mem: " << memory_size << " MB "
             << message
             << "\n";
     }

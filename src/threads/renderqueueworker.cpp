@@ -44,7 +44,6 @@
 #include "renderqueueworker.h"
 #include "utilities/logging.h"
 #include "utilities/tools.h"
-#include "memory/memoryinfo.h"
 #include "../mayascene.h"
 #include "../world.h"
 #include "../renderprocess.h"
@@ -126,8 +125,7 @@ MString RenderQueueWorker::getCaptionString()
 {
     const MString frameString = MString("Frame ") + getWorldPtr()->worldRenderGlobalsPtr->getFrameNumber();
     const MString timeString = getElapsedTimeString();
-    const MString memoryString = MString("Mem: ") + getPeakUsage() + "MB";
-    return MString("(appleseed)\\n") + frameString + "  " + timeString + "  " + memoryString;
+    return MString("(appleseed)\\n") + frameString + "  " + timeString;
 }
 
 void RenderQueueWorker::callbackWorker(size_t cbId)
