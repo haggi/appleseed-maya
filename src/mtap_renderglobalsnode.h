@@ -31,8 +31,6 @@
 
 #include "mayarendernodes/renderglobalsnode.h"
 
-const MString MayaToAppleseedGlobalsName = "appleseedGlobals";
-
 class MayaToAppleseedGlobals : public MayaRenderGlobalsNode
 {
   public:

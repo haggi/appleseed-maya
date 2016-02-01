@@ -169,6 +169,4 @@ endif ()
 # Products.
 #--------------------------------------------------------------------------------------------------
 
-add_subdirectory (src/appleseed-maya)
-add_subdirectory (src/appleseed-tools)
-add_subdirectory (src/mayatocommon)
+add_subdirectory (src)

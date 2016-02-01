@@ -27,7 +27,60 @@
 #
 
 include_directories (
-    ../mayatocommon
+    .
+)
+
+set (mayarendernodes_sources
+    mayarendernodes/rendercmd.cpp
+    mayarendernodes/rendercmd.h
+    mayarendernodes/renderglobalsnode.cpp
+    mayarendernodes/renderglobalsnode.h
+    mayarendernodes/standinlocatornode.cpp
+    mayarendernodes/standinlocatornode.h
+    mayarendernodes/standinmeshnode.cpp
+    mayarendernodes/standinmeshnode.h
+)
+list (APPEND appleseedmaya_sources
+    ${mayarendernodes_sources}
+)
+source_group ("mayarendernodes" FILES
+    ${mayarendernodes_sources}
+)
+
+set (memory_sources
+    memory/memoryinfo.cpp
+    memory/memoryinfo.h
+)
+list (APPEND appleseedmaya_sources
+    ${memory_sources}
+)
+source_group ("memory" FILES
+    ${memory_sources}
+)
+
+set (osl_sources
+    osl/oslutils.cpp
+    osl/oslutils.h
+)
+list (APPEND appleseedmaya_sources
+    ${osl_sources}
+)
+source_group ("osl" FILES
+    ${osl_sources}
+)
+
+set (rendering_sources
+    rendering/mayarenderer.cpp
+    rendering/mayarenderer.h
+    rendering/renderer.cpp
+    rendering/renderer.h
+    rendering/rendererfactory.h
+)
+list (APPEND appleseedmaya_sources
+    ${rendering_sources}
+)
+source_group ("rendering" FILES
+    ${rendering_sources}
 )
 
 set (shaders_sources
@@ -38,25 +91,83 @@ set (shaders_sources
     shaders/aslayeredshader.cpp
     shaders/aslayeredshader.h
 )
-list (APPEND rendererplugin_sources
+list (APPEND appleseedmaya_sources
     ${shaders_sources}
 )
 source_group ("shaders" FILES
     ${shaders_sources}
 )
 
+set (shadingtools_sources
+    shadingtools/material.cpp
+    shadingtools/material.h
+    shadingtools/shaderdefs.cpp
+    shadingtools/shaderdefs.h
+    shadingtools/shadingnode.cpp
+    shadingtools/shadingnode.h
+    shadingtools/shadingutils.cpp
+    shadingtools/shadingutils.h
+)
+list (APPEND appleseedmaya_sources
+    ${shadingtools_sources}
+)
+source_group ("shadingtools" FILES
+    ${shadingtools_sources}
+)
+
 set (swatchesrenderer_sources
     swatchesrenderer/appleseedswatchrenderer.cpp
     swatchesrenderer/appleseedswatchrenderer.h
     swatchesrenderer/newswatchrenderer.cpp
+    swatchesrenderer/newswatchrenderer.h
     swatchesrenderer/swatchesevent.cpp
     swatchesrenderer/swatchesevent.h
+    swatchesrenderer/swatchesqueue.h
+    swatchesrenderer/swatchrenderer.cpp
+    swatchesrenderer/swatchrenderer.h
+    swatchesrenderer/swatchrendererinterface.h
+    swatchesrenderer/swatchrendererinterfacefactory.h
 )
-list (APPEND rendererplugin_sources
+list (APPEND appleseedmaya_sources
     ${swatchesrenderer_sources}
 )
 source_group ("swatchesrenderer" FILES
     ${swatchesrenderer_sources}
+)
+
+set (threads_sources
+    threads/compute.cpp
+    threads/compute.h
+    threads/queue.cpp
+    threads/queue.h
+    threads/renderqueueworker.cpp
+    threads/renderqueueworker.h
+    threads/threads.h
+)
+list (APPEND appleseedmaya_sources
+    ${threads_sources}
+)
+source_group ("threads" FILES
+    ${threads_sources}
+)
+
+set (utilities_sources
+    utilities/attrtools.cpp
+    utilities/attrtools.h
+    utilities/logging.cpp
+    utilities/logging.h
+    utilities/meshtools.cpp
+    utilities/meshtools.h
+    utilities/pystring.cpp
+    utilities/pystring.h
+    utilities/tools.cpp
+    utilities/tools.h
+)
+list (APPEND appleseedmaya_sources
+    ${utilities_sources}
+)
+source_group ("utilities" FILES
+    ${utilities_sources}
 )
 
 set (sources
@@ -78,6 +189,22 @@ set (sources
     appleseedupdateelements.cpp
     appleseedutils.cpp
     appleseedutils.h
+    binmeshreadercmd.cpp
+    binmeshreadercmd.h
+    binmeshtranslator.cpp
+    binmeshtranslator.h
+    binmeshwritercmd.cpp
+    binmeshwritercmd.h
+    definitions.h
+    mayaobject.cpp
+    mayaobject.h
+    mayaobjectfactory.h
+    mayascene.cpp
+    mayascene.h
+    mayascenefactory.cpp
+    mayascenefactory.h
+    mayasceneparsing.cpp
+    mayasceneutils.cpp
     mayatoappleseed.cpp
     mayatoappleseed.h
     mtap_material.cpp
@@ -105,10 +232,20 @@ set (sources
     mtap_tilecallback.h
     mtap_world.cpp
     pluginmain.cpp
+    proxymesh.cpp
+    proxymesh.h
+    renderglobals.cpp
+    renderglobals.h
+    renderglobalsfactory.cpp
+    renderglobalsfactory.h
+    renderprocess.cpp
+    renderprocess.h
     version.cpp
     version.h
+    world.cpp
+    world.h
 )
-list (APPEND rendererplugin_sources
+list (APPEND appleseedmaya_sources
     ${sources}
 )
 source_group ("" FILES
@@ -116,11 +253,10 @@ source_group ("" FILES
 )
 
 add_library (appleseed-maya SHARED
-    ${rendererplugin_sources}
+    ${appleseedmaya_sources}
 )
 
 target_link_libraries (appleseed-maya
-    mayatocommon
     ${MAYA_Foundation_LIBRARY}
     ${MAYA_OpenMaya_LIBRARY}
     ${MAYA_OpenMayaAnim_LIBRARY}
