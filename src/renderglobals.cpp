@@ -351,6 +351,7 @@ void RenderGlobals::checkRenderRegion()
     if ((regionLeft > imgWidth) || (regionRight > imgWidth) || (regionBottom > imgHeight) || (regionTop > imgHeight))
         useRenderRegion = false;
 }
+
 bool RenderGlobals::getDefaultGlobals()
 {
     MSelectionList defaultGlobals;
@@ -449,4 +450,14 @@ bool RenderGlobals::getDefaultGlobals()
     this->filterSize = getFloatAttr("filterSize", depFn, 3.0f);
     this->good = true;
     return true;
+}
+
+void RenderGlobals::setRendererUnit()
+{
+    this->rendererUnit = MDistance::kMeters;
+}
+
+void RenderGlobals::setRendererAxis()
+{
+    this->rendererAxis = YUp;
 }

@@ -37,71 +37,17 @@
 
 #include "boost/function.hpp"
 
-static concurrent_queue<Event> RenderEventQueue;
 concurrent_queue<Event> *theRenderEventQueue();
-
-struct Callback
-{
-    Callback()
-    {
-        millsecondInterval = 100;
-        callbackId = 0;
-        terminate = false;
-    }
-    unsigned int millsecondInterval;
-    boost::function<void()> functionPointer;
-    unsigned int callbackId;
-    bool terminate;
-};
 
 class RenderQueueWorker
 {
   public:
-    RenderQueueWorker();
     ~RenderQueueWorker();
-    static void addIPRCallbacks();
-    static void removeCallbacks();
+
     static void startRenderQueueWorker();
     static void renderQueueWorkerTimerCallback(float time, float lastTime, void *userPtr);
-    static void IPRIdleCallback(float time, float lastTime, void *userPtr);
-    static void IPRNodeDirtyCallback(void *userPtr);
-    static void renderQueueWorkerIdleCallback(float time, float lastTime, void *userPtr);
-    static void IPRattributeChangedCallback(MNodeMessage::AttributeMessage msg, MPlug & plug, MPlug & otherPlug, void*);
-    static void addIdleUIComputationCreateCallback(void* data);
-    static void addIdleUIComputationCallback();
     static void IPRUpdateCallbacks();
-    static void IPRNodeAddedCallback(MObject& node, void *userPtr);
-    static void IPRNodeRemovedCallback(MObject& node, void *userPtr);
-    static void sceneCallback(void *);
-    static void pluginUnloadCallback(void *);
-    static void computationEventThread();
-    static boost::thread sceneThread;
-    static void renderProcessThread();
-    static void sendFinalizeIfQueueEmpty(void *);
-    static void setStartTime();
-    static void setEndTime();
-    static MString getElapsedTimeString();
-    static MString getCaptionString();
-    static void updateRenderView(Event& e);
-    static size_t registerCallback(boost::function<void()> function, unsigned int millisecondsUpdateInterval = 100);
-    static void unregisterCallback(size_t cbId);
-    static void callbackWorker(size_t cbId);
     static bool iprCallbacksDone();
-    static void iprFindLeafNodes();
-    static void iprWaitForFinish(Event e);
-
-    static void interactiveStartThread();
 };
-
-struct RandomPixel
-{
-    RV_PIXEL pixel;
-    int x, y;
-};
-
-std::vector<MObject> *getModifiedObjectList();
-
-void setStartComputation();
-void setEndComputation();
 
 #endif

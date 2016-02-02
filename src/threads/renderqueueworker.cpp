@@ -40,26 +40,19 @@
 #include <maya/MFnDagNode.h>
 #include <maya/MFnMesh.h>
 
-#include "compute.h"
 #include "renderqueueworker.h"
 #include "utilities/logging.h"
 #include "utilities/tools.h"
 #include "../mayascene.h"
 #include "../mayatoworld.h"
-#include "../renderprocess.h"
 
 #include "foundation/platform/thread.h"
-
-boost::thread RenderQueueWorker::sceneThread;
 
 namespace
 {
     int numTiles = 0;
     int tilesDone = 0;
     MCallbackId idleCallbackId = 0;
-    MCallbackId sceneCallbackId0 = 0;
-    MCallbackId sceneCallbackId1 = 0;
-    MCallbackId pluginCallbackId = 0;
     MCallbackId nodeAddedCallbackId = 0;
     MCallbackId nodeRemovedCallbackId = 0;
     std::vector<MCallbackId> nodeCallbacks;
@@ -70,8 +63,48 @@ namespace
     std::map<MCallbackId, MObject> objIdMap;
     std::map<MCallbackId, InteractiveElement *> idInteractiveMap;
 
-    Compute renderComputation;
-    std::vector<Callback> callbackList;
+    boost::thread sceneThread;
+    concurrent_queue<Event> RenderEventQueue;
+
+    bool escPressed;
+    bool checkDone;
+    boost::thread checkThread;
+
+    void checkInterrupt()
+    {
+        while (!checkDone)
+        {
+    #ifdef _WIN32
+            if (GetAsyncKeyState(VK_ESCAPE))
+            {
+                escPressed = true;
+                break;
+            }
+    #endif
+            foundation::sleep(100);
+        }
+    }
+
+    void beginComputation()
+    {
+        escPressed = false;
+        checkDone = false;
+        checkThread = boost::thread(checkInterrupt);
+
+        if (MRenderView::doesRenderEditorExist())
+            MGlobal::executePythonCommand("import pymel.core as pm;pm.waitCursor(state=True);");
+    }
+
+    void endComputation()
+    {
+        checkDone = true;
+
+        if (checkThread.joinable())
+            checkThread.join();
+
+        if (MRenderView::doesRenderEditorExist())
+            MGlobal::executePythonCommand("import pymel.core as pm;pm.waitCursor(state=False);pm.refresh()");
+    }
 }
 
 concurrent_queue<Event> *theRenderEventQueue()
@@ -79,26 +112,22 @@ concurrent_queue<Event> *theRenderEventQueue()
     return &RenderEventQueue;
 }
 
-RenderQueueWorker::RenderQueueWorker()
-{
-}
-
 bool RenderQueueWorker::iprCallbacksDone()
 {
     return IprCallbacksDone;
 }
 
-void RenderQueueWorker::setStartTime()
+void setStartTime()
 {
     renderStartTime = clock();
 }
 
-void RenderQueueWorker::setEndTime()
+void setEndTime()
 {
     renderEndTime = clock();
 }
 
-MString RenderQueueWorker::getElapsedTimeString()
+MString getElapsedTimeString()
 {
     int hours;
     int minutes;
@@ -121,335 +150,18 @@ MString RenderQueueWorker::getElapsedTimeString()
     return (MString("Render Time: ") + timeString);
 }
 
-MString RenderQueueWorker::getCaptionString()
+MString getCaptionString()
 {
     const MString frameString = MString("Frame ") + getWorldPtr()->worldRenderGlobalsPtr->getFrameNumber();
     const MString timeString = getElapsedTimeString();
     return MString("(appleseed)\\n") + frameString + "  " + timeString;
 }
 
-void RenderQueueWorker::callbackWorker(size_t cbId)
-{
-    while (callbackList[cbId].terminate == false)
-    {
-        callbackList[cbId].functionPointer();
-        foundation::sleep(callbackList[cbId].millsecondInterval);
-    }
-    Logging::debug("callbackWorker finished. Removing callback.");
-}
-
-size_t RenderQueueWorker::registerCallback(boost::function<void()> function, unsigned int millisecondsUpdateInterval)
-{
-    Callback cb;
-    cb.callbackId = callbackList.size();
-    cb.functionPointer = function;
-    cb.millsecondInterval = millisecondsUpdateInterval;
-    callbackList.push_back(cb);
-    boost::thread t(callbackWorker, cb.callbackId);
-    t.detach();
-    return cb.callbackId;
-}
-
-void RenderQueueWorker::unregisterCallback(size_t callbackId)
-{
-    callbackList[callbackId].terminate = true;
-}
-
-//
-// basic idea:
-//      all important messages like update framebuffer, stop rendering etc. are sent via events to the message queue
-//      a timer callback reads the next event and execute it.
-// IPR:
-//      before IPR rendering starts, callbacks are created.
-//      a node dirty callback for every node in the scene will put the the node into a list of modified objects.
-//          - because we do need the elements only once but the callbacks are called very often, we throw away the callback
-//            from a modified node after putting the node into a list and we later remove duplicate entries
-//      a idle callback is created. It will go through all elements from the modified list and update it in the renderer if necessary.
-//            then the renderer will be called to update its database or restart render, however a renderer handles interactive rendering.
-//          - then the modified list is emptied
-//          - because we want to be able to modify the same object again after it is updated, the node dirty callbacks are recreated for
-//            all the objects in the list.
-//      a scene message is created - we will stop the ipr as soon as a new scene is created or another scene is opened
-//      a scene message is created - we have to stop everything as soon as the plugin will be removed, otherwise maya will crash.
-//      IMPORTANT:  We do add dirty callbacks for translated nodes only which are saved in the mayaScene::interactiveUpdateMap.
-//                  This map is filled by sceneParsing and shader translation process which are called before rendering and during geometry translation.
-//                  So the addIPRCallbacks() has to be called after everything is translated.
-
-void RenderQueueWorker::addIPRCallbacks()
-{
-    MStatus stat;
-    IprCallbacksDone = false;
-    boost::shared_ptr<MayaScene> mayaScene = getWorldPtr()->worldScenePtr;
-
-    std::map<uint, InteractiveElement>::iterator ite;
-    std::map<uint, InteractiveElement> ielements = mayaScene->interactiveUpdateMap;
-    for (ite = ielements.begin(); ite != ielements.end(); ite++)
-    {
-        uint elementId = ite->first;
-        InteractiveElement iae = ite->second;
-        MObject nodeDirty;
-
-        if (iae.obj)
-            nodeDirty = iae.obj->mobject;
-        else
-            nodeDirty = iae.mobj;
-
-        if (iae.mobj.hasFn(MFn::kPluginDependNode))
-        {
-            MFnDependencyNode depFn(iae.mobj);
-            nodeDirty = iae.mobj;
-        }
-        Logging::debug(MString("Adding dirty callback node ") + getObjectName(nodeDirty));
-        InteractiveElement *userData = &mayaScene->interactiveUpdateMap[elementId];
-        MCallbackId id = MNodeMessage::addNodeDirtyCallback(nodeDirty, RenderQueueWorker::IPRNodeDirtyCallback, userData, &stat);
-        objIdMap[id] = nodeDirty;
-        if (stat)
-            nodeCallbacks.push_back(id);
-
-        if (nodeDirty.hasFn(MFn::kMesh))
-        {
-            MString nd = getObjectName(nodeDirty);
-            id = MNodeMessage::addAttributeChangedCallback(nodeDirty, RenderQueueWorker::IPRattributeChangedCallback, userData, &stat);
-            objIdMap[id] = nodeDirty;
-            if (stat)
-                nodeCallbacks.push_back(id);
-        }
-    }
-
-    idleCallbackId = MTimerMessage::addTimerCallback(0.2, RenderQueueWorker::IPRIdleCallback, 0, &stat);
-    sceneCallbackId0 = MSceneMessage::addCallback(MSceneMessage::kBeforeNew, RenderQueueWorker::sceneCallback, 0, &stat);
-    sceneCallbackId1 = MSceneMessage::addCallback(MSceneMessage::kBeforeOpen, RenderQueueWorker::sceneCallback, 0, &stat);
-    pluginCallbackId = MSceneMessage::addCallback(MSceneMessage::kBeforePluginUnload, RenderQueueWorker::sceneCallback, 0, &stat);
-    nodeAddedCallbackId = MDGMessage::addNodeAddedCallback(RenderQueueWorker::IPRNodeAddedCallback);
-    nodeRemovedCallbackId = MDGMessage::addNodeRemovedCallback(RenderQueueWorker::IPRNodeRemovedCallback);
-
-    IprCallbacksDone = true;
-}
-
-void RenderQueueWorker::IPRUpdateCallbacks()
-{
-    MStatus stat;
-    boost::shared_ptr<MayaScene> mayaScene = getWorldPtr()->worldScenePtr;
-
-    for (size_t elementId = 0; elementId < mayaScene->interactiveUpdateMap.size(); elementId++)
-    {
-        InteractiveElement *element = &mayaScene->interactiveUpdateMap[elementId];
-        MCallbackId id = 0;
-
-        std::map<MCallbackId, MObject>::iterator mit;
-        std::map<MCallbackId, MObject> oimap = objIdMap;
-        for (mit = oimap.begin(); mit != oimap.end(); mit++)
-        {
-            if (element->node == mit->second)
-            {
-                id = mit->first;
-                break;
-            }
-        }
-        if (id == 0)
-        {
-            MObject nodeDirty = element->node;
-            Logging::debug(MString("IPRUpdateCallbacks. Found element without callback: ") + getObjectName(nodeDirty));
-            id = MNodeMessage::addNodeDirtyCallback(nodeDirty, RenderQueueWorker::IPRNodeDirtyCallback, element, &stat);
-            objIdMap[id] = nodeDirty;
-            if (stat)
-                nodeCallbacks.push_back(id);
-        }
-    }
-}
-
-void  RenderQueueWorker::IPRattributeChangedCallback(MNodeMessage::AttributeMessage msg, MPlug & plug,  MPlug & otherPlug, void *element)
-{
-    Logging::debug(MString("IPRattributeChangedCallback. attribA: ") + plug.name() + " attribB: " + otherPlug.name());
-    InteractiveElement *userData = (InteractiveElement *)element;
-    boost::shared_ptr<MayaScene> mayaScene = getWorldPtr()->worldScenePtr;
-
-    if (!userData->obj)
-        return;
-
-    if (msg & MNodeMessage::kConnectionMade)
-    {
-        Logging::debug(MString("IPRattributeChangedCallback. connection created."));
-        MString plugName = plug.name();
-        std::string pn = plugName.asChar();
-        if (pn.find("instObjGroups[") != std::string::npos)
-        {
-            Logging::debug(MString("IPRattributeChangedCallback. InstObjGroups affected, checking other side."));
-            if (otherPlug.node().hasFn(MFn::kShadingEngine))
-            {
-                Logging::debug(MString("IPRattributeChangedCallback. Found shading group on the other side: ") + getObjectName(otherPlug.node()));
-                MCallbackId thisId = MMessage::currentCallbackId();
-                MObject sgNode = otherPlug.node();
-                InteractiveElement iel;
-                iel.mobj = sgNode;
-                iel.name = getObjectName(sgNode);
-                iel.node = sgNode;
-                iel.obj = userData->obj;
-                mayaScene->interactiveUpdateMap[mayaScene->interactiveUpdateMap.size()] = iel;
-                idInteractiveMap[thisId] = &mayaScene->interactiveUpdateMap[mayaScene->interactiveUpdateMap.size() -1];
-            }
-        }
-    }
-    else if (msg & MNodeMessage::kConnectionBroken)
-    {
-        Logging::debug(MString("IPRattributeChangedCallback. connection broken."));
-    }
-}
-
-
-// register new created nodes. We need the transform and the shape node to correctly use it in IPR.
-// So we simply use the shape node, get it's parent - a shape node and let the scene parser do the rest.
-// Then add a node dirty callback for the new elements. By adding the callback ids to the idInteractiveMap, the
-// IPR should detect a modification during the netxt update cycle.
-
-// Handling of surface shaders is a bit different. A shader is not assigned directly to a surface but it is connected to a shading group
-// which is nothing else but a objectSet. If a new surface shader is created, it is not in use until it is assigned to an object what means it is connected
-// to a shading group. So I simply add a shadingGroup callback for new shading groups.
-
-void RenderQueueWorker::IPRNodeAddedCallback(MObject& node, void *userPtr)
-{
-    Logging::debug(MString("IPRNodeAddedCallback. Node: ") + getObjectName(node));
-    boost::shared_ptr<MayaScene> mayaScene = getWorldPtr()->worldScenePtr;
-    MStatus stat;
-
-    if (node.hasFn(MFn::kTransform))
-    {
-        MFnDagNode dagNode(node);
-
-        MDagPath dagPath;
-        stat = dagNode.getPath(dagPath);
-        MString why = stat.errorString();
-        stat = dagPath.extendToShape();
-        MObject nn = dagPath.node();
-        MString na = dagPath.fullPathName();
-        if (!dagPath.node().hasFn(MFn::kMesh))
-            return;
-    }
-    else
-    {
-        if (!node.hasFn(MFn::kShape))
-            return;
-    }
-    MFnDagNode dagNode(node);
-    MString p = dagNode.fullPathName();
-    MDagPath dagPath;
-    dagNode.getPath(dagPath);
-    dagPath.pop();
-    MObject transform = dagPath.node();
-    MString tname = getObjectName(transform);
-
-    // here the new object is added to the object list and is added to the interactive object list
-    mayaScene->parseSceneHierarchy(dagPath, 0, boost::shared_ptr<ObjectAttributes>(), boost::shared_ptr<MayaObject>());
-
-    // now we readd all interactive objects to the map
-    idInteractiveMap.clear();
-    MCallbackId transformId = 0;
-    InteractiveElement *userData = 0;
-    std::map<uint, InteractiveElement>::reverse_iterator riter;
-    for (riter = mayaScene->interactiveUpdateMap.rbegin(); riter != mayaScene->interactiveUpdateMap.rend(); riter++)
-    {
-        InteractiveElement ie = riter->second;
-        if ((ie.node == node) || (ie.node == transform))
-        {
-            // problem: a newly created procedural mesh does not yet have a shape because it not yet connected to its creator node
-            // we have to find a reliable solution for this. Maybe we can add a attribute callback and check for inMesh.
-            userData = &mayaScene->interactiveUpdateMap[riter->first];
-            MCallbackId id = MNodeMessage::addNodeDirtyCallback(ie.node, RenderQueueWorker::IPRNodeDirtyCallback, userData);
-            objIdMap[id] = ie.node;
-
-            if (ie.node == node) // we only add the shape node to the update map because do not want a transform update
-                idInteractiveMap[id] = userData;
-
-            if (ie.node.hasFn(MFn::kMesh))
-            {
-                MString nd = getObjectName(ie.node);
-                id = MNodeMessage::addAttributeChangedCallback(ie.node, RenderQueueWorker::IPRattributeChangedCallback, userData, &stat);
-                objIdMap[id] = ie.node;
-                if (stat)
-                    nodeCallbacks.push_back(id);
-            }
-        }
-    }
-}
-
-void RenderQueueWorker::IPRNodeRemovedCallback(MObject& node, void *userPtr)
-{
-    Logging::debug(MString("IPRNodeRemovedCallback. Removing node: ") + getObjectName(node));
-
-    //get the callback id and remove the callback for this node and remove the callback from the list
-    std::map<MCallbackId, MObject>::iterator idIter;
-    MCallbackId nodeCallbackId = 0;
-    for (idIter = objIdMap.begin(); idIter != objIdMap.end(); idIter++)
-    {
-        if (idIter->second == node)
-        {
-            MNodeMessage::removeCallback(idIter->first);
-            nodeCallbackId = idIter->first;
-            break;
-        }
-    }
-    if (nodeCallbackId != 0)
-        objIdMap.erase(nodeCallbackId);
-
-    // get the MayaObject element and mark it as removed.
-    boost::shared_ptr<MayaScene> mayaScene = getWorldPtr()->worldScenePtr;
-    std::map<uint, InteractiveElement>::iterator iter;
-    for (iter = mayaScene->interactiveUpdateMap.begin(); iter != mayaScene->interactiveUpdateMap.end(); iter++)
-    {
-        InteractiveElement ie = iter->second;
-
-        if (ie.node == node)
-        {
-            if (ie.obj)
-            {
-                ie.obj->removed = true;
-                // trigger a ipr scene update
-                idInteractiveMap[nodeCallbackId] = &mayaScene->interactiveUpdateMap[iter->first];
-                break;
-            }
-        }
-    }
-}
-
-void RenderQueueWorker::pluginUnloadCallback(void *)
-{
-    Logging::debug("pluginUnloadCallback.");
-    RenderQueueWorker::removeCallbacks();
-}
-
-void RenderQueueWorker::sceneCallback(void *)
-{
-    Logging::debug("sceneCallback.");
-}
-
-void RenderQueueWorker::removeCallbacks()
-{
-    if (idleCallbackId != 0)
-        MMessage::removeCallback(idleCallbackId);
-    if (sceneCallbackId0 != 0)
-        MMessage::removeCallback(sceneCallbackId0);
-    if (sceneCallbackId1 != 0)
-        MMessage::removeCallback(sceneCallbackId1);
-    if (pluginCallbackId != 0)
-        MMessage::removeCallback(pluginCallbackId);
-    if (nodeAddedCallbackId != 0)
-        MDGMessage::removeCallback(nodeAddedCallbackId);
-    if (nodeRemovedCallbackId != 0)
-        MDGMessage::removeCallback(nodeRemovedCallbackId);
-    pluginCallbackId = idleCallbackId = sceneCallbackId0 = sceneCallbackId1 = nodeRemovedCallbackId = nodeAddedCallbackId = 0;
-    std::vector<MCallbackId>::iterator iter;
-    for (iter = nodeCallbacks.begin(); iter != nodeCallbacks.end(); iter++)
-        MMessage::removeCallback(*iter);
-    nodeCallbacks.clear();
-    objIdMap.clear();
-    modifiedElementList.clear(); // make sure that the iprFindLeafNodes exits with an empty list
-}
-
 // one problem: In most cases the renderer translates shapes only not complete hierarchies
 // To do a correct update of all interesting nodes, I have to find the shapes below a transform node.
 // Here we fill the modifiedElementList with shape nodes and non transform nodes
 
-void RenderQueueWorker::iprFindLeafNodes()
+void iprFindLeafNodes()
 {
     boost::shared_ptr<MayaScene> mayaScene = getWorldPtr()->worldScenePtr;
     std::map<MCallbackId, InteractiveElement *>::iterator it;
@@ -500,21 +212,66 @@ void RenderQueueWorker::iprFindLeafNodes()
     for (llIt = leafList.begin(); llIt != leafList.end(); llIt++)
         modifiedElementList.push_back(*llIt);
 }
-void RenderQueueWorker::IPRIdleCallback(float time, float lastTime, void *userPtr)
+
+//
+// basic idea:
+//      all important messages like update framebuffer, stop rendering etc. are sent via events to the message queue
+//      a timer callback reads the next event and execute it.
+// IPR:
+//      before IPR rendering starts, callbacks are created.
+//      a node dirty callback for every node in the scene will put the the node into a list of modified objects.
+//          - because we do need the elements only once but the callbacks are called very often, we throw away the callback
+//            from a modified node after putting the node into a list and we later remove duplicate entries
+//      a idle callback is created. It will go through all elements from the modified list and update it in the renderer if necessary.
+//            then the renderer will be called to update its database or restart render, however a renderer handles interactive rendering.
+//          - then the modified list is emptied
+//          - because we want to be able to modify the same object again after it is updated, the node dirty callbacks are recreated for
+//            all the objects in the list.
+//      a scene message is created - we will stop the ipr as soon as a new scene is created or another scene is opened
+//      a scene message is created - we have to stop everything as soon as the plugin will be removed, otherwise maya will crash.
+//      IMPORTANT:  We do add dirty callbacks for translated nodes only which are saved in the mayaScene::interactiveUpdateMap.
+//                  This map is filled by sceneParsing and shader translation process which are called before rendering and during geometry translation.
+//                  So the addIPRCallbacks() has to be called after everything is translated.
+
+void IPRattributeChangedCallback(MNodeMessage::AttributeMessage msg, MPlug & plug,  MPlug & otherPlug, void *element)
 {
-    if (idInteractiveMap.empty())
-    {
+    Logging::debug(MString("IPRattributeChangedCallback. attribA: ") + plug.name() + " attribB: " + otherPlug.name());
+    InteractiveElement *userData = (InteractiveElement *)element;
+    boost::shared_ptr<MayaScene> mayaScene = getWorldPtr()->worldScenePtr;
+
+    if (!userData->obj)
         return;
+
+    if (msg & MNodeMessage::kConnectionMade)
+    {
+        Logging::debug(MString("IPRattributeChangedCallback. connection created."));
+        MString plugName = plug.name();
+        std::string pn = plugName.asChar();
+        if (pn.find("instObjGroups[") != std::string::npos)
+        {
+            Logging::debug(MString("IPRattributeChangedCallback. InstObjGroups affected, checking other side."));
+            if (otherPlug.node().hasFn(MFn::kShadingEngine))
+            {
+                Logging::debug(MString("IPRattributeChangedCallback. Found shading group on the other side: ") + getObjectName(otherPlug.node()));
+                MCallbackId thisId = MMessage::currentCallbackId();
+                MObject sgNode = otherPlug.node();
+                InteractiveElement iel;
+                iel.mobj = sgNode;
+                iel.name = getObjectName(sgNode);
+                iel.node = sgNode;
+                iel.obj = userData->obj;
+                mayaScene->interactiveUpdateMap[mayaScene->interactiveUpdateMap.size()] = iel;
+                idInteractiveMap[thisId] = &mayaScene->interactiveUpdateMap[mayaScene->interactiveUpdateMap.size() -1];
+            }
+        }
     }
-
-    Logging::debug(MString("renderQueueWorkerIdleCallback::Updatelist size ") + idInteractiveMap.size());
-
-    getWorldPtr()->worldRendererPtr->abortRendering();
-    iprFindLeafNodes();
-    idInteractiveMap.clear();
+    else if (msg & MNodeMessage::kConnectionBroken)
+    {
+        Logging::debug(MString("IPRattributeChangedCallback. connection broken."));
+    }
 }
 
-void RenderQueueWorker::IPRNodeDirtyCallback(void *interactiveElement)
+void IPRNodeDirtyCallback(void *interactiveElement)
 {
     MStatus stat;
     InteractiveElement *userData = (InteractiveElement *)interactiveElement;
@@ -523,12 +280,233 @@ void RenderQueueWorker::IPRNodeDirtyCallback(void *interactiveElement)
     idInteractiveMap[thisId] = userData;
 }
 
+void IPRIdleCallback(float time, float lastTime, void *userPtr)
+{
+    if (idInteractiveMap.empty())
+        return;
+
+    getWorldPtr()->worldRendererPtr->abortRendering();
+    iprFindLeafNodes();
+    idInteractiveMap.clear();
+}
+
+void IPRNodeAddedCallback(MObject& node, void *userPtr)
+{
+    Logging::debug(MString("IPRNodeAddedCallback. Node: ") + getObjectName(node));
+    boost::shared_ptr<MayaScene> mayaScene = getWorldPtr()->worldScenePtr;
+    MStatus stat;
+
+    if (node.hasFn(MFn::kTransform))
+    {
+        MFnDagNode dagNode(node);
+
+        MDagPath dagPath;
+        stat = dagNode.getPath(dagPath);
+        MString why = stat.errorString();
+        stat = dagPath.extendToShape();
+        MObject nn = dagPath.node();
+        MString na = dagPath.fullPathName();
+        if (!dagPath.node().hasFn(MFn::kMesh))
+            return;
+    }
+    else
+    {
+        if (!node.hasFn(MFn::kShape))
+            return;
+    }
+    MFnDagNode dagNode(node);
+    MString p = dagNode.fullPathName();
+    MDagPath dagPath;
+    dagNode.getPath(dagPath);
+    dagPath.pop();
+    MObject transform = dagPath.node();
+    MString tname = getObjectName(transform);
+
+    // here the new object is added to the object list and is added to the interactive object list
+    mayaScene->parseSceneHierarchy(dagPath, 0, boost::shared_ptr<ObjectAttributes>(), boost::shared_ptr<MayaObject>());
+
+    // now we readd all interactive objects to the map
+    idInteractiveMap.clear();
+    MCallbackId transformId = 0;
+    InteractiveElement *userData = 0;
+    std::map<uint, InteractiveElement>::reverse_iterator riter;
+    for (riter = mayaScene->interactiveUpdateMap.rbegin(); riter != mayaScene->interactiveUpdateMap.rend(); riter++)
+    {
+        InteractiveElement ie = riter->second;
+        if ((ie.node == node) || (ie.node == transform))
+        {
+            // problem: a newly created procedural mesh does not yet have a shape because it not yet connected to its creator node
+            // we have to find a reliable solution for this. Maybe we can add a attribute callback and check for inMesh.
+            userData = &mayaScene->interactiveUpdateMap[riter->first];
+            MCallbackId id = MNodeMessage::addNodeDirtyCallback(ie.node, IPRNodeDirtyCallback, userData);
+            objIdMap[id] = ie.node;
+
+            if (ie.node == node) // we only add the shape node to the update map because do not want a transform update
+                idInteractiveMap[id] = userData;
+
+            if (ie.node.hasFn(MFn::kMesh))
+            {
+                MString nd = getObjectName(ie.node);
+                id = MNodeMessage::addAttributeChangedCallback(ie.node, IPRattributeChangedCallback, userData, &stat);
+                objIdMap[id] = ie.node;
+                if (stat)
+                    nodeCallbacks.push_back(id);
+            }
+        }
+    }
+}
+
+void IPRNodeRemovedCallback(MObject& node, void *userPtr)
+{
+    Logging::debug(MString("IPRNodeRemovedCallback. Removing node: ") + getObjectName(node));
+
+    //get the callback id and remove the callback for this node and remove the callback from the list
+    std::map<MCallbackId, MObject>::iterator idIter;
+    MCallbackId nodeCallbackId = 0;
+    for (idIter = objIdMap.begin(); idIter != objIdMap.end(); idIter++)
+    {
+        if (idIter->second == node)
+        {
+            MNodeMessage::removeCallback(idIter->first);
+            nodeCallbackId = idIter->first;
+            break;
+        }
+    }
+    if (nodeCallbackId != 0)
+        objIdMap.erase(nodeCallbackId);
+
+    // get the MayaObject element and mark it as removed.
+    boost::shared_ptr<MayaScene> mayaScene = getWorldPtr()->worldScenePtr;
+    std::map<uint, InteractiveElement>::iterator iter;
+    for (iter = mayaScene->interactiveUpdateMap.begin(); iter != mayaScene->interactiveUpdateMap.end(); iter++)
+    {
+        InteractiveElement ie = iter->second;
+
+        if (ie.node == node)
+        {
+            if (ie.obj)
+            {
+                ie.obj->removed = true;
+                // trigger a ipr scene update
+                idInteractiveMap[nodeCallbackId] = &mayaScene->interactiveUpdateMap[iter->first];
+                break;
+            }
+        }
+    }
+}
+
+void addIPRCallbacks()
+{
+    MStatus stat;
+    IprCallbacksDone = false;
+    boost::shared_ptr<MayaScene> mayaScene = getWorldPtr()->worldScenePtr;
+
+    std::map<uint, InteractiveElement>::iterator ite;
+    std::map<uint, InteractiveElement> ielements = mayaScene->interactiveUpdateMap;
+    for (ite = ielements.begin(); ite != ielements.end(); ite++)
+    {
+        uint elementId = ite->first;
+        InteractiveElement iae = ite->second;
+        MObject nodeDirty;
+
+        if (iae.obj)
+            nodeDirty = iae.obj->mobject;
+        else
+            nodeDirty = iae.mobj;
+
+        if (iae.mobj.hasFn(MFn::kPluginDependNode))
+        {
+            MFnDependencyNode depFn(iae.mobj);
+            nodeDirty = iae.mobj;
+        }
+        Logging::debug(MString("Adding dirty callback node ") + getObjectName(nodeDirty));
+        InteractiveElement *userData = &mayaScene->interactiveUpdateMap[elementId];
+        MCallbackId id = MNodeMessage::addNodeDirtyCallback(nodeDirty, IPRNodeDirtyCallback, userData, &stat);
+        objIdMap[id] = nodeDirty;
+        if (stat)
+            nodeCallbacks.push_back(id);
+
+        if (nodeDirty.hasFn(MFn::kMesh))
+        {
+            MString nd = getObjectName(nodeDirty);
+            id = MNodeMessage::addAttributeChangedCallback(nodeDirty, IPRattributeChangedCallback, userData, &stat);
+            objIdMap[id] = nodeDirty;
+            if (stat)
+                nodeCallbacks.push_back(id);
+        }
+    }
+
+    idleCallbackId = MTimerMessage::addTimerCallback(0.2, IPRIdleCallback, 0, &stat);
+    nodeAddedCallbackId = MDGMessage::addNodeAddedCallback(IPRNodeAddedCallback);
+    nodeRemovedCallbackId = MDGMessage::addNodeRemovedCallback(IPRNodeRemovedCallback);
+
+    IprCallbacksDone = true;
+}
+
+void RenderQueueWorker::IPRUpdateCallbacks()
+{
+    MStatus stat;
+    boost::shared_ptr<MayaScene> mayaScene = getWorldPtr()->worldScenePtr;
+
+    for (size_t elementId = 0; elementId < mayaScene->interactiveUpdateMap.size(); elementId++)
+    {
+        InteractiveElement *element = &mayaScene->interactiveUpdateMap[elementId];
+        MCallbackId id = 0;
+
+        std::map<MCallbackId, MObject>::iterator mit;
+        std::map<MCallbackId, MObject> oimap = objIdMap;
+        for (mit = oimap.begin(); mit != oimap.end(); mit++)
+        {
+            if (element->node == mit->second)
+            {
+                id = mit->first;
+                break;
+            }
+        }
+        if (id == 0)
+        {
+            MObject nodeDirty = element->node;
+            Logging::debug(MString("IPRUpdateCallbacks. Found element without callback: ") + getObjectName(nodeDirty));
+            id = MNodeMessage::addNodeDirtyCallback(nodeDirty, IPRNodeDirtyCallback, element, &stat);
+            objIdMap[id] = nodeDirty;
+            if (stat)
+                nodeCallbacks.push_back(id);
+        }
+    }
+}
+
+// register new created nodes. We need the transform and the shape node to correctly use it in IPR.
+// So we simply use the shape node, get it's parent - a shape node and let the scene parser do the rest.
+// Then add a node dirty callback for the new elements. By adding the callback ids to the idInteractiveMap, the
+// IPR should detect a modification during the netxt update cycle.
+
+// Handling of surface shaders is a bit different. A shader is not assigned directly to a surface but it is connected to a shading group
+// which is nothing else but a objectSet. If a new surface shader is created, it is not in use until it is assigned to an object what means it is connected
+// to a shading group. So I simply add a shadingGroup callback for new shading groups.
+
+void removeCallbacks()
+{
+    if (idleCallbackId != 0)
+        MMessage::removeCallback(idleCallbackId);
+    if (nodeAddedCallbackId != 0)
+        MDGMessage::removeCallback(nodeAddedCallbackId);
+    if (nodeRemovedCallbackId != 0)
+        MDGMessage::removeCallback(nodeRemovedCallbackId);
+    idleCallbackId = nodeRemovedCallbackId = nodeAddedCallbackId = 0;
+    std::vector<MCallbackId>::iterator iter;
+    for (iter = nodeCallbacks.begin(); iter != nodeCallbacks.end(); iter++)
+        MMessage::removeCallback(*iter);
+    nodeCallbacks.clear();
+    objIdMap.clear();
+    modifiedElementList.clear(); // make sure that the iprFindLeafNodes exits with an empty list
+}
+
 void RenderQueueWorker::renderQueueWorkerTimerCallback(float time, float lastTime, void *userPtr)
 {
     RenderQueueWorker::startRenderQueueWorker();
 }
 
-void RenderQueueWorker::computationEventThread()
+void computationEventThread()
 {
     bool done = false;
     bool renderingStarted = false;
@@ -538,7 +516,7 @@ void RenderQueueWorker::computationEventThread()
             renderingStarted = true;
         if (renderingStarted && (getWorldPtr()->getRenderState() != MayaToWorld::RSTATERENDERING))
             done = true;
-        if (renderComputation.isInterruptRequested() && (getWorldPtr()->getRenderState() == MayaToWorld::RSTATERENDERING))
+        if (escPressed && (getWorldPtr()->getRenderState() == MayaToWorld::RSTATERENDERING))
         {
             Logging::debug("computationEventThread::InterruptRequested.");
             done = true;
@@ -553,7 +531,7 @@ void RenderQueueWorker::computationEventThread()
     }
 }
 
-void RenderQueueWorker::renderProcessThread()
+void renderProcessThread()
 {
     if (getWorldPtr()->renderType == MayaToWorld::IPRRENDER)
     {
@@ -582,7 +560,7 @@ void RenderQueueWorker::renderProcessThread()
     theRenderEventQueue()->push(event);
 }
 
-void RenderQueueWorker::updateRenderView(Event& e)
+void updateRenderView(Event& e)
 {
     boost::shared_ptr<RenderGlobals> renderGlobals = getWorldPtr()->worldRenderGlobalsPtr;
     int width, height;
@@ -610,29 +588,119 @@ void RenderQueueWorker::updateRenderView(Event& e)
     }
 }
 
-void RenderQueueWorker::interactiveStartThread()
-{
-    getWorldPtr()->worldRendererPtr->doInteractiveUpdate();
-}
-
-void RenderQueueWorker::sendFinalizeIfQueueEmpty(void *)
-{
-    while (theRenderEventQueue()->size() > 0)
-        asf::sleep(10);
-
-    Logging::debug("sendFinalizeIfQueueEmpty: queue is 0, sending finalize.");
-    Event e;
-    e.type = Event::FINISH;
-    theRenderEventQueue()->push(e);
-}
-
-void RenderQueueWorker::iprWaitForFinish(Event e)
+void iprWaitForFinish(Event e)
 {
     Logging::debug("iprWaitForFinish.");
     while (getWorldPtr()->getRenderState() != MayaToWorld::RSTATENONE)
         asf::sleep(100);
     Logging::debug("iprWaitForFinish - Renderstate is RSTATENONE, sending event.");
     theRenderEventQueue()->push(e);
+}
+
+namespace
+{
+    void doPreRenderJobs()
+    {
+    }
+
+    // not sure if this is really the best way to do it.
+    // the renderer should be able to access all scene element lists and these are creating in parseScene()
+    // but the preFrameScripts should be called before the whole parsing is done because it is possible that this script
+    // updates or creates geometry.
+    void doRenderPreFrameJobs()
+    {
+        getWorldPtr()->worldRendererPtr->preFrame();
+    }
+
+    void doPreFrameJobs()
+    {
+        MString result;
+        MGlobal::executeCommand(getWorldPtr()->worldRenderGlobalsPtr->preFrameScript, result, true);
+    }
+
+    void doPostFrameJobs()
+    {
+        MString result;
+        MGlobal::executeCommand(getWorldPtr()->worldRenderGlobalsPtr->postFrameScript, result, true);
+        getWorldPtr()->worldRendererPtr->postFrame();
+    }
+
+    void doPostRenderJobs()
+    {
+    }
+
+    void doPrepareFrame()
+    {
+        float currentFrame = getWorldPtr()->worldRenderGlobalsPtr->getFrameNumber();
+        boost::shared_ptr<MayaScene> mayaScene = getWorldPtr()->worldScenePtr;
+        Logging::progress(MString("\n========== doPrepareFrame ") + currentFrame + " ==============\n");
+
+        mayaScene->parseScene(); // all lists are cleaned and refilled with the current scene content
+        std::vector<boost::shared_ptr<MayaObject> >::iterator oIt;
+        for (oIt = mayaScene->camList.begin(); oIt != mayaScene->camList.end(); oIt++)
+        {
+            boost::shared_ptr<MayaObject> camera = *oIt;
+            if (!isCameraRenderable(camera->mobject) && (!(camera->dagPath == mayaScene->uiCamera)))
+            {
+                Logging::debug(MString("Camera ") + camera->shortName + " is not renderable, skipping.");
+                continue;
+            }
+            Logging::info(MString("Rendering camera ") + camera->shortName);
+            if (MGlobal::mayaState() != MGlobal::kBatch)
+            {
+                MRenderView::setCurrentCamera(camera->dagPath);
+            }
+        }
+
+        getWorldPtr()->worldRenderGlobalsPtr->getMbSteps();
+
+        if (getWorldPtr()->worldRenderGlobalsPtr->mbElementList.size() == 0)
+        {
+            Logging::error(MString("no mb steps, something's wrong."));
+            return;
+        }
+
+        int numMbSteps = (int)getWorldPtr()->worldRenderGlobalsPtr->mbElementList.size();
+
+        for (int mbStepId = 0; mbStepId < numMbSteps; mbStepId++)
+        {
+            getWorldPtr()->worldRenderGlobalsPtr->currentMbStep = mbStepId;
+            getWorldPtr()->worldRenderGlobalsPtr->currentMbElement = getWorldPtr()->worldRenderGlobalsPtr->mbElementList[mbStepId];
+            getWorldPtr()->worldRenderGlobalsPtr->currentFrameNumber = (float)(currentFrame + getWorldPtr()->worldRenderGlobalsPtr->mbElementList[mbStepId].m_time);
+            bool needView = true;
+
+            // we can have some mb time steps at the same time, e.g. for xform and deform, then we do not need to update the view
+            if (mbStepId > 0)
+            {
+                if (getWorldPtr()->worldRenderGlobalsPtr->mbElementList[mbStepId].m_time == getWorldPtr()->worldRenderGlobalsPtr->mbElementList[mbStepId - 1].m_time)
+                {
+                    needView = false;
+                }
+            }
+
+            if (needView)
+            {
+                Logging::debug(MString("doFrameJobs() viewFrame: ") + getWorldPtr()->worldRenderGlobalsPtr->currentFrameNumber);
+                MGlobal::viewFrame(getWorldPtr()->worldRenderGlobalsPtr->currentFrameNumber);
+            }
+
+            if (getWorldPtr()->worldScenePtr)
+                mayaScene->updateScene();
+            else
+                Logging::error(MString("no maya scene ptr."));
+
+            Logging::info(MString("update scene done"));
+            getWorldPtr()->worldRenderGlobalsPtr->currentMbStep++;
+        }
+
+        if (MGlobal::mayaState() != MGlobal::kBatch)
+            MGlobal::viewFrame(currentFrame);
+    }
+
+    void doFrameJobs()
+    {
+        Logging::debug("doFrameJobs()");
+    }
 }
 
 void RenderQueueWorker::startRenderQueueWorker()
@@ -677,7 +745,7 @@ void RenderQueueWorker::startRenderQueueWorker()
                     MayaToWorld::WorldRenderState rs = getWorldPtr()->getRenderState();
                     if (getWorldPtr()->getRenderState() != MayaToWorld::RSTATENONE)
                     {
-                        boost::thread waitThread = boost::thread(RenderQueueWorker::iprWaitForFinish, e);
+                        boost::thread waitThread = boost::thread(iprWaitForFinish, e);
                         waitThread.detach();
                         break;
                     }
@@ -705,16 +773,14 @@ void RenderQueueWorker::startRenderQueueWorker()
                 {
                     // we only need renderComputation (means esc-able rendering) if we render in UI (==NORMAL)
                     if (getWorldPtr()->getRenderType() == MayaToWorld::UIRENDER)
-                    {
-                        renderComputation.beginComputation();
-                    }
+                        beginComputation();
                 }
                 e.type = Event::FRAMERENDER;
                 theRenderEventQueue()->push(e);
 
                 if (MGlobal::mayaState() != MGlobal::kBatch)
                 {
-                    boost::thread cet = boost::thread(RenderQueueWorker::computationEventThread);
+                    boost::thread cet = boost::thread(computationEventThread);
                     cet.detach();
                 }
 
@@ -731,8 +797,8 @@ void RenderQueueWorker::startRenderQueueWorker()
             {
                 Logging::debug("Event::Framerender");
 
-                if (RenderQueueWorker::sceneThread.joinable())
-                    RenderQueueWorker::sceneThread.join();
+                if (sceneThread.joinable())
+                    sceneThread.join();
 
                 if (!getWorldPtr()->worldRenderGlobalsPtr->frameListDone())
                 {
@@ -740,7 +806,7 @@ void RenderQueueWorker::startRenderQueueWorker()
                     doPreFrameJobs(); // preRenderScript etc.
                     doPrepareFrame(); // parse scene and update objects
                     doRenderPreFrameJobs(); // call renderers pre frame jobs
-                    RenderQueueWorker::sceneThread = boost::thread(RenderQueueWorker::renderProcessThread);
+                    sceneThread = boost::thread(renderProcessThread);
                 }
                 else
                 {
@@ -766,20 +832,21 @@ void RenderQueueWorker::startRenderQueueWorker()
         case Event::FRAMEDONE:
             Logging::debug("Event::FRAMEDONE");
             doPostFrameJobs();
-            RenderQueueWorker::updateRenderView(e);
+            updateRenderView(e);
             e.type = Event::FRAMERENDER;
             theRenderEventQueue()->push(e);
             break;
 
         case Event::RENDERDONE:
             {
-                // stopp callbacks and empty queue before finalizing the rendering.
                 Logging::debug("Event::RENDERDONE");
+
                 if (MGlobal::mayaState() != MGlobal::kBatch)
-                    renderComputation.endComputation();
+                    endComputation();
+
                 if (getWorldPtr()->renderType == MayaToWorld::IPRRENDER)
                 {
-                    RenderQueueWorker::removeCallbacks();
+                    removeCallbacks();
                 }
                 getWorldPtr()->setRenderState(MayaToWorld::RSTATEDONE);
                 terminateLoop = true;
@@ -807,12 +874,12 @@ void RenderQueueWorker::startRenderQueueWorker()
             break;
 
         case Event::FRAMEUPDATE:
-            RenderQueueWorker::updateRenderView(e);
+            updateRenderView(e);
             break;
 
         case Event::IPRUPDATE:
             Logging::debug("Event::IPRUPDATE - whole frame");
-            RenderQueueWorker::updateRenderView(e);
+            updateRenderView(e);
             break;
 
         case Event::INTERRUPT:
@@ -829,7 +896,7 @@ void RenderQueueWorker::startRenderQueueWorker()
         case Event::TILEDONE:
             {
                 Logging::debug(MString("Event::TILEDONE - queueSize: ") + theRenderEventQueue()->size());
-                RenderQueueWorker::updateRenderView(e);
+                updateRenderView(e);
                 if (getWorldPtr()->renderType != MayaToWorld::IPRRENDER)
                 {
                     tilesDone++;
@@ -843,7 +910,7 @@ void RenderQueueWorker::startRenderQueueWorker()
             break;
 
         case Event::PRETILE:
-            RenderQueueWorker::updateRenderView(e);
+            updateRenderView(e);
             break;
 
         case Event::IPRUPDATESCENE:

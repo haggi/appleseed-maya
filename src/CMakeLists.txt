@@ -101,7 +101,6 @@ source_group ("swatchesrenderer" FILES
 )
 
 set (threads_sources
-    threads/compute.h
     threads/queue.cpp
     threads/queue.h
     threads/renderqueueworker.cpp
@@ -159,7 +158,6 @@ set (sources
     mayatoworld.h
     mtap_mayarenderer.cpp
     mtap_mayarenderer.h
-    mtap_renderglobals.cpp
     mtap_standinmeshnode.cpp
     mtap_standinmeshnode.h
     mtap_tilecallback.cpp
@@ -171,10 +169,6 @@ set (sources
     renderercontroller.h
     renderglobals.cpp
     renderglobals.h
-    renderglobalsfactory.cpp
-    renderglobalsfactory.h
-    renderprocess.cpp
-    renderprocess.h
     version.cpp
     version.h
 )

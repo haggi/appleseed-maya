@@ -32,7 +32,6 @@
 #include "utilities/logging.h"
 #include "appleseedrenderer.h"
 #include "mayascene.h"
-#include "renderglobalsfactory.h"
 #include "mayatoworld.h"
 
 // Maya headers.
@@ -42,7 +41,6 @@
 static MCallbackId timerCallbackId = 0;
 static MCallbackId beforeExitId = 0;
 
-MCallbackId MayaToWorld::afterOpenCallbackId;
 MCallbackId MayaToWorld::afterNewCallbackId;
 
 void *getObjPtr(MString name)
@@ -123,7 +121,7 @@ void MayaToWorld::initializeScene()
 
 void MayaToWorld::initializeRenderGlobals()
 {
-    RenderGlobalsFactory().createRenderGlobals();
+    getWorldPtr()->worldRenderGlobalsPtr.reset(new RenderGlobals());
 }
 
 void MayaToWorld::initializeRenderer()

@@ -158,7 +158,7 @@ class MayaToWorld
     static void beforeExitCallback(void *);
     static void callAfterOpenCallback(void *);
     static void callAfterNewCallback(void *);
-    static MCallbackId afterOpenCallbackId;
+
     static MCallbackId afterNewCallbackId;
 };
 
