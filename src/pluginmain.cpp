@@ -35,7 +35,7 @@
 #endif
 #include "utilities/tools.h"
 #include "threads/renderqueueworker.h"
-#include "world.h"
+#include "mayatoworld.h"
 #include "version.h"
 #include "binmeshtranslator.h"
 #include "binmeshwritercmd.h"

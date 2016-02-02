@@ -34,7 +34,7 @@
 #include "utilities/attrtools.h"
 #include "utilities/logging.h"
 #include "utilities/tools.h"
-#include "world.h"
+#include "mayatoworld.h"
 
 // Maya headers.
 #include <maya/MArgDatabase.h>

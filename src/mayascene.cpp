@@ -53,7 +53,7 @@
 #include "utilities/pystring.h"
 #include "shadingtools/shadingutils.h"
 #include "threads/renderqueueworker.h"
-#include "world.h"
+#include "mayatoworld.h"
 
 MayaScene::MayaScene()
 {

@@ -27,17 +27,21 @@
 //
 
 #include "oslutils.h"
-#include <maya/MPlugArray.h>
-#include <maya/MFnDependencyNode.h>
 #include "renderglobals.h"
 #include "utilities/logging.h"
 #include "utilities/tools.h"
 #include "utilities/attrtools.h"
 #include "utilities/pystring.h"
 #include "shadingtools/shaderdefinitions.h"
-#include "world.h"
+#include "mayatoworld.h"
+
+// appleseed.renderer headers.
+#include "renderer/api/shadergroup.h"
 
 #include "boost/filesystem.hpp"
+
+#include <maya/MPlugArray.h>
+#include <maya/MFnDependencyNode.h>
 
 static std::vector<MObject> projectionNodes;
 static std::vector<MObject> projectionConnectNodes;
@@ -947,4 +951,90 @@ void OSLUtilClass::connectProjectionNodes(MObject& projNode)
             connectOSLShaders(ca);
         }
     }
+}
+
+namespace
+{
+    MString oslTypeToMString(OSLParameter param)
+    {
+        MString result;
+        void *val = 0;
+        if (param.type == OSL::TypeDesc::TypeFloat)
+        {
+            result = "float ";
+            result += boost::get<float>(param.value);
+        }
+        if (param.type == OSL::TypeDesc::TypeInt)
+        {
+            result = "int ";
+            result += boost::get<int>(param.value);
+        }
+        if (param.type == OSL::TypeDesc::TypeVector)
+        {
+            SimpleVector &v = boost::get<SimpleVector>(param.value);
+            result = MString("vector ") + v.f[0] + " " + v.f[1] + " " + v.f[2];
+        }
+        if (param.type == OSL::TypeDesc::TypeColor)
+        {
+            SimpleVector &v = boost::get<SimpleVector>(param.value);
+            result = MString("color ") + v.f[0] + " " + v.f[1] + " " + v.f[2];
+        }
+        if (param.type == OSL::TypeDesc::TypeString)
+        {
+            result = MString("string ") + boost::get<std::string>(param.value).c_str();
+            if (MString("") == boost::get<std::string>(param.value).c_str())
+            {
+                result = MString("string black.exr");
+            }
+        }
+        if (param.type == OSL::TypeDesc::TypeMatrix)
+        {
+            SimpleMatrix &v = boost::get<SimpleMatrix>(param.value);
+            result = MString("matrix ") + v.f[0][0] + " " + v.f[0][1] + " " + v.f[0][2] + " " + v.f[0][3] +
+                v.f[1][0] + " " + v.f[1][1] + " " + v.f[1][2] + " " + v.f[1][3] +
+                v.f[2][0] + " " + v.f[2][1] + " " + v.f[2][2] + " " + v.f[2][3] +
+                v.f[3][0] + " " + v.f[3][1] + " " + v.f[3][2] + " " + v.f[3][3];
+        }
+        return result;
+    }
+}
+
+void OSLUtilClass::connectOSLShaders(ConnectionArray& ca)
+{
+    std::vector<Connection>::iterator cIt;
+    for (cIt = ca.begin(); cIt != ca.end(); cIt++)
+    {
+        const char *srcLayer = cIt->sourceNode.asChar();
+        const char *srcAttr = cIt->sourceAttribute.asChar();
+        const char *destLayer = cIt->destNode.asChar();
+        MString destAttr = cIt->destAttribute;
+        if (destAttr == "color")
+            destAttr = "inColor";
+        Logging::debug(MString("connectOSLShaders ") + srcLayer + "." + srcAttr + " -> " + destLayer + "." + destAttr);
+        OSL::ShaderGroup *g = group;
+        asr::ShaderGroup *ag = (asr::ShaderGroup *)g;
+        ag->add_connection(srcLayer, srcAttr, destLayer, destAttr.asChar());
+    }
+}
+
+void OSLUtilClass::createOSLShader(MString& shaderNodeType, MString& shaderName, OSLParamArray& paramArray)
+{
+    Logging::debug(MString("createOSLShader ") + shaderName);
+    asr::ParamArray asParamArray;
+    std::vector<OSLParameter>::iterator pIt;
+    for (pIt = paramArray.begin(); pIt != paramArray.end(); pIt++)
+    {
+        MString pname = pIt->name;
+        if (pname == "color")
+            pname = "inColor";
+
+        MString paramString = oslTypeToMString(*pIt);
+        asParamArray.insert(pname.asChar(), paramString);
+        Logging::debug(MString("\tParam ") + pIt->name + " " + paramString);
+    }
+
+    Logging::debug(MString("createOSLShader creating shader node "));
+    OSL::ShaderGroup *g = group;
+    asr::ShaderGroup *ag = (asr::ShaderGroup *)g;
+    ag->add_shader("shader", shaderNodeType.asChar(), shaderName.asChar(), asParamArray);
 }

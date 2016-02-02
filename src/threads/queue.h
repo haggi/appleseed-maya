@@ -34,7 +34,7 @@
 #include "boost/thread/mutex.hpp"
 #include "boost/thread/condition_variable.hpp"
 #include <maya/MRenderView.h>
-#include "../world.h"
+#include "../mayatoworld.h"
 
 struct Event
 {

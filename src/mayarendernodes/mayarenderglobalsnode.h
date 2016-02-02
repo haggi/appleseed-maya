@@ -34,7 +34,8 @@
 #include <maya/MStringArray.h>
 #include <maya/MTypeId.h>
 
-class MayaRenderGlobalsNode : public MPxNode
+class MayaRenderGlobalsNode
+  : public MPxNode
 {
   public:
                         MayaRenderGlobalsNode();

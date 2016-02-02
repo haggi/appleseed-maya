@@ -45,7 +45,7 @@
 #include "utilities/logging.h"
 #include "utilities/tools.h"
 #include "../mayascene.h"
-#include "../world.h"
+#include "../mayatoworld.h"
 #include "../renderprocess.h"
 
 #include "foundation/platform/thread.h"

@@ -38,7 +38,7 @@
 #include "utilities/tools.h"
 #include "utilities/attrtools.h"
 #include "shadingtools/shadingutils.h"
-#include "world.h"
+#include "mayatoworld.h"
 #include "renderglobals.h"
 
 static std::vector<int> lightIdentifier; // plugids for detecting new lighttypes

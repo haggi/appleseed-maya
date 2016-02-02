@@ -135,7 +135,6 @@ source_group ("utilities" FILES
 )
 
 set (sources
-    appleseedcreateoslshader.cpp
     appleseedmeshwalker.cpp
     appleseedmeshwalker.h
     appleseedrenderer.cpp
@@ -154,6 +153,8 @@ set (sources
     mayascene.h
     mayatoappleseed.cpp
     mayatoappleseed.h
+    mayatoworld.cpp
+    mayatoworld.h
     mtap_mayaobject.cpp
     mtap_mayaobject.h
     mtap_mayarenderer.cpp
@@ -179,8 +180,6 @@ set (sources
     renderprocess.h
     version.cpp
     version.h
-    world.cpp
-    world.h
 )
 list (APPEND appleseedmaya_sources
     ${sources}

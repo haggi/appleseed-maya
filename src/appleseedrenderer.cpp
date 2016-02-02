@@ -44,7 +44,7 @@
 #include "mayascene.h"
 #include "mtap_tilecallback.h"
 #include "renderglobals.h"
-#include "world.h"
+#include "mayatoworld.h"
 
 // appleseed.renderer headers.
 #include "renderer/global/globallogger.h"

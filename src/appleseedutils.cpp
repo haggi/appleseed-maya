@@ -32,7 +32,7 @@
 #include "renderglobals.h"
 #include "appleseedrenderer.h"
 #include "utilities/pystring.h"
-#include "world.h"
+#include "mayatoworld.h"
 
 #include "renderer/api/color.h"
 #include "renderer/api/material.h"

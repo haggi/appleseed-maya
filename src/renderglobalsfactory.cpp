@@ -26,7 +26,7 @@
 // THE SOFTWARE.
 //
 
-#include "world.h"
+#include "mayatoworld.h"
 #include "renderglobalsfactory.h"
 #include "renderglobals.h"
 

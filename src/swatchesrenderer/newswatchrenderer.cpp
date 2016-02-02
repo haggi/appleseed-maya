@@ -31,7 +31,7 @@
 #include "swatchesevent.h"
 #include "utilities/logging.h"
 #include "utilities/tools.h"
-#include "world.h"
+#include "mayatoworld.h"
 
 NewSwatchRenderer::NewSwatchRenderer(MObject dependNode, MObject renderNode, int imageResolution)
   : MSwatchRenderBase(dependNode, renderNode, imageResolution)

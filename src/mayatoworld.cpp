@@ -32,7 +32,7 @@
 #include "appleseedrenderer.h"
 #include "mayascene.h"
 #include "renderglobalsfactory.h"
-#include "world.h"
+#include "mayatoworld.h"
 
 // Maya headers.
 #include <maya/MSceneMessage.h>

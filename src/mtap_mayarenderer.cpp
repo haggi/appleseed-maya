@@ -33,7 +33,7 @@
 #include "osl/oslutils.h"
 #include "shadingtools/material.h"
 #include "shadingtools/shadingutils.h"
-#include "world.h"
+#include "mayatoworld.h"
 #include "renderer/global/globallogger.h"
 #include "renderer/api/environment.h"
 #include "renderer/api/environmentedf.h"

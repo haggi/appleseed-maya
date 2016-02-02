@@ -29,7 +29,7 @@
 #include "renderprocess.h"
 #include <maya/MGlobal.h>
 #include <maya/MRenderView.h>
-#include "world.h"
+#include "mayatoworld.h"
 #include "renderglobals.h"
 #include "mayascene.h"
 #include "utilities/logging.h"
