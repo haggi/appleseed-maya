@@ -29,6 +29,8 @@
 #ifndef MAYA_RENDERER_H
 #define MAYA_RENDERER_H
 
+#if MAYA_API_VERSION >= 201600
+
 #include "renderer/api/scene.h"
 #include "renderer/api/project.h"
 #include "renderer/global/globallogger.h"
@@ -36,6 +38,7 @@
 #include "foundation/image/tile.h"
 
 #include <maya/MTypes.h>
+#include <maya/MPxRenderer.h>
 
 // Standard headers.
 #include <map>
@@ -44,16 +47,16 @@
 namespace asf = foundation;
 namespace asr = renderer;
 
-class mtap_MayaRenderer;
+class HypershadeRenderer;
 
-class TileCallback
+class HypershadeTileCallback
   : public asr::TileCallbackBase
 {
   public:
-    mtap_MayaRenderer *renderer;
-    explicit TileCallback(mtap_MayaRenderer *mrenderer) : renderer(mrenderer)
+    HypershadeRenderer *renderer;
+    explicit HypershadeTileCallback(HypershadeRenderer *mrenderer) : renderer(mrenderer)
     {}
-    virtual ~TileCallback()
+    virtual ~HypershadeTileCallback()
     {}
     virtual void release(){}
     void pre_render(const size_t x, const size_t y, const size_t width, const size_t height){}
@@ -61,16 +64,16 @@ class TileCallback
     virtual void post_render_tile(const asr::Frame* frame, const size_t tile_x, const size_t tile_y);
 };
 
-class TileCallbackFactory
+class HypershadeTileCallbackFactory
   : public asr::ITileCallbackFactory
 {
   public:
-    TileCallback *tileCallback;
-    explicit TileCallbackFactory(mtap_MayaRenderer *renderer)
+    HypershadeTileCallback *tileCallback;
+    explicit HypershadeTileCallbackFactory(HypershadeRenderer *renderer)
     {
-        tileCallback = new TileCallback(renderer);
+        tileCallback = new HypershadeTileCallback(renderer);
     }
-    virtual ~TileCallbackFactory()
+    virtual ~HypershadeTileCallbackFactory()
     {
         delete tileCallback;
     }
@@ -81,9 +84,6 @@ class TileCallbackFactory
     virtual void release(){ delete this; };
 };
 
-#if MAYA_API_VERSION >= 201600
-#include <maya/MPxRenderer.h>
-
 struct IdNameStruct
 {
     MUuid id;
@@ -91,15 +91,15 @@ struct IdNameStruct
     MObject mobject; // I need to know if I have a light or a mesh or a camera
 };
 
-class mtap_MayaRenderer : public MPxRenderer
+class HypershadeRenderer : public MPxRenderer
 {
   public:
     RefreshParams refreshParams;
     float* rb = 0;
     int tileSize = 32;
     int initialSize = 256;
-    mtap_MayaRenderer();
-    virtual ~mtap_MayaRenderer();
+    HypershadeRenderer();
+    virtual ~HypershadeRenderer();
     static void* creator();
     virtual MStatus startAsync(const JobParams& params);
     virtual MStatus stopAsync();
@@ -139,13 +139,14 @@ class mtap_MayaRenderer : public MPxRenderer
     boost::thread renderThread;
     asf::auto_release_ptr<asr::Project> project;
     std::auto_ptr<asr::MasterRenderer> mrenderer;
-    asf::auto_release_ptr<TileCallbackFactory> tileCallbackFac;
+    asf::auto_release_ptr<HypershadeTileCallbackFactory> tileCallbackFac;
     RenderController controller;
     MUuid lastShapeId; // save the last shape id, needed by translateTransform
     MString lastMaterialName = "default";
     std::vector<IdNameStruct> objectArray;
     bool asyncStarted = false;
 };
+
 #endif
 
 #endif

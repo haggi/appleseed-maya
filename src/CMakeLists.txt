@@ -156,8 +156,8 @@ set (sources
     mayatoappleseedglobals.h
     mayatoworld.cpp
     mayatoworld.h
-    mtap_mayarenderer.cpp
-    mtap_mayarenderer.h
+    hypershaderenderer.cpp
+    hypershaderenderer.h
     mtap_standinmeshnode.cpp
     mtap_standinmeshnode.h
     mtap_tilecallback.cpp

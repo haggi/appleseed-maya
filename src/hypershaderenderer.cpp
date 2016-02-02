@@ -26,6 +26,8 @@
 // THE SOFTWARE.
 //
 
+#if MAYA_API_VERSION >= 201600
+
 // appleseed-maya headers.
 #include "mtap_mayarenderer.h"
 #include "utilities/logging.h"
@@ -83,27 +85,25 @@
 // Standard headers.
 #include <vector>
 
-#if MAYA_API_VERSION >= 201600
-
 #define kNumChannels 4
 
 #define GETASM() project->get_scene()->assemblies().get_by_name("world")
 
-mtap_MayaRenderer::mtap_MayaRenderer()
+HypershadeRenderer::HypershadeRenderer()
 {
     initProject();
     width = height = initialSize;
     this->rb = (float*)malloc(width*height*kNumChannels*sizeof(float));
 }
 
-mtap_MayaRenderer::~mtap_MayaRenderer()
+HypershadeRenderer::~HypershadeRenderer()
 {
     mrenderer.reset();
     project.release();
     objectArray.clear();
 }
 
-void mtap_MayaRenderer::initEnv()
+void HypershadeRenderer::initEnv()
 {
     MString mayaRoot = getenv("MAYA_LOCATION");
     MString envMapAttrName = mayaRoot + "/presets/Assets/IBL/Exterior1_Color.exr";
@@ -163,10 +163,9 @@ void mtap_MayaRenderer::initEnv()
         asr::ParamArray()
         .insert("environment_edf", "sky_edf")
         .insert("environment_shader", "sky_shader")));
-
 }
 
-void mtap_MayaRenderer::initProject()
+void HypershadeRenderer::initProject()
 {
     project = asr::ProjectFactory::create("mayaRendererProject");
     project->add_default_configurations();
@@ -211,7 +210,7 @@ void mtap_MayaRenderer::initProject()
 
     project->get_frame()->get_parameters().insert("pixel_format", "float");
 
-    this->tileCallbackFac.reset(new TileCallbackFactory(this));
+    this->tileCallbackFac.reset(new HypershadeTileCallbackFactory(this));
 
     mrenderer.reset(
         new asr::MasterRenderer(
@@ -227,18 +226,18 @@ void mtap_MayaRenderer::initProject()
     }
 }
 
-bool mtap_MayaRenderer::isRunningAsync()
+bool HypershadeRenderer::isRunningAsync()
 {
     Logging::debug("isRunningAsync");
     return true;
 }
 
-void* mtap_MayaRenderer::creator()
+void* HypershadeRenderer::creator()
 {
-    return new mtap_MayaRenderer();
+    return new HypershadeRenderer();
 }
 
-void mtap_MayaRenderer::render()
+void HypershadeRenderer::render()
 {
     ProgressParams pp;
     pp.progress = 0.0;
@@ -255,21 +254,21 @@ void mtap_MayaRenderer::render()
     progress(pp);
 }
 
-static void startRenderThread(mtap_MayaRenderer* renderPtr)
+static void startRenderThread(HypershadeRenderer* renderPtr)
 {
     renderPtr->render();
 }
 
-MStatus mtap_MayaRenderer::startAsync(const JobParams& params)
+MStatus HypershadeRenderer::startAsync(const JobParams& params)
 {
     Logging::debug("startAsync:");
     Logging::debug(MString("\tJobDescr: ") + params.description + " max threads: " + params.maxThreads);
     Logging::debug(MString("started async"));
     asyncStarted = true;
     return MStatus::kSuccess;
-};
+}
 
-MStatus mtap_MayaRenderer::stopAsync()
+MStatus HypershadeRenderer::stopAsync()
 {
     Logging::debug("stopAsync");
     controller.status = asr::IRendererController::AbortRendering;
@@ -279,7 +278,7 @@ MStatus mtap_MayaRenderer::stopAsync()
     return MS::kSuccess;
 }
 
-MStatus mtap_MayaRenderer::beginSceneUpdate()
+MStatus HypershadeRenderer::beginSceneUpdate()
 {
     Logging::debug("beginSceneUpdate");
     controller.status = asr::IRendererController::AbortRendering;
@@ -290,9 +289,9 @@ MStatus mtap_MayaRenderer::beginSceneUpdate()
     project->get_frame()->clear_main_image();
 
     return MStatus::kSuccess;
-};
+}
 
-MStatus mtap_MayaRenderer::translateMesh(const MUuid& id, const MObject& node)
+MStatus HypershadeRenderer::translateMesh(const MUuid& id, const MObject& node)
 {
     MObject mobject = node;
     MFnDependencyNode depFn(mobject);
@@ -319,9 +318,9 @@ MStatus mtap_MayaRenderer::translateMesh(const MUuid& id, const MObject& node)
     objectArray.push_back(idName);
     lastShapeId = id;
     return MStatus::kSuccess;
-};
+}
 
-MStatus mtap_MayaRenderer::translateLightSource(const MUuid& id, const MObject& node)
+MStatus HypershadeRenderer::translateLightSource(const MUuid& id, const MObject& node)
 {
     MFnDependencyNode depFn(node);
     MString lightName = depFn.name();
@@ -385,8 +384,9 @@ MStatus mtap_MayaRenderer::translateLightSource(const MUuid& id, const MObject& 
         lastShapeId = id;
     }
     return MStatus::kSuccess;
-};
-MStatus mtap_MayaRenderer::translateCamera(const MUuid& id, const MObject& node)
+}
+
+MStatus HypershadeRenderer::translateCamera(const MUuid& id, const MObject& node)
 {
     Logging::debug("translateCamera");
 
@@ -426,9 +426,9 @@ MStatus mtap_MayaRenderer::translateCamera(const MUuid& id, const MObject& node)
     objectArray.push_back(idName);
     lastShapeId = id;
     return MStatus::kSuccess;
-};
+}
 
-MStatus mtap_MayaRenderer::translateEnvironment(const MUuid& id, EnvironmentType type)
+MStatus HypershadeRenderer::translateEnvironment(const MUuid& id, EnvironmentType type)
 {
     Logging::debug("translateEnvironment");
     IdNameStruct idName;
@@ -437,9 +437,9 @@ MStatus mtap_MayaRenderer::translateEnvironment(const MUuid& id, EnvironmentType
     idName.mobject = MObject::kNullObj;
     objectArray.push_back(idName);
     return MStatus::kSuccess;
-};
+}
 
-MStatus mtap_MayaRenderer::translateTransform(const MUuid& id, const MUuid& childId, const MMatrix& matrix)
+MStatus HypershadeRenderer::translateTransform(const MUuid& id, const MUuid& childId, const MMatrix& matrix)
 {
     Logging::debug(MString("translateTransform id: ") + id + " childId " + childId);
     MObject shapeNode;
@@ -486,6 +486,7 @@ MStatus mtap_MayaRenderer::translateTransform(const MUuid& id, const MUuid& chil
         asr::Camera *cam = project->get_scene()->get_camera();
         cam->transform_sequence().set_transform(0, asf::Transformd::from_local_to_parent(appleMatrix));
     }
+
     if (idNameObj.mobject.hasFn(MFn::kAreaLight))
     {
         MTransformationMatrix tm;
@@ -518,7 +519,6 @@ MStatus mtap_MayaRenderer::translateTransform(const MUuid& id, const MUuid& chil
             ));
     }
 
-
     IdNameStruct idName;
     idName.id = id;
     idName.name = elementInstName;
@@ -526,9 +526,9 @@ MStatus mtap_MayaRenderer::translateTransform(const MUuid& id, const MUuid& chil
     objectArray.push_back(idName);
 
     return MStatus::kSuccess;
-};
+}
 
-MStatus mtap_MayaRenderer::translateShader(const MUuid& id, const MObject& node)
+MStatus HypershadeRenderer::translateShader(const MUuid& id, const MObject& node)
 {
     MObject sgNode;
     // at the moment we only support surface shaders connected to a shadingEngine
@@ -575,24 +575,27 @@ MStatus mtap_MayaRenderer::translateShader(const MUuid& id, const MObject& node)
     objectArray.push_back(idName);
     lastMaterialName = shadingGroupName;
     return MStatus::kSuccess;
-};
+}
 
-MStatus mtap_MayaRenderer::setProperty(const MUuid& id, const MString& name, bool value)
+MStatus HypershadeRenderer::setProperty(const MUuid& id, const MString& name, bool value)
 {
     Logging::debug(MString("setProperty bool: ") + name + " " + value);
     return MStatus::kSuccess;
-};
-MStatus mtap_MayaRenderer::setProperty(const MUuid& id, const MString& name, int value)
+}
+
+MStatus HypershadeRenderer::setProperty(const MUuid& id, const MString& name, int value)
 {
     Logging::debug(MString("setProperty int: ") + name + " " + value);
     return MStatus::kSuccess;
-};
-MStatus mtap_MayaRenderer::setProperty(const MUuid& id, const MString& name, float value)
+}
+
+MStatus HypershadeRenderer::setProperty(const MUuid& id, const MString& name, float value)
 {
     Logging::debug(MString("setProperty float: ") + name + " " + value);
     return MStatus::kSuccess;
-};
-MStatus mtap_MayaRenderer::setProperty(const MUuid& id, const MString& name, const MString& value)
+}
+
+MStatus HypershadeRenderer::setProperty(const MUuid& id, const MString& name, const MString& value)
 {
     Logging::debug(MString("setProperty string: ") + name + " " + value);
 
@@ -646,9 +649,9 @@ MStatus mtap_MayaRenderer::setProperty(const MUuid& id, const MString& name, con
     }
 
     return MStatus::kSuccess;
-};
+}
 
-MStatus mtap_MayaRenderer::setShader(const MUuid& id, const MUuid& shaderId)
+MStatus HypershadeRenderer::setShader(const MUuid& id, const MUuid& shaderId)
 {
     Logging::debug("setShader");
     IdNameStruct objElement, shaderElement;
@@ -685,10 +688,10 @@ MStatus mtap_MayaRenderer::setShader(const MUuid& id, const MUuid& shaderId)
     else
         Logging::debug(MString("unable to assign shader "));
 
-
     return MStatus::kSuccess;
-};
-MStatus mtap_MayaRenderer::setResolution(unsigned int w, unsigned int h)
+}
+
+MStatus HypershadeRenderer::setResolution(unsigned int w, unsigned int h)
 {
     Logging::debug(MString("setResolution to") + w + " " + h);
     this->width = w;
@@ -738,8 +741,9 @@ MStatus mtap_MayaRenderer::setResolution(unsigned int w, unsigned int h)
     project->get_frame()->get_parameters().insert("pixel_format", "float");
 
     return MStatus::kSuccess;
-};
-MStatus mtap_MayaRenderer::endSceneUpdate()
+}
+
+MStatus HypershadeRenderer::endSceneUpdate()
 {
     Logging::debug("endSceneUpdate");
     controller.status = asr::IRendererController::ContinueRendering;
@@ -758,8 +762,9 @@ MStatus mtap_MayaRenderer::endSceneUpdate()
         progress(progressParams);
     }
     return MStatus::kSuccess;
-};
-MStatus mtap_MayaRenderer::destroyScene()
+}
+
+MStatus HypershadeRenderer::destroyScene()
 {
     Logging::debug("destroyScene");
     controller.status = asr::IRendererController::AbortRendering;
@@ -770,15 +775,15 @@ MStatus mtap_MayaRenderer::destroyScene()
     progressParams.progress = -1.0f;
     progress(progressParams);
     return MStatus::kSuccess;
-};
+}
 
-bool mtap_MayaRenderer::isSafeToUnload()
+bool HypershadeRenderer::isSafeToUnload()
 {
     Logging::debug("isSafeToUnload");
     return true;
-};
+}
 
-void mtap_MayaRenderer::copyTileToBuffer(asf::Tile& tile, int tile_x, int tile_y)
+void HypershadeRenderer::copyTileToBuffer(asf::Tile& tile, int tile_x, int tile_y)
 {
     size_t tw = tile.get_width();
     size_t th = tile.get_height();
@@ -809,13 +814,14 @@ void mtap_MayaRenderer::copyTileToBuffer(asf::Tile& tile, int tile_x, int tile_y
     refresh(refreshParams);
 }
 
-void mtap_MayaRenderer::copyFrameToBuffer(float *frame, int w, int h)
+void HypershadeRenderer::copyFrameToBuffer(float *frame, int w, int h)
 {
     if ((w != width) || (h != height))
     {
         Logging::error("wh ungleich.");
         return;
     }
+
     int numBytes = width * height * kNumChannels * sizeof(float);
     memcpy(rb, frame, numBytes);
 
@@ -829,19 +835,18 @@ void mtap_MayaRenderer::copyFrameToBuffer(float *frame, int w, int h)
     refreshParams.height = height;
     refreshParams.data = rb;
     refresh(refreshParams);
-
 }
 
-void TileCallback::post_render_tile(const asr::Frame* frame, const size_t tile_x, const size_t tile_y)
+void HypershadeTileCallback::post_render_tile(const asr::Frame* frame, const size_t tile_x, const size_t tile_y)
 {
-    Logging::debug("TileCallback::post_render_tile");
+    Logging::debug("HypershadeTileCallback::post_render_tile");
     asf::Tile& tile = frame->image().tile(tile_x, tile_y);
     this->renderer->copyTileToBuffer(tile, tile_x, tile_y);
 }
 
-void TileCallback::post_render(const asr::Frame* frame)
+void HypershadeTileCallback::post_render(const asr::Frame* frame)
 {
-    Logging::debug("TileCallback::post_render frame");
+    Logging::debug("HypershadeTileCallback::post_render frame");
     asf::Image img = frame->image();
     const asf::CanvasProperties& frame_props = img.properties();
     int tileSize = frame_props.m_tile_height;
@@ -849,7 +854,7 @@ void TileCallback::post_render(const asr::Frame* frame)
     int width = frame_props.m_canvas_width;
     int height = frame_props.m_canvas_height;
 
-    Logging::debug(MString("TileCallback:: wh ") + width + " " + height + " tileSize " + tileSize);
+    Logging::debug(MString("HypershadeTileCallback:: wh ") + width + " " + height + " tileSize " + tileSize);
 
     boost::shared_ptr<float> buffer = boost::shared_ptr<float>(new float[numPixels * kNumChannels]);
     float *rb = buffer.get();
