@@ -26,10 +26,21 @@
 // THE SOFTWARE.
 //
 
-#include "mtap_renderercontroller.h"
-#include "utilities/logging.h"
+// Interface header.
+#include "renderercontroller.h"
 
-void mtap_IRendererController::on_rendering_begin()
+RendererController::RendererController()
+  : m_entityUpdateProc(0)
+  , m_status(renderer::IRendererController::ContinueRendering)
+{
+}
+
+void RendererController::release()
+{
+    delete this;
+}
+
+void RendererController::on_rendering_begin()
 {
     if (m_entityUpdateProc != 0)
     {
@@ -37,23 +48,33 @@ void mtap_IRendererController::on_rendering_begin()
     }
 }
 
-void mtap_IRendererController::on_rendering_success()
+void RendererController::on_rendering_success()
 {
 }
 
-void mtap_IRendererController::on_rendering_abort()
+void RendererController::on_rendering_abort()
 {
 }
 
-void mtap_IRendererController::on_frame_begin()
+void RendererController::on_frame_begin()
 {
     m_status = IRendererController::ContinueRendering;
 }
 
-void mtap_IRendererController::on_frame_end()
+void RendererController::on_frame_end()
 {
 }
 
-void mtap_IRendererController::on_progress()
+void RendererController::on_progress()
 {
+}
+
+RendererController::Status RendererController::get_status() const
+{
+    return m_status;
+}
+
+void RendererController::set_status(const Status new_status)
+{
+    m_status = new_status;
 }

@@ -158,7 +158,7 @@ void AppleseedRenderer::render()
 
     if (!sceneBuilt)
     {
-        this->tileCallbackFac.reset(new mtap_ITileCallbackFactory());
+        this->tileCallbackFac.reset(new mtap_TileCallbackFactory());
 
         if (getWorldPtr()->getRenderType() == MayaToWorld::IPRRENDER)
         {

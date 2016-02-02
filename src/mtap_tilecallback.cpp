@@ -26,17 +26,24 @@
 // THE SOFTWARE.
 //
 
+// Interface header.
+#include "mtap_tilecallback.h"
+
+#include "threads/queue.h"
+#include "utilities/logging.h"
+#include "threads/renderqueueworker.h"
+
 #include "renderer/api/frame.h"
 #include "foundation/image/color.h"
 #include "foundation/image/image.h"
 #include "foundation/image/tile.h"
 
-#include "mtap_tilecallback.h"
-#include "threads/queue.h"
-#include "utilities/logging.h"
-#include "threads/renderqueueworker.h"
+void mtap_TileCallback::release()
+{
+    delete this;
+}
 
-void mtap_ITileCallback::pre_render(
+void mtap_TileCallback::pre_render(
     const size_t x,
     const size_t y,
     const size_t width,
@@ -44,7 +51,7 @@ void mtap_ITileCallback::pre_render(
 {
 }
 
-void mtap_ITileCallback::copyTileToImage(RV_PIXEL* pixels, asf::Tile& tile, int tile_x, int tile_y, const asr::Frame* frame)
+void mtap_TileCallback::copyTileToImage(RV_PIXEL* pixels, asf::Tile& tile, int tile_x, int tile_y, const asr::Frame* frame)
 {
     const asf::CanvasProperties& frame_props = frame->image().properties();
     size_t tw =  tile.get_width();
@@ -52,7 +59,7 @@ void mtap_ITileCallback::copyTileToImage(RV_PIXEL* pixels, asf::Tile& tile, int 
     size_t ypos = frame_props.m_canvas_height - tile_y * frame_props.m_tile_height - 1;
     size_t pixelIdYStart = frame_props.m_canvas_width * ypos;
     size_t max = frame_props.m_canvas_width * frame_props.m_canvas_height;
-    int dummy = 0;
+
     for (size_t ty = 0; ty < th; ty++)
     {
         for (size_t tx = 0; tx < tw; tx++)
@@ -66,16 +73,13 @@ void mtap_ITileCallback::copyTileToImage(RV_PIXEL* pixels, asf::Tile& tile, int 
                 pixels[pixelId].g = (float)source[1];
                 pixels[pixelId].b = (float)source[2];
                 pixels[pixelId].a = (float)source[3];
-            }else
-                dummy = 0;
+            }
         }
     }
 }
 
-// this will be called for interactive renderings if a frame is complete
-void mtap_ITileCallback::post_render(const asr::Frame* frame)
+void mtap_TileCallback::post_render(const asr::Frame* frame)
 {
-    Logging::debug(MString("Post render frame."));
     asf::Image img = frame->image();
     const asf::CanvasProperties& frame_props = img.properties();
     size_t numPixels = frame_props.m_canvas_width * frame_props.m_canvas_height;
@@ -136,10 +140,10 @@ void mtap_ITileCallback::post_render(const asr::Frame* frame)
     theRenderEventQueue()->push(e);
 }
 
-void mtap_ITileCallback::post_render_tile(
-        const asr::Frame* frame,
-        const size_t tile_x,
-        const size_t tile_y)
+void mtap_TileCallback::post_render_tile(
+    const asr::Frame* frame,
+    const size_t tile_x,
+    const size_t tile_y)
 {
     asf::Image img = frame->image();
     const asf::CanvasProperties& frame_props = img.properties();
@@ -206,7 +210,12 @@ void mtap_ITileCallback::post_render_tile(
     theRenderEventQueue()->push(e);
 }
 
-asr::ITileCallback* mtap_ITileCallbackFactory::create()
+asr::ITileCallback* mtap_TileCallbackFactory::create()
 {
-    return new mtap_ITileCallback();
+    return new mtap_TileCallback();
+}
+
+void mtap_TileCallbackFactory::release()
+{
+    delete this;
 }

@@ -29,19 +29,17 @@
 #ifndef MTAP_RENDERER_CONTROLLER_H
 #define MTAP_RENDERER_CONTROLLER_H
 
+// appleseed.renderer headers.
 #include "renderer/api/rendering.h"
 
-class mtap_IRendererController : public renderer::IRendererController
+class RendererController
+  : public renderer::IRendererController
 {
   public:
-      mtap_IRendererController()
-      {
-          m_entityUpdateProc = 0;
-          m_status =  renderer::IRendererController::ContinueRendering;
-      }
+    // Constructor.
+    RendererController();
 
-    // Destructor.
-    ~mtap_IRendererController() {}
+    void release();
 
     // This method is called before rendering begins.
     void on_rendering_begin();
@@ -61,20 +59,10 @@ class mtap_IRendererController : public renderer::IRendererController
     // This method is called continuously during rendering.
     void on_progress();
 
-    void release(){}
+    Status get_status() const;
+    void set_status(const Status new_status);
 
-    Status get_status() const
-    {
-        return m_status;
-    }
-
-    void set_status(const Status new_status)
-    {
-        m_status = new_status;
-    }
-
-private:
-
+  private:
     volatile Status m_status;
     void (*m_entityUpdateProc)();
 };

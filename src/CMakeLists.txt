@@ -159,8 +159,6 @@ set (sources
     mayatoworld.h
     mtap_mayarenderer.cpp
     mtap_mayarenderer.h
-    mtap_renderercontroller.cpp
-    mtap_renderercontroller.h
     mtap_renderglobals.cpp
     mtap_standinmeshnode.cpp
     mtap_standinmeshnode.h
@@ -169,6 +167,8 @@ set (sources
     pluginmain.cpp
     proxymesh.cpp
     proxymesh.h
+    renderercontroller.cpp
+    renderercontroller.h
     renderglobals.cpp
     renderglobals.h
     renderglobalsfactory.cpp

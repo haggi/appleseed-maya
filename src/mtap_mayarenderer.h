@@ -44,31 +44,10 @@
 namespace asf = foundation;
 namespace asr = renderer;
 
-class RenderController : public asr::IRendererController
-{
-  public:
-    RenderController()
-    {
-        status = asr::IRendererController::ContinueRendering;
-    };
-    ~RenderController() {}
-    void on_rendering_begin(){}
-    void on_rendering_success(){}
-    void on_rendering_abort(){}
-    void on_frame_begin(){}
-    void on_frame_end(){}
-    void on_progress(){}
-    void release(){}
-    Status get_status() const
-    {
-        return this->status;
-    };
-    volatile Status status;
-};
-
 class mtap_MayaRenderer;
 
-class TileCallback : public asr::TileCallbackBase
+class TileCallback
+  : public asr::TileCallbackBase
 {
   public:
     mtap_MayaRenderer *renderer;
@@ -82,7 +61,8 @@ class TileCallback : public asr::TileCallbackBase
     virtual void post_render_tile(const asr::Frame* frame, const size_t tile_x, const size_t tile_y);
 };
 
-class TileCallbackFactory : public asr::ITileCallbackFactory
+class TileCallbackFactory
+  : public asr::ITileCallbackFactory
 {
   public:
     TileCallback *tileCallback;
