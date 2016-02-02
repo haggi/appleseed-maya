@@ -39,7 +39,7 @@
 #include <maya/MTimerMessage.h>
 #include <maya/MDistance.h>
 #include "utilities/tools.h"
-#include "appleseed.h"
+#include "appleseedrenderer.h"
 
 class MayaScene;
 class RenderGlobals;

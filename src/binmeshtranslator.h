@@ -29,35 +29,39 @@
 #ifndef TOOLS_BINMESH_H
 #define TOOLS_BINMESH_H
 
+// appleseed.foundation headers.
+#include "foundation/platform/compiler.h"
+
+// Maya headers.
 #include <maya/MPxFileTranslator.h>
-#include <maya/MDagPath.h>
-#include <maya/MObjectArray.h>
+#include <maya/MString.h>
 
-class polyWriter;
-class MDagPath;
-class MFnDagNode;
+// Forward declarations.
+class MFileObject;
+class MStatus;
 
-class BinMeshTranslator : public MPxFileTranslator
+class BinMeshTranslator
+  : public MPxFileTranslator
 {
   public:
     BinMeshTranslator();
 
     static void* creator();
 
-    virtual MStatus writer(
-        const MFileObject&                  file,
-        const MString&                      optionsString,
-        MPxFileTranslator::FileAccessMode   mode);
-
     virtual MStatus reader(
-        const MFileObject&                  file,
-        const MString&                      optionsString,
-        FileAccessMode                      mode);
+        const MFileObject&  file,
+        const MString&      optionsString,
+        FileAccessMode      mode) APPLESEED_OVERRIDE;
 
-    virtual bool haveWriteMethod() const;
-    virtual bool haveReadMethod() const;
-    virtual bool canBeOpened() const;
-    virtual MString defaultExtension() const;
+    virtual MStatus writer(
+        const MFileObject&  file,
+        const MString&      optionsString,
+        FileAccessMode      mode) APPLESEED_OVERRIDE;
+
+    virtual bool haveReadMethod() const  APPLESEED_OVERRIDE;
+    virtual bool haveWriteMethod() const  APPLESEED_OVERRIDE;
+    virtual bool canBeOpened() const APPLESEED_OVERRIDE;
+    virtual MString defaultExtension() const APPLESEED_OVERRIDE;
 
   private:
     MStatus exportObjects(const MString& mode);

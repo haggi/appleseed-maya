@@ -135,21 +135,11 @@ source_group ("utilities" FILES
 )
 
 set (sources
-    appleseed.cpp
-    appleseed.h
-    appleseedcamera.cpp
-    appleseedconfig.cpp
     appleseedcreateoslshader.cpp
-    appleseedenvironment.cpp
-    appleseedframeoutput.cpp
-    appleseedgeo.cpp
-    appleseedinteractiveupdate.cpp
-    appleseedlights.cpp
-    appleseedmaterial.cpp
-    appleseedmaterial.h
     appleseedmeshwalker.cpp
     appleseedmeshwalker.h
-    appleseedupdateelements.cpp
+    appleseedrenderer.cpp
+    appleseedrenderer.h
     appleseedutils.cpp
     appleseedutils.h
     binmeshreadercmd.cpp
@@ -162,8 +152,6 @@ set (sources
     mayaobject.h
     mayascene.cpp
     mayascene.h
-    mayasceneparsing.cpp
-    mayasceneutils.cpp
     mayatoappleseed.cpp
     mayatoappleseed.h
     mtap_mayaobject.cpp

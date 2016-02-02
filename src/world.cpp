@@ -29,7 +29,7 @@
 // appleseed-maya headers.
 #include "threads/renderqueueworker.h"
 #include "utilities/logging.h"
-#include "appleseed.h"
+#include "appleseedrenderer.h"
 #include "mayascene.h"
 #include "renderglobalsfactory.h"
 #include "world.h"

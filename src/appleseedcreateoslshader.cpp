@@ -29,7 +29,7 @@
 #include "osl/oslutils.h"
 #include "utilities/logging.h"
 #include "world.h"
-#include "appleseed.h"
+#include "appleseedrenderer.h"
 #include "renderer/modeling/shadergroup/shadergroup.h"
 #include "OpenImageIO/typedesc.h"
 #include "OSL/oslexec.h"

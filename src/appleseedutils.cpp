@@ -30,7 +30,7 @@
 #include "utilities/logging.h"
 #include "utilities/attrtools.h"
 #include "renderglobals.h"
-#include "appleseed.h"
+#include "appleseedrenderer.h"
 #include "utilities/pystring.h"
 #include "world.h"
 
@@ -134,11 +134,9 @@ asr::Scene *getSceneFromProject(asr::Project *project)
     return project->get_scene();
 }
 
-
 // we first define an assembly which contains the world assembly. This "uberMaster" contains the global transformation.
 void defineMasterAssembly(asr::Project *project)
 {
-
     MMatrix conversionMatrix;
     conversionMatrix.setToIdentity();
     MayaToWorld *world = getWorldPtr();
@@ -240,28 +238,13 @@ asr::AssemblyInstance *getExistingObjectAssemblyInstance(MayaObject *obj)
     return ass->assembly_instances().get_by_name(assemblyInstanceName.asChar());
 }
 
-
-//
 // colors are defined in the scene scope, makes handling easier
-//
 void mayaColorToFloat(const MColor col, float *floatCol, float *alpha)
 {
     floatCol[0] = col.r;
     floatCol[1] = col.g;
     floatCol[2] = col.b;
     *alpha = col.a;
-}
-
-void removeColorEntityIfItExists(const MString colorName)
-{
-    boost::shared_ptr<AppleseedRenderer> appleRenderer = boost::static_pointer_cast<AppleseedRenderer>(getWorldPtr()->worldRendererPtr);
-    assert(appleRenderer != 0);
-    asr::Scene *scene = getSceneFromProject(appleRenderer->getProjectPtr());
-    asr::ColorEntity *entity = scene->colors().get_by_name(colorName.asChar());
-    if (entity != 0)
-    {
-        scene->colors().remove(entity);
-    }
 }
 
 void defineColor(asr::Project *project, const char *name, MColor color, float intensity, MString colorSpace)
@@ -430,6 +413,7 @@ void fillMatrices(boost::shared_ptr<MayaObject> obj, asr::TransformSequence& tra
             asf::Transformd::from_local_to_parent(appMatrix));
     }
 }
+
 void fillTransformMatrices(boost::shared_ptr<MayaObject> obj, asr::Light *light)
 {
     // in ipr mode we have to update the matrix manually
@@ -450,26 +434,6 @@ void MMatrixToAMatrix(MMatrix& mayaMatrix, asf::Matrix4d& appleMatrix)
     for (int i = 0; i < 4; i++)
         for (int k = 0; k < 4; k++)
             appleMatrix[i * 4 + k] = rowMatrix[i][k];
-}
-
-asf::Matrix4d MMatrixToAMatrix(MMatrix& mayaMatrix)
-{
-    asf::Matrix4d appleMatrix;
-    MMatrix rowMatrix = mayaMatrix.transpose();
-    for (int i = 0; i < 4; i++)
-        for (int k = 0; k < 4; k++)
-            appleMatrix[i * 4 + k] = rowMatrix[i][k];
-    return appleMatrix;
-}
-
-asf::Matrix4d MMatrixToAMatrix(MMatrix mayaMatrix)
-{
-    asf::Matrix4d appleMatrix;
-    MMatrix rowMatrix = mayaMatrix.transpose();
-    for (int i = 0; i < 4; i++)
-        for (int k = 0; k < 4; k++)
-            appleMatrix[i * 4 + k] = rowMatrix[i][k];
-    return appleMatrix;
 }
 
 void addVisibilityFlags(MObject& obj, asr::ParamArray& paramArray)

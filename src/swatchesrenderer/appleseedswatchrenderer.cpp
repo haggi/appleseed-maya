@@ -63,7 +63,6 @@
 #include "foundation/utility/searchpaths.h"
 
 // appleseed-maya headers.
-#include "../appleseedmaterial.h"
 #include "osl/oslutils.h"
 #include "shadingtools/material.h"
 #include "shadingtools/shadingutils.h"
@@ -212,6 +211,93 @@ void AppleseedSwatchRenderer::mainLoop()
         }
     }
     loopDone = true;
+}
+
+namespace
+{
+    void updateMaterial(MObject materialNode, const asr::Assembly *assembly)
+    {
+        OSLUtilClass OSLShaderClass;
+        MObject surfaceShaderNode = getConnectedInNode(materialNode, "surfaceShader");
+        MString surfaceShaderName = getObjectName(surfaceShaderNode);
+        MString shadingGroupName = getObjectName(materialNode);
+        ShadingNetwork network(surfaceShaderNode);
+        size_t numNodes = network.shaderList.size();
+
+        MString assName = "swatchRenderer_world";
+        if (assName == assembly->get_name())
+        {
+            shadingGroupName = "previewSG";
+        }
+
+        MString shaderGroupName = shadingGroupName + "_OSLShadingGroup";
+
+        asr::ShaderGroup *shaderGroup = assembly->shader_groups().get_by_name(shaderGroupName.asChar());
+
+        if (shaderGroup != 0)
+        {
+            shaderGroup->clear();
+        }
+        else
+        {
+            asf::auto_release_ptr<asr::ShaderGroup> oslShadingGroup = asr::ShaderGroupFactory().create(shaderGroupName.asChar());
+            assembly->shader_groups().insert(oslShadingGroup);
+            shaderGroup = assembly->shader_groups().get_by_name(shaderGroupName.asChar());
+        }
+
+        OSLShaderClass.group = (OSL::ShaderGroup *)shaderGroup;
+
+        MFnDependencyNode shadingGroupNode(materialNode);
+        MPlug shaderPlug = shadingGroupNode.findPlug("surfaceShader");
+        OSLShaderClass.createOSLProjectionNodes(shaderPlug);
+
+        for (int shadingNodeId = 0; shadingNodeId < numNodes; shadingNodeId++)
+        {
+            ShadingNode snode = network.shaderList[shadingNodeId];
+            Logging::debug(MString("ShadingNode Id: ") + shadingNodeId + " ShadingNode name: " + snode.fullName);
+            if (shadingNodeId == (numNodes - 1))
+                Logging::debug(MString("LastNode Surface Shader: ") + snode.fullName);
+            OSLShaderClass.createOSLShadingNode(network.shaderList[shadingNodeId]);
+        }
+
+        OSLShaderClass.cleanupShadingNodeList();
+        OSLShaderClass.createAndConnectShaderNodes();
+
+        if (numNodes > 0)
+        {
+            ShadingNode snode = network.shaderList[numNodes - 1];
+            MString layer = (snode.fullName + "_interface");
+            Logging::debug(MString("Adding interface shader: ") + layer);
+            asr::ShaderGroup *sg = (asr::ShaderGroup *)OSLShaderClass.group;
+            sg->add_shader("surface", "surfaceShaderInterface", layer.asChar(), asr::ParamArray());
+            const char *srcLayer = snode.fullName.asChar();
+            const char *srcAttr = "outColor";
+            const char *dstLayer = layer.asChar();
+            const char *dstAttr = "inColor";
+            Logging::debug(MString("Connecting interface shader: ") + srcLayer + "." + srcAttr + " -> " + dstLayer + "." + dstAttr);
+            sg->add_connection(srcLayer, srcAttr, dstLayer, dstAttr);
+        }
+
+        MString physicalSurfaceName = shadingGroupName + "_physical_surface_shader";
+
+        // add shaders only if they do not yet exist
+        if (assembly->surface_shaders().get_by_name(physicalSurfaceName.asChar()) == 0)
+        {
+            assembly->surface_shaders().insert(
+                asr::PhysicalSurfaceShaderFactory().create(
+                physicalSurfaceName.asChar(),
+                asr::ParamArray()));
+        }
+        if (assembly->materials().get_by_name(shadingGroupName.asChar()) == 0)
+        {
+            assembly->materials().insert(
+                asr::OSLMaterialFactory().create(
+                shadingGroupName.asChar(),
+                asr::ParamArray()
+                .insert("surface_shader", physicalSurfaceName.asChar())
+                .insert("osl_surface", shaderGroupName.asChar())));
+        }
+    }
 }
 
 void AppleseedSwatchRenderer::defineMaterial(MObject shadingNode)
