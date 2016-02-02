@@ -37,8 +37,11 @@
 
 #include <maya/MFnDependencyNode.h>
 
-#include "mtap_mayaobject.h"
 #include <maya/MMatrix.h>
+
+// Forward declarations.
+class MayaObject;
+class MColor;
 
 namespace asr = renderer;
 namespace asf = foundation;
@@ -47,7 +50,7 @@ void defineDefaultMaterial(asr::Project *project);
 MString getAssemblyName(MayaObject *obj);
 MString getAssemblyInstanceName(MayaObject *obj);
 MString getObjectInstanceName(MayaObject *obj);
-inline MString getObjectName(MayaObject *obj){ return obj->dagPath.fullPathName(); }
+MString getObjectName(MayaObject* obj);
 void defineScene(asr::Project *project);
 asr::Scene *getSceneFromProject(asr::Project *project);
 MayaObject *getAssemblyMayaObject(MayaObject *obj);

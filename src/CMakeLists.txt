@@ -153,22 +153,19 @@ set (sources
     mayascene.h
     mayatoappleseed.cpp
     mayatoappleseed.h
+    mayatoappleseedglobals.cpp
+    mayatoappleseedglobals.h
     mayatoworld.cpp
     mayatoworld.h
-    mtap_mayaobject.cpp
-    mtap_mayaobject.h
     mtap_mayarenderer.cpp
     mtap_mayarenderer.h
     mtap_renderercontroller.cpp
     mtap_renderercontroller.h
     mtap_renderglobals.cpp
-    mtap_renderglobalsnode.cpp
-    mtap_renderglobalsnode.h
     mtap_standinmeshnode.cpp
     mtap_standinmeshnode.h
     mtap_tilecallback.cpp
     mtap_tilecallback.h
-    mtap_world.cpp
     pluginmain.cpp
     proxymesh.cpp
     proxymesh.h

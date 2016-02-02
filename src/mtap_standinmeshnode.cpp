@@ -69,7 +69,6 @@ MStatus returnStatus;
 
 MTypeId mtap_standinMeshNode::id(0x0011CF42);
 
-
 MObject mtap_standinMeshNode::time;
 MObject mtap_standinMeshNode::outputMesh;
 MObject mtap_standinMeshNode::binMeshFile;

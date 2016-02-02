@@ -41,6 +41,27 @@
 #include "mayatoworld.h"
 #include "renderglobals.h"
 
+ObjectAttributes::ObjectAttributes()
+{
+    needsOwnAssembly = false;
+    objectMatrix.setToIdentity();
+    assemblyObject = 0;
+}
+
+ObjectAttributes::ObjectAttributes(boost::shared_ptr<ObjectAttributes> other)
+{
+    this->hasInstancerConnection = false;
+    objectMatrix.setToIdentity();
+    assemblyObject = 0;
+
+    if (other)
+    {
+        hasInstancerConnection = other->hasInstancerConnection;
+        objectMatrix = other->objectMatrix;
+        assemblyObject = other->assemblyObject;
+    }
+}
+
 static std::vector<int> lightIdentifier; // plugids for detecting new lighttypes
 static std::vector<int> objectIdentifier; // plugids for detecting new objTypes
 
@@ -107,11 +128,8 @@ bool MayaObject::isGeo()
 
 bool MayaObject::isTransform()
 {
-    if (mobject.hasFn(MFn::kTransform))
-        return true;
-    return false;
+    return mobject.hasFn(MFn::kTransform);
 }
-
 
 void MayaObject::getShadingGroups()
 {
@@ -129,7 +147,7 @@ void MayaObject::getShadingGroups()
 }
 
 // check if the node or any of its parents has a animated visibility
-bool  MayaObject::isVisiblityAnimated()
+bool MayaObject::isVisiblityAnimated()
 {
     MStatus stat = MStatus::kSuccess;
     bool visibility = true;
@@ -149,7 +167,7 @@ bool  MayaObject::isVisiblityAnimated()
     return false;
 }
 
-bool  MayaObject::isObjVisible()
+bool MayaObject::isObjVisible()
 {
     MFnDagNode dagNode(mobject);
     if (!IsVisible(dagNode) || IsTemplated(dagNode) || !IsInRenderLayer(dagPath) || !IsPathVisible(dagPath) || !IsLayerVisible(dagPath))
@@ -619,15 +637,11 @@ void MayaObject::getMeshData(MPointArray& points, MFloatVectorArray& normals, MF
 //  called and this method is used.
 boost::shared_ptr<ObjectAttributes> MayaObject::getObjectAttributes(boost::shared_ptr<ObjectAttributes> parentAttributes)
 {
-    boost::shared_ptr<mtap_ObjectAttributes> myAttributes = boost::shared_ptr<mtap_ObjectAttributes>(new mtap_ObjectAttributes(parentAttributes));
+    boost::shared_ptr<ObjectAttributes> myAttributes(new ObjectAttributes(parentAttributes));
 
     if (this->hasInstancerConnection)
     {
         myAttributes->hasInstancerConnection = true;
-    }
-
-    if (this->isGeo())
-    {
     }
 
     if (this->isTransform())
@@ -643,7 +657,8 @@ boost::shared_ptr<ObjectAttributes> MayaObject::getObjectAttributes(boost::share
         myAttributes->objectMatrix.setToIdentity();
     }
 
-    this->attributes = myAttributes;
+    attributes = myAttributes;
+
     return myAttributes;
 }
 

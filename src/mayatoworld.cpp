@@ -27,6 +27,7 @@
 //
 
 // appleseed-maya headers.
+#include "swatchesrenderer/appleseedswatchrenderer.h"
 #include "threads/renderqueueworker.h"
 #include "utilities/logging.h"
 #include "appleseedrenderer.h"
@@ -241,4 +242,66 @@ void MayaToWorld::defineGlobalConversionMatrix()
     }
 
     globalConversionMatrix *= scaleMatrix;
+}
+
+void MayaToWorld::cleanUp()
+{
+    AppleseedSwatchRenderer * appleSwRndr = (AppleseedSwatchRenderer *)this->getObjPtr("appleseedSwatchesRenderer");
+    if (appleSwRndr)
+        delete appleSwRndr;
+}
+
+void MayaToWorld::cleanUpAfterRender()
+{
+    // After a normal rendering we do not need the Maya scene data any more. Remove it to save memory.
+    getWorldPtr()->worldScenePtr.reset();
+}
+
+void MayaToWorld::initialize()
+{
+    std::string oslShaderPath = (getRendererHome() + "shaders").asChar();
+    Logging::debug(MString("setting osl shader search path to: ") + oslShaderPath.c_str());
+    MString cmd = MString("import renderer.osltools as osl;osl.getOSODirs();");
+    MStringArray oslDirs;
+    MGlobal::executePythonCommand(cmd, oslDirs, false, false);
+    MGlobal::displayInfo(MString("found ") + oslDirs.length() + " osl dirs.");
+    for (uint i = 0; i < oslDirs.length(); i++)
+    {
+        this->shaderSearchPath.append(oslDirs[i].asChar());
+    }
+    AppleseedSwatchRenderer *appleSwRndr = new AppleseedSwatchRenderer();
+
+    this->addObjectPtr("appleseedSwatchesRenderer", appleSwRndr);
+    boost::thread swatchRenderThread(AppleseedSwatchRenderer::startAppleseedSwatchRender, appleSwRndr);
+    swatchRenderThread.detach();
+}
+
+void MayaToWorld::afterOpenScene()
+{
+    Logging::debug("MayaToWorld::afterOpenScene");
+}
+
+void MayaToWorld::afterNewScene()
+{
+    Logging::debug("MayaToWorld::afterNewScene");
+}
+
+void MayaToWorld::callAfterOpenCallback(void *)
+{
+    getWorldPtr()->afterOpenScene();
+}
+
+void MayaToWorld::callAfterNewCallback(void *)
+{
+    getWorldPtr()->afterNewScene();
+}
+
+void MayaToWorld::setRendererUnit()
+{
+    this->rendererUnit = MDistance::kMeters;
+}
+
+void MayaToWorld::setRendererAxis()
+{
+    this->rendererAxis = ZUp;
 }

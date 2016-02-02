@@ -30,7 +30,6 @@
 #define MTAP_APPLESEED_H
 
 // appleseed-maya headers.
-#include "mtap_mayaobject.h"
 #include "mtap_renderercontroller.h"
 #include "mtap_tilecallback.h"
 

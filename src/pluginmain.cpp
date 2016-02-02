@@ -27,22 +27,22 @@
 //
 
 // appleseed-maya headers.
-#include "mayatoappleseed.h"
-#include "mtap_renderglobalsnode.h"
-#include "swatchesrenderer/newswatchrenderer.h"
-#if MAYA_API_VERSION >= 201600
-#include "mtap_mayarenderer.h"
-#endif
-#include "utilities/tools.h"
-#include "threads/renderqueueworker.h"
-#include "mayatoworld.h"
-#include "version.h"
-#include "binmeshtranslator.h"
-#include "binmeshwritercmd.h"
-#include "binmeshreadercmd.h"
 #include "shaders/asdisneymaterial.h"
 #include "shaders/asdisneymaterialoverride.h"
 #include "shaders/aslayeredshader.h"
+#include "swatchesrenderer/newswatchrenderer.h"
+#include "threads/renderqueueworker.h"
+#include "utilities/tools.h"
+#include "binmeshreadercmd.h"
+#include "binmeshtranslator.h"
+#include "binmeshwritercmd.h"
+#include "mayatoappleseed.h"
+#include "mayatoappleseedglobals.h"
+#if MAYA_API_VERSION >= 201600
+#include "mtap_mayarenderer.h"
+#endif
+#include "mayatoworld.h"
+#include "version.h"
 
 // Maya headers.
 #include <maya/MGlobal.h>

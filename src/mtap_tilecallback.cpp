@@ -37,14 +37,12 @@
 #include "threads/renderqueueworker.h"
 
 void mtap_ITileCallback::pre_render(
-        const size_t x,
-        const size_t y,
-        const size_t width,
-        const size_t height)
+    const size_t x,
+    const size_t y,
+    const size_t width,
+    const size_t height)
 {
 }
-
-#define kNumChannels 4
 
 void mtap_ITileCallback::copyTileToImage(RV_PIXEL* pixels, asf::Tile& tile, int tile_x, int tile_y, const asr::Frame* frame)
 {
@@ -75,8 +73,7 @@ void mtap_ITileCallback::copyTileToImage(RV_PIXEL* pixels, asf::Tile& tile, int 
 }
 
 // this will be called for interactive renderings if a frame is complete
-void mtap_ITileCallback::post_render(
-        const asr::Frame* frame)
+void mtap_ITileCallback::post_render(const asr::Frame* frame)
 {
     Logging::debug(MString("Post render frame."));
     asf::Image img = frame->image();

@@ -52,6 +52,7 @@
 
 // Forward declarations.
 class Material;
+class MayaObject;
 
 // not all renderers can define a mesh and then upate it later in the
 // translation process. e.g. Corona needs all motion mesh informations during
@@ -74,6 +75,11 @@ class ObjectAttributes
     bool hasColorOverride;
     float opacityOverride;
     MMatrix objectMatrix;
+    bool needsOwnAssembly;
+    MayaObject *assemblyObject; // mayaObject above for which an assembly will be created
+
+    ObjectAttributes();
+    explicit ObjectAttributes(boost::shared_ptr<ObjectAttributes> other);
 };
 
 class MayaObject

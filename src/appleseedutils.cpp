@@ -26,14 +26,19 @@
 // THE SOFTWARE.
 //
 
+// Interface header.
 #include "appleseedutils.h"
-#include "utilities/logging.h"
-#include "utilities/attrtools.h"
-#include "renderglobals.h"
-#include "appleseedrenderer.h"
-#include "utilities/pystring.h"
-#include "mayatoworld.h"
 
+// appleseed-maya headers.
+#include "utilities/attrtools.h"
+#include "utilities/logging.h"
+#include "utilities/pystring.h"
+#include "appleseedrenderer.h"
+#include "mayaobject.h"
+#include "mayatoworld.h"
+#include "renderglobals.h"
+
+// appleseed.renderer headers.
 #include "renderer/api/color.h"
 #include "renderer/api/material.h"
 #include "renderer/api/surfaceshader.h"
@@ -82,6 +87,11 @@ MString getAssemblyInstanceName(MayaObject *obj)
 MString getObjectInstanceName(MayaObject *obj)
 {
     return obj->fullNiceName + "_objInst";
+}
+
+MString getObjectName(MayaObject* obj)
+{
+    return obj->dagPath.fullPathName();
 }
 
 MString getAssemblyName(MayaObject *obj)
@@ -176,8 +186,7 @@ MayaObject *getAssemblyMayaObject(MayaObject *mobj)
 
     if (obj->attributes)
     {
-        boost::shared_ptr<mtap_ObjectAttributes> att = boost::static_pointer_cast<mtap_ObjectAttributes>(obj->attributes);
-        return att->assemblyObject;
+        return obj->attributes->assemblyObject;
     }
     return 0; // only happens if obj is world
 }

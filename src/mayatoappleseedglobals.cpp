@@ -26,13 +26,14 @@
 // THE SOFTWARE.
 //
 
+// Interface header.
+#include "mayatoappleseedglobals.h"
+
 #include <maya/MFnNumericAttribute.h>
 #include <maya/MFnTypedAttribute.h>
 #include <maya/MFnGenericAttribute.h>
 #include <maya/MFnEnumAttribute.h>
 #include <maya/MFnMessageAttribute.h>
-
-#include "mtap_renderglobalsnode.h"
 
 MTypeId MayaToAppleseedGlobals::id(0x0011CF40);
 
@@ -105,8 +106,6 @@ MObject MayaToAppleseedGlobals::frameRendererPasses;
 
 MObject MayaToAppleseedGlobals::photon_type;
 
-
-
 MayaToAppleseedGlobals::MayaToAppleseedGlobals()
 {
     imageFormatList.append("Png");
@@ -121,8 +120,8 @@ MayaToAppleseedGlobals::MayaToAppleseedGlobals()
 }
 
 MayaToAppleseedGlobals::~MayaToAppleseedGlobals()
-{}
-
+{
+}
 
 void *MayaToAppleseedGlobals::creator()
 {
@@ -369,5 +368,4 @@ MStatus MayaToAppleseedGlobals::initialize()
     CHECK_MSTATUS(addAttribute(photon_type));
 
     return stat;
-
 }
