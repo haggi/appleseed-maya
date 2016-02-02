@@ -31,15 +31,13 @@
 
 #include "renderer/api/rendering.h"
 
-namespace asr = renderer;
-
-class mtap_IRendererController : public asr::IRendererController
+class mtap_IRendererController : public renderer::IRendererController
 {
   public:
       mtap_IRendererController()
       {
-          entityUpdateProc = 0;
-          status =  asr::IRendererController::ContinueRendering;
+          m_entityUpdateProc = 0;
+          m_status =  renderer::IRendererController::ContinueRendering;
       }
 
     // Destructor.
@@ -67,12 +65,18 @@ class mtap_IRendererController : public asr::IRendererController
 
     Status get_status() const
     {
-        return this->status;
+        return m_status;
     }
 
-    volatile Status status;
+    void set_status(const Status new_status)
+    {
+        m_status = new_status;
+    }
 
-    void (*entityUpdateProc)();
+private:
+
+    volatile Status m_status;
+    void (*m_entityUpdateProc)();
 };
 
 #endif
