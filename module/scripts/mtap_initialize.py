@@ -16,7 +16,7 @@ reload(renderer)
 
 log = logging.getLogger("mtapLogger")
 
-RENDERER_NAME = "appleseed"
+RENDERER_NAME = "Appleseed"
 
 class AppleseedRenderer(renderer.MayaToRenderer):
     theRendererInstance = None
