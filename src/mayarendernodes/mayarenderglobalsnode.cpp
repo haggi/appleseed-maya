@@ -26,15 +26,13 @@
 // THE SOFTWARE.
 //
 
+#include <maya/MFnEnumAttribute.h>
+#include <maya/MFnGenericAttribute.h>
+#include <maya/MFnMessageAttribute.h>
 #include <maya/MFnNumericAttribute.h>
 #include <maya/MFnTypedAttribute.h>
-#include <maya/MFnGenericAttribute.h>
-#include <maya/MFnEnumAttribute.h>
-#include <maya/MFnMessageAttribute.h>
-
-#include <maya/MGlobal.h>
-#include <maya/MFnPluginData.h>
 #include <maya/MPlug.h>
+
 #include "mayarenderglobalsnode.h"
 
 // sampling adaptive

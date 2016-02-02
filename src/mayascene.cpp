@@ -40,7 +40,6 @@
 #include <maya/MLightLinks.h>
 #include <maya/MSelectionList.h>
 #include <maya/MGlobal.h>
-#include <maya/M3dView.h>
 #include <maya/MRenderView.h>
 #include <maya/MVectorArray.h>
 #include <maya/MFileIO.h>

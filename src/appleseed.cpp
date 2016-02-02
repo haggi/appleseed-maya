@@ -187,12 +187,12 @@ void AppleseedRenderer::render()
     }
 
     getWorldPtr()->setRenderState(MayaToWorld::RSTATERENDERING);
-    mtap_controller.status = asr::IRendererController::ContinueRendering;
+    mtap_controller.set_status(asr::IRendererController::ContinueRendering);
 
     masterRenderer->render();
 }
 
 void AppleseedRenderer::abortRendering()
 {
-    mtap_controller.status = asr::IRendererController::AbortRendering;
+    mtap_controller.set_status(asr::IRendererController::AbortRendering);
 }
