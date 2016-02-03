@@ -26,8 +26,13 @@
 // THE SOFTWARE.
 //
 
+// Interface header.
 #include "shadingutils.h"
 
+// appleseed-maya headers.
+#include "utilities/logging.h"
+
+// Maya headers.
 #include <maya/MFnDependencyNode.h>
 #include <maya/MFnParticleSystem.h>
 #include <maya/MFnNurbsSurface.h>
@@ -36,15 +41,12 @@
 #include <maya/MPlug.h>
 #include <maya/MPlugArray.h>
 
-#include "utilities/logging.h"
-
-bool getObjectShadingGroups(MObject& geoObject, MObject& sGroup, int instId)
+bool getObjectShadingGroups(const MObject& geoObject, MObject& sGroup, int instId)
 {
 
     MPlugArray  connections;
     MFnDependencyNode dependNode(geoObject);
     MPlug plug(geoObject, dependNode.attribute("instObjGroups"));
-    int numConnections = plug.numConnectedElements();
 
     plug.elementByLogicalIndex(instId).connectedTo(connections, false, true);
 
@@ -64,7 +66,7 @@ bool getObjectShadingGroups(MObject& geoObject, MObject& sGroup, int instId)
     return false;
 }
 
-bool getObjectShadingGroups(MDagPath& shapeObjectDP, MObject& shadingGroup)
+bool getObjectShadingGroups(const MDagPath& shapeObjectDP, MObject& shadingGroup)
 {
     // if obj is a light, simply return the mobject
     if (shapeObjectDP.hasFn(MFn::kLight))
@@ -131,7 +133,7 @@ bool getObjectShadingGroups(MDagPath& shapeObjectDP, MObject& shadingGroup)
 //  Output: perFaceInt array
 //          all connected shading groups
 
-bool getObjectShadingGroups(MDagPath& shapeObjectDP, MIntArray& perFaceAssignments, MObjectArray& shadingGroups, bool needsPerFaceInfo=true)
+bool getObjectShadingGroups(const MDagPath& shapeObjectDP, MIntArray& perFaceAssignments, MObjectArray& shadingGroups, bool needsPerFaceInfo=true)
 {
     // if obj is a light, simply return the mobject
     if (shapeObjectDP.node().hasFn(MFn::kLight))

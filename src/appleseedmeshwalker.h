@@ -26,25 +26,26 @@
 // THE SOFTWARE.
 //
 
-#ifndef MESH_WALKER_H
-#define MESH_WALKER_H
+#ifndef APPLESEED_MAYA_MESH_WALKER_H
+#define APPLESEED_MAYA_MESH_WALKER_H
 
+// appleseed-foundation headers.
 #include "foundation/mesh/imeshwalker.h"
 
-#include <maya/MPointArray.h>
-#include <maya/MFloatVectorArray.h>
+// Maya headers.
+#include <maya/MDagPath.h>
 #include <maya/MFloatArray.h>
-#include <maya/MIntArray.h>
+#include <maya/MFloatVectorArray.h>
 #include <maya/MFnMesh.h>
 #include <maya/MFnMeshData.h>
-#include <maya/MDagPath.h>
+#include <maya/MIntArray.h>
 #include <maya/MObject.h>
 #include <maya/MObjectArray.h>
+#include <maya/MPointArray.h>
 
+// Standard headers.
 #include <string.h>
 #include <vector>
-
-namespace asf = foundation;
 
 struct Face
 {
@@ -54,44 +55,25 @@ struct Face
 };
 
 class MeshWalker
-  : public asf::IMeshWalker
+  : public foundation::IMeshWalker
 {
   public:
-    explicit MeshWalker(MDagPath& dagPath);
-    MFnMesh         meshFn;
-
-    MDagPath meshDagPath;
-    MObject meshObject;
-    MFnMeshData smoothMeshData;
-
-    // mesh data
-    MFloatArray     u,v;
-    MPointArray     points;
-    MFloatVectorArray normals;
-
-    MObjectArray shadingGroups;
-    MIntArray perFaceAssignments;
-    MIntArray perTriangleAssignments;
-    std::vector<Face> faceList;
-
-    MObject checkSmoothMesh();
-    bool useSmoothMesh;
-    void setTransform();
+    explicit MeshWalker(const MDagPath& dagPath);
 
     // Return the name of the mesh.
     virtual const char* get_name() const;
 
     // Return vertices.
     virtual size_t get_vertex_count() const;
-    virtual asf::Vector3d get_vertex(const size_t i) const;
+    virtual foundation::Vector3d get_vertex(const size_t i) const;
 
     // Return vertex normals.
     virtual size_t get_vertex_normal_count() const;
-    virtual asf::Vector3d get_vertex_normal(const size_t i) const;
+    virtual foundation::Vector3d get_vertex_normal(const size_t i) const;
 
     // Return texture coordinates.
     virtual size_t get_tex_coords_count() const;
-    virtual asf::Vector2d get_tex_coords(const size_t i) const;
+    virtual foundation::Vector2d get_tex_coords(const size_t i) const;
 
     // Return material slots.
     virtual size_t get_material_slot_count() const;
@@ -110,6 +92,27 @@ class MeshWalker
 
     // Return the material assigned to a given face.
     virtual size_t get_face_material(const size_t face_index) const;
+
+    void setTransform();
+
+  private:
+    MFnMesh             mMeshFn;
+    MDagPath            mMeshDagPath;
+    MObject             mMeshObject;
+    MFnMeshData         mSmoothMeshData;
+
+    // mesh data
+    MFloatArray         mU,mV;
+    MPointArray         mPoints;
+    MFloatVectorArray   mNormals;
+
+    MObjectArray        mShadingGroups;
+    MIntArray           mPerFaceAssignments;
+    MIntArray           mPerTriangleAssignments;
+    std::vector<Face>   mFaceList;
+    bool                mUseSmoothMesh;
+
+    MObject checkSmoothMesh();
 };
 
 #endif
