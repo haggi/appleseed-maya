@@ -237,10 +237,13 @@ void mtap_standinMeshNode::createMaterialAssignments()
     }
     shadingEngineList += "]";
 
-    //def binMeshAssignShader(polyShape = None, shadingGroupList=[], perFaceAssingments=[]):
-    MString pythonCmd = MString("import binMeshTranslator as bmt; bmt.binMeshAssignShader(creatorShape = '")  + thisObjectName + "', shadingGroupList = " +  shadingEngineList + ", perFaceAssingments = " + idListString + ")";
-    MGlobal::displayInfo(pythonCmd);
-    MGlobal::executePythonCommandOnIdle(pythonCmd);
+    MGlobal::executePythonCommandOnIdle(
+        MString("import binMeshTranslator as bmt; bmt.binMeshAssignShader(creatorShape = '") +
+        thisObjectName +
+        "', shadingGroupList = " +
+        shadingEngineList +
+        ", perFaceAssingments = " +
+        idListString + ")");
 }
 
 bool mtap_standinMeshNode::checkMeshFileName(MString meshFileName)
@@ -254,47 +257,46 @@ bool mtap_standinMeshNode::checkMeshFileName(MString meshFileName)
 
 MStatus mtap_standinMeshNode::compute(const MPlug& plug, MDataBlock& data)
 {
+    if (plug != outputMesh)
+        return MS::kUnknownParameter;
+
     MStatus returnStatus;
 
-    if (plug == outputMesh) {
-        /* Get time */
-        MDataHandle dataHandle = data.inputValue(time, &returnStatus);
-        McheckErr(returnStatus, "Error getting time data handle\n");
-        MTime time = dataHandle.asTime();
+    // Get time.
+    MDataHandle dataHandle = data.inputValue(time, &returnStatus);
+    McheckErr(returnStatus, "Error getting time data handle\n");
+    MTime time = dataHandle.asTime();
 
-        dataHandle = data.inputValue(polySizeMultiplier, &returnStatus);
-        McheckErr(returnStatus, "Error getting polySizeMultiplier data handle\n");
-        this->poly_size_multiplier = dataHandle.asFloat();
+    dataHandle = data.inputValue(polySizeMultiplier, &returnStatus);
+    McheckErr(returnStatus, "Error getting polySizeMultiplier data handle\n");
+    this->poly_size_multiplier = dataHandle.asFloat();
 
-        dataHandle = data.inputValue(binMeshFile, &returnStatus);
-        McheckErr(returnStatus, "Error getting binMeshFile handle\n");
-        MString fileName = dataHandle.asString();
+    dataHandle = data.inputValue(binMeshFile, &returnStatus);
+    McheckErr(returnStatus, "Error getting binMeshFile handle\n");
+    MString fileName = dataHandle.asString();
 
-        if (!checkMeshFileName(fileName))
-            McheckErr(MS::kFailure, "Filename problem\n");
+    if (!checkMeshFileName(fileName))
+        McheckErr(MS::kFailure, "Filename problem\n");
 
-        this->binmesh_file = fileName;
+    this->binmesh_file = fileName;
 
-        /* Get output object */
-        MDataHandle outputHandle = data.outputValue(outputMesh, &returnStatus);
-        McheckErr(returnStatus, "ERROR getting polygon data handle\n");
+    // Get output object.
+    MDataHandle outputHandle = data.outputValue(outputMesh, &returnStatus);
+    McheckErr(returnStatus, "ERROR getting polygon data handle\n");
 
-        MFnMeshData dataCreator;
-        MObject newOutputData = dataCreator.create(&returnStatus);
-        McheckErr(returnStatus, "ERROR creating outputData");
+    MFnMeshData dataCreator;
+    MObject newOutputData = dataCreator.create(&returnStatus);
+    McheckErr(returnStatus, "ERROR creating outputData");
 
-        if (createMesh(time, newOutputData, returnStatus) == MObject::kNullObj)
-            return MS::kFailure;
+    if (createMesh(time, newOutputData, returnStatus) == MObject::kNullObj)
+        return MS::kFailure;
 
-        McheckErr(returnStatus, "ERROR creating new geo");
+    McheckErr(returnStatus, "ERROR creating new geo");
 
-        outputHandle.set(newOutputData);
-        data.setClean(plug);
+    outputHandle.set(newOutputData);
+    data.setClean(plug);
 
-        createMaterialAssignments();
-
-    } else
-        return MS::kUnknownParameter;
+    createMaterialAssignments();
 
     return MS::kSuccess;
 }

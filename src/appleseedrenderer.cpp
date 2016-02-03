@@ -35,7 +35,6 @@
 #include "shadingtools/shaderdefinitions.h"
 #include "shadingtools/shadingutils.h"
 #include "threads/renderqueueworker.h"
-#include "threads/queue.h"
 #include "utilities/attrtools.h"
 #include "utilities/logging.h"
 #include "utilities/pystring.h"

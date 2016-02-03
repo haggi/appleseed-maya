@@ -30,6 +30,7 @@
 #include "mayatoappleseed.h"
 
 // appleseed-maya headers.
+#include "threads/event.h"
 #include "threads/renderqueueworker.h"
 #include "utilities/attrtools.h"
 #include "utilities/logging.h"
@@ -118,36 +119,37 @@ MStatus MayaToAppleseed::doIt(const MArgList& args)
     }
 
     // I have to request useRenderRegion here because as soon the command is finished,
-    // what happens immediatly after the command is put into the queue, the value is
+    // what happens immediately after the command is put into the queue, the value is
     // set back to false.
-    std::auto_ptr<CmdArgs> cmdArgs(new CmdArgs);
-    MObject drg = objectFromName("defaultRenderGlobals");
-    MFnDependencyNode drgfn(drg);
-    cmdArgs->useRenderRegion = drgfn.findPlug("useRenderRegion").asBool();
+
+    Event e;
+    e.type = Event::INITRENDER;
+
+    MFnDependencyNode defaultGlobals(objectFromName("defaultResolution"));
+    e.renderType = MayaToWorld::UIRENDER;
+    e.width = defaultGlobals.findPlug("width").asInt();
+    e.height = defaultGlobals.findPlug("height").asInt();
+
+    MFnDependencyNode drgfn(objectFromName("defaultRenderGlobals"));
+    e.useRenderRegion = drgfn.findPlug("useRenderRegion").asBool();
 
     if (argData.isFlagSet("-startIpr", &stat))
-        cmdArgs->renderType = MayaToWorld::IPRRENDER;
+        e.renderType = MayaToWorld::IPRRENDER;
 
     if (argData.isFlagSet("-width", &stat))
-        argData.getFlagArgument("-width", 0, cmdArgs->width);
+        argData.getFlagArgument("-width", 0, e.width);
 
     if (argData.isFlagSet("-height", &stat))
-        argData.getFlagArgument("-height", 0, cmdArgs->height);
+        argData.getFlagArgument("-height", 0, e.height);
 
     if (argData.isFlagSet("-camera", &stat))
     {
         MSelectionList selectionList;
         argData.getFlagArgument("-camera", 0, selectionList);
-
-        MDagPath camera;
-        selectionList.getDagPath(0, camera);
-        camera.extendToShape();
-        cmdArgs->cameraDagPath = camera;
+        selectionList.getDagPath(0, e.cameraDagPath);
+        e.cameraDagPath.extendToShape();
     }
 
-    Event e;
-    e.cmdArgsData.reset(cmdArgs.release());
-    e.type = Event::INITRENDER;
     theRenderEventQueue()->push(e);
 
     if (MGlobal::mayaState() == MGlobal::kBatch)

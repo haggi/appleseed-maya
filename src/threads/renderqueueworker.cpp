@@ -654,19 +654,11 @@ void RenderQueueWorker::startRenderQueueWorker()
 
         switch (e.type)
         {
-        case Event::FINISH:
-            break;
-
-        case Event::INITRENDER:
+          case Event::INITRENDER:
             {
                 Logging::debug("Event::InitRendering");
-                if (!e.cmdArgsData)
-                {
-                    Logging::error("Event::InitRendering:: cmdArgsData - not defined.");
-                    break;
-                }
                 renderStartTime = clock();
-                getWorldPtr()->setRenderType(e.cmdArgsData->renderType);
+                getWorldPtr()->setRenderType(e.renderType);
 
                 // it is possible that a new ipr rendering is started before another one is completly done, so wait for it
                 if (getWorldPtr()->renderType == MayaToWorld::IPRRENDER)
@@ -682,9 +674,9 @@ void RenderQueueWorker::startRenderQueueWorker()
                 // Here we create the overall scene, renderer and renderGlobals objects
                 getWorldPtr()->initializeRenderEnvironment();
 
-                getWorldPtr()->worldRenderGlobalsPtr->setWidthHeight(e.cmdArgsData->width, e.cmdArgsData->height);
-                getWorldPtr()->worldRenderGlobalsPtr->setUseRenderRegion(e.cmdArgsData->useRenderRegion);
-                getWorldPtr()->worldScenePtr->uiCamera = e.cmdArgsData->cameraDagPath;
+                getWorldPtr()->worldRenderGlobalsPtr->setWidthHeight(e.width, e.height);
+                getWorldPtr()->worldRenderGlobalsPtr->setUseRenderRegion(e.useRenderRegion);
+                getWorldPtr()->worldScenePtr->uiCamera = e.cameraDagPath;
                 getWorldPtr()->worldRendererPtr->initializeRenderer(); // init renderer with all type, image size etc.
 
                 int width, height;
@@ -721,7 +713,7 @@ void RenderQueueWorker::startRenderQueueWorker()
                 break;
             }
 
-        case Event::FRAMERENDER:
+          case Event::FRAMERENDER:
             {
                 Logging::debug("Event::Framerender");
 
@@ -744,12 +736,7 @@ void RenderQueueWorker::startRenderQueueWorker()
             }
             break;
 
-        case Event::STARTRENDER:
-            {
-                Logging::debug("Event::Startrender");
-                break;
-            }
-        case Event::RENDERERROR:
+          case Event::RENDERERROR:
             {
                 e.type = Event::RENDERDONE;
                 theRenderEventQueue()->push(e);
@@ -757,7 +744,7 @@ void RenderQueueWorker::startRenderQueueWorker()
             }
             break;
 
-        case Event::FRAMEDONE:
+          case Event::FRAMEDONE:
             Logging::debug("Event::FRAMEDONE");
             doPostFrameJobs();
             updateRenderView(e);
@@ -765,7 +752,7 @@ void RenderQueueWorker::startRenderQueueWorker()
             theRenderEventQueue()->push(e);
             break;
 
-        case Event::RENDERDONE:
+          case Event::RENDERDONE:
             {
                 Logging::debug("Event::RENDERDONE");
 
@@ -799,79 +786,51 @@ void RenderQueueWorker::startRenderQueueWorker()
             }
             break;
 
-        case Event::FRAMEUPDATE:
+          case Event::FRAMEUPDATE:
             updateRenderView(e);
             break;
 
-        case Event::IPRUPDATE:
+          case Event::IPRUPDATE:
             Logging::debug("Event::IPRUPDATE - whole frame");
             updateRenderView(e);
             break;
 
-        case Event::INTERRUPT:
+          case Event::INTERRUPT:
             Logging::debug("Event::INTERRUPT");
             getWorldPtr()->worldRendererPtr->abortRendering();
             break;
 
-        case Event::IPRSTOP:
+          case Event::IPRSTOP:
             Logging::debug("Event::IPRSTOP");
             getWorldPtr()->setRenderState(MayaToWorld::RSTATESTOPPED);
             getWorldPtr()->worldRendererPtr->abortRendering();
             break;
 
-        case Event::TILEDONE:
+          case Event::TILEDONE:
             {
                 Logging::debug(MString("Event::TILEDONE - queueSize: ") + theRenderEventQueue()->size());
                 updateRenderView(e);
                 if (getWorldPtr()->renderType != MayaToWorld::IPRRENDER)
                 {
                     tilesDone++;
-                    float percentDone = ((float)tilesDone / (float)numTiles) * 100.0;
-                    Logging::progress(MString("") + (int)percentDone + "% done");
+                    const int percentDone = (100 * tilesDone) / numTiles;
+                    Logging::progress(MString() + percentDone + "% done");
                 }
             }
             break;
 
-        case Event::PIXELSDONE:
-            break;
-
-        case Event::PRETILE:
+          case Event::PRETILE:
             updateRenderView(e);
             break;
 
-        case Event::IPRUPDATESCENE:
-            {
-                Logging::debug("Event::IPRUPDATESCENE");
-            }
-            break;
-
-        case Event::INTERACTIVEFBCALLBACK:
+          case Event::INTERACTIVEFBCALLBACK:
             Logging::debug("Event::INTERACTIVEFBCALLBACK");
             getWorldPtr()->worldRendererPtr->interactiveFbCallback();
             break;
 
-        case Event::ADDIPRCALLBACKS:
+          case Event::ADDIPRCALLBACKS:
             Logging::debug("Event::ADDIPRCALLBACKS");
             addIPRCallbacks();
-            break;
-
-        case Event::USER:
-            {
-                Logging::debug("Event::USER");
-                if (!e.cmdArgsData)
-                {
-                    Logging::error("Event::USER:: cmdArgsData - not defined.");
-                    break;
-                }
-                if (getWorldPtr()->worldRendererPtr == 0)
-                {
-                    Logging::error("Event::USER:: no renderer defined. Please render an image.");
-                }
-                else
-                {
-                    getWorldPtr()->worldRendererPtr->handleUserEvent(e.cmdArgsData->userEvent, e.cmdArgsData->userDataString, e.cmdArgsData->userDataFloat, e.cmdArgsData->userDataInt);
-                }
-            }
             break;
         }
 

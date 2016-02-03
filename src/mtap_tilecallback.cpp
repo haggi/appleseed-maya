@@ -29,7 +29,6 @@
 // Interface header.
 #include "mtap_tilecallback.h"
 
-#include "threads/queue.h"
 #include "utilities/logging.h"
 #include "threads/renderqueueworker.h"
 

@@ -101,8 +101,7 @@ source_group ("swatchesrenderer" FILES
 )
 
 set (threads_sources
-    threads/queue.cpp
-    threads/queue.h
+    threads/event.h
     threads/renderqueueworker.cpp
     threads/renderqueueworker.h
 )

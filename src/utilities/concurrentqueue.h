@@ -26,8 +26,8 @@
 // THE SOFTWARE.
 //
 
-#ifndef MTAP_QUEUE_H
-#define MTAP_QUEUE_H
+#ifndef UTILITIES_CONCURRENTQUEUE_H
+#define UTILITIES_CONCURRENTQUEUE_H
 
 // Boost headers.
 #include "boost/thread/condition_variable.hpp"
@@ -89,4 +89,4 @@ class concurrent_queue
     }
 };
 
-#endif
+#endif  // !UTILITIES_CONCURRENTQUEUE_H

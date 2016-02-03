@@ -171,30 +171,4 @@ MayaToWorld *getWorldPtr();
 
 static MayaToWorld *worldPointer = 0;
 
-struct CmdArgs
-{
-    CmdArgs()
-    {
-        userDataInt = 0;
-        userEvent = -1;
-        userDataFloat = 0.0;
-
-        MFnDependencyNode defaultGlobals(objectFromName("defaultResolution"));
-        width = defaultGlobals.findPlug("width").asInt();
-        height = defaultGlobals.findPlug("height").asInt();
-        renderType = MayaToWorld::UIRENDER;
-        useRenderRegion = false;
-    }
-
-    int width;
-    int height;
-    bool useRenderRegion;
-    MDagPath cameraDagPath;
-    MayaToWorld::WorldRenderType renderType;
-    int userDataInt;
-    int userEvent;
-    double userDataFloat;
-    MString userDataString;
-};
-
 #endif // !MAYATO_WORLD_H

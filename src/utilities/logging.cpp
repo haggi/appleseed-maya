@@ -26,9 +26,8 @@
 // THE SOFTWARE.
 //
 
-// appleseed-maya headers.
-#include "threads/queue.h"
-#include "utilities/logging.h"
+// Interface header.
+#include "logging.h"
 
 // appleseed.foundation headers.
 #include "foundation/platform/system.h"

@@ -26,16 +26,11 @@
 // THE SOFTWARE.
 //
 
-#ifndef RENDER_QUEUE_H
-#define RENDER_QUEUE_H
+#ifndef THREADS_RENDERQUEUEWORKER_H
+#define THREADS_RENDERQUEUEWORKER_H
 
-#include <functional>
-#include <maya/MRenderView.h>
-#include <maya/MNodeMessage.h>
-#include <map>
-#include "queue.h"
-
-#include "boost/function.hpp"
+#include "utilities/concurrentqueue.h"
+#include "event.h"
 
 concurrent_queue<Event> *theRenderEventQueue();
 
@@ -50,4 +45,4 @@ class RenderQueueWorker
     static bool iprCallbacksDone();
 };
 
-#endif
+#endif  // !THREADS_RENDERQUEUEWORKER_H
