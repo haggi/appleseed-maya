@@ -91,7 +91,7 @@ APPLESEEDMAYA_DLL_EXPORT MStatus initializePlugin(MObject obj)
         MGlobal::executeCommand(
             "global proc binMeshTranslatorOpts(string $a, string $b, string $c, string $d)\n"
             "{\n"
-            "    python(\"import binMeshTranslator; binMeshTranslator.binMeshTranslatorOpts('\" + $a + \"', '\" + $b + \"', '\" + $c + \"', '\" + $d + \"')\");\n"
+            "    python(\"import binmeshtranslator; binMeshTranslator.binMeshTranslatorOpts('\" + $a + \"', '\" + $b + \"', '\" + $c + \"', '\" + $d + \"')\");\n"
             "}\n");
     CHECK_MSTATUS_AND_RETURN_IT(status);
 

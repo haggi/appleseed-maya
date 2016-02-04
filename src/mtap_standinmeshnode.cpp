@@ -238,7 +238,7 @@ void mtap_standinMeshNode::createMaterialAssignments()
     shadingEngineList += "]";
 
     MGlobal::executePythonCommandOnIdle(
-        MString("import binMeshTranslator as bmt; bmt.binMeshAssignShader(creatorShape = '") +
+        MString("import binmeshtranslator as bmt; bmt.binMeshAssignShader(creatorShape = '") +
         thisObjectName +
         "', shadingGroupList = " +
         shadingEngineList +
