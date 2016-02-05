@@ -30,17 +30,6 @@ include_directories (
     .
 )
 
-set (mayarendernodes_sources
-    mayarendernodes/mayarenderglobalsnode.cpp
-    mayarendernodes/mayarenderglobalsnode.h
-)
-list (APPEND appleseedmaya_sources
-    ${mayarendernodes_sources}
-)
-source_group ("mayarendernodes" FILES
-    ${mayarendernodes_sources}
-)
-
 set (osl_sources
     osl/oslutils.cpp
     osl/oslutils.h
@@ -145,6 +134,8 @@ set (sources
     binmeshwritercmd.h
     mayaobject.cpp
     mayaobject.h
+    mayarenderglobalsnode.cpp
+    mayarenderglobalsnode.h
     mayascene.cpp
     mayascene.h
     mayatoappleseed.cpp
