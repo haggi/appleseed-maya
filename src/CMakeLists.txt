@@ -33,8 +33,6 @@ include_directories (
 set (mayarendernodes_sources
     mayarendernodes/mayarenderglobalsnode.cpp
     mayarendernodes/mayarenderglobalsnode.h
-    mayarendernodes/standinlocatornode.cpp
-    mayarendernodes/standinlocatornode.h
 )
 list (APPEND appleseedmaya_sources
     ${mayarendernodes_sources}
@@ -157,8 +155,6 @@ set (sources
     mayatoworld.h
     hypershaderenderer.cpp
     hypershaderenderer.h
-    mtap_standinmeshnode.cpp
-    mtap_standinmeshnode.h
     mtap_tilecallback.cpp
     mtap_tilecallback.h
     pluginmain.cpp
