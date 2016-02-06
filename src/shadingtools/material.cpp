@@ -241,7 +241,7 @@ void Material::parseNetwork(MObject& shaderNode, ShadingNetwork& network)
 
     Logging::debug(MString("Node ") + sn.fullName + " has " + connectedNodeList.length() + " input connections.");
 
-    for(uint i = 0; i < connectedNodeList.length(); i++)
+    for (uint i = 0; i < connectedNodeList.length(); i++)
     {
 
         MString connectedNode = getObjectName(connectedNodeList[i]);
@@ -261,7 +261,7 @@ void Material::parseNetwork(MObject& shaderNode, ShadingNetwork& network)
 void Material::printNodes(ShadingNetwork& network)
 {
     int numNodes = (int)network.shaderList.size();
-    for(int i = numNodes - 1; i >= 0 ; i--)
+    for (int i = numNodes - 1; i >= 0 ; i--)
     {
         ShadingNode sn = network.shaderList[i];
         Logging::info(MString("Material::Node id ") + (double)i + " typename " + sn.typeName);

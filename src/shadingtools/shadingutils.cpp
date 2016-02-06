@@ -82,7 +82,7 @@ bool getObjectShadingGroups(const MDagPath& shapeObjectDP, MObject& shadingGroup
         fnMesh.getConnectedSetsAndMembers(shapeObjectDP.instanceNumber(), sets, comps, true);
 
         // Each set is a Shading Group. Loop through them
-        for(unsigned int i = 0; i < sets.length(); ++i)
+        for (unsigned int i = 0; i < sets.length(); ++i)
         {
             MFnDependencyNode fnDepSGNode(sets[i]);
             shadingGroup = sets[i];
@@ -115,7 +115,7 @@ bool getObjectShadingGroups(const MDagPath& shapeObjectDP, MObject& shadingGroup
         instPlugElem.connectedTo(SGPlugArray, false, true);
 
         // Loop through each ShadingGroup Plug
-        for(unsigned int i=0; i < SGPlugArray.length(); ++i)
+        for (unsigned int i=0; i < SGPlugArray.length(); ++i)
         {
             MFnDependencyNode fnDepSGNode(SGPlugArray[i].node());
             shadingGroup = SGPlugArray[i].node();
@@ -237,7 +237,7 @@ bool getObjectShadingGroups(const MDagPath& shapeObjectDP, MIntArray& perFaceAss
         shadingGroups.clear();
 
         // Loop through each ShadingGroup Plug
-        for(unsigned int i=0; i < SGPlugArray.length(); ++i)
+        for (unsigned int i=0; i < SGPlugArray.length(); ++i)
         {
             MFnDependencyNode fnDepSGNode(SGPlugArray[i].node());
             shadingGroups.append(SGPlugArray[i].node());

@@ -106,7 +106,7 @@ bool BinMeshWriterCmd::exportBinMeshes()
         MeshWalker walker(dagPath);
 
         if (mDoTransform)
-            walker.setTransform();
+            walker.applyTransform();
 
         if (mOneFilePerMesh)
         {
@@ -132,11 +132,12 @@ bool BinMeshWriterCmd::exportBinMeshes()
         }
     }
 
-    if (mDoProxy && (!mOneFilePerMesh))
+    if (mDoProxy && !mOneFilePerMesh)
     {
         MString proxyFileName = pystring::replace(mPath.asChar(), ".binarymesh" , ".proxymesh").c_str();
         globalProxyMesh.writeFile(proxyFileName);
     }
+
     return true;
 }
 
@@ -245,7 +246,7 @@ void BinMeshWriterCmd::getObjectsForExport(const MArgList& args)
             return;
         }
 
-        for(;!itDag.isDone();itDag.next())
+        for (; !itDag.isDone(); itDag.next())
         {
             MDagPath dagPath;
             if (MStatus::kFailure == itDag.getPath(dagPath))
@@ -264,7 +265,6 @@ void BinMeshWriterCmd::getObjectsForExport(const MArgList& args)
                 Logging::debug(MString("Node ") + dagPath.partialPathName() + " is not visible and will not be exported");
             }
         }
-
     }
     else
     {

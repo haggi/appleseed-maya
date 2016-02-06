@@ -26,8 +26,8 @@
 // THE SOFTWARE.
 //
 
-#ifndef AS_TOOLS_PROXYMESH
-#define AS_TOOLS_PROXYMESH
+#ifndef PROXYMESH_H
+#define PROXYMESH_H
 
 #include "foundation/mesh/imeshwalker.h"
 
@@ -42,55 +42,31 @@
 class ProxyMesh
 {
   public:
-    ProxyMesh(float mPercentage);
+    explicit ProxyMesh(const float percentage);
 
     void addMesh(const foundation::IMeshWalker& walker);
 
     void writeFile(const MString& fileName);
 
   private:
-    inline void write(const double value)
-    {
-        mProxyFile.write(reinterpret_cast<const char *>(&value), sizeof(double));
-    }
-
-    inline void write(const MPoint& point)
-    {
-        write(point.x);
-        write(point.y);
-        write(point.z);
-    }
-
-    inline void write(const MPointArray& points)
-    {
-        for (unsigned int i = 0, e = points.length(); i < e; ++i)
-            write(points[i]);
-    }
-
-    inline void write(const int value)
-    {
-        mProxyFile.write(reinterpret_cast<const char *>(&value), sizeof(int));
-    }
-
-    inline void write(const MString& value)
-    {
-        write((int)value.length());
-        mProxyFile.write(value.asChar(), value.length());
-    }
+    void write(const int value);
+    void write(const double value);
+    void write(const MPoint& point);
+    void write(const MPointArray& points);
+    void write(const MString& value);
 
     void setMin(const MPoint& vtx);
     void setMax(const MPoint& vtx);
     void setBBox(const MPoint& vtx);
     void scaleFace(int firstVtxIndex, int numVertices);
 
-    float   mPercentage;
-    float   mPolySizeMultiplier;
-    MPointArray mPoints;
-    MPoint mMin, mMax;
-    std::fstream mProxyFile;
-    MStringArray mShadingGroupNames;
-    MIntArray mPolyShaderIds;
-    MIntArray mObjectShaderStartId;
+    const float     mPercentage;
+    const float     mPolySizeMultiplier;
+    MPointArray     mPoints;
+    MPoint          mMin, mMax;
+    std::fstream    mProxyFile;
+    MStringArray    mShadingGroupNames;
+    MIntArray       mPolyShaderIds;
 };
 
-#endif
+#endif  // !PROXYMESH_H
