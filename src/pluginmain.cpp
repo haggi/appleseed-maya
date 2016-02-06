@@ -27,22 +27,22 @@
 //
 
 // appleseed-maya headers.
-#include "mayatoappleseed.h"
-#include "mtap_renderglobalsnode.h"
-#include "swatchesrenderer/newswatchrenderer.h"
-#if MAYA_API_VERSION >= 201600
-#include "mtap_mayarenderer.h"
-#endif
-#include "utilities/tools.h"
-#include "threads/renderqueueworker.h"
-#include "world.h"
-#include "version.h"
-#include "binmeshtranslator.h"
-#include "binmeshwritercmd.h"
-#include "binmeshreadercmd.h"
 #include "shaders/asdisneymaterial.h"
 #include "shaders/asdisneymaterialoverride.h"
 #include "shaders/aslayeredshader.h"
+#include "swatchesrenderer/newswatchrenderer.h"
+#include "threads/renderqueueworker.h"
+#include "utilities/tools.h"
+#include "binmeshreadercmd.h"
+#include "binmeshtranslator.h"
+#include "binmeshwritercmd.h"
+#include "mayatoappleseed.h"
+#include "mayatoappleseedglobals.h"
+#if MAYA_API_VERSION >= 201600
+#include "mtap_mayarenderer.h"
+#endif
+#include "mayatoworld.h"
+#include "version.h"
 
 // Maya headers.
 #include <maya/MGlobal.h>
@@ -91,7 +91,7 @@ APPLESEEDMAYA_DLL_EXPORT MStatus initializePlugin(MObject obj)
         MGlobal::executeCommand(
             "global proc binMeshTranslatorOpts(string $a, string $b, string $c, string $d)\n"
             "{\n"
-            "    python(\"import binMeshTranslator; binMeshTranslator.binMeshTranslatorOpts('\" + $a + \"', '\" + $b + \"', '\" + $c + \"', '\" + $d + \"')\");\n"
+            "    python(\"import binmeshtranslator; binMeshTranslator.binMeshTranslatorOpts('\" + $a + \"', '\" + $b + \"', '\" + $c + \"', '\" + $d + \"')\");\n"
             "}\n");
     CHECK_MSTATUS_AND_RETURN_IT(status);
 
@@ -171,7 +171,7 @@ APPLESEEDMAYA_DLL_EXPORT MStatus initializePlugin(MObject obj)
         MSwatchRenderRegister::registerSwatchRender(swatchName, NewSwatchRenderer::creator);
 
 #if MAYA_API_VERSION >= 201600
-    status = plugin.registerRenderer("appleseed", mtap_MayaRenderer::creator);
+    status = plugin.registerRenderer("appleseed", HypershadeRenderer::creator);
     CHECK_MSTATUS_AND_RETURN_IT(status);
 #endif
 

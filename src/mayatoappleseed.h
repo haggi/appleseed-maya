@@ -40,7 +40,7 @@ class MArgList;
 class MStatus;
 class MSyntax;
 
-class  MayaToAppleseed
+class MayaToAppleseed
   : public MPxCommand
 {
   public:

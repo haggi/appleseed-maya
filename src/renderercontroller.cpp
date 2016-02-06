@@ -26,27 +26,55 @@
 // THE SOFTWARE.
 //
 
-#ifndef MTAP_SWEVENT_H
-#define MTAP_SWEVENT_H
+// Interface header.
+#include "renderercontroller.h"
 
-// appleseed-maya headers.
-#include "utilities/concurrentqueue.h"
-
-// Maya headers.
-#include <maya/MObject.h>
-
-// Forward declarations.
-class NewSwatchRenderer;
-
-struct SwatchesEvent
+RendererController::RendererController()
+  : m_entityUpdateProc(0)
+  , m_status(renderer::IRendererController::ContinueRendering)
 {
-    int height;
-    float *pixels;
-    bool *renderDone;
-    MObject shadingNode;
-    NewSwatchRenderer *swatchRenderer;
-};
+}
 
-static concurrent_queue<SwatchesEvent> SwatchesQueue;
+void RendererController::release()
+{
+    delete this;
+}
 
-#endif
+void RendererController::on_rendering_begin()
+{
+    if (m_entityUpdateProc != 0)
+    {
+        m_entityUpdateProc();
+    }
+}
+
+void RendererController::on_rendering_success()
+{
+}
+
+void RendererController::on_rendering_abort()
+{
+}
+
+void RendererController::on_frame_begin()
+{
+    m_status = IRendererController::ContinueRendering;
+}
+
+void RendererController::on_frame_end()
+{
+}
+
+void RendererController::on_progress()
+{
+}
+
+RendererController::Status RendererController::get_status() const
+{
+    return m_status;
+}
+
+void RendererController::set_status(const Status new_status)
+{
+    m_status = new_status;
+}

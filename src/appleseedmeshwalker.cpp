@@ -26,17 +26,23 @@
 // THE SOFTWARE.
 //
 
+// Interface header.
 #include "appleseedmeshwalker.h"
 
-#include <maya/MItMeshPolygon.h>
-#include <maya/MGlobal.h>
+// appleseed-maya headers.
+#include "shadingtools/shadingutils.h"
 #include "utilities/tools.h"
 #include "utilities/attrtools.h"
-#include "shadingtools/shadingutils.h"
+
+// Maya headers.
 #include <maya/MBoundingBox.h>
 #include <maya/MDagPath.h>
 #include <maya/MMatrix.h>
 #include <maya/MFnMeshData.h>
+#include <maya/MItMeshPolygon.h>
+#include <maya/MGlobal.h>
+
+namespace asf = foundation;
 
 /*
     The mesh walker is used by the binary mesh writer to export data.
@@ -52,40 +58,39 @@
 MObject MeshWalker::checkSmoothMesh()
 {
     MStatus stat;
-    MObject object = MObject::kNullObj;
 
-    MFnMesh mesh(this->meshObject, &stat);
+    MFnMesh mesh(mMeshObject, &stat);
     if (!stat)
     {
         MGlobal::displayError(MString("checkSmoothMesh : could not get mesh: ") + stat.errorString());
-        return object;
+        return MObject::kNullObj;
     }
 
     bool displaySmoothMesh = false;
     if (getBool("displaySmoothMesh", mesh, displaySmoothMesh))
     {
         if (!displaySmoothMesh)
-            return object;
+            return MObject::kNullObj;
     }
     else
     {
         MGlobal::displayError(MString("generateSmoothMesh : could not get displaySmoothMesh attr "));
-        return object;
+        return MObject::kNullObj;
     }
 
-    MObject meshDataObj = smoothMeshData.create();
+    MObject meshDataObj = mSmoothMeshData.create();
     MObject smoothMeshObj = mesh.generateSmoothMesh(meshDataObj, &stat);
     if (!stat)
     {
         MGlobal::displayError(MString("generateSmoothMesh : failed"));
-        return object;
+        return MObject::kNullObj;
     }
 
     MFnMesh smoothMeshDn(smoothMeshObj, &stat);
     if (!stat)
     {
         MGlobal::displayError(MString("generateSmoothMesh : could not create smoothMeshDn: ") + stat.errorString());
-        return object;
+        return MObject::kNullObj;
     }
 
     MPointArray points;
@@ -94,46 +99,50 @@ MObject MeshWalker::checkSmoothMesh()
     {
         MGlobal::displayError(MString("generateSmoothMesh : could not get points"));
     }
+
     MGlobal::displayInfo(MString("generateSmoothMesh : numPoints: ") + points.length());
 
     return smoothMeshObj;
 }
 
 
-MeshWalker::MeshWalker(MDagPath& dagPath)
+MeshWalker::MeshWalker(const MDagPath& dagPath)
+  : mMeshDagPath(dagPath)
 {
     MStatus stat;
-    meshDagPath = dagPath;
-    this->meshObject = dagPath.node();
-    this->useSmoothMesh = false;
+    mMeshObject = dagPath.node();
+    mUseSmoothMesh = false;
 
-    MObject smoothMesh = this->checkSmoothMesh();
+    MObject smoothMesh = checkSmoothMesh();
     if (smoothMesh != MObject::kNullObj)
     {
-        this->meshObject = smoothMesh;
-        this->useSmoothMesh = true;
+        mMeshObject = smoothMesh;
+        mUseSmoothMesh = true;
     }
-    meshFn.setObject(this->meshObject);
 
-    getObjectShadingGroups(dagPath, perFaceAssignments, shadingGroups, true);
+    mMeshFn.setObject(mMeshObject);
 
-    MItMeshPolygon faceIt(this->meshObject, &stat);
+    getObjectShadingGroups(dagPath, mPerFaceAssignments, mShadingGroups, true);
+
+    MItMeshPolygon faceIt(mMeshObject, &stat);
     CHECK_MSTATUS(stat);
 
-    stat = meshFn.getPoints(points);
+    stat = mMeshFn.getPoints(mPoints);
     if (!stat)
         MGlobal::displayError(MString("MeshWalker : getPoints: ") + stat.errorString());
-    stat = meshFn.getNormals(normals, MSpace::kObject);
+
+    stat = mMeshFn.getNormals(mNormals, MSpace::kObject);
     if (!stat)
         MGlobal::displayError(MString("MeshWalker : normals: ") + stat.errorString());
-    stat = meshFn.getUVs(u, v);
+
+    stat = mMeshFn.getUVs(mU, mV);
     if (!stat)
         MGlobal::displayError(MString("MeshWalker : getUvs: ") + stat.errorString());
 
-    MGlobal::displayInfo(MString("MeshWalker : numU: ") + u.length() + " numV:" + v.length());
+    MGlobal::displayInfo(MString("MeshWalker : numU: ") + mU.length() + " numV:" + mV.length());
 
-    for (uint i = 0; i < v.length(); i++)
-        MGlobal::displayInfo(MString("MeshWalker : V[") + i + "]: " + u[i]);
+    for (uint i = 0; i < mV.length(); i++)
+        MGlobal::displayInfo(MString("MeshWalker : V[") + i + "]: " + mU[i]);
 
 
     MPointArray triPoints;
@@ -165,7 +174,7 @@ MeshWalker::MeshWalker(MDagPath& dagPath)
         {
             int faceRelIds[3];
             faceIt.getTriangle(triId, triPoints, triVtxIds);
-            this->perTriangleAssignments.append(this->perFaceAssignments[faceId]);
+            mPerTriangleAssignments.append(mPerFaceAssignments[faceId]);
 
             for (uint triVtxId = 0; triVtxId < 3; triVtxId++)
             {
@@ -177,7 +186,6 @@ MeshWalker::MeshWalker(MDagPath& dagPath)
                     }
                 }
             }
-
 
             uint vtxId0 = faceVtxIds[faceRelIds[0]];
             uint vtxId1 = faceVtxIds[faceRelIds[1]];
@@ -199,7 +207,7 @@ MeshWalker::MeshWalker(MDagPath& dagPath)
             f.uvIds.append(uvId0);
             f.uvIds.append(uvId1);
             f.uvIds.append(uvId2);
-            faceList.push_back(f);
+            mFaceList.push_back(f);
 
             triCount++;
         }
@@ -208,66 +216,66 @@ MeshWalker::MeshWalker(MDagPath& dagPath)
 
 void MeshWalker::setTransform()
 {
-    MMatrix matrix = meshDagPath.inclusiveMatrix();
-    for (uint vtxId = 0; vtxId < points.length(); vtxId++)
-        points[vtxId] *= matrix;
+    MMatrix matrix = mMeshDagPath.inclusiveMatrix();
+    for (uint vtxId = 0; vtxId < mPoints.length(); vtxId++)
+        mPoints[vtxId] *= matrix;
 }
 
 // Return the name of the mesh.
 const char* MeshWalker::get_name() const
 {
-    return meshFn.name().asChar();
+    return mMeshFn.name().asChar();
 }
 
 // Return vertices.
 size_t MeshWalker::get_vertex_count() const
 {
-    return meshFn.numVertices();
+    return mMeshFn.numVertices();
 }
 
 asf::Vector3d MeshWalker::get_vertex(const size_t i) const
 {
-    return asf::Vector3d(points[i].x, points[i].y, points[i].z);
+    return asf::Vector3d(mPoints[i].x, mPoints[i].y, mPoints[i].z);
 }
 
 // Return vertex normals.
 size_t MeshWalker::get_vertex_normal_count() const
 {
-    return normals.length();
+    return mNormals.length();
 }
 
 asf::Vector3d MeshWalker::get_vertex_normal(const size_t i) const
 {
-    return asf::Vector3d(normals[i].x, normals[i].y, normals[i].z);
+    return asf::Vector3d(mNormals[i].x, mNormals[i].y, mNormals[i].z);
 }
 
 // Return texture coordinates.
 size_t MeshWalker::get_tex_coords_count() const
 {
-    return u.length();
+    return mU.length();
 }
 
 asf::Vector2d MeshWalker::get_tex_coords(const size_t i) const
 {
-    return asf::Vector2d(u[i], v[i]);
+    return asf::Vector2d(mU[i], mV[i]);
 }
 
 // Return material slots.
 size_t MeshWalker::get_material_slot_count() const
 {
-    return this->shadingGroups.length();
+    return mShadingGroups.length();
 }
 
 const char* MeshWalker::get_material_slot(const size_t i) const
 {
-    MString shadingGroupName = getObjectName(shadingGroups[i]);
+    MString shadingGroupName = getObjectName(mShadingGroups[i]);
     return shadingGroupName.asChar();
 }
 
 // Return the number of faces.
 size_t MeshWalker::get_face_count() const
 {
-    return faceList.size();
+    return mFaceList.size();
 }
 
 // Return the number of vertices in a given face.
@@ -279,17 +287,17 @@ size_t MeshWalker::get_face_vertex_count(const size_t face_index) const
 // Return data for a given vertex of a given face.
 size_t MeshWalker::get_face_vertex(const size_t face_index, const size_t vertex_index) const
 {
-    return faceList[face_index].vtxIds[vertex_index];
+    return mFaceList[face_index].vtxIds[vertex_index];
 }
 
 size_t MeshWalker::get_face_vertex_normal(const size_t face_index, const size_t vertex_index) const
 {
-    return faceList[face_index].normalIds[vertex_index];
+    return mFaceList[face_index].normalIds[vertex_index];
 }
 
 size_t MeshWalker::get_face_tex_coords(const size_t face_index, const size_t vertex_index) const
 {
-    return faceList[face_index].uvIds[vertex_index];
+    return mFaceList[face_index].uvIds[vertex_index];
 }
 
 // Return the material assigned to a given face.

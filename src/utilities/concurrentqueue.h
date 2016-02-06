@@ -26,49 +26,67 @@
 // THE SOFTWARE.
 //
 
-#ifndef MTAP_NEWSWATCHRENDER_H
-#define MTAP_NEWSWATCHRENDER_H
+#ifndef UTILITIES_CONCURRENTQUEUE_H
+#define UTILITIES_CONCURRENTQUEUE_H
 
-#include "renderer/api/scene.h"
-#include "renderer/api/project.h"
-#include "renderer/global/globallogger.h"
-#include "renderer/api/rendering.h"
-
-#include <maya/MObject.h>
+// Boost headers.
+#include "boost/thread/condition_variable.hpp"
+#include "boost/thread/mutex.hpp"
 
 // Standard headers.
-#include <memory>
+#include <queue>
 
-namespace asf = foundation;
-namespace asr = renderer;
-
-class NewSwatchRenderer;
-
-class AppleseedSwatchRenderer
+template <typename Data>
+class concurrent_queue
 {
+  private:
+    std::queue<Data> the_queue;
+    mutable boost::mutex the_mutex;
+    boost::condition_variable my_condition_variable;
+
   public:
-    AppleseedSwatchRenderer();
-    ~AppleseedSwatchRenderer();
+    void push(Data const& data)
+    {
+        boost::mutex::scoped_lock lock(the_mutex);
+        the_queue.push(data);
+        lock.unlock();
+        my_condition_variable.notify_one();
+    }
 
-    void mainLoop();
-    void setSize(int size);
-    void setShader(MObject shader);
-    void renderSwatch(NewSwatchRenderer *sr);
-    void fillSwatch(float *pixels);
-    bool terminateLoop;
-    bool enableSwatchRenderer;
-    bool loopDone;
+    bool empty() const
+    {
+        boost::mutex::scoped_lock lock(the_mutex);
+        return the_queue.empty();
+    }
 
-    asf::auto_release_ptr<asr::Scene> scene;
-    asf::auto_release_ptr<asr::Project> project;
-    std::auto_ptr<asr::MasterRenderer> mrenderer;
-    asr::DefaultRendererController renderer_controller;
+    size_t size() const
+    {
+        return the_queue.size();
+    }
 
-    static void startAppleseedSwatchRender(AppleseedSwatchRenderer *swRend);
-    static void terminateAppleseedSwatchRender(AppleseedSwatchRenderer *swRend);
+    bool try_pop(Data& popped_value)
+    {
+        boost::mutex::scoped_lock lock(the_mutex);
+        if (the_queue.empty())
+        {
+            return false;
+        }
 
-    void defineMaterial(MObject shadingNode);
+        popped_value = the_queue.front();
+        the_queue.pop();
+        return true;
+    }
 
+    void wait_and_pop(Data& popped_value)
+    {
+        boost::mutex::scoped_lock lock(the_mutex);
+        while (the_queue.empty())
+        {
+            my_condition_variable.wait(lock);
+        }
+        popped_value = the_queue.front();
+        the_queue.pop();
+    }
 };
 
-#endif
+#endif  // !UTILITIES_CONCURRENTQUEUE_H

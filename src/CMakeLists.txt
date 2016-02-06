@@ -30,30 +30,6 @@ include_directories (
     .
 )
 
-set (mayarendernodes_sources
-    mayarendernodes/renderglobalsnode.cpp
-    mayarendernodes/renderglobalsnode.h
-    mayarendernodes/standinlocatornode.cpp
-    mayarendernodes/standinlocatornode.h
-)
-list (APPEND appleseedmaya_sources
-    ${mayarendernodes_sources}
-)
-source_group ("mayarendernodes" FILES
-    ${mayarendernodes_sources}
-)
-
-set (memory_sources
-    memory/memoryinfo.cpp
-    memory/memoryinfo.h
-)
-list (APPEND appleseedmaya_sources
-    ${memory_sources}
-)
-source_group ("memory" FILES
-    ${memory_sources}
-)
-
 set (osl_sources
     osl/oslutils.cpp
     osl/oslutils.h
@@ -83,8 +59,8 @@ source_group ("shaders" FILES
 set (shadingtools_sources
     shadingtools/material.cpp
     shadingtools/material.h
-    shadingtools/shaderdefs.cpp
-    shadingtools/shaderdefs.h
+    shadingtools/shaderdefinitions.cpp
+    shadingtools/shaderdefinitions.h
     shadingtools/shadingnode.cpp
     shadingtools/shadingnode.h
     shadingtools/shadingutils.cpp
@@ -102,10 +78,7 @@ set (swatchesrenderer_sources
     swatchesrenderer/appleseedswatchrenderer.h
     swatchesrenderer/newswatchrenderer.cpp
     swatchesrenderer/newswatchrenderer.h
-    swatchesrenderer/swatchesevent.cpp
     swatchesrenderer/swatchesevent.h
-    swatchesrenderer/swatchesqueue.h
-    swatchesrenderer/swatchrendererinterface.h
 )
 list (APPEND appleseedmaya_sources
     ${swatchesrenderer_sources}
@@ -115,13 +88,9 @@ source_group ("swatchesrenderer" FILES
 )
 
 set (threads_sources
-    threads/compute.cpp
-    threads/compute.h
-    threads/queue.cpp
-    threads/queue.h
+    threads/event.h
     threads/renderqueueworker.cpp
     threads/renderqueueworker.h
-    threads/threads.h
 )
 list (APPEND appleseedmaya_sources
     ${threads_sources}
@@ -133,6 +102,7 @@ source_group ("threads" FILES
 set (utilities_sources
     utilities/attrtools.cpp
     utilities/attrtools.h
+    utilities/concurrentqueue.h
     utilities/logging.cpp
     utilities/logging.h
     utilities/meshtools.cpp
@@ -150,21 +120,10 @@ source_group ("utilities" FILES
 )
 
 set (sources
-    appleseed.cpp
-    appleseed.h
-    appleseedcamera.cpp
-    appleseedconfig.cpp
-    appleseedcreateoslshader.cpp
-    appleseedenvironment.cpp
-    appleseedframeoutput.cpp
-    appleseedgeo.cpp
-    appleseedinteractiveupdate.cpp
-    appleseedlights.cpp
-    appleseedmaterial.cpp
-    appleseedmaterial.h
     appleseedmeshwalker.cpp
     appleseedmeshwalker.h
-    appleseedupdateelements.cpp
+    appleseedrenderer.cpp
+    appleseedrenderer.h
     appleseedutils.cpp
     appleseedutils.h
     binmeshreadercmd.cpp
@@ -173,52 +132,31 @@ set (sources
     binmeshtranslator.h
     binmeshwritercmd.cpp
     binmeshwritercmd.h
-    definitions.h
     mayaobject.cpp
     mayaobject.h
-    mayaobjectfactory.h
+    mayarenderglobalsnode.cpp
+    mayarenderglobalsnode.h
     mayascene.cpp
     mayascene.h
-    mayascenefactory.cpp
-    mayascenefactory.h
-    mayasceneparsing.cpp
-    mayasceneutils.cpp
     mayatoappleseed.cpp
     mayatoappleseed.h
-    mtap_material.cpp
-    mtap_material.h
-    mtap_mayaobject.cpp
-    mtap_mayaobject.h
-    mtap_mayaobjectfactory.cpp
-    mtap_mayarenderer.cpp
-    mtap_mayarenderer.h
-    mtap_renderercontroller.cpp
-    mtap_renderercontroller.h
-    mtap_renderglobals.cpp
-    mtap_renderglobalsnode.cpp
-    mtap_renderglobalsnode.h
-    mtap_shadingnode.cpp
-    mtap_shadingnode.h
-    mtap_standinlocator.cpp
-    mtap_standinlocator.h
-    mtap_standinmeshnode.cpp
-    mtap_standinmeshnode.h
+    mayatoappleseedglobals.cpp
+    mayatoappleseedglobals.h
+    mayatoworld.cpp
+    mayatoworld.h
+    hypershaderenderer.cpp
+    hypershaderenderer.h
     mtap_tilecallback.cpp
     mtap_tilecallback.h
-    mtap_world.cpp
     pluginmain.cpp
     proxymesh.cpp
     proxymesh.h
+    renderercontroller.cpp
+    renderercontroller.h
     renderglobals.cpp
     renderglobals.h
-    renderglobalsfactory.cpp
-    renderglobalsfactory.h
-    renderprocess.cpp
-    renderprocess.h
     version.cpp
     version.h
-    world.cpp
-    world.h
 )
 list (APPEND appleseedmaya_sources
     ${sources}

@@ -48,6 +48,8 @@
 #include "utilities/attrtools.h"
 #include "proxymesh.h"
 
+namespace asf = foundation;
+
 void* BinMeshWriterCmd::creator()
 {
     return new BinMeshWriterCmd();

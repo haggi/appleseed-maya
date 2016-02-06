@@ -29,8 +29,7 @@
 #ifndef MAYA_OBJECT_H
 #define MAYA_OBJECT_H
 
-#include <vector>
-#include <memory>
+// Maya headers.
 #include <maya/MObject.h>
 #include <maya/MObjectArray.h>
 #include <maya/MIntArray.h>
@@ -44,10 +43,16 @@
 #include <maya/MMatrix.h>
 #include <maya/MColor.h>
 
-#include "definitions.h"
+// Boost headers.
+#include "boost/shared_ptr.hpp"
 
-class MayaScene;
+// Standard headers.
+#include <vector>
+#include <memory>
+
+// Forward declarations.
 class Material;
+class MayaObject;
 
 // not all renderers can define a mesh and then upate it later in the
 // translation process. e.g. Corona needs all motion mesh informations during
@@ -70,9 +75,15 @@ class ObjectAttributes
     bool hasColorOverride;
     float opacityOverride;
     MMatrix objectMatrix;
+    bool needsOwnAssembly;
+    MayaObject *assemblyObject; // mayaObject above for which an assembly will be created
+
+    ObjectAttributes();
+    explicit ObjectAttributes(boost::shared_ptr<ObjectAttributes> other);
 };
 
-class MayaObject : public MBoundingBox
+class MayaObject
+  : public MBoundingBox
 {
   public:
     MObject mobject;
@@ -90,7 +101,6 @@ class MayaObject : public MBoundingBox
     bool shadowExcludeList; // if true the shadowObjects contains objects which ignores shadows from the current light
     std::vector<MDagPath> castNoShadowObjects; // for lights - shadow linking
     std::vector<boost::shared_ptr<MayaObject> >  excludedObjects; // for lights - excluded objects
-
 
     std::vector<MString> exportFileNames; // for every mb step complete filename for every exported shape file
     std::vector<MString> hierarchyNames; // for every geo mb step I have one name, /obj/cube0, /obj/cube1...
@@ -135,19 +145,23 @@ class MayaObject : public MBoundingBox
     void getMeshData(MPointArray& point, MFloatVectorArray& normals, MFloatArray& u,
                     MFloatArray& v, MIntArray& triPointIndices, MIntArray& triNormalIndices,
                     MIntArray& triUvIndices, MIntArray& triMatIndices); // all triIndices contain per vertex indices except the triMatIndices, this is per face
-    virtual bool geometryShapeSupported();
-    virtual boost::shared_ptr<ObjectAttributes> getObjectAttributes(boost::shared_ptr<ObjectAttributes> parentAttributes = boost::shared_ptr<ObjectAttributes>()) = 0;
+
+    bool geometryShapeSupported();
+
+    boost::shared_ptr<ObjectAttributes> getObjectAttributes(
+        boost::shared_ptr<ObjectAttributes> parentAttributes = boost::shared_ptr<ObjectAttributes>());
 
     boost::shared_ptr<MayaObject> parent;
     boost::shared_ptr<MayaObject> origObject; // this is necessary for instanced objects that have to access the original objects data
+
     MayaObject(MObject& mobject);
     MayaObject(MDagPath& objPath);
-    virtual ~MayaObject();
+
     void initialize();
     void updateObject();
-};
 
-void addLightIdentifier(int id);
-void addObjectIdentifier(int id);
+  private:
+    bool needsAssembly();
+};
 
 #endif

@@ -38,21 +38,32 @@
 #include "utilities/tools.h"
 #include "utilities/attrtools.h"
 #include "shadingtools/shadingutils.h"
-#include "world.h"
+#include "mayatoworld.h"
 #include "renderglobals.h"
+
+ObjectAttributes::ObjectAttributes()
+{
+    needsOwnAssembly = false;
+    objectMatrix.setToIdentity();
+    assemblyObject = 0;
+}
+
+ObjectAttributes::ObjectAttributes(boost::shared_ptr<ObjectAttributes> other)
+{
+    this->hasInstancerConnection = false;
+    objectMatrix.setToIdentity();
+    assemblyObject = 0;
+
+    if (other)
+    {
+        hasInstancerConnection = other->hasInstancerConnection;
+        objectMatrix = other->objectMatrix;
+        assemblyObject = other->assemblyObject;
+    }
+}
 
 static std::vector<int> lightIdentifier; // plugids for detecting new lighttypes
 static std::vector<int> objectIdentifier; // plugids for detecting new objTypes
-
-void addLightIdentifier(int id)
-{
-    lightIdentifier.push_back(id);
-}
-
-void addObjectIdentifier(int id)
-{
-    objectIdentifier.push_back(id);
-}
 
 bool MayaObject::isInstanced()
 {
@@ -117,11 +128,8 @@ bool MayaObject::isGeo()
 
 bool MayaObject::isTransform()
 {
-    if (mobject.hasFn(MFn::kTransform))
-        return true;
-    return false;
+    return mobject.hasFn(MFn::kTransform);
 }
-
 
 void MayaObject::getShadingGroups()
 {
@@ -139,7 +147,7 @@ void MayaObject::getShadingGroups()
 }
 
 // check if the node or any of its parents has a animated visibility
-bool  MayaObject::isVisiblityAnimated()
+bool MayaObject::isVisiblityAnimated()
 {
     MStatus stat = MStatus::kSuccess;
     bool visibility = true;
@@ -159,7 +167,7 @@ bool  MayaObject::isVisiblityAnimated()
     return false;
 }
 
-bool  MayaObject::isObjVisible()
+bool MayaObject::isObjVisible()
 {
     MFnDagNode dagNode(mobject);
     if (!IsVisible(dagNode) || IsTemplated(dagNode) || !IsInRenderLayer(dagPath) || !IsPathVisible(dagPath) || !IsLayerVisible(dagPath))
@@ -167,10 +175,18 @@ bool  MayaObject::isObjVisible()
     return true;
 }
 
-
 bool MayaObject::geometryShapeSupported()
 {
-    return true;
+    if (this->mobject.hasFn(MFn::kMesh))
+        return true;
+
+    if (this->isLight())
+        return true;
+
+    if (this->isCamera())
+        return true;
+
+    return false;
 }
 
 bool MayaObject::shadowMapCastingLight()
@@ -435,7 +451,6 @@ void MayaObject::addMeshData()
             np = mdIt->points.length();
         }
     }
-
 }
 
 void MayaObject::getMeshData(MPointArray& points, MFloatVectorArray& normals)
@@ -482,7 +497,6 @@ void MayaObject::getMeshData(MPointArray& points, MFloatVectorArray& normals)
 
 void MayaObject::getMeshData(MPointArray& points, MFloatVectorArray& normals, MFloatArray& uArray, MFloatArray& vArray, MIntArray& triPointIndices, MIntArray& triNormalIndices, MIntArray& triUvIndices, MIntArray& triMatIndices)
 {
-
     MStatus stat;
     MObject meshObject = mobject;
     MMeshSmoothOptions options;
@@ -618,6 +632,86 @@ void MayaObject::getMeshData(MPointArray& points, MFloatVectorArray& normals, MF
     }
 }
 
-MayaObject::~MayaObject()
+//  The purpose of this method is to compare object attributes and inherit them if appropriate.
+//  e.g. lets say we assign a color to the top node of a hierarchy. Then all child nodes will be
+//  called and this method is used.
+boost::shared_ptr<ObjectAttributes> MayaObject::getObjectAttributes(boost::shared_ptr<ObjectAttributes> parentAttributes)
 {
+    boost::shared_ptr<ObjectAttributes> myAttributes(new ObjectAttributes(parentAttributes));
+
+    if (this->hasInstancerConnection)
+    {
+        myAttributes->hasInstancerConnection = true;
+    }
+
+    if (this->isTransform())
+    {
+        MFnDagNode objNode(this->mobject);
+        myAttributes->objectMatrix = objNode.transformationMatrix() * myAttributes->objectMatrix;
+    }
+
+    if (this->needsAssembly() || myAttributes->hasInstancerConnection)
+    {
+        myAttributes->needsOwnAssembly = true;
+        myAttributes->assemblyObject = this;
+        myAttributes->objectMatrix.setToIdentity();
+    }
+
+    attributes = myAttributes;
+
+    return myAttributes;
+}
+
+// objects needs own assembly if:
+//      - it is instanced
+//      - it is an animated transform
+//      - its polysize is large (not yet implemented)
+bool MayaObject::needsAssembly()
+{
+    // Normally only a few nodes would need a own assembly.
+    // In IPR we have an update problem: If in a hierarchy a transform node is manipulated,
+    // there is no way to find out that a geometry node below has to be updated, at least I don't know any.
+    // Maybe I have to parse the hierarchy below and check the nodes for a geometry/camera/light node.
+    // So at the moment I let all transform nodes receive their own transforms. This will result in a
+    // translation of the complete hierarchy as assemblies/assembly instances.
+    if (getWorldPtr()->renderType == MayaToWorld::IPRRENDER)
+    {
+        if (this->isTransform())
+        {
+            return true;
+        }
+    }
+
+    // this is the root of all assemblies
+    if (this->mobject.hasFn(MFn::kWorld))
+        return true;
+
+    if (this->instanceNumber > 0)
+        return false;
+
+    if (this->hasInstancerConnection)
+    {
+        Logging::debug(MString("obj has instancer connection -> needs assembly."));
+        return true;
+    }
+
+    if (this->isInstanced())
+    {
+        Logging::debug(MString("obj has more than 1 parent -> needs assembly."));
+        return true;
+    }
+
+    if (this->isObjAnimated())
+    {
+        Logging::debug(MString("Object is animated -> needs assembly."));
+        return true;
+    }
+
+    if (isLightTransform(this->dagPath))
+    {
+        Logging::debug(MString("Object is light transform -> needs assembly."));
+        return true;
+    }
+
+    return false;
 }
