@@ -70,7 +70,7 @@
 #include "utilities/logging.h"
 #include "utilities/tools.h"
 #include "swatchesevent.h"
-#include "mayatoworld.h"
+#include "world.h"
 
 // Maya headers.
 #include <maya/MFnDependencyNode.h>

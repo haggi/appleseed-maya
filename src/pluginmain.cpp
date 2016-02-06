@@ -41,8 +41,8 @@
 #if MAYA_API_VERSION >= 201600
 #include "mtap_mayarenderer.h"
 #endif
-#include "mayatoworld.h"
 #include "version.h"
+#include "world.h"
 
 // Maya headers.
 #include <maya/MGlobal.h>

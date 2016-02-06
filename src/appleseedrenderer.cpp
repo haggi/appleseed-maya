@@ -41,9 +41,9 @@
 #include "utilities/tools.h"
 #include "appleseedutils.h"
 #include "mayascene.h"
-#include "mtap_tilecallback.h"
 #include "renderglobals.h"
-#include "mayatoworld.h"
+#include "tilecallback.h"
+#include "world.h"
 
 // appleseed.renderer headers.
 #include "renderer/global/globallogger.h"
@@ -105,8 +105,8 @@ void AppleseedRenderer::initializeRenderer()
 
 void AppleseedRenderer::unInitializeRenderer()
 {
-    getWorldPtr()->setRenderState(MayaToWorld::RSTATEDONE);
-    getWorldPtr()->setRenderType(MayaToWorld::RTYPENONE);
+    getWorldPtr()->setRenderState(World::RSTATEDONE);
+    getWorldPtr()->setRenderType(World::RTYPENONE);
 
     // todo: isn't this supposed to be reset()?
     this->project.release();
@@ -157,9 +157,9 @@ void AppleseedRenderer::render()
 
     if (!sceneBuilt)
     {
-        this->tileCallbackFac.reset(new mtap_TileCallbackFactory());
+        this->tileCallbackFac.reset(new TileCallbackFactory());
 
-        if (getWorldPtr()->getRenderType() == MayaToWorld::IPRRENDER)
+        if (getWorldPtr()->getRenderType() == World::IPRRENDER)
         {
             masterRenderer.reset(
                 new asr::MasterRenderer(
@@ -178,7 +178,7 @@ void AppleseedRenderer::render()
                     this->tileCallbackFac.get()));
         }
 
-        if (getWorldPtr()->getRenderType() == MayaToWorld::IPRRENDER)
+        if (getWorldPtr()->getRenderType() == World::IPRRENDER)
         {
             Event e;
             e.type = Event::ADDIPRCALLBACKS;
@@ -191,7 +191,7 @@ void AppleseedRenderer::render()
         sceneBuilt = true;
     }
 
-    getWorldPtr()->setRenderState(MayaToWorld::RSTATERENDERING);
+    getWorldPtr()->setRenderState(World::RSTATERENDERING);
     mtap_controller.set_status(asr::IRendererController::ContinueRendering);
 
     masterRenderer->render();
@@ -1283,7 +1283,7 @@ asf::StringArray AppleseedRenderer::defineMaterial(boost::shared_ptr<MayaObject>
         }
 
         // if we are in IPR mode, save all translated shading nodes to the interactive update list
-        if (getWorldPtr()->getRenderType() == MayaToWorld::IPRRENDER)
+        if (getWorldPtr()->getRenderType() == World::IPRRENDER)
         {
             if (mayaScene)
             {
@@ -1294,7 +1294,7 @@ asf::StringArray AppleseedRenderer::defineMaterial(boost::shared_ptr<MayaObject>
                 iel.node = materialNode;
                 mayaScene->interactiveUpdateMap[mayaScene->interactiveUpdateMap.size()] = iel;
 
-                if (getWorldPtr()->getRenderState() == MayaToWorld::RSTATERENDERING)
+                if (getWorldPtr()->getRenderState() == World::RSTATERENDERING)
                 {
                     RenderQueueWorker::IPRUpdateCallbacks();
                 }

@@ -31,7 +31,7 @@
 
 // appleseed-maya headers.
 #include "appleseedswatchrenderer.h"
-#include "mayatoworld.h"
+#include "world.h"
 
 // Maya headers.
 #include <maya/MImage.h>
@@ -49,7 +49,7 @@ NewSwatchRenderer::NewSwatchRenderer(MObject dependNode, MObject renderNode, int
 
 bool NewSwatchRenderer::doIteration()
 {
-    if (getWorldPtr()->getRenderType() == MayaToWorld::IPRRENDER)
+    if (getWorldPtr()->getRenderType() == World::IPRRENDER)
     {
         image().create(resolution(), resolution(), 4, MImage::kFloat);
     }

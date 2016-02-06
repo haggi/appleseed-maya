@@ -26,8 +26,8 @@
 // THE SOFTWARE.
 //
 
-#ifndef MAYATOWORLD_H
-#define MAYATOWORLD_H
+#ifndef WORLD_H
+#define WORLD_H
 
 // appleseed-maya headers.
 #include "utilities/tools.h"
@@ -50,11 +50,11 @@ class AppleseedSwatchRenderer;
 class MayaScene;
 class RenderGlobals;
 
-class MayaToWorld
+class World
 {
   public:
-    MayaToWorld();
-    ~MayaToWorld();
+    World();
+    ~World();
 
     enum RenderType
     {
@@ -119,6 +119,6 @@ class MayaToWorld
 
 void deleteWorld();
 void defineWorld();
-MayaToWorld *getWorldPtr();
+World *getWorldPtr();
 
-#endif  // !MAYATOWORLD_H
+#endif  // !WORLD_H

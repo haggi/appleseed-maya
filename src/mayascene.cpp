@@ -53,7 +53,7 @@
 #include "utilities/pystring.h"
 #include "shadingtools/shadingutils.h"
 #include "threads/renderqueueworker.h"
-#include "mayatoworld.h"
+#include "world.h"
 
 MayaScene::MayaScene()
 {
@@ -366,7 +366,7 @@ bool MayaScene::parseSceneHierarchy(MDagPath currentPath, int level, boost::shar
     boost::shared_ptr<ObjectAttributes> currentAttributes = mo->getObjectAttributes(parentAttributes);
     mo->parent = parentObject;
     classifyMayaObject(mo);
-    if (getWorldPtr()->getRenderType() == MayaToWorld::IPRRENDER)
+    if (getWorldPtr()->getRenderType() == World::IPRRENDER)
     {
         InteractiveElement iel;
         iel.obj = mo;

@@ -26,48 +26,54 @@
 // THE SOFTWARE.
 //
 
-#ifndef MTAP_TILE_CALLBACK_H
-#define MTAP_TILE_CALLBACK_H
+#ifndef TILECALLBACK_H
+#define TILECALLBACK_H
 
+// appleseed.renderer headers.
 #include "renderer/api/rendering.h"
-#include "foundation/image/tile.h"
-#include <maya/MRenderView.h>
 
-namespace asf = foundation;
-namespace asr = renderer;
+// appleseed.foundation headers.
+#include "foundation/platform/compiler.h"
 
-class mtap_TileCallback
-  : public asr::ITileCallback
+// Standard headers.
+#include <cstddef>
+
+// Forward declarations.
+namespace foundation    { class Tile; }
+namespace renderer      { class Frame; }
+
+class TileCallback
+  : public renderer::ITileCallback
 {
   public:
     // Delete this instance.
-    virtual void release();
+    virtual void release() APPLESEED_OVERRIDE;
 
-   // This method is called before a region is rendered.
-    void pre_render(
-        const size_t        x,
-        const size_t        y,
-        const size_t        width,
-        const size_t        height);
+    // This method is called before a region is rendered.
+    virtual void pre_render(
+        const size_t            x,
+        const size_t            y,
+        const size_t            width,
+        const size_t            height) APPLESEED_OVERRIDE;
 
     // This method is called after a whole frame is rendered (at once).
-    void post_render(
-        const asr::Frame*   frame);
+    virtual void post_render(
+        const renderer::Frame*  frame) APPLESEED_OVERRIDE;
 
     virtual void post_render_tile(
-        const asr::Frame*   frame,
-        const size_t        tile_x,
-        const size_t        tile_y);
-
-    void copyTileToImage(RV_PIXEL* pixels, asf::Tile& tile, int tile_x, int tile_y, const asr::Frame* frame);
+        const renderer::Frame*  frame,
+        const size_t            tile_x,
+        const size_t            tile_y) APPLESEED_OVERRIDE;
 };
 
-class mtap_TileCallbackFactory
-  : public asr::ITileCallbackFactory
+class TileCallbackFactory
+  : public renderer::ITileCallbackFactory
 {
   public:
-    virtual asr::ITileCallback* create();
-    virtual void release();
+    // Delete this instance.
+    virtual void release() APPLESEED_OVERRIDE;
+
+    virtual renderer::ITileCallback* create() APPLESEED_OVERRIDE;
 };
 
-#endif
+#endif  // !TILECALLBACK_H

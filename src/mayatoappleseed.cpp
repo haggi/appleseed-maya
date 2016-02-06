@@ -35,7 +35,7 @@
 #include "utilities/attrtools.h"
 #include "utilities/logging.h"
 #include "utilities/tools.h"
-#include "mayatoworld.h"
+#include "world.h"
 
 // Maya headers.
 #include <maya/MArgDatabase.h>
@@ -89,15 +89,15 @@ MStatus MayaToAppleseed::doIt(const MArgList& args)
 
     if (argData.isFlagSet("-state", &stat))
     {
-        if (getWorldPtr()->getRenderState() == MayaToWorld::RSTATETRANSLATING)
+        if (getWorldPtr()->getRenderState() == World::RSTATETRANSLATING)
             setResult("rstatetranslating");
-        if (getWorldPtr()->getRenderState() == MayaToWorld::RSTATERENDERING)
+        if (getWorldPtr()->getRenderState() == World::RSTATERENDERING)
             setResult("rstaterendering");
-        if (getWorldPtr()->getRenderState() == MayaToWorld::RSTATEDONE)
+        if (getWorldPtr()->getRenderState() == World::RSTATEDONE)
             setResult("rstatedone");
-        if (getWorldPtr()->getRenderState() == MayaToWorld::RSTATENONE)
+        if (getWorldPtr()->getRenderState() == World::RSTATENONE)
             setResult("rstatenone");
-        if (getWorldPtr()->getRenderState() == MayaToWorld::RSTATESTOPPED)
+        if (getWorldPtr()->getRenderState() == World::RSTATESTOPPED)
             setResult("rstatestopped");
         return MS::kSuccess;
     }
@@ -126,7 +126,7 @@ MStatus MayaToAppleseed::doIt(const MArgList& args)
     e.type = Event::INITRENDER;
 
     MFnDependencyNode defaultGlobals(objectFromName("defaultResolution"));
-    e.renderType = MayaToWorld::UIRENDER;
+    e.renderType = World::UIRENDER;
     e.width = defaultGlobals.findPlug("width").asInt();
     e.height = defaultGlobals.findPlug("height").asInt();
 
@@ -134,7 +134,7 @@ MStatus MayaToAppleseed::doIt(const MArgList& args)
     e.useRenderRegion = drgfn.findPlug("useRenderRegion").asBool();
 
     if (argData.isFlagSet("-startIpr", &stat))
-        e.renderType = MayaToWorld::IPRRENDER;
+        e.renderType = World::IPRRENDER;
 
     if (argData.isFlagSet("-width", &stat))
         argData.getFlagArgument("-width", 0, e.width);

@@ -32,12 +32,12 @@
 #include "utilities/logging.h"
 #include "appleseedrenderer.h"
 #include "mayascene.h"
-#include "mayatoworld.h"
+#include "world.h"
 
 // Maya headers.
 #include <maya/MGlobal.h>
 
-static MayaToWorld* worldPointer = 0;
+static World* worldPointer = 0;
 static MCallbackId timerCallbackId = 0;
 
 void deleteWorld()
@@ -49,15 +49,15 @@ void deleteWorld()
 void defineWorld()
 {
     delete worldPointer;
-    worldPointer = new MayaToWorld();
+    worldPointer = new World();
 }
 
-MayaToWorld* getWorldPtr()
+World* getWorldPtr()
 {
     return worldPointer;
 }
 
-MayaToWorld::MayaToWorld()
+World::World()
 {
     // in batch mode we do not need any renderView callbacks, and timer callbacks do not work anyway in batch
     if (MGlobal::mayaState() != MGlobal::kBatch)
@@ -85,20 +85,20 @@ MayaToWorld::MayaToWorld()
     mRenderGlobals.reset();
 }
 
-MayaToWorld::~MayaToWorld()
+World::~World()
 {
     if (timerCallbackId != 0)
         MTimerMessage::removeCallback(timerCallbackId);
 }
 
-void MayaToWorld::initializeRenderEnvironment()
+void World::initializeRenderEnvironment()
 {
     worldPointer->mRenderGlobals.reset(new RenderGlobals());
     worldPointer->mScene.reset(new MayaScene());
     worldPointer->mRenderer.reset(new AppleseedRenderer());
 }
 
-void MayaToWorld::cleanUpAfterRender()
+void World::cleanUpAfterRender()
 {
     // After a normal rendering we do not need the Maya scene data any more. Remove it to save memory.
     worldPointer->mScene.reset();

@@ -35,7 +35,6 @@
 #include "osl/oslutils.h"
 #include "shadingtools/material.h"
 #include "shadingtools/shadingutils.h"
-#include "mayatoworld.h"
 #include "renderer/global/globallogger.h"
 #include "renderer/api/environment.h"
 #include "renderer/api/environmentedf.h"
@@ -44,6 +43,7 @@
 #include "renderer/api/edf.h"
 #include "renderer/modeling/shadergroup/shadergroup.h"
 #include "appleseedutils.h"
+#include "world.h"
 
 // appleseed.renderer headers.
 #include "renderer/api/bsdf.h"

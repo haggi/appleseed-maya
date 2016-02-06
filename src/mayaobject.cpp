@@ -38,8 +38,8 @@
 #include "utilities/tools.h"
 #include "utilities/attrtools.h"
 #include "shadingtools/shadingutils.h"
-#include "mayatoworld.h"
 #include "renderglobals.h"
+#include "world.h"
 
 ObjectAttributes::ObjectAttributes()
 {
@@ -674,7 +674,7 @@ bool MayaObject::needsAssembly()
     // Maybe I have to parse the hierarchy below and check the nodes for a geometry/camera/light node.
     // So at the moment I let all transform nodes receive their own transforms. This will result in a
     // translation of the complete hierarchy as assemblies/assembly instances.
-    if (getWorldPtr()->getRenderType() == MayaToWorld::IPRRENDER)
+    if (getWorldPtr()->getRenderType() == World::IPRRENDER)
     {
         if (this->isTransform())
         {

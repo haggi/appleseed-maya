@@ -140,12 +140,8 @@ set (sources
     mayascene.h
     mayatoappleseed.cpp
     mayatoappleseed.h
-    mayatoworld.cpp
-    mayatoworld.h
     hypershaderenderer.cpp
     hypershaderenderer.h
-    mtap_tilecallback.cpp
-    mtap_tilecallback.h
     pluginmain.cpp
     proxymesh.cpp
     proxymesh.h
@@ -153,8 +149,12 @@ set (sources
     renderercontroller.h
     renderglobals.cpp
     renderglobals.h
+    tilecallback.cpp
+    tilecallback.h
     version.cpp
     version.h
+    world.cpp
+    world.h
 )
 list (APPEND appleseedmaya_sources
     ${sources}

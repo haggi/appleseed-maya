@@ -35,8 +35,8 @@
 #include "utilities/pystring.h"
 #include "appleseedrenderer.h"
 #include "mayaobject.h"
-#include "mayatoworld.h"
 #include "renderglobals.h"
+#include "world.h"
 
 // appleseed.renderer headers.
 #include "renderer/api/color.h"
@@ -149,7 +149,7 @@ void defineMasterAssembly(asr::Project *project)
 {
     MMatrix conversionMatrix;
     conversionMatrix.setToIdentity();
-    MayaToWorld *world = getWorldPtr();
+    World *world = getWorldPtr();
     if (world != 0)
     {
         RenderGlobals *rg = world->mRenderGlobals.get();
@@ -391,7 +391,7 @@ void fillMatrices(boost::shared_ptr<MayaObject> obj, asr::TransformSequence& tra
     transformSequence.clear();
 
     // in ipr mode we have to update the matrix manually
-    if (getWorldPtr()->getRenderType() == MayaToWorld::IPRRENDER)
+    if (getWorldPtr()->getRenderType() == World::IPRRENDER)
     {
         obj->transformMatrices.clear();
         obj->transformMatrices.push_back(obj->dagPath.inclusiveMatrix());
@@ -426,7 +426,7 @@ void fillMatrices(boost::shared_ptr<MayaObject> obj, asr::TransformSequence& tra
 void fillTransformMatrices(boost::shared_ptr<MayaObject> obj, asr::Light *light)
 {
     // in ipr mode we have to update the matrix manually
-    if (getWorldPtr()->getRenderType() == MayaToWorld::IPRRENDER)
+    if (getWorldPtr()->getRenderType() == World::IPRRENDER)
     {
         obj->transformMatrices.clear();
         obj->transformMatrices.push_back(obj->dagPath.inclusiveMatrix());
