@@ -26,14 +26,17 @@
 // THE SOFTWARE.
 //
 
-#ifndef MAYATO_NEWSWATCHRENDER_H
-#define MAYATO_NEWSWATCHRENDER_H
+#ifndef NEWSWATCHRENDERER_H
+#define NEWSWATCHRENDERER_H
 
 // appleseed.foundation headers.
 #include "foundation/platform/compiler.h"
 
 // Maya headers.
 #include <maya/MSwatchRenderBase.h>
+
+// Forward declarations.
+class MObject;
 
 class NewSwatchRenderer
   : public MSwatchRenderBase
@@ -46,16 +49,6 @@ class NewSwatchRenderer
     NewSwatchRenderer(MObject dependNode, MObject renderNode, int imageResolution);
 
     virtual bool doIteration() APPLESEED_OVERRIDE;
-    virtual bool renderParallel() APPLESEED_OVERRIDE;
-    virtual void cancelParallelRendering() APPLESEED_OVERRIDE;
-
-    void finishParallelRender();
-
-  private:
-    float *floatPixels;
-    bool renderInProgress;
-    bool swatchRenderingDone;
-    MObject rNode;
 };
 
-#endif
+#endif  // !NEWSWATCHRENDERER_H

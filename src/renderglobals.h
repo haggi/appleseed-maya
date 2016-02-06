@@ -257,9 +257,6 @@ class RenderGlobals
     MString getImageOutputFile();
     MString getImageExt();
 
-    // these methods are not defined in the base implementation, they should be implemented in every renderer
-    void setRendererUnit();
-    void setRendererAxis();
     void defineGlobalConversionMatrix();
 };
 

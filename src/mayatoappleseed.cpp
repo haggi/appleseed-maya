@@ -89,15 +89,15 @@ MStatus MayaToAppleseed::doIt(const MArgList& args)
 
     if (argData.isFlagSet("-state", &stat))
     {
-        if (getWorldPtr()->renderState == MayaToWorld::RSTATETRANSLATING)
+        if (getWorldPtr()->getRenderState() == MayaToWorld::RSTATETRANSLATING)
             setResult("rstatetranslating");
-        if (getWorldPtr()->renderState == MayaToWorld::RSTATERENDERING)
+        if (getWorldPtr()->getRenderState() == MayaToWorld::RSTATERENDERING)
             setResult("rstaterendering");
-        if (getWorldPtr()->renderState == MayaToWorld::RSTATEDONE)
+        if (getWorldPtr()->getRenderState() == MayaToWorld::RSTATEDONE)
             setResult("rstatedone");
-        if (getWorldPtr()->renderState == MayaToWorld::RSTATENONE)
+        if (getWorldPtr()->getRenderState() == MayaToWorld::RSTATENONE)
             setResult("rstatenone");
-        if (getWorldPtr()->renderState == MayaToWorld::RSTATESTOPPED)
+        if (getWorldPtr()->getRenderState() == MayaToWorld::RSTATESTOPPED)
             setResult("rstatestopped");
         return MS::kSuccess;
     }

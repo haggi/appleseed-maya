@@ -131,7 +131,7 @@ void AppleseedRenderer::preFrame()
 void AppleseedRenderer::postFrame()
 {
     // Save the frame to disk.
-    boost::shared_ptr<RenderGlobals> renderGlobals = getWorldPtr()->worldRenderGlobalsPtr;
+    boost::shared_ptr<RenderGlobals> renderGlobals = getWorldPtr()->mRenderGlobals;
     renderGlobals->getImageName();
     MString filename = renderGlobals->imageOutputFile.asChar();
     Logging::debug(MString("Saving image as ") + renderGlobals->imageOutputFile);
@@ -214,7 +214,7 @@ void AppleseedRenderer::addRenderParams(asr::ParamArray& paramArray)
     MString bucketOrder = bucketOrders[getEnumInt("tile_ordering", renderGlobalsFn)];
     MString photonType = photonTypes[getEnumInt("photon_type", renderGlobalsFn)];
     MString dlType = dlTypes[getEnumInt("dl_mode", renderGlobalsFn)];
-    boost::shared_ptr<RenderGlobals> renderGlobals = getWorldPtr()->worldRenderGlobalsPtr;
+    boost::shared_ptr<RenderGlobals> renderGlobals = getWorldPtr()->mRenderGlobals;
 
     paramArray.insert_path("texture_store.max_size", getIntAttr("texCacheSize", renderGlobalsFn, 128) * 1024 * 1024); // at least 128 MB
 
@@ -263,7 +263,7 @@ void AppleseedRenderer::defineConfig()
 {
     Logging::debug("AppleseedRenderer::defineConfig");
     MFnDependencyNode renderGlobalsFn(getRenderGlobalsNode());
-    boost::shared_ptr<RenderGlobals> renderGlobals = getWorldPtr()->worldRenderGlobalsPtr;
+    boost::shared_ptr<RenderGlobals> renderGlobals = getWorldPtr()->mRenderGlobals;
 
     project->add_default_configurations();
     addRenderParams(this->project->configurations().get_by_name("final")->get_parameters());
@@ -328,8 +328,8 @@ void AppleseedRenderer::defineCamera(boost::shared_ptr<MayaObject> cam)
     // attributes like an object.
 
     MStatus stat;
-    boost::shared_ptr<MayaScene> mayaScene = getWorldPtr()->worldScenePtr;
-    boost::shared_ptr<RenderGlobals> renderGlobals = getWorldPtr()->worldRenderGlobalsPtr;
+    boost::shared_ptr<MayaScene> mayaScene = getWorldPtr()->mScene;
+    boost::shared_ptr<RenderGlobals> renderGlobals = getWorldPtr()->mRenderGlobals;
 
     asr::Camera *camera = project->get_scene()->get_camera();
     if (camera != 0)
@@ -397,8 +397,8 @@ void AppleseedRenderer::defineCamera(boost::shared_ptr<MayaObject> cam)
 void AppleseedRenderer::defineCamera()
 {
     MStatus stat;
-    boost::shared_ptr<MayaScene> mayaScene = getWorldPtr()->worldScenePtr;
-    boost::shared_ptr<RenderGlobals> renderGlobals = getWorldPtr()->worldRenderGlobalsPtr;
+    boost::shared_ptr<MayaScene> mayaScene = getWorldPtr()->mScene;
+    boost::shared_ptr<RenderGlobals> renderGlobals = getWorldPtr()->mRenderGlobals;
 
     std::vector<boost::shared_ptr<MayaObject> >::iterator oIt;
     for (oIt = mayaScene->camList.begin(); oIt != mayaScene->camList.end(); oIt++)
@@ -422,7 +422,7 @@ void AppleseedRenderer::defineOutput()
     if (frame == 0)
     {
         MFnDependencyNode depFn(getRenderGlobalsNode());
-        boost::shared_ptr<RenderGlobals> renderGlobals = getWorldPtr()->worldRenderGlobalsPtr;
+        boost::shared_ptr<RenderGlobals> renderGlobals = getWorldPtr()->mRenderGlobals;
         Logging::debug("AppleseedRenderer::defineOutput");
         int width, height;
         renderGlobals->getWidthHeight(width, height);
@@ -857,8 +857,8 @@ void AppleseedRenderer::updateInstance(boost::shared_ptr<MayaObject> mobj)
 
 void AppleseedRenderer::defineGeometry()
 {
-    boost::shared_ptr<MayaScene> mayaScene = getWorldPtr()->worldScenePtr;
-    boost::shared_ptr<RenderGlobals> renderGlobals = getWorldPtr()->worldRenderGlobalsPtr;
+    boost::shared_ptr<MayaScene> mayaScene = getWorldPtr()->mScene;
+    boost::shared_ptr<RenderGlobals> renderGlobals = getWorldPtr()->mRenderGlobals;
     std::vector<boost::shared_ptr<MayaObject> >::iterator oIt;
     for (oIt = mayaScene->objectList.begin(); oIt != mayaScene->objectList.end(); oIt++)
     {
@@ -1159,8 +1159,8 @@ void AppleseedRenderer::defineLights()
     MFnDependencyNode rGlNode(getRenderGlobalsNode());
     // first get the globals node and serach for a directional light connection
     MObject coronaGlobals = getRenderGlobalsNode();
-    boost::shared_ptr<RenderGlobals> renderGlobals = getWorldPtr()->worldRenderGlobalsPtr;
-    boost::shared_ptr<MayaScene> mayaScene = getWorldPtr()->worldScenePtr;
+    boost::shared_ptr<RenderGlobals> renderGlobals = getWorldPtr()->mRenderGlobals;
+    boost::shared_ptr<MayaScene> mayaScene = getWorldPtr()->mScene;
 
     std::vector<boost::shared_ptr<MayaObject> >::iterator oIt;
     for (oIt = mayaScene->lightList.begin(); oIt != mayaScene->lightList.end(); oIt++)
@@ -1258,7 +1258,7 @@ asf::StringArray AppleseedRenderer::defineMaterial(boost::shared_ptr<MayaObject>
     MStatus status;
     asf::StringArray materialNames;
     getObjectShadingGroups(obj->dagPath, obj->perFaceAssignments, obj->shadingGroups, false);
-    boost::shared_ptr<MayaScene> mayaScene = getWorldPtr()->worldScenePtr;
+    boost::shared_ptr<MayaScene> mayaScene = getWorldPtr()->mScene;
 
     for (uint sgId = 0; sgId < obj->shadingGroups.length(); sgId++)
     {
@@ -1283,7 +1283,7 @@ asf::StringArray AppleseedRenderer::defineMaterial(boost::shared_ptr<MayaObject>
         }
 
         // if we are in IPR mode, save all translated shading nodes to the interactive update list
-        if (getWorldPtr()->renderType == MayaToWorld::IPRRENDER)
+        if (getWorldPtr()->getRenderType() == MayaToWorld::IPRRENDER)
         {
             if (mayaScene)
             {
@@ -1294,7 +1294,7 @@ asf::StringArray AppleseedRenderer::defineMaterial(boost::shared_ptr<MayaObject>
                 iel.node = materialNode;
                 mayaScene->interactiveUpdateMap[mayaScene->interactiveUpdateMap.size()] = iel;
 
-                if (getWorldPtr()->renderState == MayaToWorld::RSTATERENDERING)
+                if (getWorldPtr()->getRenderState() == MayaToWorld::RSTATERENDERING)
                 {
                     RenderQueueWorker::IPRUpdateCallbacks();
                 }

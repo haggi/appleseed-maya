@@ -26,11 +26,14 @@
 // THE SOFTWARE.
 //
 
-#ifndef MAYATO_WORLD_H
-#define MAYATO_WORLD_H
+#ifndef MAYATOWORLD_H
+#define MAYATOWORLD_H
 
-#include <vector>
-#include <memory>
+// appleseed-maya headers.
+#include "utilities/tools.h"
+#include "appleseedrenderer.h"
+
+// Maya headers.
 #include <maya/MFnDependencyNode.h>
 #include <maya/MObject.h>
 #include <maya/MString.h>
@@ -38,9 +41,12 @@
 #include <maya/MImage.h>
 #include <maya/MTimerMessage.h>
 #include <maya/MDistance.h>
-#include "utilities/tools.h"
-#include "appleseedrenderer.h"
 
+// Standard headers.
+#include <memory>
+
+// Forward declarations.
+class AppleseedSwatchRenderer;
 class MayaScene;
 class RenderGlobals;
 
@@ -48,9 +54,9 @@ class MayaToWorld
 {
   public:
     MayaToWorld();
-    virtual ~MayaToWorld();
+    ~MayaToWorld();
 
-    enum WorldRenderType
+    enum RenderType
     {
         RTYPENONE = 0,
         SWATCHRENDER,
@@ -59,7 +65,7 @@ class MayaToWorld
         IPRRENDER
     };
 
-    enum WorldRenderState
+    enum RenderState
     {
         RSTATENONE = 0,
         RSTATERENDERING,
@@ -70,105 +76,49 @@ class MayaToWorld
         RSTATETRANSLATING
     };
 
-    WorldRenderType renderType;
-    WorldRenderState renderState;
-
-    enum RendererUpAxis
-    {
-        XUp,
-        YUp,
-        ZUp
-    };
-
-    MDistance::Unit internalUnit;
-    MDistance::Unit rendererUnit;
-    RendererUpAxis internalAxis;
-    RendererUpAxis rendererAxis;
-
-    float internalScaleFactor;
-    float rendererScaleFactor;
-    MMatrix globalConversionMatrix; // for default unit conversion e.g. centimeter to meter
-    MMatrix sceneScaleMatrix; // user defined scene scale
-    float scaleFactor;
-    float sceneScale;
-
-    void defineGlobalConversionMatrix();
-
-    virtual void setRendererUnit();
-    virtual void setRendererAxis();
-
-    boost::shared_ptr<MayaScene> worldScenePtr;
-    boost::shared_ptr<AppleseedRenderer> worldRendererPtr;
-    boost::shared_ptr<RenderGlobals> worldRenderGlobalsPtr;
-
-    MStringArray objectNames;
-    std::vector<void *> objectPtr;
-    MImage previousRenderedImage;
-    bool _canDoIPR;
-    bool canDoIPR(){ return _canDoIPR; }
-    void setCanDoIPR(bool yesOrNo) { _canDoIPR = yesOrNo; }
+    boost::shared_ptr<MayaScene> mScene;
+    boost::shared_ptr<AppleseedRenderer> mRenderer;
+    boost::shared_ptr<RenderGlobals> mRenderGlobals;
 
     MStringArray shaderSearchPath;
 
-    void *getObjPtr(MString name)
-    {
-        for (uint i = 0; i < objectNames.length(); i++)
-            if (objectNames[i] == name)
-                return objectPtr[i];
-        return 0;
-    }
-
-    void addObjectPtr(MString name, void *ptr)
-    {
-        objectNames.append(name);
-        objectPtr.push_back(ptr);
-    }
-
-    void initialize();
-    void initializeScene();
-    void initializeRenderer();
-    void initializeRenderGlobals();
     void initializeRenderEnvironment();
 
-    void setRenderType(WorldRenderType type)
+    void setRenderType(RenderType type)
     {
-        this->renderType = type;
+        renderType = type;
     }
 
-    WorldRenderType getRenderType()
+    RenderType getRenderType()
     {
-        return this->renderType;
+        return renderType;
     }
 
-    void setRenderState(WorldRenderState state)
+    void setRenderState(RenderState state)
     {
-        this->renderState = state;
+        renderState = state;
     }
 
-    WorldRenderState getRenderState()
+    RenderState getRenderState()
     {
-        return this->renderState;
+        return renderState;
     }
 
-    void cleanUp();
+    AppleseedSwatchRenderer* getSwatchRenderer()
+    {
+        return mSwatchRenderer.get();
+    }
+
     void cleanUpAfterRender();
-    void afterOpenScene();
-    void afterNewScene();
 
-    static void beforeExitCallback(void *);
-    static void callAfterOpenCallback(void *);
-    static void callAfterNewCallback(void *);
-
-    static MCallbackId afterNewCallbackId;
+  private:
+    RenderType renderType;
+    RenderState renderState;
+    std::auto_ptr<AppleseedSwatchRenderer> mSwatchRenderer;
 };
-
-void *getObjPtr(MString name);
-static void addObjectPtr(MString name, void *ptr);
 
 void deleteWorld();
 void defineWorld();
 MayaToWorld *getWorldPtr();
 
-static MayaToWorld *worldPointer = 0;
-
-#endif // !MAYATO_WORLD_H
+#endif  // !MAYATOWORLD_H

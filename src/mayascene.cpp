@@ -330,7 +330,7 @@ MString MayaScene::getExportPath(MString ext, MString rendererName)
     pystring::split(currentFile, parts, "/");
     currentFile = pystring::replace(parts.back(), ".ma", "");
     currentFile = pystring::replace(currentFile, ".mb", "");
-    MString scenePath = getWorldPtr()->worldRenderGlobalsPtr->basePath + "/" + rendererName + "/" + currentFile.c_str() + "." + ext;
+    MString scenePath = getWorldPtr()->mRenderGlobals->basePath + "/" + rendererName + "/" + currentFile.c_str() + "." + ext;
     return scenePath;
 }
 
@@ -366,7 +366,7 @@ bool MayaScene::parseSceneHierarchy(MDagPath currentPath, int level, boost::shar
     boost::shared_ptr<ObjectAttributes> currentAttributes = mo->getObjectAttributes(parentAttributes);
     mo->parent = parentObject;
     classifyMayaObject(mo);
-    if (getWorldPtr()->renderType == MayaToWorld::IPRRENDER)
+    if (getWorldPtr()->getRenderType() == MayaToWorld::IPRRENDER)
     {
         InteractiveElement iel;
         iel.obj = mo;
@@ -465,32 +465,32 @@ bool MayaScene::updateScene(MFn::Type updateElement)
         // this part is only used if motionblur is turned on, else we have no MbElement::None
         if (!obj->motionBlurred)
         {
-            if (getWorldPtr()->worldRenderGlobalsPtr->currentMbElement.elementType == MbElement::MotionBlurNone)
+            if (getWorldPtr()->mRenderGlobals->currentMbElement.elementType == MbElement::MotionBlurNone)
             {
                 Logging::debug(MString("found non mb element type. Updating non mb objects.") + objId + ": " + obj->dagPath.fullPathName());
                 if (updateElement == MFn::kShape)
-                    getWorldPtr()->worldRendererPtr->updateShape(obj);
+                    getWorldPtr()->mRenderer->updateShape(obj);
                 if (updateElement == MFn::kTransform)
                 {
                     obj->transformMatrices.clear();
-                    getWorldPtr()->worldRendererPtr->updateTransform(obj);
+                    getWorldPtr()->mRenderer->updateTransform(obj);
                     obj->transformMatrices.push_back(obj->dagPath.inclusiveMatrix());
                 }
             }
         }
 
-        if (getWorldPtr()->worldRenderGlobalsPtr->isDeformStep())
+        if (getWorldPtr()->mRenderGlobals->isDeformStep())
             if (obj->mobject.hasFn(MFn::kShape))
-                getWorldPtr()->worldRendererPtr->updateShape(obj);
+                getWorldPtr()->mRenderer->updateShape(obj);
 
-        if (getWorldPtr()->worldRenderGlobalsPtr->isTransformStep())
+        if (getWorldPtr()->mRenderGlobals->isTransformStep())
         {
-            if (getWorldPtr()->worldRenderGlobalsPtr->isMbStartStep())
+            if (getWorldPtr()->mRenderGlobals->isMbStartStep())
                 obj->transformMatrices.clear();
 
             obj->transformMatrices.push_back(obj->dagPath.inclusiveMatrix());
             if (obj->mobject.hasFn(MFn::kTransform))
-                getWorldPtr()->worldRendererPtr->updateTransform(obj);
+                getWorldPtr()->mRenderer->updateTransform(obj);
         }
     }
 
@@ -507,16 +507,16 @@ bool MayaScene::updateScene()
         boost::shared_ptr<MayaObject> obj = this->camList[camId];
         obj->updateObject();
 
-        if (!getWorldPtr()->worldRenderGlobalsPtr->isMbStartStep())
+        if (!getWorldPtr()->mRenderGlobals->isMbStartStep())
             if (!obj->motionBlurred)
                 continue;
 
-        if (getWorldPtr()->worldRenderGlobalsPtr->isTransformStep())
+        if (getWorldPtr()->mRenderGlobals->isTransformStep())
         {
-            if (getWorldPtr()->worldRenderGlobalsPtr->isMbStartStep())
+            if (getWorldPtr()->mRenderGlobals->isMbStartStep())
                 obj->transformMatrices.clear();
             obj->transformMatrices.push_back(obj->dagPath.inclusiveMatrix());
-            getWorldPtr()->worldRendererPtr->updateTransform(obj);
+            getWorldPtr()->mRenderer->updateTransform(obj);
         }
     }
 
@@ -528,20 +528,20 @@ bool MayaScene::updateScene()
         boost::shared_ptr<MayaObject> obj = *mIter;
         obj->updateObject();
 
-        if (!getWorldPtr()->worldRenderGlobalsPtr->isMbStartStep())
+        if (!getWorldPtr()->mRenderGlobals->isMbStartStep())
             if (!obj->motionBlurred)
                 continue;
 
-        if (getWorldPtr()->worldRenderGlobalsPtr->isTransformStep())
+        if (getWorldPtr()->mRenderGlobals->isTransformStep())
         {
-            if (getWorldPtr()->worldRenderGlobalsPtr->isMbStartStep())
+            if (getWorldPtr()->mRenderGlobals->isMbStartStep())
                 obj->transformMatrices.clear();
             obj->transformMatrices.push_back(obj->dagPath.inclusiveMatrix());
-            getWorldPtr()->worldRendererPtr->updateShape(obj);
+            getWorldPtr()->mRenderer->updateShape(obj);
         }
     }
 
-    if (getWorldPtr()->worldRenderGlobalsPtr->isTransformStep())
+    if (getWorldPtr()->mRenderGlobals->isTransformStep())
     {
         this->updateInstancer();
     }
@@ -560,7 +560,7 @@ bool MayaScene::updateInstancer()
     Logging::debug("update instancer.");
 
     // updates only required for a transform step
-    if (!getWorldPtr()->worldRenderGlobalsPtr->isTransformStep())
+    if (!getWorldPtr()->mRenderGlobals->isTransformStep())
         return true;
 
     size_t numElements = this->instancerNodeElements.size();
@@ -580,11 +580,11 @@ bool MayaScene::updateInstancer()
         instFn.instancesForParticle(obj->instancerParticleId, dagPathArray, matrix);
         for (uint k = 0; k < dagPathArray.length(); k++)
             Logging::debug(MString("Particle mobj id: ") + i + "particle id: " + obj->instancerParticleId + " path id " + k + " - " + dagPathArray[k].fullPathName());
-        if (getWorldPtr()->worldRenderGlobalsPtr->isMbStartStep())
+        if (getWorldPtr()->mRenderGlobals->isMbStartStep())
             obj->transformMatrices.clear();
 
         obj->transformMatrices.push_back(origMatrix * matrix);
-        getWorldPtr()->worldRendererPtr->updateTransform(obj);
+        getWorldPtr()->mRenderer->updateTransform(obj);
     }
     return true;
 }

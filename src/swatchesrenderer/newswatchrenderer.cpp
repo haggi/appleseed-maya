@@ -26,40 +26,25 @@
 // THE SOFTWARE.
 //
 
-#include "swatchesrenderer/newswatchrenderer.h"
+// Interface header.
+#include "newswatchrenderer.h"
+
+// appleseed-maya headers.
 #include "appleseedswatchrenderer.h"
-#include "swatchesevent.h"
-#include "utilities/logging.h"
-#include "utilities/tools.h"
 #include "mayatoworld.h"
 
-NewSwatchRenderer::NewSwatchRenderer(MObject dependNode, MObject renderNode, int imageResolution)
-  : MSwatchRenderBase(dependNode, renderNode, imageResolution)
-  , renderInProgress(true)
-  , swatchRenderingDone(false)
-  , rNode(renderNode)
-  , dNode(dependNode)
-{
-}
-
-bool NewSwatchRenderer::renderParallel()
-{
-    return false;
-}
-
-void NewSwatchRenderer::finishParallelRender()
-{
-    Logging::debug(MString("finishParallelRender called."));
-}
-
-void NewSwatchRenderer::cancelParallelRendering()
-{
-    Logging::debug(MString("cancelParallelRendering called."));
-}
+// Maya headers.
+#include <maya/MImage.h>
 
 MSwatchRenderBase* NewSwatchRenderer::creator(MObject dependNode, MObject renderNode, int imageResolution)
 {
     return new NewSwatchRenderer(dependNode, renderNode, imageResolution);
+}
+
+NewSwatchRenderer::NewSwatchRenderer(MObject dependNode, MObject renderNode, int imageResolution)
+  : MSwatchRenderBase(dependNode, renderNode, imageResolution)
+  , dNode(dependNode)
+{
 }
 
 bool NewSwatchRenderer::doIteration()
@@ -67,27 +52,14 @@ bool NewSwatchRenderer::doIteration()
     if (getWorldPtr()->getRenderType() == MayaToWorld::IPRRENDER)
     {
         image().create(resolution(), resolution(), 4, MImage::kFloat);
-        image().convertPixelFormat(MImage::kByte);
-        return true;
     }
-
-    AppleseedSwatchRenderer* swatchRenderer =
-        static_cast<AppleseedSwatchRenderer*>(getObjPtr("appleseedSwatchesRenderer"));
-
-    if (swatchRenderer)
+    else
     {
-        if (swatchRenderer->mrenderer.get() != 0)
-        {
-            swatchRenderer->renderSwatch(this);
-            image().convertPixelFormat(MImage::kByte);
-        }
-        else
-        {
-            image().create(resolution(), resolution(), 4, MImage::kFloat);
-            image().convertPixelFormat(MImage::kByte);
-        }
-        return true;
+        AppleseedSwatchRenderer* swatchRenderer = getWorldPtr()->getSwatchRenderer();
+        swatchRenderer->renderSwatch(this);
     }
 
-    return false;
+    image().convertPixelFormat(MImage::kByte);
+
+    return true;
 }

@@ -83,7 +83,6 @@ namespace asr = renderer;
 AppleseedSwatchRenderer::AppleseedSwatchRenderer()
   : terminateLoop(false)
   , enableSwatchRenderer(true)
-  , loopDone(false)
 {
     MString swatchRenderFile = getRendererHome() + "resources/swatchRender.xml";
     MString schemaPath = getRendererHome() + "schemas/project.xsd";
@@ -123,13 +122,13 @@ AppleseedSwatchRenderer::~AppleseedSwatchRenderer()
 void AppleseedSwatchRenderer::renderSwatch(NewSwatchRenderer *sr)
 {
     int res(sr->resolution());
-    this->setSize(res);
-    this->setShader(sr->dNode);
+    setSize(res);
+    setShader(sr->dNode);
     mrenderer->render();
 
     sr->image().create(res, res, 4, MImage::kFloat);
     float *floatPixels = sr->image().floatPixels();
-    this->fillSwatch(floatPixels);
+    fillSwatch(floatPixels);
 }
 
 void AppleseedSwatchRenderer::fillSwatch(float *pixels)
@@ -184,7 +183,7 @@ void AppleseedSwatchRenderer::setSize(int size)
 
 void AppleseedSwatchRenderer::setShader(MObject shader)
 {
-    this->defineMaterial(shader);
+    defineMaterial(shader);
 }
 
 void AppleseedSwatchRenderer::mainLoop()
@@ -193,8 +192,9 @@ void AppleseedSwatchRenderer::mainLoop()
     Logging::setLogLevel(Logging::LevelDebug);
 #endif
 
+    Logging::debug("Starting AppleseedSwatchRenderer main loop.");
+
     SwatchesEvent swatchEvent;
-    Logging::debug("Starting AppleseedSwatchRenderer main Loop.");
     while (!terminateLoop)
     {
         SwatchesQueue.wait_and_pop(swatchEvent);
@@ -206,11 +206,9 @@ void AppleseedSwatchRenderer::mainLoop()
         }
         else
         {
-            swatchEvent.swatchRenderer->finishParallelRender();
             *swatchEvent.renderDone = true;
         }
     }
-    loopDone = true;
 }
 
 namespace

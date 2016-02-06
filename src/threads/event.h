@@ -82,7 +82,7 @@ class Event
     int height;
     bool useRenderRegion;
     MDagPath cameraDagPath;
-    MayaToWorld::WorldRenderType renderType;
+    MayaToWorld::RenderType renderType;
     size_t tile_xmin, tile_xmax, tile_ymin, tile_ymax;
 
     boost::shared_ptr<RV_PIXEL> pixelData;

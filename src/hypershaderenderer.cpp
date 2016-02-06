@@ -210,14 +210,14 @@ void HypershadeRenderer::initProject()
 
     project->get_frame()->get_parameters().insert("pixel_format", "float");
 
-    this->tileCallbackFac.reset(new HypershadeTileCallbackFactory(this));
+    tileCallbackFac.reset(new HypershadeTileCallbackFactory(this));
 
     mrenderer.reset(
         new asr::MasterRenderer(
-            this->project.ref(),
-            this->project->configurations().get_by_name("interactive")->get_inherited_parameters(),
+            project.ref(),
+            project->configurations().get_by_name("interactive")->get_inherited_parameters(),
             &controller,
-            this->tileCallbackFac.get()));
+            tileCallbackFac.get()));
 
     for (uint i = 0; i < getWorldPtr()->shaderSearchPath.length(); i++)
     {
@@ -694,10 +694,11 @@ MStatus HypershadeRenderer::setShader(const MUuid& id, const MUuid& shaderId)
 MStatus HypershadeRenderer::setResolution(unsigned int w, unsigned int h)
 {
     Logging::debug(MString("setResolution to") + w + " " + h);
-    this->width = w;
-    this->height = h;
+    width = w;
+    height = h;
+
     // Update resolution buffer
-    this->rb = (float*)realloc(this->rb, w*h*kNumChannels*sizeof(float));
+    rb = (float*)realloc(rb, w*h*kNumChannels*sizeof(float));
 
     for (uint x = 0; x < width; x++)
     {
@@ -841,50 +842,48 @@ void HypershadeTileCallback::post_render_tile(const asr::Frame* frame, const siz
 {
     Logging::debug("HypershadeTileCallback::post_render_tile");
     asf::Tile& tile = frame->image().tile(tile_x, tile_y);
-    this->renderer->copyTileToBuffer(tile, tile_x, tile_y);
+    renderer->copyTileToBuffer(tile, tile_x, tile_y);
 }
 
 void HypershadeTileCallback::post_render(const asr::Frame* frame)
 {
     Logging::debug("HypershadeTileCallback::post_render frame");
-    asf::Image img = frame->image();
+
+    const asf::Image& img = frame->image();
     const asf::CanvasProperties& frame_props = img.properties();
-    int tileSize = frame_props.m_tile_height;
+    const size_t tileSize = frame_props.m_tile_height;
     size_t numPixels = frame_props.m_canvas_width * frame_props.m_canvas_height;
-    int width = frame_props.m_canvas_width;
-    int height = frame_props.m_canvas_height;
+    const size_t width = frame_props.m_canvas_width;
+    const size_t height = frame_props.m_canvas_height;
 
-    Logging::debug(MString("HypershadeTileCallback:: wh ") + width + " " + height + " tileSize " + tileSize);
+    float* buffer = new float[numPixels * kNumChannels];
 
-    boost::shared_ptr<float> buffer = boost::shared_ptr<float>(new float[numPixels * kNumChannels]);
-    float *rb = buffer.get();
-
-    for (int tile_x = 0; tile_x < frame_props.m_tile_count_x; tile_x++)
+    for (size_t tile_y = 0; tile_y < frame_props.m_tile_count_y; tile_y++)
     {
-        for (int tile_y = 0; tile_y < frame_props.m_tile_count_y; tile_y++)
+        for (size_t tile_x = 0; tile_x < frame_props.m_tile_count_x; tile_x++)
         {
             const asf::Tile& tile = frame->image().tile(tile_x, tile_y);
-            size_t tw = tile.get_width();
-            size_t th = tile.get_height();
+            const size_t tw = tile.get_width();
+            const size_t th = tile.get_height();
 
-            for (int y = 0; y < th; y++)
+            for (size_t y = 0; y < th; y++)
             {
-                for (int x = 0; x < tw; x++)
+                for (size_t x = 0; x < tw; x++)
                 {
-                    int index = ((height - 1) - (tile_y * tileSize + y)) * width + (tile_x * tileSize) + x;
-                    index *= kNumChannels;
+                    const size_t index = (((height - 1) - (tile_y * tileSize + y)) * width + (tile_x * tileSize) + x) * kNumChannels;
 
-                    rb[index] = tile.get_component<float>(x, y, 0);
+                    rb[index + 0] = tile.get_component<float>(x, y, 0);
                     rb[index + 1] = tile.get_component<float>(x, y, 1);
                     rb[index + 2] = tile.get_component<float>(x, y, 2);
                     rb[index + 3] = tile.get_component<float>(x, y, 3);
                 }
             }
-
         }
     }
 
-    this->renderer->copyFrameToBuffer(buffer.get(), width, height);
+    renderer->copyFrameToBuffer(buffer, width, height);
+
+    delete [] buffer;
 }
 
 #endif

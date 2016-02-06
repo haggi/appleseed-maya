@@ -64,13 +64,9 @@ OSLUtilClass::OSLUtilClass()
     group = 0;
 }
 
-OSLUtilClass::~OSLUtilClass()
-{
-}
-
 void OSLUtilClass::saveOSLNodeNameInArray(MString& oslNodeName)
 {
-    if (getWorldPtr()->renderType == MayaToWorld::SWATCHRENDER)
+    if (getWorldPtr()->getRenderType() == MayaToWorld::SWATCHRENDER)
         this->definedOSLSWNodes.push_back(oslNodeName);
     else
         this->definedOSLNodes.push_back(oslNodeName);
@@ -79,7 +75,7 @@ void OSLUtilClass::saveOSLNodeNameInArray(MString& oslNodeName)
 bool OSLUtilClass::doesOSLNodeAlreadyExist(MString& oslNode)
 {
     std::vector<MString> nodes;
-    if (getWorldPtr()->renderType == MayaToWorld::SWATCHRENDER)
+    if (getWorldPtr()->getRenderType() == MayaToWorld::SWATCHRENDER)
         nodes = definedOSLSWNodes;
     else
         nodes = definedOSLNodes;

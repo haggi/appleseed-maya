@@ -57,7 +57,6 @@ class AppleseedSwatchRenderer
     void fillSwatch(float *pixels);
     bool terminateLoop;
     bool enableSwatchRenderer;
-    bool loopDone;
 
     asf::auto_release_ptr<asr::Scene> scene;
     asf::auto_release_ptr<asr::Project> project;

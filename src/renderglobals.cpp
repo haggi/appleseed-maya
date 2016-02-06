@@ -75,8 +75,8 @@ RenderGlobals::RenderGlobals()
     this->internalUnit = MDistance::internalUnit();
     this->internalAxis = MGlobal::isYAxisUp() ? YUp : ZUp;
     this->scaleFactor = 1.0f;
-    this->setRendererUnit();
-    this->setRendererAxis();
+    this->rendererUnit = MDistance::kMeters;
+    this->rendererAxis = YUp;
     this->defineGlobalConversionMatrix();
     this->currentFrameIndex = 0;
     this->sceneScale = 1.0;
@@ -449,15 +449,6 @@ bool RenderGlobals::getDefaultGlobals()
     this->sceneScale = getFloatAttr("sceneScale", depFn, 1.0f);
     this->filterSize = getFloatAttr("filterSize", depFn, 3.0f);
     this->good = true;
+
     return true;
-}
-
-void RenderGlobals::setRendererUnit()
-{
-    this->rendererUnit = MDistance::kMeters;
-}
-
-void RenderGlobals::setRendererAxis()
-{
-    this->rendererAxis = YUp;
 }
