@@ -1,4 +1,4 @@
-+ MAYAVERSION:2014 appleseed-maya 0.1.0 .
++ MAYAVERSION:2014 appleseed-maya 0.32.0 .
 MTAP_LOCATION:=
 MTAP_HOME:=
 APPLESEED_OSL_SHADERS_LOCATION:=shaders
@@ -9,7 +9,7 @@ PYTHONPATH+:=appleseed/aetemplates
 plug-ins: 2014/plug-ins
 MAYA_PLUG_IN_PATH+:=scripts/plug-ins
 
-+ MAYAVERSION:2015 appleseed-maya 0.1.0 .
++ MAYAVERSION:2015 appleseed-maya 0.32.0 .
 MTAP_LOCATION:=
 MTAP_HOME:=
 APPLESEED_OSL_SHADERS_LOCATION:=shaders
@@ -20,7 +20,7 @@ PYTHONPATH+:=appleseed/aetemplates
 plug-ins: 2015/plug-ins
 MAYA_PLUG_IN_PATH+:=scripts/plug-ins
 
-+ MAYAVERSION:2016 appleseed-maya 0.1.0 .
++ MAYAVERSION:2016 appleseed-maya 0.32.0 .
 MTAP_LOCATION:=
 MTAP_HOME:=
 APPLESEED_OSL_SHADERS_LOCATION:=shaders
@@ -29,7 +29,7 @@ PATH+:=bin
 plug-ins: 2016/plug-ins
 MAYA_PLUG_IN_PATH+:=scripts/plug-ins
 
-+ MAYAVERSION:2017 appleseed-maya 0.1.0 .
++ MAYAVERSION:2017 appleseed-maya 0.32.0 .
 MTAP_LOCATION:=
 MTAP_HOME:=
 APPLESEED_OSL_SHADERS_LOCATION:=shaders
