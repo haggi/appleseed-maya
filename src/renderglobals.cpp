@@ -26,333 +26,227 @@
 // THE SOFTWARE.
 //
 
-#include <maya/MSelectionList.h>
+// Interface header.
+#include "renderglobals.h"
+
+// appleseed-maya headers.
+#include "utilities/attrtools.h"
+#include "utilities/logging.h"
+#include "utilities/pystring.h"
+#include "utilities/tools.h"
+
+// Maya headers.
+#include <maya/MAnimControl.h>
 #include <maya/MCommonRenderSettingsData.h>
-#include <maya/MRenderUtil.h>
 #include <maya/MFnDependencyNode.h>
 #include <maya/MFnRenderLayer.h>
-#include <maya/MAnimControl.h>
 #include <maya/MGlobal.h>
-#include <maya/MFnCamera.h>
-#include <list>
+#include <maya/MRenderUtil.h>
+#include <maya/MSelectionList.h>
 
-#include "renderglobals.h"
-#include "utilities/logging.h"
-#include "utilities/attrtools.h"
-#include "utilities/tools.h"
-#include "utilities/pystring.h"
+// Standard headers.
+#include <algorithm>
+#include <cmath>
 
-// during creation, the renderGlobals class initializes itself with the
-// necessaray information from the defaultRenderGlobals node
-// All additional information should be done in a derived class
 RenderGlobals::RenderGlobals()
 {
-    Logging::debug("RenderGlobals::RenderGlobals()");
-    this->good = false;
-    this->currentRenderPass = 0;
-    this->currentRenderPassElementId = 0;
-    this->maxTraceDepth = 4;
-    this->doMb = false;
-    this->doDof = false;
-    this->mbStartTime = 0.0f;
-    this->mbEndTime = 0.0f;
-    this->currentFrame = 0.0f;
-    this->currentFrameNumber = 0.0f;
-    this->motionBlurRange = 0.4f;
-    this->motionBlurType = 0; // center
-    this->xftimesamples = 2;
-    this->geotimesamples = 2;
-    this->createDefaultLight = false;
-    this->exportSceneFile = false;
-    this->adaptiveSampling = false;
-    this->imageName = "";
-    this->basePath = "";
-    this->exportSceneFileName = "";
-    this->useSunLightConnection = false;
-    this->imagePath = "";
-    this->getDefaultGlobals();
-    this->imageFormatString = getEnumString(MString("imageFormat"), MFnDependencyNode(getRenderGlobalsNode()));
-    this->internalUnit = MDistance::internalUnit();
-    this->internalAxis = MGlobal::isYAxisUp() ? YUp : ZUp;
-    this->scaleFactor = 1.0f;
-    this->rendererUnit = MDistance::kMeters;
-    this->rendererAxis = YUp;
-    this->defineGlobalConversionMatrix();
-    this->currentFrameIndex = 0;
-    this->sceneScale = 1.0;
-    this->filterSize = 3.0;
-}
+    currentRenderPass = 0;
+    currentRenderPassElementId = 0;
+    maxTraceDepth = 4;
+    doMb = false;
+    doDof = false;
+    mbStartTime = 0.0f;
+    mbEndTime = 0.0f;
+    currentFrame = 0.0f;
+    currentFrameNumber = 0.0f;
+    motionBlurRange = 0.4f;
+    motionBlurType = 0; // center
+    xftimesamples = 2;
+    geotimesamples = 2;
+    createDefaultLight = false;
+    exportSceneFile = false;
+    adaptiveSampling = false;
+    imageName = "";
+    basePath = "";
+    exportSceneFileName = "";
+    useSunLightConnection = false;
+    imagePath = "";
+    imageFormatString = getEnumString("imageFormat", MFnDependencyNode(getRenderGlobalsNode()));
+    currentFrameIndex = 0;
+    sceneScale = 1.0f;
+    filterSize = 3.0f;
 
-RenderGlobals::~RenderGlobals()
-{
-    Logging::debug("RenderGlobals::~RenderGlobals()");
+    getDefaultGlobals();
+
+    float internalScaleFactor = 1.0f;   // in mm
+
+    switch (MDistance::internalUnit())
+    {
+      case MDistance::kCentimeters:
+        internalScaleFactor = 10.0f;
+        break;
+      case MDistance::kFeet:
+        internalScaleFactor = 304.8f;
+        break;
+      case MDistance::kInches:
+        internalScaleFactor = 25.4f;
+        break;
+      case MDistance::kKilometers:
+        internalScaleFactor = 1000000.f;
+        break;
+      case MDistance::kMeters:
+        internalScaleFactor = 1000.f;
+        break;
+      case MDistance::kMillimeters:
+        internalScaleFactor = 1.f;
+        break;
+      case MDistance::kMiles:
+        internalScaleFactor = 1609344.f;
+        break;
+      case MDistance::kYards:
+        internalScaleFactor = 914.4f;
+        break;
+    };
+
+    MMatrix scaleMatrix;
+    scaleMatrix.setToIdentity();
+    scaleMatrix[0][0] =
+    scaleMatrix[1][1] =
+    scaleMatrix[2][2] = internalScaleFactor / 1000.0f * sceneScale;
+
+    globalConversionMatrix = scaleMatrix * sceneScaleMatrix;
 }
 
 bool RenderGlobals::frameListDone()
 {
-    return currentFrameIndex >= this->frameList.size();
+    return currentFrameIndex >= frameList.size();
 }
 
 float RenderGlobals::getFrameNumber()
 {
     return currentFrameNumber;
 }
+
 float RenderGlobals::updateFrameNumber()
 {
-    if (currentFrameIndex < this->frameList.size())
+    if (currentFrameIndex < frameList.size())
     {
-        currentFrameNumber = this->frameList[currentFrameIndex++];
+        currentFrameNumber = frameList[currentFrameIndex++];
         return currentFrameNumber;
     }
     else
     {
-        return this->frameList.back();
+        return frameList.back();
     }
-}
-
-void RenderGlobals::defineGlobalConversionMatrix()
-{
-    globalConversionMatrix.setToIdentity();
-    MMatrix scaleMatrix;
-    scaleMatrix.setToIdentity();
-
-    internalScaleFactor = 1.0f; // internal in mm
-    rendererScaleFactor = 1.0f; // external in mm
-
-    this->scaleFactor = 1.0f;
-
-    switch (this->internalUnit)
-    {
-    case MDistance::kCentimeters:
-        internalScaleFactor = 10.0f;
-        break;
-    case MDistance::kFeet:
-        internalScaleFactor = 304.8f;
-        break;
-    case MDistance::kInches:
-        internalScaleFactor = 25.4f;
-        break;
-    case MDistance::kKilometers:
-        internalScaleFactor = 1000000.f;
-        break;
-    case MDistance::kMeters:
-        internalScaleFactor = 1000.f;
-        break;
-    case MDistance::kMillimeters:
-        internalScaleFactor = 1.f;
-        break;
-    case MDistance::kMiles:
-        internalScaleFactor = 1609344.f;
-        break;
-    case MDistance::kYards:
-        internalScaleFactor = 914.4f;
-        break;
-    };
-
-    switch (this->rendererUnit)
-    {
-    case MDistance::kCentimeters:
-        rendererScaleFactor = 10.0f;
-        break;
-    case MDistance::kFeet:
-        rendererScaleFactor = 304.8f;
-        break;
-    case MDistance::kInches:
-        rendererScaleFactor = 25.4f;
-        break;
-    case MDistance::kKilometers:
-        rendererScaleFactor = 1000000.f;
-        break;
-    case MDistance::kMeters:
-        rendererScaleFactor = 1000.f;
-        break;
-    case MDistance::kMillimeters:
-        rendererScaleFactor = 1.f;
-        break;
-    case MDistance::kMiles:
-        rendererScaleFactor = 1609344.f;
-        break;
-    case MDistance::kYards:
-        rendererScaleFactor = 914.4f;
-        break;
-    };
-
-    scaleFactor = internalScaleFactor/rendererScaleFactor * sceneScale;
-    scaleMatrix[0][0] = scaleMatrix[1][1] = scaleMatrix[2][2] = scaleFactor;
-
-    scaleMatrix = scaleMatrix * sceneScaleMatrix;
-
-    MMatrix YtoZ;
-    YtoZ.setToIdentity();
-    YtoZ[0][0] = 1;
-    YtoZ[0][1] = 0;
-    YtoZ[0][2] = 0;
-    YtoZ[0][3] = 0;
-
-    YtoZ[1][0] = 0;
-    YtoZ[1][1] = 0;
-    YtoZ[1][2] = 1;
-    YtoZ[1][3] = 0;
-
-    YtoZ[2][0] = 0;
-    YtoZ[2][1] = -1;
-    YtoZ[2][2] = 0;
-    YtoZ[2][3] = 0;
-
-    YtoZ[3][0] = 0;
-    YtoZ[3][1] = 0;
-    YtoZ[3][2] = 0;
-    YtoZ[3][3] = 1;
-
-
-    if ((this->internalAxis == YUp) && (this->rendererAxis == ZUp))
-    {
-        globalConversionMatrix = YtoZ;
-    }
-
-    globalConversionMatrix *= scaleMatrix;
-}
-
-MString RenderGlobals::getImageExt()
-{
-    return this->imageFormatString;
 }
 
 void RenderGlobals::getImageName()
 {
-    double fn = getFrameNumber();
+    const double fn = getFrameNumber();
     MCommonRenderSettingsData data;
     MRenderUtil::getCommonRenderSettings(data);
     MObject renderLayer = MFnRenderLayer::currentLayer();
-    MString ext = this->imageFormatString.toLowerCase();
-    ext = pystring::lower(ext.asChar()).c_str();
-    this->imageOutputFile = data.getImageName(data.kFullPathImage, fn, this->imageName, MString(""), ext, renderLayer);
-}
-
-MString RenderGlobals::getImageOutputFile()
-{
-    this->getImageName();
-    return this->imageOutputFile;
+    MString ext = imageFormatString.toLowerCase();
+    imageOutputFile = data.getImageName(data.kFullPathImage, fn, imageName, MString(""), ext, renderLayer);
 }
 
 bool RenderGlobals::isDeformStep()
 {
-    return ((this->currentMbElement.elementType == MbElement::MotionBlurGeo) || (this->currentMbElement.elementType == MbElement::MotionBlurBoth));
+    return ((currentMbElement.elementType == MbElement::MotionBlurGeo) || (currentMbElement.elementType == MbElement::MotionBlurBoth));
 }
 
 bool RenderGlobals::isTransformStep()
 {
-    return ((this->currentMbElement.elementType == MbElement::MotionBlurXForm) || (this->currentMbElement.elementType == MbElement::MotionBlurBoth));
+    return ((currentMbElement.elementType == MbElement::MotionBlurXForm) || (currentMbElement.elementType == MbElement::MotionBlurBoth));
 }
 
 // If motionblur is turned on, I need to evaluate the instances/geometry serveral times.
 // To know at which point what type of export deform/transform is needed, I create a list of
 // times that will be added to the current render frame e.g. frame 101 + mbStep1 (.20) = 101.20
-bool RenderGlobals::getMbSteps()
+void RenderGlobals::getMbSteps()
 {
-    this->mbElementList.clear();
+    mbElementList.clear();
 
     // if no motionblur, I add 0.0 to the list as dummy
-    if (!this->doMb)
+    if (!doMb)
     {
-        MbElement mbel;
-        mbel.elementType = MbElement::MotionBlurBoth;
-        mbel.m_time = 0.0;
-        this->mbElementList.push_back(mbel);
-        return true;
+        MbElement element;
+        element.elementType = MbElement::MotionBlurBoth;
+        element.m_time = 0.0;
+        mbElementList.push_back(element);
+        return;
     }
 
-    // todo: make motionblur calculation time-dependent instead of frame-dependent.
+    // todo: make motion blur calculations time-dependent instead of frame-dependent.
 
-    double shutterDist = this->motionBlurRange;
-    MString info;
-
-    this->mbLength = shutterDist;
-
-    double startStep = 0.0;
+    const double shutterDist = motionBlurRange;
 
     // get mb type
     // 0 = leading blur --> blur ends at frame
-    switch (this->motionBlurType)
+    double startStep = 0.0;
+    switch (motionBlurType)
     {
-    case 0: // center blur
-        startStep = -shutterDist/2.0;
+      case 0: // center blur
+        startStep = -shutterDist / 2.0;
         break;
-    case 1: // frame start
+      case 1: // frame start
         startStep = 0.0;
         break;
-    case 2: // frame end
+      case 2: // frame end
         startStep = -shutterDist;
         break;
-    default:
+      default:
         startStep = -shutterDist;
         break;
     };
 
-    double endStep = shutterDist - fabs(startStep);
+    mbStartTime = startStep;
+    mbEndTime = shutterDist - std::abs(startStep);
+    mbLength = shutterDist;
 
-    this->mbStartTime = startStep;
-    this->mbEndTime = endStep;
-
-    // to get a correct listing of all xform and deform steps I put all into a list
-    // and sort this list later.
-    std::list<MbElement> sortList;
-    std::list<MbElement >::iterator sortListIt;
-
-    if (this->xftimesamples > 1)
+    if (xftimesamples > 1)
     {
-        float xfStepSize =  (float)(shutterDist/(float)(this->xftimesamples - 1));
+        const double xfStepSize = shutterDist / (xftimesamples - 1);
         double mbStepValue = startStep;
-        for (int step = 0; step < this->xftimesamples; step++)
+        for (int i = 0; i < xftimesamples; i++)
         {
-            MbElement mbel;
-            mbel.elementType = MbElement::MotionBlurXForm;
-            mbel.m_time = mbStepValue;
+            MbElement element;
+            element.elementType = MbElement::MotionBlurXForm;
+            element.m_time = mbStepValue;
+            mbElementList.push_back(element);
             mbStepValue += xfStepSize;
-            sortList.push_back(mbel);
         }
     }
 
-    if (this->geotimesamples > 1)
+    if (geotimesamples > 1)
     {
-        float geoStepSize =  (float)(shutterDist/(float)(this->geotimesamples - 1));
+        const double geoStepSize = shutterDist / (geotimesamples - 1);
         double mbStepValue = startStep;
-        for (int step = 0; step < this->geotimesamples; step++)
+        for (int i = 0; i < geotimesamples; i++)
         {
-            MbElement mbel;
-            mbel.elementType = MbElement::MotionBlurGeo;
-            mbel.m_time = mbStepValue;
+            MbElement element;
+            element.elementType = MbElement::MotionBlurGeo;
+            element.m_time = mbStepValue;
+            mbElementList.push_back(element);
             mbStepValue += geoStepSize;
-            sortList.push_back(mbel);
         }
     }
-    sortList.sort();
-    for (sortListIt = sortList.begin(); sortListIt != sortList.end(); sortListIt++)
-    {
-        this->mbElementList.push_back(*sortListIt);
-    }
+
+    std::sort(mbElementList.begin(), mbElementList.end());
 
     // testing this is for non mb objects or changing topology objects
-    MbElement mbel;
-    mbel.elementType = MbElement::MotionBlurNone;
-    mbel.m_time = 0;
-    this->mbElementList.push_back(mbel);
-
-    return true;
+    MbElement element;
+    element.elementType = MbElement::MotionBlurNone;
+    element.m_time = 0;
+    mbElementList.push_back(element);
 }
 
 bool RenderGlobals::isMbStartStep()
 {
-    return this->currentMbStep == 0;
+    return currentMbStep == 0;
 }
 
-void RenderGlobals::checkRenderRegion()
-{
-    if ((regionLeft > imgWidth) || (regionRight > imgWidth) || (regionBottom > imgHeight) || (regionTop > imgHeight))
-        useRenderRegion = false;
-}
-
-bool RenderGlobals::getDefaultGlobals()
+void RenderGlobals::getDefaultGlobals()
 {
     MSelectionList defaultGlobals;
     defaultGlobals.add("defaultRenderGlobals");
@@ -360,8 +254,9 @@ bool RenderGlobals::getDefaultGlobals()
     if (defaultGlobals.length() == 0)
     {
         Logging::debug("defaultRenderGlobals not found. Stopping.");
-        return false;
+        return;
     }
+
     MCommonRenderSettingsData data;
     MRenderUtil::getCommonRenderSettings(data);
 
@@ -370,85 +265,81 @@ bool RenderGlobals::getDefaultGlobals()
     MFnDependencyNode fnRenderGlobals(node);
 
     MTime tv = MAnimControl::currentTime();
-    this->currentFrameNumber = (float)(tv.value());
+    currentFrameNumber = (float)(tv.value());
     tv = data.frameStart;
-    this->startFrame = (float)(tv.value());
+    startFrame = (float)(tv.value());
     tv = data.frameEnd;
-    this->endFrame = (float)(tv.value());
-    this->byFrame = data.frameBy;
+    endFrame = (float)(tv.value());
+    byFrame = data.frameBy;
 
     // check if we are in a batch render mode or if we are rendering from UI
     if (MGlobal::mayaState() == MGlobal::kBatch)
     {
-        this->inBatch = true;
+        inBatch = true;
         if (data.isAnimated())
         {
-            Logging::debug(MString("animation on, rendering frame sequence from ") + this->startFrame + " to " + this->endFrame + " by " + this->byFrame);
+            Logging::debug(MString("animation on, rendering frame sequence from ") + startFrame + " to " + endFrame + " by " + byFrame);
             // these are the frames that are supposed to be rendered in batch mode
-            this->doAnimation = true;
-            for (double frame = this->startFrame; frame <= this->endFrame; frame += this->byFrame)
-                this->frameList.push_back((float)frame);
+            doAnimation = true;
+            for (double frame = startFrame; frame <= endFrame; frame += byFrame)
+                frameList.push_back((float)frame);
         }
         else
         {
             Logging::debug(MString("animation off, rendering current frame"));
-            this->frameList.push_back(this->currentFrameNumber);
-            this->doAnimation = false;
+            frameList.push_back(currentFrameNumber);
+            doAnimation = false;
         }
     }
     else
     {
         // we are rendering from the UI so only render the current frame
-        this->inBatch = false;
-        this->frameList.push_back(this->currentFrameNumber);
-        this->doAnimation = false; // at the moment, if rendering comes from UI dont do animation
+        inBatch = false;
+        frameList.push_back(currentFrameNumber);
+        doAnimation = false; // at the moment, if rendering comes from UI dont do animation
     }
 
-    this->imgHeight = data.height;
-    this->imgWidth = data.width;
-    this->pixelAspect = data.pixelAspectRatio;
+    imgHeight = data.height;
+    imgWidth = data.width;
+    pixelAspect = data.pixelAspectRatio;
 
-    this->regionLeft = 0;
-    this->regionRight = this->imgWidth;
-    this->regionBottom = 0;
-    this->regionTop = this->imgHeight;
+    regionLeft = 0;
+    regionRight = imgWidth;
+    regionBottom = 0;
+    regionTop = imgHeight;
 
     regionLeft = getIntAttr("left", fnRenderGlobals, 0);
     regionRight = getIntAttr("rght", fnRenderGlobals, imgWidth);
     regionBottom = getIntAttr("bot", fnRenderGlobals, 0);
     regionTop = getIntAttr("top", fnRenderGlobals, imgHeight);
 
-    getBool(MString("enableDefaultLight"), fnRenderGlobals, this->createDefaultLight);
+    getBool(MString("enableDefaultLight"), fnRenderGlobals, createDefaultLight);
 
-    getString(MString("preRenderMel"), fnRenderGlobals, this->preFrameScript);
-    getString(MString("postRenderMel"), fnRenderGlobals, this->postFrameScript);
-    getString(MString("preRenderLayerMel"), fnRenderGlobals, this->preRenderLayerScript);
-    getString(MString("postRenderLayerMel"), fnRenderGlobals, this->postRenderLayerScript);
+    getString(MString("preRenderMel"), fnRenderGlobals, preFrameScript);
+    getString(MString("postRenderMel"), fnRenderGlobals, postFrameScript);
+    getString(MString("preRenderLayerMel"), fnRenderGlobals, preRenderLayerScript);
+    getString(MString("postRenderLayerMel"), fnRenderGlobals, postRenderLayerScript);
 
     MFnDependencyNode depFn(getRenderGlobalsNode());
-    this->maxTraceDepth = getIntAttr("maxTraceDepth", depFn, 4);
-    this->doMb = getBoolAttr("doMotionBlur", depFn, false);
-    this->doDof = getBoolAttr("doDof", depFn, false);
-    this->motionBlurRange = getFloatAttr("motionBlurRange", depFn, 0.4f);
-    this->motionBlurType = 0; // center
-    this->xftimesamples = getIntAttr("xftimesamples", depFn, 2);
-    this->geotimesamples = getIntAttr("geotimesamples", depFn, 2);
-    this->createDefaultLight = false;
-    this->renderType = RenderType::FINAL;
-    this->exportSceneFile = getBoolAttr("exportSceneFile", depFn, false);
-    this->adaptiveSampling = getBoolAttr("adaptiveSampling", depFn, false);
-    this->imageName = getStringAttr("imageName", depFn, "");
-    this->basePath = getStringAttr("basePath", depFn, "");
-    this->exportSceneFileName = getStringAttr("exportSceneFileName", depFn, "");
-    this->imagePath = getStringAttr("imagePath", depFn, "");
-    this->threads = getIntAttr("threads", depFn, 4);
-    this->translatorVerbosity = getEnumInt("translatorVerbosity", depFn);
-    this->rendererVerbosity = getEnumInt("rendererVerbosity", depFn);
-    this->useSunLightConnection = getBoolAttr("useSunLightConnection", depFn, false);
-    this->tilesize = getIntAttr("tileSize", depFn, 64);
-    this->sceneScale = getFloatAttr("sceneScale", depFn, 1.0f);
-    this->filterSize = getFloatAttr("filterSize", depFn, 3.0f);
-    this->good = true;
-
-    return true;
+    maxTraceDepth = getIntAttr("maxTraceDepth", depFn, 4);
+    doMb = getBoolAttr("doMotionBlur", depFn, false);
+    doDof = getBoolAttr("doDof", depFn, false);
+    motionBlurRange = getFloatAttr("motionBlurRange", depFn, 0.4f);
+    motionBlurType = 0; // center
+    xftimesamples = getIntAttr("xftimesamples", depFn, 2);
+    geotimesamples = getIntAttr("geotimesamples", depFn, 2);
+    createDefaultLight = false;
+    exportSceneFile = getBoolAttr("exportSceneFile", depFn, false);
+    adaptiveSampling = getBoolAttr("adaptiveSampling", depFn, false);
+    imageName = getStringAttr("imageName", depFn, "");
+    basePath = getStringAttr("basePath", depFn, "");
+    exportSceneFileName = getStringAttr("exportSceneFileName", depFn, "");
+    imagePath = getStringAttr("imagePath", depFn, "");
+    threads = getIntAttr("threads", depFn, 4);
+    translatorVerbosity = getEnumInt("translatorVerbosity", depFn);
+    rendererVerbosity = getEnumInt("rendererVerbosity", depFn);
+    useSunLightConnection = getBoolAttr("useSunLightConnection", depFn, false);
+    tilesize = getIntAttr("tileSize", depFn, 64);
+    sceneScale = getFloatAttr("sceneScale", depFn, 1.0f);
+    filterSize = getFloatAttr("filterSize", depFn, 3.0f);
 }

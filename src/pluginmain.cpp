@@ -30,7 +30,6 @@
 #include "shaders/asdisneymaterial.h"
 #include "shaders/asdisneymaterialoverride.h"
 #include "shaders/aslayeredshader.h"
-#include "swatchesrenderer/newswatchrenderer.h"
 #include "threads/renderqueueworker.h"
 #include "utilities/tools.h"
 #include "appleseedmaya.h"
@@ -39,8 +38,9 @@
 #include "binmeshwritercmd.h"
 #include "globalsnode.h"
 #if MAYA_API_VERSION >= 201600
-#include "mtap_mayarenderer.h"
+#include "hypershaderenderer.h"
 #endif
+#include "newswatchrenderer.h"
 #include "version.h"
 #include "world.h"
 

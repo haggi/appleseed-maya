@@ -66,9 +66,9 @@
 #include "osl/oslutils.h"
 #include "shadingtools/material.h"
 #include "shadingtools/shadingutils.h"
-#include "swatchesrenderer/newswatchrenderer.h"
 #include "utilities/logging.h"
 #include "utilities/tools.h"
+#include "newswatchrenderer.h"
 #include "swatchesevent.h"
 #include "world.h"
 

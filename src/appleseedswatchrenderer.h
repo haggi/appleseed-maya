@@ -26,18 +26,45 @@
 // THE SOFTWARE.
 //
 
-#ifndef MESH_TOOLS_H
-#define MESH_TOOLS_H
+#ifndef APPLESEEDSWATCHRENDERER_H
+#define APPLESEEDSWATCHRENDERER_H
 
-#include <maya/MPointArray.h>
-#include <maya/MFloatArray.h>
-#include <maya/MFloatVectorArray.h>
-#include <maya/MObject.h>
-#include <maya/MIntArray.h>
+// appleseed.renderer headers.
+#include "renderer/api/log.h"
+#include "renderer/api/project.h"
+#include "renderer/api/rendering.h"
+#include "renderer/api/scene.h"
 
-void getMeshData(MObject& meshObject, MPointArray& points, MFloatVectorArray& normals);
-void getMeshData(MObject& meshObject, MPointArray& points, MFloatVectorArray& normals, MFloatArray& uArray,
-    MFloatArray& vArray, MIntArray& triPointIndices, MIntArray& triNormalIndices,
-    MIntArray& triUvIndices, MIntArray& triMatIndices, MIntArray& perFaceAssignments);
+// Standard headers.
+#include <memory>
 
-#endif
+// Forward declarations.
+class MObject;
+class NewSwatchRenderer;
+
+class AppleseedSwatchRenderer
+{
+  public:
+    AppleseedSwatchRenderer();
+    ~AppleseedSwatchRenderer();
+
+    void mainLoop();
+    void setSize(int size);
+    void setShader(MObject shader);
+    void renderSwatch(NewSwatchRenderer *sr);
+    void fillSwatch(float *pixels);
+    bool terminateLoop;
+    bool enableSwatchRenderer;
+
+    foundation::auto_release_ptr<renderer::Scene> scene;
+    foundation::auto_release_ptr<renderer::Project> project;
+    std::auto_ptr<renderer::MasterRenderer> mrenderer;
+    renderer::DefaultRendererController renderer_controller;
+
+    static void startAppleseedSwatchRender(AppleseedSwatchRenderer* swRend);
+    static void terminateAppleseedSwatchRender(AppleseedSwatchRenderer* swRend);
+
+    void defineMaterial(MObject shadingNode);
+};
+
+#endif  // !APPLESEEDSWATCHRENDERER_H

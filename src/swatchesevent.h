@@ -26,8 +26,8 @@
 // THE SOFTWARE.
 //
 
-#ifndef MTAP_SWEVENT_H
-#define MTAP_SWEVENT_H
+#ifndef SWATCHESEVENT_H
+#define SWATCHESEVENT_H
 
 // appleseed-maya headers.
 #include "utilities/concurrentqueue.h"
@@ -49,4 +49,4 @@ struct SwatchesEvent
 
 static concurrent_queue<SwatchesEvent> SwatchesQueue;
 
-#endif
+#endif  // !SWATCHESEVENT_H

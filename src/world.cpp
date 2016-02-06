@@ -27,10 +27,10 @@
 //
 
 // appleseed-maya headers.
-#include "swatchesrenderer/appleseedswatchrenderer.h"
 #include "threads/renderqueueworker.h"
 #include "utilities/logging.h"
 #include "appleseedrenderer.h"
+#include "appleseedswatchrenderer.h"
 #include "mayascene.h"
 #include "world.h"
 
@@ -80,9 +80,6 @@ World::World()
 
     renderType = RTYPENONE;
     renderState = RSTATENONE;
-    mScene.reset();
-    mRenderer.reset();
-    mRenderGlobals.reset();
 }
 
 World::~World()

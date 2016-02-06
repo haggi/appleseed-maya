@@ -26,8 +26,8 @@
 // THE SOFTWARE.
 //
 
-#ifndef MAYA_RENDERGLOBALS_H
-#define MAYA_RENDERGLOBALS_H
+#ifndef RENDERGLOBALS_H
+#define RENDERGLOBALS_H
 
 #include <maya/MObject.h>
 #include <maya/MString.h>
@@ -106,35 +106,10 @@ class MbElement
     double m_time;
 };
 
-struct RenderType
-{
-    enum RType
-    {
-        FINAL,
-        INTERACTIVE
-    };
-};
-
 class RenderGlobals
 {
   public:
-    enum RendererUpAxis
-    {
-        XUp,
-        YUp,
-        ZUp
-    };
-
-    MDistance::Unit internalUnit;
-    MDistance::Unit rendererUnit;
-    RendererUpAxis internalAxis;
-    RendererUpAxis rendererAxis;
-
-    float internalScaleFactor;
-    float rendererScaleFactor;
-
     MObject renderGlobalsMobject;
-    bool good;
 
     bool doAnimation;
     float currentFrameNumber; // current real frame (with mb steps)
@@ -145,14 +120,7 @@ class RenderGlobals
     std::vector<float> frameList;
 
     bool inBatch;
-    RenderType::RType renderType;
 
-  private:
-    int imgWidth;
-    int imgHeight;
-    int currentFrameIndex;
-
-  public:
     void setWidth(int w) { this->imgWidth = w; };
     void setHeight(int h) { this->imgHeight = h; };
     void setWidthHeight(int w, int h) { this->imgWidth = w; this->imgHeight = h; };
@@ -206,29 +174,34 @@ class RenderGlobals
     bool createDefaultLight;
 
     MString basePath;
-    MString imagePath;
-    MString imageName;
-    MString imageOutputFile; // complete path to current image file
-    int     imageFormatId;
-    MString imageFormatString;
+    public: MString imageOutputFile; // complete path to current image file
 
     MString preFrameScript;
     MString postFrameScript;
     MString preRenderLayerScript;
     MString postRenderLayerScript;
 
-  private:
-    bool    useRenderRegion;
-    int     regionLeft;
-    int     regionRight;
-    int     regionBottom;
-    int     regionTop;
+    void setUseRenderRegion(bool useRegion)
+    {
+        useRenderRegion = useRegion;
 
-  public:
-    void checkRenderRegion();
-    void setUseRenderRegion(bool useRegion){ useRenderRegion = useRegion; checkRenderRegion(); };
-    bool getUseRenderRegion() { return useRenderRegion; };
-    void getRenderRegion(int& left, int& bottom, int& right, int& top) { left = regionLeft; bottom = regionBottom; right = regionRight; top = regionTop; };
+        if (regionLeft > imgWidth ||
+            regionRight > imgWidth ||
+            regionBottom > imgHeight ||
+            regionTop > imgHeight)
+            useRenderRegion = false;
+    };
+
+    bool getUseRenderRegion() const { return useRenderRegion; }
+
+    void getRenderRegion(int& left, int& bottom, int& right, int& top) const
+    {
+        left = regionLeft;
+        bottom = regionBottom;
+        right = regionRight;
+        top = regionTop;
+    }
+
     bool detectShapeDeform;
     bool exportSceneFile;
     MString exportSceneFileName;
@@ -248,16 +221,28 @@ class RenderGlobals
     int currentRenderPassElementId;
 
     RenderGlobals();
-    ~RenderGlobals();
-    bool getDefaultGlobals();
-    bool getMbSteps();
+
+    void getMbSteps();
     bool isTransformStep();
     bool isDeformStep();
     void getImageName();
-    MString getImageOutputFile();
-    MString getImageExt();
 
-    void defineGlobalConversionMatrix();
+  private:
+    int     imgWidth;
+    int     imgHeight;
+    int     currentFrameIndex;
+    bool    useRenderRegion;
+    int     regionLeft;
+    int     regionRight;
+    int     regionBottom;
+    int     regionTop;
+
+    MString imagePath;
+    MString imageName;
+    int     imageFormatId;
+    MString imageFormatString;
+
+    void getDefaultGlobals();
 };
 
-#endif
+#endif  // !RENDERGLOBALS_H

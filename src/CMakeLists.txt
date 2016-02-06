@@ -73,20 +73,6 @@ source_group ("shadingtools" FILES
     ${shadingtools_sources}
 )
 
-set (swatchesrenderer_sources
-    swatchesrenderer/appleseedswatchrenderer.cpp
-    swatchesrenderer/appleseedswatchrenderer.h
-    swatchesrenderer/newswatchrenderer.cpp
-    swatchesrenderer/newswatchrenderer.h
-    swatchesrenderer/swatchesevent.h
-)
-list (APPEND appleseedmaya_sources
-    ${swatchesrenderer_sources}
-)
-source_group ("swatchesrenderer" FILES
-    ${swatchesrenderer_sources}
-)
-
 set (threads_sources
     threads/event.h
     threads/renderqueueworker.cpp
@@ -105,8 +91,6 @@ set (utilities_sources
     utilities/concurrentqueue.h
     utilities/logging.cpp
     utilities/logging.h
-    utilities/meshtools.cpp
-    utilities/meshtools.h
     utilities/pystring.cpp
     utilities/pystring.h
     utilities/tools.cpp
@@ -126,6 +110,8 @@ set (sources
     appleseedmeshwalker.h
     appleseedrenderer.cpp
     appleseedrenderer.h
+    appleseedswatchrenderer.cpp
+    appleseedswatchrenderer.h
     appleseedutils.cpp
     appleseedutils.h
     binmeshreadercmd.cpp
@@ -136,12 +122,14 @@ set (sources
     binmeshwritercmd.h
     globalsnode.cpp
     globalsnode.h
+    hypershaderenderer.cpp
+    hypershaderenderer.h
     mayaobject.cpp
     mayaobject.h
     mayascene.cpp
     mayascene.h
-    hypershaderenderer.cpp
-    hypershaderenderer.h
+    newswatchrenderer.cpp
+    newswatchrenderer.h
     pluginmain.cpp
     proxymesh.cpp
     proxymesh.h
@@ -149,6 +137,7 @@ set (sources
     renderercontroller.h
     renderglobals.cpp
     renderglobals.h
+    swatchesevent.h
     tilecallback.cpp
     tilecallback.h
     version.cpp
