@@ -108,11 +108,13 @@ RenderGlobals::RenderGlobals()
         break;
     };
 
+    scaleFactor = internalScaleFactor / 1000.0f * sceneScale;
+
     MMatrix scaleMatrix;
     scaleMatrix.setToIdentity();
-    scaleMatrix[0][0] =
-    scaleMatrix[1][1] =
-    scaleMatrix[2][2] = internalScaleFactor / 1000.0f * sceneScale;
+    scaleMatrix[0][0] = scaleFactor;
+    scaleMatrix[1][1] = scaleFactor;
+    scaleMatrix[2][2] = scaleFactor;
 
     globalConversionMatrix = scaleMatrix * sceneScaleMatrix;
 }
