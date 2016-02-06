@@ -26,26 +26,28 @@
 // THE SOFTWARE.
 //
 
-#include <maya/MTypes.h>
+#include "hypershaderenderer.h"
 
 #if MAYA_API_VERSION >= 201600
 
 // appleseed-maya headers.
-#include "utilities/logging.h"
-#include "utilities/attrtools.h"
-#include "hypershaderenderer.h"
 #include "osl/oslutils.h"
 #include "shadingtools/material.h"
 #include "shadingtools/shadingutils.h"
+#include "utilities/attrtools.h"
+#include "utilities/logging.h"
+#include "utilities/meshtools.h"
+#include "utilities/tools.h"
+#include "appleseedutils.h"
 #include "mayatoworld.h"
-#include "renderer/global/globallogger.h"
+
+#include "renderer/api/edf.h"
 #include "renderer/api/environment.h"
 #include "renderer/api/environmentedf.h"
-#include "renderer/api/texture.h"
 #include "renderer/api/environmentshader.h"
-#include "renderer/api/edf.h"
+#include "renderer/api/texture.h"
+#include "renderer/global/globallogger.h"
 #include "renderer/modeling/shadergroup/shadergroup.h"
-#include "appleseedutils.h"
 
 // appleseed.renderer headers.
 #include "renderer/api/bsdf.h"
@@ -76,27 +78,21 @@
 #include "foundation/utility/searchpaths.h"
 
 // Maya headers.
-#include <maya/MPlugArray.h>
-#include <maya/MPlug.h>
-#include <maya/MGlobal.h>
-#include <maya/MStringArray.h>
+#include <maya/MFloatArray.h>
+#include <maya/MFloatPointArray.h>
+#include <maya/MFloatVectorArray.h>
 #include <maya/MFnDependencyNode.h>
 #include <maya/MFnDependencyNode.h>
 #include <maya/MFnMesh.h>
+#include <maya/MGlobal.h>
 #include <maya/MItMeshPolygon.h>
+#include <maya/MPlugArray.h>
+#include <maya/MPlug.h>
 #include <maya/MPointArray.h>
-#include <maya/MFloatPointArray.h>
-#include <maya/MFloatArray.h>
-#include <maya/MFloatVectorArray.h>
+#include <maya/MStringArray.h>
 
 #include <boost/thread/locks.hpp>
 #include <boost/thread/mutex.hpp>
-
-#include "utilities/tools.h"
-#include "utilities/attrtools.h"
-#include "utilities/logging.h"
-#include "utilities/meshtools.h"
-#include "shadingtools/shadingutils.h"
 
 // Standard headers.
 #include <vector>
@@ -109,6 +105,7 @@ HypershadeRenderer::HypershadeRenderer()
 {
     initProject();
     width = height = initialSize;
+    lastMaterialName = "default";
     this->rb = (float*)malloc(width*height*kNumChannels*sizeof(float));
 }
 
@@ -226,14 +223,14 @@ void HypershadeRenderer::initProject()
 
     project->get_frame()->get_parameters().insert("pixel_format", "float");
 
-    this->tileCallbackFac.reset(new HypershadeTileCallbackFactory(this));
+    tileCallbackFac.reset(new HypershadeTileCallbackFactory(this));
 
     mrenderer.reset(
         new asr::MasterRenderer(
-            this->project.ref(),
-            this->project->configurations().get_by_name("interactive")->get_inherited_parameters(),
+            project.ref(),
+            project->configurations().get_by_name("interactive")->get_inherited_parameters(),
             &controller,
-            this->tileCallbackFac.get()));
+            tileCallbackFac.get()));
 
     for (uint i = 0; i < getWorldPtr()->shaderSearchPath.length(); i++)
     {
@@ -593,7 +590,7 @@ MStatus HypershadeRenderer::translateShader(const MUuid& id, const MObject& node
     return MStatus::kSuccess;
 }
 
-void HypershadeRenderer::updateMaterial(MObject materialNode, asr::Assembly *assembly)
+void HypershadeRenderer::updateMaterial(const MObject materialNode, const asr::Assembly *assembly)
 {
 	OSLUtilClass OSLShaderClass;
 	MObject surfaceShaderNode = getConnectedInNode(materialNode, "surfaceShader");
@@ -612,7 +609,7 @@ void HypershadeRenderer::updateMaterial(MObject materialNode, asr::Assembly *ass
 
 	asr::ShaderGroup *shaderGroup = assembly->shader_groups().get_by_name(shaderGroupName.asChar());
 
-	if (shaderGroup != nullptr)
+	if (shaderGroup != 0)
 	{
 		shaderGroup->clear();
 	}
@@ -658,14 +655,14 @@ void HypershadeRenderer::updateMaterial(MObject materialNode, asr::Assembly *ass
 	MString physicalSurfaceName = shadingGroupName + "_physical_surface_shader";
 
 	// add shaders only if they do not yet exist
-	if (assembly->surface_shaders().get_by_name(physicalSurfaceName.asChar()) == nullptr)
+	if (assembly->surface_shaders().get_by_name(physicalSurfaceName.asChar()) == 0)
 	{
 		assembly->surface_shaders().insert(
 			asr::PhysicalSurfaceShaderFactory().create(
 			physicalSurfaceName.asChar(),
 			asr::ParamArray()));
 	}
-	if (assembly->materials().get_by_name(shadingGroupName.asChar()) == nullptr)
+	if (assembly->materials().get_by_name(shadingGroupName.asChar()) == 0)
 	{
 		assembly->materials().insert(
 			asr::OSLMaterialFactory().create(
@@ -794,10 +791,11 @@ MStatus HypershadeRenderer::setShader(const MUuid& id, const MUuid& shaderId)
 MStatus HypershadeRenderer::setResolution(unsigned int w, unsigned int h)
 {
     Logging::debug(MString("setResolution to") + w + " " + h);
-    this->width = w;
-    this->height = h;
+    width = w;
+    height = h;
+
     // Update resolution buffer
-    this->rb = (float*)realloc(this->rb, w*h*kNumChannels*sizeof(float));
+    rb = (float*)realloc(rb, w*h*kNumChannels*sizeof(float));
 
     for (uint x = 0; x < width; x++)
     {
@@ -941,53 +939,51 @@ void HypershadeTileCallback::post_render_tile(const asr::Frame* frame, const siz
 {
     Logging::debug("HypershadeTileCallback::post_render_tile");
     asf::Tile& tile = frame->image().tile(tile_x, tile_y);
-    this->renderer->copyTileToBuffer(tile, tile_x, tile_y);
+    renderer->copyTileToBuffer(tile, tile_x, tile_y);
 }
 
 void HypershadeTileCallback::post_render(const asr::Frame* frame)
 {
     Logging::debug("HypershadeTileCallback::post_render frame");
-    asf::Image img = frame->image();
+
+    const asf::Image& img = frame->image();
     const asf::CanvasProperties& frame_props = img.properties();
-    int tileSize = frame_props.m_tile_height;
+    const size_t tileSize = frame_props.m_tile_height;
     size_t numPixels = frame_props.m_canvas_width * frame_props.m_canvas_height;
-    int width = frame_props.m_canvas_width;
-    int height = frame_props.m_canvas_height;
+    const size_t width = frame_props.m_canvas_width;
+    const size_t height = frame_props.m_canvas_height;
 
-    Logging::debug(MString("HypershadeTileCallback:: wh ") + width + " " + height + " tileSize " + tileSize);
+    float* buffer = new float[numPixels * kNumChannels];
 
-    boost::shared_ptr<float> buffer = boost::shared_ptr<float>(new float[numPixels * kNumChannels]);
-    float *rb = buffer.get();
-
-    for (int tile_x = 0; tile_x < frame_props.m_tile_count_x; tile_x++)
+    for (size_t tile_y = 0; tile_y < frame_props.m_tile_count_y; tile_y++)
     {
-        for (int tile_y = 0; tile_y < frame_props.m_tile_count_y; tile_y++)
+        for (size_t tile_x = 0; tile_x < frame_props.m_tile_count_x; tile_x++)
         {
             const asf::Tile& tile = frame->image().tile(tile_x, tile_y);
-            size_t tw = tile.get_width();
-            size_t th = tile.get_height();
+            const size_t tw = tile.get_width();
+            const size_t th = tile.get_height();
 
-            for (int y = 0; y < th; y++)
+            for (size_t y = 0; y < th; y++)
             {
-                for (int x = 0; x < tw; x++)
+                for (size_t x = 0; x < tw; x++)
                 {
-                    int index = ((height - 1) - (tile_y * tileSize + y)) * width + (tile_x * tileSize) + x;
-                    index *= kNumChannels;
+                    const size_t index = (((height - 1) - (tile_y * tileSize + y)) * width + (tile_x * tileSize) + x) * kNumChannels;
 
-                    rb[index] = tile.get_component<float>(x, y, 0);
-                    rb[index + 1] = tile.get_component<float>(x, y, 1);
-                    rb[index + 2] = tile.get_component<float>(x, y, 2);
-                    rb[index + 3] = tile.get_component<float>(x, y, 3);
+                    buffer[index + 0] = tile.get_component<float>(x, y, 0);
+                    buffer[index + 1] = tile.get_component<float>(x, y, 1);
+                    buffer[index + 2] = tile.get_component<float>(x, y, 2);
+                    buffer[index + 3] = tile.get_component<float>(x, y, 3);
                 }
             }
-
         }
     }
 
-    this->renderer->copyFrameToBuffer(buffer.get(), width, height);
+    renderer->copyFrameToBuffer(buffer, width, height);
+
+    delete [] buffer;
 }
 
-asf::auto_release_ptr<asr::MeshObject> HypershadeRenderer::defineStandardPlane(bool area)
+asf::auto_release_ptr<asr::MeshObject> HypershadeRenderer::defineStandardPlane(const bool area)
 {
 	asf::auto_release_ptr<asr::MeshObject> object(asr::MeshObjectFactory::create("standardPlane", asr::ParamArray()));
 
@@ -1027,7 +1023,7 @@ asf::auto_release_ptr<asr::MeshObject> HypershadeRenderer::defineStandardPlane(b
 	return object;
 
 }
-asf::auto_release_ptr<asr::MeshObject> HypershadeRenderer::createMesh(MObject& mobject)
+asf::auto_release_ptr<asr::MeshObject> HypershadeRenderer::createMesh(const MObject& mobject)
 {
 	MStatus stat = MStatus::kSuccess;
 	MFnMesh meshFn(mobject, &stat);
@@ -1088,5 +1084,46 @@ asf::auto_release_ptr<asr::MeshObject> HypershadeRenderer::createMesh(MObject& m
 
 }
 
+HypershadeRenderController::HypershadeRenderController() 
+    :status(asr::IRendererController::ContinueRendering)
+{
+}
+
+HypershadeRenderController::~HypershadeRenderController()
+{
+}
+
+void HypershadeRenderController::on_rendering_begin()
+{
+}
+
+void HypershadeRenderController::on_rendering_success()
+{
+}
+
+void HypershadeRenderController::on_rendering_abort()
+{
+}
+
+void HypershadeRenderController::on_frame_begin()
+{
+}
+
+void HypershadeRenderController::on_frame_end()
+{
+}
+
+void HypershadeRenderController::on_progress()
+{
+}
+
+void HypershadeRenderController::release()
+{
+}
+
+asr::IRendererController::Status HypershadeRenderController::get_status() const
+{
+    return status;
+}
 
 #endif

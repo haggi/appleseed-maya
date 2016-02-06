@@ -29,16 +29,18 @@
 #ifndef MAYA_RENDERER_H
 #define MAYA_RENDERER_H
 
+#include <maya/MTypes.h>
+
 #if MAYA_API_VERSION >= 201600
 
-#include "renderer/api/scene.h"
-#include "renderer/api/project.h"
-#include "renderer/api/object.h"
 #include "renderer/global/globallogger.h"
+#include "renderer/api/object.h"
+#include "renderer/api/project.h"
 #include "renderer/api/rendering.h"
+#include "renderer/api/scene.h"
+
 #include "foundation/image/tile.h"
 
-#include <maya/MTypes.h>
 #include <maya/MPxRenderer.h>
 
 // Standard headers.
@@ -53,18 +55,15 @@ class HypershadeRenderer;
 class HypershadeRenderController : public asr::IRendererController
 {
 public:
-	HypershadeRenderController()
-	{
-		status = asr::IRendererController::ContinueRendering;
-	};
-	~HypershadeRenderController() {}
-	void on_rendering_begin(){};
-	void on_rendering_success(){};
-	void on_rendering_abort(){};
-	void on_frame_begin(){};
-	void on_frame_end(){};
-	void on_progress(){};
-	void release(){};
+    HypershadeRenderController();
+    ~HypershadeRenderController();
+	void on_rendering_begin();
+	void on_rendering_success();
+	void on_rendering_abort();
+	void on_frame_begin();
+	void on_frame_end();
+	void on_progress();
+	void release();
 	Status get_status() const
 	{
 		return this->status;
@@ -157,21 +156,20 @@ class HypershadeRenderer : public MPxRenderer
     void render();
 
 	// these are duplicates and should be somehow combined with the ones of the Renderer class
-	asf::auto_release_ptr<asr::MeshObject> defineStandardPlane(bool area = false);
-	asf::auto_release_ptr<asr::MeshObject> createMesh(MObject& mobject);
-	void updateMaterial(MObject materialNode, asr::Assembly *assembly);
+    asf::auto_release_ptr<asr::MeshObject> defineStandardPlane(const bool area = false);
+    asf::auto_release_ptr<asr::MeshObject> createMesh(const MObject& mobject);
+    void updateMaterial(const MObject materialNode, const asr::Assembly *assembly);
 
 
   private:
     int width, height;
-    //Render output buffer, it is R32G32B32A32_FLOAT format.
     boost::thread renderThread;
     asf::auto_release_ptr<asr::Project> project;
     std::auto_ptr<asr::MasterRenderer> mrenderer;
     asf::auto_release_ptr<HypershadeTileCallbackFactory> tileCallbackFac;
 	HypershadeRenderController controller;
     MUuid lastShapeId; // save the last shape id, needed by translateTransform
-    MString lastMaterialName = "default";
+    MString lastMaterialName;
     std::vector<IdNameStruct> objectArray;
     bool asyncStarted = false;
 };
