@@ -81,13 +81,13 @@ namespace asf = foundation;
 namespace asr = renderer;
 
 AppleseedSwatchRenderer::AppleseedSwatchRenderer()
-  : terminateLoop(false)
-  , enableSwatchRenderer(true)
+  : mTerminateLoop(false)
 {
-    MString swatchRenderFile = getRendererHome() + "resources/swatchRender.xml";
-    MString schemaPath = getRendererHome() + "schemas/project.xsd";
-    project = asr::ProjectFileReader().read(swatchRenderFile.asChar(), schemaPath.asChar());
-    if (project.get() == 0)
+    const MString swatchRenderFile = getRendererHome() + "resources/swatchRender.xml";
+    const MString schemaPath = getRendererHome() + "schemas/project.xsd";
+    mProject = asr::ProjectFileReader().read(swatchRenderFile.asChar(), schemaPath.asChar());
+
+    if (mProject.get() == 0)
     {
         Logging::error(MString("Unable to load swatch render file correctly: ") + swatchRenderFile);
         return;
@@ -96,113 +96,73 @@ AppleseedSwatchRenderer::AppleseedSwatchRenderer()
     {
         Logging::info(MString("Successfully loaded swatch render file."));
     }
-    MString cmd = MString("import renderer.osltools as osl; osl.getOSODirs();");
-    MStringArray oslDirs;
-    MGlobal::executePythonCommand(cmd, oslDirs, false, false);
-    for (uint i = 0; i < oslDirs.length(); i++)
-    {
-        project->search_paths().push_back(oslDirs[i].asChar());
-    }
 
-    mrenderer.reset(
+    MStringArray oslDirs;
+    MGlobal::executePythonCommand("import renderer.osltools as osl; osl.getOSODirs();", oslDirs, false, false);
+
+    for (unsigned int i = 0; i < oslDirs.length(); i++)
+        mProject->search_paths().push_back(oslDirs[i].asChar());
+
+    mRenderer.reset(
         new asr::MasterRenderer(
-            project.ref(),
-            project->configurations().get_by_name("final")->get_inherited_parameters(),
-            &renderer_controller));
+            mProject.ref(),
+            mProject->configurations().get_by_name("final")->get_inherited_parameters(),
+            &mRendererController));
 }
 
 AppleseedSwatchRenderer::~AppleseedSwatchRenderer()
 {
     terminateAppleseedSwatchRender(this);
-
-    // todo: wasn't this supposed to be project.reset()?
-    project.release();
 }
 
 void AppleseedSwatchRenderer::renderSwatch(NewSwatchRenderer *sr)
 {
-    int res(sr->resolution());
-    setSize(res);
-    setShader(sr->dNode);
-    mrenderer->render();
+    const int res = sr->resolution();
+
+    const MString resString = MString("") + res + " " + res;
+    asr::ParamArray frameParams = mProject->get_frame()->get_parameters();
+    frameParams.insert("resolution", resString);
+    frameParams.insert("tile_size", resString);
+    mProject->set_frame(asr::FrameFactory::create("beauty", frameParams));
+
+    defineMaterial(sr->dNode);
+
+    mRenderer->render();
 
     sr->image().create(res, res, 4, MImage::kFloat);
-    float *floatPixels = sr->image().floatPixels();
-    fillSwatch(floatPixels);
-}
 
-void AppleseedSwatchRenderer::fillSwatch(float *pixels)
-{
-    const asf::Image& image = project->get_frame()->image();
-    const size_t res = image.properties().m_canvas_height;
-
-    assert(image.properties().m_channel_count == 4);
-
+    float* pixels = sr->image().floatPixels();
     size_t index = 0;
 
-    if (image.properties().m_canvas_height == image.properties().m_tile_height)
+    const asf::Image& image = mProject->get_frame()->image();
+    const asf::CanvasProperties& props = image.properties();
+    assert(props.m_channel_count == 4);
+
+    const asf::Tile& tile = mProject->get_frame()->image().tile(0, 0);
+
+    for (size_t y = 0; y < props.m_canvas_height; y++)
     {
-        asf::Tile& tile = project->get_frame()->image().tile(0, 0);
-        for (size_t y = 0; y < res; y++)
+        for (size_t x = 0; x < props.m_canvas_width; x++)
         {
-            for (size_t x = 0; x < res; x++)
-            {
-                for (size_t c = 0; c < 4; c++)
-                    pixels[index++] = tile.get_component<float>(x, y, c);
-            }
+            for (size_t c = 0; c < 4; c++)
+                pixels[index++] = tile.get_component<float>(x, y, c);
         }
     }
-    else
-    {
-        for (size_t y = 0; y < res; y++)
-        {
-            for (size_t x = 0; x < res; x++)
-            {
-                asf::Color4f p;
-                image.get_pixel(x, y, p);
-                pixels[index++] = p.r;
-                pixels[index++] = p.g;
-                pixels[index++] = p.g;
-                pixels[index++] = 1.0f;
-            }
-        }
-    }
-}
-
-void AppleseedSwatchRenderer::setSize(int size)
-{
-    MString res = MString("") + size + " " + size;
-    asr::ParamArray frameParams = project->get_frame()->get_parameters();
-    frameParams.insert("resolution", res.asChar());
-    frameParams.insert("tile_size", res);
-    project->set_frame(
-        asr::FrameFactory::create(
-        "beauty",
-        frameParams));
-}
-
-void AppleseedSwatchRenderer::setShader(MObject shader)
-{
-    defineMaterial(shader);
 }
 
 void AppleseedSwatchRenderer::mainLoop()
 {
-#ifdef _DEBUG
-    Logging::setLogLevel(Logging::LevelDebug);
-#endif
-
     Logging::debug("Starting AppleseedSwatchRenderer main loop.");
 
     SwatchesEvent swatchEvent;
-    while (!terminateLoop)
+    while (!mTerminateLoop)
     {
         SwatchesQueue.wait_and_pop(swatchEvent);
 
         if (swatchEvent.renderDone == 0)
         {
             Logging::debug(MString("AppleseedSwatchRenderer main Loop: received a null ptr. Terminating loop"));
-            terminateLoop = true;
+            mTerminateLoop = true;
         }
         else
         {
@@ -306,7 +266,7 @@ void AppleseedSwatchRenderer::defineMaterial(MObject shadingNode)
     MPlugArray pa, paOut;
     MFnDependencyNode depFn(shadingNode);
     depFn.getConnections(pa);
-    asr::Assembly *assembly = project->get_scene()->assemblies().get_by_name("swatchRenderer_world");
+    asr::Assembly *assembly = mProject->get_scene()->assemblies().get_by_name("swatchRenderer_world");
     for (uint i = 0; i < pa.length(); i++)
     {
         if (pa[i].isDestination())
@@ -327,21 +287,18 @@ void AppleseedSwatchRenderer::defineMaterial(MObject shadingNode)
     }
 }
 
-void AppleseedSwatchRenderer::startAppleseedSwatchRender(AppleseedSwatchRenderer *swRend)
+void AppleseedSwatchRenderer::startAppleseedSwatchRender(AppleseedSwatchRenderer* swRend)
 {
     if (swRend != 0)
     {
-        Logging::debug(MString("startAppleseedSwatchRender"));
         swRend->mainLoop();
         delete swRend;
-        Logging::debug(MString("appleseedSwatchRender done and deleted."));
     }
 }
 
-void AppleseedSwatchRenderer::terminateAppleseedSwatchRender(AppleseedSwatchRenderer *swRend)
+void AppleseedSwatchRenderer::terminateAppleseedSwatchRender(AppleseedSwatchRenderer* swRend)
 {
-    Logging::debug(MString("terminateAppleseedSwatchRender"));
     SwatchesEvent swatchEvent;
     SwatchesQueue.push(swatchEvent);
-    swRend->terminateLoop = true;
+    swRend->mTerminateLoop = true;
 }
