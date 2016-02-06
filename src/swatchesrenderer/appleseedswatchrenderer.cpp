@@ -26,13 +26,17 @@
 // THE SOFTWARE.
 //
 
+// Interface header.
 #include "appleseedswatchrenderer.h"
 
-#include "foundation/core/appleseed.h"
+// appleseed.renderer headers.
 #include "renderer/api/bsdf.h"
 #include "renderer/api/camera.h"
 #include "renderer/api/color.h"
+#include "renderer/api/edf.h"
 #include "renderer/api/environment.h"
+#include "renderer/api/environmentedf.h"
+#include "renderer/api/environmentshader.h"
 #include "renderer/api/frame.h"
 #include "renderer/api/light.h"
 #include "renderer/api/log.h"
@@ -41,10 +45,13 @@
 #include "renderer/api/project.h"
 #include "renderer/api/rendering.h"
 #include "renderer/api/scene.h"
+#include "renderer/api/shadergroup.h"
 #include "renderer/api/surfaceshader.h"
+#include "renderer/api/texture.h"
 #include "renderer/api/utility.h"
 
 // appleseed.foundation headers.
+#include "foundation/core/appleseed.h"
 #include "foundation/image/image.h"
 #include "foundation/image/tile.h"
 #include "foundation/math/matrix.h"
@@ -55,44 +62,29 @@
 #include "foundation/utility/autoreleaseptr.h"
 #include "foundation/utility/searchpaths.h"
 
-#include "renderer/global/globallogger.h"
-#include "renderer/api/environment.h"
-#include "renderer/api/environmentedf.h"
-#include "renderer/api/texture.h"
-#include "renderer/api/environmentshader.h"
-#include "renderer/api/edf.h"
-
-#include "renderer/modeling/shadergroup/shadergroup.h"
-
-#include "swatchesevent.h"
-#include "swatchesrenderer/swatchesqueue.h"
-#include "swatchesrenderer/newswatchrenderer.h"
-#include <maya/MFnDependencyNode.h>
-#include "utilities/logging.h"
-#include "utilities/tools.h"
+// appleseed-maya headers.
 #include "osl/oslutils.h"
 #include "shadingtools/material.h"
-#include "../appleseedmaterial.h"
 #include "shadingtools/shadingutils.h"
-#include "world.h"
+#include "swatchesrenderer/newswatchrenderer.h"
+#include "utilities/logging.h"
+#include "utilities/tools.h"
+#include "swatchesevent.h"
+#include "mayatoworld.h"
+
+// Maya headers.
+#include <maya/MFnDependencyNode.h>
 #include <maya/MGlobal.h>
+#include <maya/MPlugArray.h>
 
 namespace asf = foundation;
 namespace asr = renderer;
 
 AppleseedSwatchRenderer::AppleseedSwatchRenderer()
+  : terminateLoop(false)
+  , enableSwatchRenderer(true)
+  , loopDone(false)
 {
-    terminateLoop = false;
-    enableSwatchRenderer = true;
-    loopDone = false;
-
-    Logging::debug(MString("Initialze appleseed swatch renderer."));
-#if _DEBUG
-    log_target = autoPtr<asf::ILogTarget>(asf::create_console_log_target(stdout));
-    asr::global_logger().add_target(log_target.get());
-    RENDERER_LOG_INFO("loading project file %s...", "This is a test");
-#endif
-
     MString swatchRenderFile = getRendererHome() + "resources/swatchRender.xml";
     MString schemaPath = getRendererHome() + "schemas/project.xsd";
     project = asr::ProjectFileReader().read(swatchRenderFile.asChar(), schemaPath.asChar());
@@ -105,7 +97,7 @@ AppleseedSwatchRenderer::AppleseedSwatchRenderer()
     {
         Logging::info(MString("Successfully loaded swatch render file."));
     }
-    MString cmd = MString("import renderer.osltools as osl;osl.getOSODirs();");
+    MString cmd = MString("import renderer.osltools as osl; osl.getOSODirs();");
     MStringArray oslDirs;
     MGlobal::executePythonCommand(cmd, oslDirs, false, false);
     for (uint i = 0; i < oslDirs.length(); i++)
@@ -113,21 +105,23 @@ AppleseedSwatchRenderer::AppleseedSwatchRenderer()
         project->search_paths().push_back(oslDirs[i].asChar());
     }
 
-    mrenderer = autoPtr<asr::MasterRenderer>(new asr::MasterRenderer(
-        project.ref(),
-        project->configurations().get_by_name("final")->get_inherited_parameters(),
-        &renderer_controller));
+    mrenderer.reset(
+        new asr::MasterRenderer(
+            project.ref(),
+            project->configurations().get_by_name("final")->get_inherited_parameters(),
+            &renderer_controller));
 }
 
-void AppleseedSwatchRenderer::renderSwatch()
+AppleseedSwatchRenderer::~AppleseedSwatchRenderer()
 {
+    terminateAppleseedSwatchRender(this);
+
+    // todo: wasn't this supposed to be project.reset()?
+    project.release();
 }
 
 void AppleseedSwatchRenderer::renderSwatch(NewSwatchRenderer *sr)
 {
-    if (!mrenderer.get())
-        return;
-
     int res(sr->resolution());
     this->setSize(res);
     this->setShader(sr->dNode);
@@ -193,27 +187,17 @@ void AppleseedSwatchRenderer::setShader(MObject shader)
     this->defineMaterial(shader);
 }
 
-AppleseedSwatchRenderer::~AppleseedSwatchRenderer()
-{
-    terminateAppleseedSwatchRender(this);
-    project.release();
-#if _DEBUG
-    asr::global_logger().remove_target(log_target.get());
-#endif
-    Logging::debug("Removing AppleseedSwatchRenderer.");
-}
-
 void AppleseedSwatchRenderer::mainLoop()
 {
 #ifdef _DEBUG
     Logging::setLogLevel(Logging::LevelDebug);
 #endif
 
-    SEvent swatchEvent;
+    SwatchesEvent swatchEvent;
     Logging::debug("Starting AppleseedSwatchRenderer main Loop.");
     while (!terminateLoop)
     {
-        getQueue()->wait_and_pop(swatchEvent);
+        SwatchesQueue.wait_and_pop(swatchEvent);
 
         if (swatchEvent.renderDone == 0)
         {
@@ -229,12 +213,95 @@ void AppleseedSwatchRenderer::mainLoop()
     loopDone = true;
 }
 
+namespace
+{
+    void updateMaterial(MObject materialNode, const asr::Assembly *assembly)
+    {
+        OSLUtilClass OSLShaderClass;
+        MObject surfaceShaderNode = getConnectedInNode(materialNode, "surfaceShader");
+        MString surfaceShaderName = getObjectName(surfaceShaderNode);
+        MString shadingGroupName = getObjectName(materialNode);
+        ShadingNetwork network(surfaceShaderNode);
+        size_t numNodes = network.shaderList.size();
+
+        MString assName = "swatchRenderer_world";
+        if (assName == assembly->get_name())
+        {
+            shadingGroupName = "previewSG";
+        }
+
+        MString shaderGroupName = shadingGroupName + "_OSLShadingGroup";
+
+        asr::ShaderGroup *shaderGroup = assembly->shader_groups().get_by_name(shaderGroupName.asChar());
+
+        if (shaderGroup != 0)
+        {
+            shaderGroup->clear();
+        }
+        else
+        {
+            asf::auto_release_ptr<asr::ShaderGroup> oslShadingGroup = asr::ShaderGroupFactory().create(shaderGroupName.asChar());
+            assembly->shader_groups().insert(oslShadingGroup);
+            shaderGroup = assembly->shader_groups().get_by_name(shaderGroupName.asChar());
+        }
+
+        OSLShaderClass.group = (OSL::ShaderGroup *)shaderGroup;
+
+        MFnDependencyNode shadingGroupNode(materialNode);
+        MPlug shaderPlug = shadingGroupNode.findPlug("surfaceShader");
+        OSLShaderClass.createOSLProjectionNodes(shaderPlug);
+
+        for (int shadingNodeId = 0; shadingNodeId < numNodes; shadingNodeId++)
+        {
+            ShadingNode snode = network.shaderList[shadingNodeId];
+            Logging::debug(MString("ShadingNode Id: ") + shadingNodeId + " ShadingNode name: " + snode.fullName);
+            if (shadingNodeId == (numNodes - 1))
+                Logging::debug(MString("LastNode Surface Shader: ") + snode.fullName);
+            OSLShaderClass.createOSLShadingNode(network.shaderList[shadingNodeId]);
+        }
+
+        OSLShaderClass.cleanupShadingNodeList();
+        OSLShaderClass.createAndConnectShaderNodes();
+
+        if (numNodes > 0)
+        {
+            ShadingNode snode = network.shaderList[numNodes - 1];
+            MString layer = (snode.fullName + "_interface");
+            Logging::debug(MString("Adding interface shader: ") + layer);
+            asr::ShaderGroup *sg = (asr::ShaderGroup *)OSLShaderClass.group;
+            sg->add_shader("surface", "surfaceShaderInterface", layer.asChar(), asr::ParamArray());
+            const char *srcLayer = snode.fullName.asChar();
+            const char *srcAttr = "outColor";
+            const char *dstLayer = layer.asChar();
+            const char *dstAttr = "inColor";
+            Logging::debug(MString("Connecting interface shader: ") + srcLayer + "." + srcAttr + " -> " + dstLayer + "." + dstAttr);
+            sg->add_connection(srcLayer, srcAttr, dstLayer, dstAttr);
+        }
+
+        MString physicalSurfaceName = shadingGroupName + "_physical_surface_shader";
+
+        // add shaders only if they do not yet exist
+        if (assembly->surface_shaders().get_by_name(physicalSurfaceName.asChar()) == 0)
+        {
+            assembly->surface_shaders().insert(
+                asr::PhysicalSurfaceShaderFactory().create(
+                physicalSurfaceName.asChar(),
+                asr::ParamArray()));
+        }
+        if (assembly->materials().get_by_name(shadingGroupName.asChar()) == 0)
+        {
+            assembly->materials().insert(
+                asr::OSLMaterialFactory().create(
+                shadingGroupName.asChar(),
+                asr::ParamArray()
+                .insert("surface_shader", physicalSurfaceName.asChar())
+                .insert("osl_surface", shaderGroupName.asChar())));
+        }
+    }
+}
 
 void AppleseedSwatchRenderer::defineMaterial(MObject shadingNode)
 {
-    if (!mrenderer.get())
-        return;
-
     MStatus status;
     // to use the unified material function we need the shading group
     // this works only for surface shaders, textures can be handled differently later
@@ -276,7 +343,7 @@ void AppleseedSwatchRenderer::startAppleseedSwatchRender(AppleseedSwatchRenderer
 void AppleseedSwatchRenderer::terminateAppleseedSwatchRender(AppleseedSwatchRenderer *swRend)
 {
     Logging::debug(MString("terminateAppleseedSwatchRender"));
-    SEvent swatchEvent;
+    SwatchesEvent swatchEvent;
     SwatchesQueue.push(swatchEvent);
     swRend->terminateLoop = true;
 }

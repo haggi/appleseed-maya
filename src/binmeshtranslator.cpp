@@ -137,7 +137,7 @@ bool BinMeshTranslator::canBeOpened() const
 
 MStatus BinMeshTranslator::importObjects()
 {
-    MString cmd = MString("import binMeshTranslator; binMeshTranslator.binMeshTranslatorRead(");
+    MString cmd = MString("import binmeshtranslator; binmeshtranslator.binMeshTranslatorRead(");
     cmd += "'" + mFileName + "',";
     cmd += "'" + mOptions + "',";
     cmd += "'read')";
@@ -152,7 +152,7 @@ MStatus BinMeshTranslator::importObjects()
 //          MStatus::kFailure if the method fails
 MStatus BinMeshTranslator::exportObjects(const MString& mode)
 {
-    MString cmd = MString("import binMeshTranslator; binMeshTranslator.binMeshTranslatorWrite(");
+    MString cmd = MString("import binmeshtranslator; binmeshtranslator.binMeshTranslatorWrite(");
     cmd += "'" + mFileName + "',";
     cmd += "'" + mOptions + "',";
     cmd += "'" + mode + "')";

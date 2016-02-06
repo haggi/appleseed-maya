@@ -40,5 +40,4 @@ void getMeshData(MObject& meshObject, MPointArray& points, MFloatVectorArray& no
     MFloatArray& vArray, MIntArray& triPointIndices, MIntArray& triNormalIndices,
     MIntArray& triUvIndices, MIntArray& triMatIndices, MIntArray& perFaceAssignments);
 
-
 #endif

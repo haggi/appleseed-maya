@@ -26,27 +26,45 @@
 // THE SOFTWARE.
 //
 
-#ifndef MTAP_SWEVENT_H
-#define MTAP_SWEVENT_H
+#ifndef MTAP_RENDERER_CONTROLLER_H
+#define MTAP_RENDERER_CONTROLLER_H
 
-// appleseed-maya headers.
-#include "utilities/concurrentqueue.h"
+// appleseed.renderer headers.
+#include "renderer/api/rendering.h"
 
-// Maya headers.
-#include <maya/MObject.h>
-
-// Forward declarations.
-class NewSwatchRenderer;
-
-struct SwatchesEvent
+class RendererController
+  : public renderer::IRendererController
 {
-    int height;
-    float *pixels;
-    bool *renderDone;
-    MObject shadingNode;
-    NewSwatchRenderer *swatchRenderer;
-};
+  public:
+    // Constructor.
+    RendererController();
 
-static concurrent_queue<SwatchesEvent> SwatchesQueue;
+    void release();
+
+    // This method is called before rendering begins.
+    void on_rendering_begin();
+
+    // This method is called after rendering has succeeded.
+    void on_rendering_success();
+
+    // This method is called after rendering was aborted.
+    void on_rendering_abort();
+
+    // This method is called before rendering a single frame.
+    void on_frame_begin();
+
+    // This method is called after rendering a single frame.
+    void on_frame_end();
+
+    // This method is called continuously during rendering.
+    void on_progress();
+
+    Status get_status() const;
+    void set_status(const Status new_status);
+
+  private:
+    volatile Status m_status;
+    void (*m_entityUpdateProc)();
+};
 
 #endif

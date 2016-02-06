@@ -38,7 +38,7 @@
 #include "utilities/tools.h"
 #include "utilities/logging.h"
 #include "utilities/pystring.h"
-#include "shadingtools/shaderdefs.h"
+#include "shadingtools/shaderdefinitions.h"
 
 ShadingNetwork::ShadingNetwork(MObject& node) : rootNode(node)
 {
@@ -355,9 +355,3 @@ Material::Material(MObject &shadingEngine)
     this->parseNetworks();
     this->printNodes(this->surfaceShaderNet);
 }
-
-Material::Material()
-{}
-
-Material::~Material()
-{}
