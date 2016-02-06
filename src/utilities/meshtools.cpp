@@ -28,24 +28,30 @@
 
 #include "meshtools.h"
 
+#include "utilities/attrtools.h"
+#include "utilities/logging.h"
+#include "utilities/tools.h"
+
 #include <maya/MFnDependencyNode.h>
 #include <maya/MFnMesh.h>
 #include <maya/MItMeshPolygon.h>
-#include <maya/MPointArray.h>
 #include <maya/MFloatPointArray.h>
-#include <maya/MFloatArray.h>
-#include <maya/MFloatVectorArray.h>
 #include <maya/MFnMeshData.h>
 
-#include "utilities/tools.h"
-#include "utilities/attrtools.h"
-#include "utilities/logging.h"
+namespace
+{
+    asr::GVector3 mpointToGVector3(const MPoint& p)
+    {
+        return asr::GVector3((float)p.x, (float)p.y, (float)p.z);
+    }
+}
 
-void getMeshData(MObject& meshObject, MPointArray& points, MFloatVectorArray& normals)
+void getMeshData(const MObject& meshObject, MPointArray& points, MFloatVectorArray& normals)
 {
     MStatus stat;
     MMeshSmoothOptions options;
-    MFnMesh tmpMesh(meshObject);
+    MObject mObject = meshObject;
+    MFnMesh tmpMesh(mObject);
     MFnMeshData meshData;
     MObject dataObject;
     MObject smoothedObj;
@@ -67,29 +73,29 @@ void getMeshData(MObject& meshObject, MPointArray& points, MFloatVectorArray& no
                 smoothedObj = tmpMesh.generateSmoothMesh(dataObject, &options, &stat);
                 if (stat)
                 {
-                    meshObject = smoothedObj;
+                    mObject = smoothedObj;
                 }
             }
         }
     }
 
-    MFnMesh meshFn(meshObject, &stat);
+    MFnMesh meshFn(mObject, &stat);
     meshFn.getPoints(points);
     meshFn.getNormals(normals, MSpace::kObject);
 }
 
 
-void getMeshData(MObject& meshObject, MPointArray& points, MFloatVectorArray& normals, MFloatArray& uArray,
+void getMeshData(const MObject& meshObject, MPointArray& points, MFloatVectorArray& normals, MFloatArray& uArray,
     MFloatArray& vArray, MIntArray& triPointIndices, MIntArray& triNormalIndices,
     MIntArray& triUvIndices, MIntArray& triMatIndices, MIntArray& perFaceAssignments)
 {
-
     MStatus stat;
     MMeshSmoothOptions options;
     MFnMesh tmpMesh(meshObject, &stat);
     MFnMeshData meshData;
     MObject dataObject;
     MObject smoothedObj;
+    MObject mObject = meshObject;
     MString meshName = tmpMesh.name();
 
     // create smooth mesh if needed
@@ -109,15 +115,15 @@ void getMeshData(MObject& meshObject, MPointArray& points, MFloatVectorArray& no
                 smoothedObj = tmpMesh.generateSmoothMesh(dataObject, &options, &stat);
                 if (stat)
                 {
-                    meshObject = smoothedObj;
+                    mObject = smoothedObj;
                 }
             }
         }
     }
 
-    MFnMesh meshFn(meshObject, &stat);
+    MFnMesh meshFn(mObject, &stat);
     CHECK_MSTATUS(stat);
-    MItMeshPolygon faceIt(meshObject, &stat);
+    MItMeshPolygon faceIt(mObject, &stat);
     CHECK_MSTATUS(stat);
 
     meshFn.getPoints(points);
@@ -215,5 +221,97 @@ void getMeshData(MObject& meshObject, MPointArray& points, MFloatVectorArray& no
             triMatIndices.append(perFaceShadingGroup);
         }
     }
+}
 
+asf::auto_release_ptr<asr::MeshObject> defineStandardPlane(const bool area)
+{
+    asf::auto_release_ptr<asr::MeshObject> object(asr::MeshObjectFactory::create("standardPlane", asr::ParamArray()));
+
+    if (area)
+    {
+        // Vertices.
+        object->push_vertex(asr::GVector3(-1.0f, -1.0f, 0.0f));
+        object->push_vertex(asr::GVector3(-1.0f, 1.0f, 0.0f));
+        object->push_vertex(asr::GVector3(1.0f, 1.0f, 0.0f));
+        object->push_vertex(asr::GVector3(1.0f, -1.0f, 0.0f));
+    }
+    else{
+        // Vertices.
+        object->push_vertex(asr::GVector3(-1.0f, 0.0f, -1.0f));
+        object->push_vertex(asr::GVector3(-1.0f, 0.0f, 1.0f));
+        object->push_vertex(asr::GVector3(1.0f, 0.0f, 1.0f));
+        object->push_vertex(asr::GVector3(1.0f, 0.0f, -1.0f));
+    }
+
+    if (area)
+    {
+        object->push_vertex_normal(asr::GVector3(0.0f, 0.0f, -1.0f));
+    }
+    else{
+        object->push_vertex_normal(asr::GVector3(0.0f, 1.0f, 0.0f));
+    }
+
+    object->push_tex_coords(asr::GVector2(0.0, 0.0));
+    object->push_tex_coords(asr::GVector2(1.0, 0.0));
+    object->push_tex_coords(asr::GVector2(1.0, 1.0));
+    object->push_tex_coords(asr::GVector2(0.0, 1.0));
+
+    // Triangles.
+    object->push_triangle(asr::Triangle(0, 1, 2, 0, 0, 0, 0, 1, 2, 0));
+    object->push_triangle(asr::Triangle(0, 2, 3, 0, 0, 0, 0, 2, 3, 0));
+
+    return object;
+
+}
+
+asf::auto_release_ptr<asr::MeshObject> createMesh(const MObject& mobject)
+{
+    MStatus stat = MStatus::kSuccess;
+    MFnMesh meshFn(mobject, &stat);
+    CHECK_MSTATUS(stat);
+
+    MPointArray points;
+    MFloatVectorArray normals;
+    MFloatArray uArray, vArray;
+    MIntArray triPointIds, triNormalIds, triUvIds, triMatIds, perFaceAssignments;
+    getMeshData(mobject, points, normals, uArray, vArray, triPointIds, triNormalIds, triUvIds, triMatIds, perFaceAssignments);
+
+    Logging::debug(MString("Translating mesh object ") + meshFn.name().asChar());
+    MString meshFullName = makeGoodString(meshFn.fullPathName());
+    asf::auto_release_ptr<asr::MeshObject> mesh = asr::MeshObjectFactory::create(meshFullName.asChar(), asr::ParamArray());
+
+    for (uint vtxId = 0; vtxId < points.length(); vtxId++)
+    {
+        mesh->push_vertex(mpointToGVector3(points[vtxId]));
+    }
+
+    for (uint nId = 0; nId < normals.length(); nId++)
+    {
+        mesh->push_vertex_normal(mpointToGVector3(normals[nId]));
+    }
+
+    for (uint tId = 0; tId < uArray.length(); tId++)
+    {
+        mesh->push_tex_coords(asr::GVector2((float)uArray[tId], (float)vArray[tId]));
+    }
+
+    int numTris = triPointIds.length() / 3;
+
+    for (uint triId = 0; triId < numTris; triId++)
+    {
+        uint index = triId * 3;
+        int perFaceShadingGroup = triMatIds[triId];
+        int vtxId0 = triPointIds[index];
+        int vtxId1 = triPointIds[index + 1];
+        int vtxId2 = triPointIds[index + 2];
+        int normalId0 = triNormalIds[index];
+        int normalId1 = triNormalIds[index + 1];
+        int normalId2 = triNormalIds[index + 2];
+        int uvId0 = triUvIds[index];
+        int uvId1 = triUvIds[index + 1];
+        int uvId2 = triUvIds[index + 2];
+        mesh->push_triangle(asr::Triangle(vtxId0, vtxId1, vtxId2, normalId0, normalId1, normalId2, uvId0, uvId1, uvId2, perFaceShadingGroup));
+    }
+
+    return mesh;
 }

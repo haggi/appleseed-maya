@@ -29,15 +29,23 @@
 #ifndef MESH_TOOLS_H
 #define MESH_TOOLS_H
 
-#include <maya/MPointArray.h>
+#include "renderer/api/object.h"
+
 #include <maya/MFloatArray.h>
 #include <maya/MFloatVectorArray.h>
-#include <maya/MObject.h>
 #include <maya/MIntArray.h>
+#include <maya/MObject.h>
+#include <maya/MPointArray.h>
 
-void getMeshData(MObject& meshObject, MPointArray& points, MFloatVectorArray& normals);
-void getMeshData(MObject& meshObject, MPointArray& points, MFloatVectorArray& normals, MFloatArray& uArray,
+namespace asf = foundation;
+namespace asr = renderer;
+
+void getMeshData(const MObject& meshObject, MPointArray& points, MFloatVectorArray& normals);
+void getMeshData(const MObject& meshObject, MPointArray& points, MFloatVectorArray& normals, MFloatArray& uArray,
     MFloatArray& vArray, MIntArray& triPointIndices, MIntArray& triNormalIndices,
     MIntArray& triUvIndices, MIntArray& triMatIndices, MIntArray& perFaceAssignments);
+asf::auto_release_ptr<asr::MeshObject> defineStandardPlane(const bool area = false);
+asf::auto_release_ptr<asr::MeshObject> createMesh(const MObject& mobject);
+
 
 #endif
