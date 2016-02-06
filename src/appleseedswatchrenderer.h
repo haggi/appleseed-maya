@@ -26,22 +26,20 @@
 // THE SOFTWARE.
 //
 
-#ifndef MTAP_NEWSWATCHRENDER_H
-#define MTAP_NEWSWATCHRENDER_H
+#ifndef APPLESEEDSWATCHRENDERER_H
+#define APPLESEEDSWATCHRENDERER_H
 
-#include "renderer/api/scene.h"
+// appleseed.renderer headers.
+#include "renderer/api/log.h"
 #include "renderer/api/project.h"
-#include "renderer/global/globallogger.h"
 #include "renderer/api/rendering.h"
-
-#include <maya/MObject.h>
+#include "renderer/api/scene.h"
 
 // Standard headers.
 #include <memory>
 
-namespace asf = foundation;
-namespace asr = renderer;
-
+// Forward declarations.
+class MObject;
 class NewSwatchRenderer;
 
 class AppleseedSwatchRenderer
@@ -57,18 +55,16 @@ class AppleseedSwatchRenderer
     void fillSwatch(float *pixels);
     bool terminateLoop;
     bool enableSwatchRenderer;
-    bool loopDone;
 
-    asf::auto_release_ptr<asr::Scene> scene;
-    asf::auto_release_ptr<asr::Project> project;
-    std::auto_ptr<asr::MasterRenderer> mrenderer;
-    asr::DefaultRendererController renderer_controller;
+    foundation::auto_release_ptr<renderer::Scene> scene;
+    foundation::auto_release_ptr<renderer::Project> project;
+    std::auto_ptr<renderer::MasterRenderer> mrenderer;
+    renderer::DefaultRendererController renderer_controller;
 
-    static void startAppleseedSwatchRender(AppleseedSwatchRenderer *swRend);
-    static void terminateAppleseedSwatchRender(AppleseedSwatchRenderer *swRend);
+    static void startAppleseedSwatchRender(AppleseedSwatchRenderer* swRend);
+    static void terminateAppleseedSwatchRender(AppleseedSwatchRenderer* swRend);
 
     void defineMaterial(MObject shadingNode);
-
 };
 
-#endif
+#endif  // !APPLESEEDSWATCHRENDERER_H

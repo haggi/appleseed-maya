@@ -26,28 +26,54 @@
 // THE SOFTWARE.
 //
 
-#ifndef MAYATOAPPLESEED_H
-#define MAYATOAPPLESEED_H
+#ifndef TILECALLBACK_H
+#define TILECALLBACK_H
+
+// appleseed.renderer headers.
+#include "renderer/api/rendering.h"
 
 // appleseed.foundation headers.
 #include "foundation/platform/compiler.h"
 
-// Maya headers.
-#include <maya/MPxCommand.h>
+// Standard headers.
+#include <cstddef>
 
 // Forward declarations.
-class MArgList;
-class MStatus;
-class MSyntax;
+namespace foundation    { class Tile; }
+namespace renderer      { class Frame; }
 
-class MayaToAppleseed
-  : public MPxCommand
+class TileCallback
+  : public renderer::ITileCallback
 {
   public:
-    static MSyntax syntaxCreator();
-    static void* creator();
+    // Delete this instance.
+    virtual void release() APPLESEED_OVERRIDE;
 
-    virtual MStatus doIt(const MArgList& args) APPLESEED_OVERRIDE;
+    // This method is called before a region is rendered.
+    virtual void pre_render(
+        const size_t            x,
+        const size_t            y,
+        const size_t            width,
+        const size_t            height) APPLESEED_OVERRIDE;
+
+    // This method is called after a whole frame is rendered (at once).
+    virtual void post_render(
+        const renderer::Frame*  frame) APPLESEED_OVERRIDE;
+
+    virtual void post_render_tile(
+        const renderer::Frame*  frame,
+        const size_t            tile_x,
+        const size_t            tile_y) APPLESEED_OVERRIDE;
 };
 
-#endif  // !MAYATOAPPLESEED_H
+class TileCallbackFactory
+  : public renderer::ITileCallbackFactory
+{
+  public:
+    // Delete this instance.
+    virtual void release() APPLESEED_OVERRIDE;
+
+    virtual renderer::ITileCallback* create() APPLESEED_OVERRIDE;
+};
+
+#endif  // !TILECALLBACK_H

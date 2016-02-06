@@ -30,7 +30,7 @@
 #define THREADS_EVENT_H
 
 // appleseed-maya headers.
-#include "mayatoworld.h"
+#include "world.h"
 
 // Maya headers.
 #include <maya/MRenderView.h>
@@ -82,7 +82,7 @@ class Event
     int height;
     bool useRenderRegion;
     MDagPath cameraDagPath;
-    MayaToWorld::WorldRenderType renderType;
+    World::RenderType renderType;
     size_t tile_xmin, tile_xmax, tile_ymin, tile_ymax;
 
     boost::shared_ptr<RV_PIXEL> pixelData;

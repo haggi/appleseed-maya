@@ -27,7 +27,7 @@
 //
 
 // Interface header.
-#include "mayatoappleseed.h"
+#include "appleseedmaya.h"
 
 // appleseed-maya headers.
 #include "threads/event.h"
@@ -35,7 +35,7 @@
 #include "utilities/attrtools.h"
 #include "utilities/logging.h"
 #include "utilities/tools.h"
-#include "mayatoworld.h"
+#include "world.h"
 
 // Maya headers.
 #include <maya/MArgDatabase.h>
@@ -43,7 +43,7 @@
 #include <maya/MSelectionList.h>
 #include <maya/MSyntax.h>
 
-MSyntax MayaToAppleseed::syntaxCreator()
+MSyntax AppleseedMaya::syntaxCreator()
 {
     MSyntax syntax;
     syntax.addFlag("-cam", "-camera", MSyntax::kString);
@@ -56,9 +56,9 @@ MSyntax MayaToAppleseed::syntaxCreator()
     return syntax;
 }
 
-void* MayaToAppleseed::creator()
+void* AppleseedMaya::creator()
 {
-    return new MayaToAppleseed();
+    return new AppleseedMaya();
 }
 
 namespace
@@ -78,10 +78,10 @@ namespace
     }
 }
 
-MStatus MayaToAppleseed::doIt(const MArgList& args)
+MStatus AppleseedMaya::doIt(const MArgList& args)
 {
     MStatus stat = MStatus::kSuccess;
-    MGlobal::displayInfo("Executing MayaToAppleseed...");
+    MGlobal::displayInfo("Executing appleseed-maya...");
 
     setLogLevel();
 
@@ -89,15 +89,15 @@ MStatus MayaToAppleseed::doIt(const MArgList& args)
 
     if (argData.isFlagSet("-state", &stat))
     {
-        if (getWorldPtr()->renderState == MayaToWorld::RSTATETRANSLATING)
+        if (getWorldPtr()->getRenderState() == World::RSTATETRANSLATING)
             setResult("rstatetranslating");
-        if (getWorldPtr()->renderState == MayaToWorld::RSTATERENDERING)
+        if (getWorldPtr()->getRenderState() == World::RSTATERENDERING)
             setResult("rstaterendering");
-        if (getWorldPtr()->renderState == MayaToWorld::RSTATEDONE)
+        if (getWorldPtr()->getRenderState() == World::RSTATEDONE)
             setResult("rstatedone");
-        if (getWorldPtr()->renderState == MayaToWorld::RSTATENONE)
+        if (getWorldPtr()->getRenderState() == World::RSTATENONE)
             setResult("rstatenone");
-        if (getWorldPtr()->renderState == MayaToWorld::RSTATESTOPPED)
+        if (getWorldPtr()->getRenderState() == World::RSTATESTOPPED)
             setResult("rstatestopped");
         return MS::kSuccess;
     }
@@ -124,9 +124,9 @@ MStatus MayaToAppleseed::doIt(const MArgList& args)
 
     Event e;
     e.type = Event::INITRENDER;
+    e.renderType = World::UIRENDER;
 
     MFnDependencyNode defaultGlobals(objectFromName("defaultResolution"));
-    e.renderType = MayaToWorld::UIRENDER;
     e.width = defaultGlobals.findPlug("width").asInt();
     e.height = defaultGlobals.findPlug("height").asInt();
 
@@ -134,7 +134,7 @@ MStatus MayaToAppleseed::doIt(const MArgList& args)
     e.useRenderRegion = drgfn.findPlug("useRenderRegion").asBool();
 
     if (argData.isFlagSet("-startIpr", &stat))
-        e.renderType = MayaToWorld::IPRRENDER;
+        e.renderType = World::IPRRENDER;
 
     if (argData.isFlagSet("-width", &stat))
         argData.getFlagArgument("-width", 0, e.width);

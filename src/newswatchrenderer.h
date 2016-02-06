@@ -26,27 +26,29 @@
 // THE SOFTWARE.
 //
 
-#ifndef MTAP_SWEVENT_H
-#define MTAP_SWEVENT_H
+#ifndef NEWSWATCHRENDERER_H
+#define NEWSWATCHRENDERER_H
 
-// appleseed-maya headers.
-#include "utilities/concurrentqueue.h"
+// appleseed.foundation headers.
+#include "foundation/platform/compiler.h"
 
 // Maya headers.
-#include <maya/MObject.h>
+#include <maya/MSwatchRenderBase.h>
 
 // Forward declarations.
-class NewSwatchRenderer;
+class MObject;
 
-struct SwatchesEvent
+class NewSwatchRenderer
+  : public MSwatchRenderBase
 {
-    int height;
-    float *pixels;
-    bool *renderDone;
-    MObject shadingNode;
-    NewSwatchRenderer *swatchRenderer;
+  public:
+    MObject dNode;
+
+    static MSwatchRenderBase* creator(MObject dependNode, MObject renderNode, int imageResolution);
+
+    NewSwatchRenderer(MObject dependNode, MObject renderNode, int imageResolution);
+
+    virtual bool doIteration() APPLESEED_OVERRIDE;
 };
 
-static concurrent_queue<SwatchesEvent> SwatchesQueue;
-
-#endif
+#endif  // !NEWSWATCHRENDERER_H

@@ -304,7 +304,6 @@ class OSLUtilClass
 {
   public:
     OSLUtilClass();
-    ~OSLUtilClass();
 
     OSLShadingNetworkRenderer *oslRenderer;
     OSL::ShaderGroup *group;

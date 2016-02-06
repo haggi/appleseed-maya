@@ -35,8 +35,8 @@
 #include "utilities/pystring.h"
 #include "appleseedrenderer.h"
 #include "mayaobject.h"
-#include "mayatoworld.h"
 #include "renderglobals.h"
+#include "world.h"
 
 // appleseed.renderer headers.
 #include "renderer/api/color.h"
@@ -149,10 +149,10 @@ void defineMasterAssembly(asr::Project *project)
 {
     MMatrix conversionMatrix;
     conversionMatrix.setToIdentity();
-    MayaToWorld *world = getWorldPtr();
+    World *world = getWorldPtr();
     if (world != 0)
     {
-        RenderGlobals *rg = world->worldRenderGlobalsPtr.get();
+        RenderGlobals *rg = world->mRenderGlobals.get();
         if (rg != 0)
             conversionMatrix = rg->globalConversionMatrix;
     }
@@ -193,7 +193,7 @@ MayaObject *getAssemblyMayaObject(MayaObject *mobj)
 
 asr::Assembly *getCreateObjectAssembly(boost::shared_ptr<MayaObject> obj)
 {
-    boost::shared_ptr<AppleseedRenderer> appleRenderer = boost::static_pointer_cast<AppleseedRenderer>(getWorldPtr()->worldRendererPtr);
+    boost::shared_ptr<AppleseedRenderer> appleRenderer = boost::static_pointer_cast<AppleseedRenderer>(getWorldPtr()->mRenderer);
 
     MayaObject *assemblyObject = getAssemblyMayaObject(obj.get());
     if (assemblyObject == 0)
@@ -229,7 +229,7 @@ asr::Assembly *getCreateObjectAssembly(boost::shared_ptr<MayaObject> obj)
 
 asr::AssemblyInstance *getExistingObjectAssemblyInstance(MayaObject *obj)
 {
-    boost::shared_ptr<AppleseedRenderer> appleRenderer = boost::static_pointer_cast<AppleseedRenderer>(getWorldPtr()->worldRendererPtr);
+    boost::shared_ptr<AppleseedRenderer> appleRenderer = boost::static_pointer_cast<AppleseedRenderer>(getWorldPtr()->mRenderer);
     MayaObject *assemblyObject = getAssemblyMayaObject(obj);
     if (assemblyObject == 0)
     {
@@ -292,7 +292,7 @@ MString colorOrMap(asr::Project *project, MFnDependencyNode& shaderNode, MString
 
 void removeTextureEntityIfItExists(MString& textureName)
 {
-    boost::shared_ptr<AppleseedRenderer> appleRenderer = boost::static_pointer_cast<AppleseedRenderer>(getWorldPtr()->worldRendererPtr);
+    boost::shared_ptr<AppleseedRenderer> appleRenderer = boost::static_pointer_cast<AppleseedRenderer>(getWorldPtr()->mRenderer);
     assert(appleRenderer != 0);
     asr::Scene *scene = getSceneFromProject(appleRenderer->getProjectPtr());
 
@@ -308,7 +308,7 @@ void removeTextureEntityIfItExists(MString& textureName)
 
 MString defineTexture(MFnDependencyNode& shader, MString& attributeName)
 {
-    boost::shared_ptr<AppleseedRenderer> appleRenderer = boost::static_pointer_cast<AppleseedRenderer>(getWorldPtr()->worldRendererPtr);
+    boost::shared_ptr<AppleseedRenderer> appleRenderer = boost::static_pointer_cast<AppleseedRenderer>(getWorldPtr()->mRenderer);
     assert(appleRenderer != 0);
     asr::Scene *scene = getSceneFromProject(appleRenderer->getProjectPtr());
     asf::SearchPaths &searchPaths = appleRenderer->getProjectPtr()->search_paths();
@@ -386,12 +386,12 @@ void fillTransformMatrices(MMatrix matrix, asr::AssemblyInstance *assInstance)
 
 void fillMatrices(boost::shared_ptr<MayaObject> obj, asr::TransformSequence& transformSequence)
 {
-    MMatrix conversionMatrix = getWorldPtr()->worldRenderGlobalsPtr->globalConversionMatrix;
-    float scaleFactor = getWorldPtr()->worldRenderGlobalsPtr->scaleFactor;
+    MMatrix conversionMatrix = getWorldPtr()->mRenderGlobals->globalConversionMatrix;
+    float scaleFactor = getWorldPtr()->mRenderGlobals->scaleFactor;
     transformSequence.clear();
 
     // in ipr mode we have to update the matrix manually
-    if (getWorldPtr()->getRenderType() == MayaToWorld::IPRRENDER)
+    if (getWorldPtr()->getRenderType() == World::IPRRENDER)
     {
         obj->transformMatrices.clear();
         obj->transformMatrices.push_back(obj->dagPath.inclusiveMatrix());
@@ -426,7 +426,7 @@ void fillMatrices(boost::shared_ptr<MayaObject> obj, asr::TransformSequence& tra
 void fillTransformMatrices(boost::shared_ptr<MayaObject> obj, asr::Light *light)
 {
     // in ipr mode we have to update the matrix manually
-    if (getWorldPtr()->getRenderType() == MayaToWorld::IPRRENDER)
+    if (getWorldPtr()->getRenderType() == World::IPRRENDER)
     {
         obj->transformMatrices.clear();
         obj->transformMatrices.push_back(obj->dagPath.inclusiveMatrix());

@@ -43,8 +43,8 @@
 
 #include "utilities/logging.h"
 #include "utilities/tools.h"
-#include "../mayascene.h"
-#include "../mayatoworld.h"
+#include "mayascene.h"
+#include "world.h"
 
 #include "foundation/platform/thread.h"
 
@@ -142,7 +142,7 @@ namespace
 
     MString getCaptionString()
     {
-        const MString frameString = MString("Frame ") + getWorldPtr()->worldRenderGlobalsPtr->getFrameNumber();
+        const MString frameString = MString("Frame ") + getWorldPtr()->mRenderGlobals->getFrameNumber();
         const MString timeString = getElapsedTimeString();
         return MString("(appleseed)\\n") + frameString + "  " + timeString;
     }
@@ -153,7 +153,7 @@ namespace
 
     void iprFindLeafNodes()
     {
-        boost::shared_ptr<MayaScene> mayaScene = getWorldPtr()->worldScenePtr;
+        boost::shared_ptr<MayaScene> mayaScene = getWorldPtr()->mScene;
         std::map<MCallbackId, InteractiveElement *>::iterator it;
         std::vector<InteractiveElement *> leafList;
 
@@ -227,7 +227,7 @@ namespace
     {
         Logging::debug(MString("IPRattributeChangedCallback. attribA: ") + plug.name() + " attribB: " + otherPlug.name());
         InteractiveElement *userData = (InteractiveElement *)element;
-        boost::shared_ptr<MayaScene> mayaScene = getWorldPtr()->worldScenePtr;
+        boost::shared_ptr<MayaScene> mayaScene = getWorldPtr()->mScene;
 
         if (!userData->obj)
             return;
@@ -275,7 +275,7 @@ namespace
         if (idInteractiveMap.empty())
             return;
 
-        getWorldPtr()->worldRendererPtr->abortRendering();
+        getWorldPtr()->mRenderer->abortRendering();
         iprFindLeafNodes();
         idInteractiveMap.clear();
     }
@@ -283,7 +283,7 @@ namespace
     void IPRNodeAddedCallback(MObject& node, void *userPtr)
     {
         Logging::debug(MString("IPRNodeAddedCallback. Node: ") + getObjectName(node));
-        boost::shared_ptr<MayaScene> mayaScene = getWorldPtr()->worldScenePtr;
+        boost::shared_ptr<MayaScene> mayaScene = getWorldPtr()->mScene;
         MStatus stat;
 
         if (node.hasFn(MFn::kTransform))
@@ -366,7 +366,7 @@ namespace
             objIdMap.erase(nodeCallbackId);
 
         // get the MayaObject element and mark it as removed.
-        boost::shared_ptr<MayaScene> mayaScene = getWorldPtr()->worldScenePtr;
+        boost::shared_ptr<MayaScene> mayaScene = getWorldPtr()->mScene;
         std::map<uint, InteractiveElement>::iterator iter;
         for (iter = mayaScene->interactiveUpdateMap.begin(); iter != mayaScene->interactiveUpdateMap.end(); iter++)
         {
@@ -389,7 +389,7 @@ namespace
     {
         MStatus stat;
         IprCallbacksDone = false;
-        boost::shared_ptr<MayaScene> mayaScene = getWorldPtr()->worldScenePtr;
+        boost::shared_ptr<MayaScene> mayaScene = getWorldPtr()->mScene;
 
         std::map<uint, InteractiveElement>::iterator ite;
         std::map<uint, InteractiveElement> ielements = mayaScene->interactiveUpdateMap;
@@ -465,11 +465,11 @@ namespace
         bool renderingStarted = false;
         while (!done)
         {
-            if (getWorldPtr()->getRenderState() == MayaToWorld::RSTATERENDERING)
+            if (getWorldPtr()->getRenderState() == World::RSTATERENDERING)
                 renderingStarted = true;
-            if (renderingStarted && (getWorldPtr()->getRenderState() != MayaToWorld::RSTATERENDERING))
+            if (renderingStarted && (getWorldPtr()->getRenderState() != World::RSTATERENDERING))
                 done = true;
-            if (escPressed && (getWorldPtr()->getRenderState() == MayaToWorld::RSTATERENDERING))
+            if (escPressed && (getWorldPtr()->getRenderState() == World::RSTATERENDERING))
             {
                 Logging::debug("computationEventThread::InterruptRequested.");
                 done = true;
@@ -486,28 +486,29 @@ namespace
 
     void renderProcessThread()
     {
-        if (getWorldPtr()->renderType == MayaToWorld::IPRRENDER)
+        if (getWorldPtr()->getRenderType() == World::IPRRENDER)
         {
             // the idea is that the renderer waits in IPR mode for an non empty modifiesElementList,
             // it updates the render database with the elements and empties the list which is then free for the next run
-            while ((getWorldPtr()->renderType == MayaToWorld::IPRRENDER))
+            while ((getWorldPtr()->getRenderType() == World::IPRRENDER))
             {
-                getWorldPtr()->worldRendererPtr->render();
-                while ((modifiedElementList.size() == 0) && (getWorldPtr()->renderType == MayaToWorld::IPRRENDER) && (getWorldPtr()->renderState != MayaToWorld::RSTATESTOPPED))
+                getWorldPtr()->mRenderer->render();
+                while ((modifiedElementList.size() == 0) && (getWorldPtr()->getRenderType() == World::IPRRENDER) && (getWorldPtr()->getRenderState() != World::RSTATESTOPPED))
                     asf::sleep(100);
-                if ((getWorldPtr()->renderType != MayaToWorld::IPRRENDER) || (getWorldPtr()->renderState == MayaToWorld::RSTATESTOPPED))
+                if ((getWorldPtr()->getRenderType() != World::IPRRENDER) || (getWorldPtr()->getRenderState() == World::RSTATESTOPPED))
                     break;
-                getWorldPtr()->worldRendererPtr->interactiveUpdateList = modifiedElementList;
-                getWorldPtr()->worldRendererPtr->doInteractiveUpdate();
+                getWorldPtr()->mRenderer->interactiveUpdateList = modifiedElementList;
+                getWorldPtr()->mRenderer->doInteractiveUpdate();
                 modifiedElementList.clear();
             }
         }
         else
         {
             Logging::debug("RenderQueueWorker::renderProcessThread()");
-            getWorldPtr()->worldRendererPtr->render();
+            getWorldPtr()->mRenderer->render();
             Logging::debug("RenderQueueWorker::renderProcessThread() - DONE.");
         }
+
         Event event;
         event.type = Event::FRAMEDONE;
         theRenderEventQueue()->push(event);
@@ -515,7 +516,7 @@ namespace
 
     void updateRenderView(Event& e)
     {
-        boost::shared_ptr<RenderGlobals> renderGlobals = getWorldPtr()->worldRenderGlobalsPtr;
+        boost::shared_ptr<RenderGlobals> renderGlobals = getWorldPtr()->mRenderGlobals;
         int width, height;
         renderGlobals->getWidthHeight(width, height);
 
@@ -544,7 +545,7 @@ namespace
     void iprWaitForFinish(Event e)
     {
         Logging::debug("iprWaitForFinish.");
-        while (getWorldPtr()->getRenderState() != MayaToWorld::RSTATENONE)
+        while (getWorldPtr()->getRenderState() != World::RSTATENONE)
             asf::sleep(100);
         Logging::debug("iprWaitForFinish - Renderstate is RSTATENONE, sending event.");
         theRenderEventQueue()->push(e);
@@ -553,20 +554,20 @@ namespace
     void doPreFrameJobs()
     {
         MString result;
-        MGlobal::executeCommand(getWorldPtr()->worldRenderGlobalsPtr->preFrameScript, result, true);
+        MGlobal::executeCommand(getWorldPtr()->mRenderGlobals->preFrameScript, result, true);
     }
 
     void doPostFrameJobs()
     {
         MString result;
-        MGlobal::executeCommand(getWorldPtr()->worldRenderGlobalsPtr->postFrameScript, result, true);
-        getWorldPtr()->worldRendererPtr->postFrame();
+        MGlobal::executeCommand(getWorldPtr()->mRenderGlobals->postFrameScript, result, true);
+        getWorldPtr()->mRenderer->postFrame();
     }
 
     void doPrepareFrame()
     {
-        float currentFrame = getWorldPtr()->worldRenderGlobalsPtr->getFrameNumber();
-        boost::shared_ptr<MayaScene> mayaScene = getWorldPtr()->worldScenePtr;
+        float currentFrame = getWorldPtr()->mRenderGlobals->getFrameNumber();
+        boost::shared_ptr<MayaScene> mayaScene = getWorldPtr()->mScene;
         Logging::progress(MString("\n========== doPrepareFrame ") + currentFrame + " ==============\n");
 
         mayaScene->parseScene(); // all lists are cleaned and refilled with the current scene content
@@ -586,27 +587,27 @@ namespace
             }
         }
 
-        getWorldPtr()->worldRenderGlobalsPtr->getMbSteps();
+        getWorldPtr()->mRenderGlobals->getMbSteps();
 
-        if (getWorldPtr()->worldRenderGlobalsPtr->mbElementList.size() == 0)
+        if (getWorldPtr()->mRenderGlobals->mbElementList.size() == 0)
         {
             Logging::error(MString("no mb steps, something's wrong."));
             return;
         }
 
-        int numMbSteps = (int)getWorldPtr()->worldRenderGlobalsPtr->mbElementList.size();
+        int numMbSteps = (int)getWorldPtr()->mRenderGlobals->mbElementList.size();
 
         for (int mbStepId = 0; mbStepId < numMbSteps; mbStepId++)
         {
-            getWorldPtr()->worldRenderGlobalsPtr->currentMbStep = mbStepId;
-            getWorldPtr()->worldRenderGlobalsPtr->currentMbElement = getWorldPtr()->worldRenderGlobalsPtr->mbElementList[mbStepId];
-            getWorldPtr()->worldRenderGlobalsPtr->currentFrameNumber = (float)(currentFrame + getWorldPtr()->worldRenderGlobalsPtr->mbElementList[mbStepId].m_time);
+            getWorldPtr()->mRenderGlobals->currentMbStep = mbStepId;
+            getWorldPtr()->mRenderGlobals->currentMbElement = getWorldPtr()->mRenderGlobals->mbElementList[mbStepId];
+            getWorldPtr()->mRenderGlobals->currentFrameNumber = (float)(currentFrame + getWorldPtr()->mRenderGlobals->mbElementList[mbStepId].m_time);
             bool needView = true;
 
             // we can have some mb time steps at the same time, e.g. for xform and deform, then we do not need to update the view
             if (mbStepId > 0)
             {
-                if (getWorldPtr()->worldRenderGlobalsPtr->mbElementList[mbStepId].m_time == getWorldPtr()->worldRenderGlobalsPtr->mbElementList[mbStepId - 1].m_time)
+                if (getWorldPtr()->mRenderGlobals->mbElementList[mbStepId].m_time == getWorldPtr()->mRenderGlobals->mbElementList[mbStepId - 1].m_time)
                 {
                     needView = false;
                 }
@@ -614,17 +615,17 @@ namespace
 
             if (needView)
             {
-                Logging::debug(MString("doFrameJobs() viewFrame: ") + getWorldPtr()->worldRenderGlobalsPtr->currentFrameNumber);
-                MGlobal::viewFrame(getWorldPtr()->worldRenderGlobalsPtr->currentFrameNumber);
+                Logging::debug(MString("doFrameJobs() viewFrame: ") + getWorldPtr()->mRenderGlobals->currentFrameNumber);
+                MGlobal::viewFrame(getWorldPtr()->mRenderGlobals->currentFrameNumber);
             }
 
-            if (getWorldPtr()->worldScenePtr)
+            if (getWorldPtr()->mScene)
                 mayaScene->updateScene();
             else
                 Logging::error(MString("no maya scene ptr."));
 
             Logging::info(MString("update scene done"));
-            getWorldPtr()->worldRenderGlobalsPtr->currentMbStep++;
+            getWorldPtr()->mRenderGlobals->currentMbStep++;
         }
 
         if (MGlobal::mayaState() != MGlobal::kBatch)
@@ -660,39 +661,39 @@ void RenderQueueWorker::startRenderQueueWorker()
                 renderStartTime = clock();
                 getWorldPtr()->setRenderType(e.renderType);
 
-                // it is possible that a new ipr rendering is started before another one is completly done, so wait for it
-                if (getWorldPtr()->renderType == MayaToWorld::IPRRENDER)
+                // It is possible that a new ipr rendering is started before another one is completely done, so wait for it.
+                if (getWorldPtr()->getRenderType() == World::IPRRENDER)
                 {
-                    MayaToWorld::WorldRenderState rs = getWorldPtr()->getRenderState();
-                    if (getWorldPtr()->getRenderState() != MayaToWorld::RSTATENONE)
+                    if (getWorldPtr()->getRenderState() != World::RSTATENONE)
                     {
                         boost::thread waitThread = boost::thread(iprWaitForFinish, e);
                         waitThread.detach();
                         break;
                     }
                 }
+
                 // Here we create the overall scene, renderer and renderGlobals objects
                 getWorldPtr()->initializeRenderEnvironment();
 
-                getWorldPtr()->worldRenderGlobalsPtr->setWidthHeight(e.width, e.height);
-                getWorldPtr()->worldRenderGlobalsPtr->setUseRenderRegion(e.useRenderRegion);
-                getWorldPtr()->worldScenePtr->uiCamera = e.cameraDagPath;
-                getWorldPtr()->worldRendererPtr->initializeRenderer(); // init renderer with all type, image size etc.
+                getWorldPtr()->mRenderGlobals->setWidthHeight(e.width, e.height);
+                getWorldPtr()->mRenderGlobals->setUseRenderRegion(e.useRenderRegion);
+                getWorldPtr()->mScene->uiCamera = e.cameraDagPath;
+                getWorldPtr()->mRenderer->initializeRenderer(); // init renderer with all type, image size etc.
 
                 int width, height;
-                getWorldPtr()->worldRenderGlobalsPtr->getWidthHeight(width, height);
+                getWorldPtr()->mRenderGlobals->getWidthHeight(width, height);
                 if (MRenderView::doesRenderEditorExist())
                 {
                     MRenderView::endRender();
                     status = MRenderView::startRender(width, height, true, true);
                 }
-                getWorldPtr()->setRenderState(MayaToWorld::RSTATETRANSLATING);
-                boost::shared_ptr<MayaScene> mayaScene = getWorldPtr()->worldScenePtr;
+                getWorldPtr()->setRenderState(World::RSTATETRANSLATING);
+                boost::shared_ptr<MayaScene> mayaScene = getWorldPtr()->mScene;
 
                 if (MGlobal::mayaState() != MGlobal::kBatch)
                 {
                     // we only need renderComputation (means esc-able rendering) if we render in UI (==NORMAL)
-                    if (getWorldPtr()->getRenderType() == MayaToWorld::UIRENDER)
+                    if (getWorldPtr()->getRenderType() == World::UIRENDER)
                         beginComputation();
                 }
                 e.type = Event::FRAMERENDER;
@@ -705,8 +706,8 @@ void RenderQueueWorker::startRenderQueueWorker()
                 }
 
                 // calculate numtiles
-                int numTX = (int)ceil((float)width/(float)getWorldPtr()->worldRenderGlobalsPtr->tilesize);
-                int numTY = (int)ceil((float)height/(float)getWorldPtr()->worldRenderGlobalsPtr->tilesize);
+                int numTX = (int)ceil((float)width/(float)getWorldPtr()->mRenderGlobals->tilesize);
+                int numTY = (int)ceil((float)height/(float)getWorldPtr()->mRenderGlobals->tilesize);
                 numTiles = numTX * numTY;
                 tilesDone = 0;
 
@@ -720,12 +721,12 @@ void RenderQueueWorker::startRenderQueueWorker()
                 if (sceneThread.joinable())
                     sceneThread.join();
 
-                if (!getWorldPtr()->worldRenderGlobalsPtr->frameListDone())
+                if (!getWorldPtr()->mRenderGlobals->frameListDone())
                 {
-                    getWorldPtr()->worldRenderGlobalsPtr->updateFrameNumber();
+                    getWorldPtr()->mRenderGlobals->updateFrameNumber();
                     doPreFrameJobs(); // preRenderScript etc.
                     doPrepareFrame(); // parse scene and update objects
-                    getWorldPtr()->worldRendererPtr->preFrame();
+                    getWorldPtr()->mRenderer->preFrame();
                     sceneThread = boost::thread(renderProcessThread);
                 }
                 else
@@ -740,7 +741,7 @@ void RenderQueueWorker::startRenderQueueWorker()
             {
                 e.type = Event::RENDERDONE;
                 theRenderEventQueue()->push(e);
-                getWorldPtr()->setRenderState(MayaToWorld::RSTATEERROR);
+                getWorldPtr()->setRenderState(World::RSTATEERROR);
             }
             break;
 
@@ -759,11 +760,11 @@ void RenderQueueWorker::startRenderQueueWorker()
                 if (MGlobal::mayaState() != MGlobal::kBatch)
                     endComputation();
 
-                if (getWorldPtr()->renderType == MayaToWorld::IPRRENDER)
+                if (getWorldPtr()->getRenderType() == World::IPRRENDER)
                 {
                     removeCallbacks();
                 }
-                getWorldPtr()->setRenderState(MayaToWorld::RSTATEDONE);
+                getWorldPtr()->setRenderState(World::RSTATEDONE);
                 terminateLoop = true;
                 renderEndTime = clock();
 
@@ -781,8 +782,8 @@ void RenderQueueWorker::startRenderQueueWorker()
                 }
 
                 getWorldPtr()->cleanUpAfterRender();
-                getWorldPtr()->worldRendererPtr->unInitializeRenderer();
-                getWorldPtr()->setRenderState(MayaToWorld::RSTATENONE);
+                getWorldPtr()->mRenderer->unInitializeRenderer();
+                getWorldPtr()->setRenderState(World::RSTATENONE);
             }
             break;
 
@@ -797,20 +798,20 @@ void RenderQueueWorker::startRenderQueueWorker()
 
           case Event::INTERRUPT:
             Logging::debug("Event::INTERRUPT");
-            getWorldPtr()->worldRendererPtr->abortRendering();
+            getWorldPtr()->mRenderer->abortRendering();
             break;
 
           case Event::IPRSTOP:
             Logging::debug("Event::IPRSTOP");
-            getWorldPtr()->setRenderState(MayaToWorld::RSTATESTOPPED);
-            getWorldPtr()->worldRendererPtr->abortRendering();
+            getWorldPtr()->setRenderState(World::RSTATESTOPPED);
+            getWorldPtr()->mRenderer->abortRendering();
             break;
 
           case Event::TILEDONE:
             {
                 Logging::debug(MString("Event::TILEDONE - queueSize: ") + theRenderEventQueue()->size());
                 updateRenderView(e);
-                if (getWorldPtr()->renderType != MayaToWorld::IPRRENDER)
+                if (getWorldPtr()->getRenderType() != World::IPRRENDER)
                 {
                     tilesDone++;
                     const int percentDone = (100 * tilesDone) / numTiles;
@@ -825,7 +826,7 @@ void RenderQueueWorker::startRenderQueueWorker()
 
           case Event::INTERACTIVEFBCALLBACK:
             Logging::debug("Event::INTERACTIVEFBCALLBACK");
-            getWorldPtr()->worldRendererPtr->interactiveFbCallback();
+            getWorldPtr()->mRenderer->interactiveFbCallback();
             break;
 
           case Event::ADDIPRCALLBACKS:
@@ -854,7 +855,7 @@ void RenderQueueWorker::renderQueueWorkerTimerCallback(float time, float lastTim
 void RenderQueueWorker::IPRUpdateCallbacks()
 {
     MStatus stat;
-    boost::shared_ptr<MayaScene> mayaScene = getWorldPtr()->worldScenePtr;
+    boost::shared_ptr<MayaScene> mayaScene = getWorldPtr()->mScene;
 
     for (size_t elementId = 0; elementId < mayaScene->interactiveUpdateMap.size(); elementId++)
     {
