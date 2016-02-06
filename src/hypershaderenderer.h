@@ -52,7 +52,8 @@ namespace asr = renderer;
 
 class HypershadeRenderer;
 
-class HypershadeRenderController : public asr::IRendererController
+class HypershadeRenderController 
+  : public asr::IRendererController
 {
 public:
     HypershadeRenderController();
@@ -64,10 +65,7 @@ public:
 	void on_frame_end();
 	void on_progress();
 	void release();
-	Status get_status() const
-	{
-		return this->status;
-	};
+	Status get_status() const;
 	volatile Status status;
 };
 
@@ -113,7 +111,8 @@ struct IdNameStruct
     MObject mobject; // I need to know if I have a light or a mesh or a camera
 };
 
-class HypershadeRenderer : public MPxRenderer
+class HypershadeRenderer 
+  : public MPxRenderer
 {
   public:
     RefreshParams refreshParams;
@@ -155,9 +154,6 @@ class HypershadeRenderer : public MPxRenderer
     void copyFrameToBuffer(float *frame, int w, int h);
     void render();
 
-	// these are duplicates and should be somehow combined with the ones of the Renderer class
-    asf::auto_release_ptr<asr::MeshObject> defineStandardPlane(const bool area = false);
-    asf::auto_release_ptr<asr::MeshObject> createMesh(const MObject& mobject);
     void updateMaterial(const MObject materialNode, const asr::Assembly *assembly);
 
 
