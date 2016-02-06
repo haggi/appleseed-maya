@@ -27,7 +27,7 @@
 //
 
 // Interface header.
-#include "mayatoappleseed.h"
+#include "appleseedmaya.h"
 
 // appleseed-maya headers.
 #include "threads/event.h"
@@ -43,7 +43,7 @@
 #include <maya/MSelectionList.h>
 #include <maya/MSyntax.h>
 
-MSyntax MayaToAppleseed::syntaxCreator()
+MSyntax AppleseedMaya::syntaxCreator()
 {
     MSyntax syntax;
     syntax.addFlag("-cam", "-camera", MSyntax::kString);
@@ -56,9 +56,9 @@ MSyntax MayaToAppleseed::syntaxCreator()
     return syntax;
 }
 
-void* MayaToAppleseed::creator()
+void* AppleseedMaya::creator()
 {
-    return new MayaToAppleseed();
+    return new AppleseedMaya();
 }
 
 namespace
@@ -78,10 +78,10 @@ namespace
     }
 }
 
-MStatus MayaToAppleseed::doIt(const MArgList& args)
+MStatus AppleseedMaya::doIt(const MArgList& args)
 {
     MStatus stat = MStatus::kSuccess;
-    MGlobal::displayInfo("Executing MayaToAppleseed...");
+    MGlobal::displayInfo("Executing appleseed-maya...");
 
     setLogLevel();
 
@@ -124,9 +124,9 @@ MStatus MayaToAppleseed::doIt(const MArgList& args)
 
     Event e;
     e.type = Event::INITRENDER;
+    e.renderType = World::UIRENDER;
 
     MFnDependencyNode defaultGlobals(objectFromName("defaultResolution"));
-    e.renderType = World::UIRENDER;
     e.width = defaultGlobals.findPlug("width").asInt();
     e.height = defaultGlobals.findPlug("height").asInt();
 

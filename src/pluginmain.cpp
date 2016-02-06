@@ -33,11 +33,11 @@
 #include "swatchesrenderer/newswatchrenderer.h"
 #include "threads/renderqueueworker.h"
 #include "utilities/tools.h"
+#include "appleseedmaya.h"
 #include "binmeshreadercmd.h"
 #include "binmeshtranslator.h"
 #include "binmeshwritercmd.h"
 #include "globalsnode.h"
-#include "mayatoappleseed.h"
 #if MAYA_API_VERSION >= 201600
 #include "mtap_mayarenderer.h"
 #endif
@@ -112,8 +112,8 @@ APPLESEEDMAYA_DLL_EXPORT MStatus initializePlugin(MObject obj)
     status =
         plugin.registerCommand(
             "appleseedMaya",
-            MayaToAppleseed::creator,
-            MayaToAppleseed::syntaxCreator);
+            AppleseedMaya::creator,
+            AppleseedMaya::syntaxCreator);
     CHECK_MSTATUS_AND_RETURN_IT(status);
 
     status =

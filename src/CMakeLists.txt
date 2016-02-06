@@ -120,6 +120,8 @@ source_group ("utilities" FILES
 )
 
 set (sources
+    appleseedmaya.cpp
+    appleseedmaya.h
     appleseedmeshwalker.cpp
     appleseedmeshwalker.h
     appleseedrenderer.cpp
@@ -138,8 +140,6 @@ set (sources
     mayaobject.h
     mayascene.cpp
     mayascene.h
-    mayatoappleseed.cpp
-    mayatoappleseed.h
     hypershaderenderer.cpp
     hypershaderenderer.h
     pluginmain.cpp

@@ -26,8 +26,8 @@
 // THE SOFTWARE.
 //
 
-#ifndef MAYATOAPPLESEED_H
-#define MAYATOAPPLESEED_H
+#ifndef APPLESEEDMAYA_H
+#define APPLESEEDMAYA_H
 
 // appleseed.foundation headers.
 #include "foundation/platform/compiler.h"
@@ -40,7 +40,7 @@ class MArgList;
 class MStatus;
 class MSyntax;
 
-class MayaToAppleseed
+class AppleseedMaya
   : public MPxCommand
 {
   public:
@@ -50,4 +50,4 @@ class MayaToAppleseed
     virtual MStatus doIt(const MArgList& args) APPLESEED_OVERRIDE;
 };
 
-#endif  // !MAYATOAPPLESEED_H
+#endif  // !APPLESEEDMAYA_H
