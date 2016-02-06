@@ -26,36 +26,28 @@
 // THE SOFTWARE.
 //
 
-#ifndef MAYATO_NEWSWATCHRENDER_H
-#define MAYATO_NEWSWATCHRENDER_H
+#ifndef APPLESEEDMAYA_H
+#define APPLESEEDMAYA_H
 
 // appleseed.foundation headers.
 #include "foundation/platform/compiler.h"
 
 // Maya headers.
-#include <maya/MSwatchRenderBase.h>
+#include <maya/MPxCommand.h>
 
-class NewSwatchRenderer
-  : public MSwatchRenderBase
+// Forward declarations.
+class MArgList;
+class MStatus;
+class MSyntax;
+
+class AppleseedMaya
+  : public MPxCommand
 {
   public:
-    MObject dNode;
+    static MSyntax syntaxCreator();
+    static void* creator();
 
-    static MSwatchRenderBase* creator(MObject dependNode, MObject renderNode, int imageResolution);
-
-    NewSwatchRenderer(MObject dependNode, MObject renderNode, int imageResolution);
-
-    virtual bool doIteration() APPLESEED_OVERRIDE;
-    virtual bool renderParallel() APPLESEED_OVERRIDE;
-    virtual void cancelParallelRendering() APPLESEED_OVERRIDE;
-
-    void finishParallelRender();
-
-  private:
-    float *floatPixels;
-    bool renderInProgress;
-    bool swatchRenderingDone;
-    MObject rNode;
+    virtual MStatus doIt(const MArgList& args) APPLESEED_OVERRIDE;
 };
 
-#endif
+#endif  // !APPLESEEDMAYA_H

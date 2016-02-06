@@ -73,20 +73,6 @@ source_group ("shadingtools" FILES
     ${shadingtools_sources}
 )
 
-set (swatchesrenderer_sources
-    swatchesrenderer/appleseedswatchrenderer.cpp
-    swatchesrenderer/appleseedswatchrenderer.h
-    swatchesrenderer/newswatchrenderer.cpp
-    swatchesrenderer/newswatchrenderer.h
-    swatchesrenderer/swatchesevent.h
-)
-list (APPEND appleseedmaya_sources
-    ${swatchesrenderer_sources}
-)
-source_group ("swatchesrenderer" FILES
-    ${swatchesrenderer_sources}
-)
-
 set (threads_sources
     threads/event.h
     threads/renderqueueworker.cpp
@@ -105,8 +91,6 @@ set (utilities_sources
     utilities/concurrentqueue.h
     utilities/logging.cpp
     utilities/logging.h
-    utilities/meshtools.cpp
-    utilities/meshtools.h
     utilities/pystring.cpp
     utilities/pystring.h
     utilities/tools.cpp
@@ -120,10 +104,14 @@ source_group ("utilities" FILES
 )
 
 set (sources
+    appleseedmaya.cpp
+    appleseedmaya.h
     appleseedmeshwalker.cpp
     appleseedmeshwalker.h
     appleseedrenderer.cpp
     appleseedrenderer.h
+    appleseedswatchrenderer.cpp
+    appleseedswatchrenderer.h
     appleseedutils.cpp
     appleseedutils.h
     binmeshreadercmd.cpp
@@ -132,22 +120,16 @@ set (sources
     binmeshtranslator.h
     binmeshwritercmd.cpp
     binmeshwritercmd.h
-    mayaobject.cpp
-    mayaobject.h
-    mayarenderglobalsnode.cpp
-    mayarenderglobalsnode.h
-    mayascene.cpp
-    mayascene.h
-    mayatoappleseed.cpp
-    mayatoappleseed.h
-    mayatoappleseedglobals.cpp
-    mayatoappleseedglobals.h
-    mayatoworld.cpp
-    mayatoworld.h
+    globalsnode.cpp
+    globalsnode.h
     hypershaderenderer.cpp
     hypershaderenderer.h
-    mtap_tilecallback.cpp
-    mtap_tilecallback.h
+    mayaobject.cpp
+    mayaobject.h
+    mayascene.cpp
+    mayascene.h
+    newswatchrenderer.cpp
+    newswatchrenderer.h
     pluginmain.cpp
     proxymesh.cpp
     proxymesh.h
@@ -155,8 +137,13 @@ set (sources
     renderercontroller.h
     renderglobals.cpp
     renderglobals.h
+    swatchesevent.h
+    tilecallback.cpp
+    tilecallback.h
     version.cpp
     version.h
+    world.cpp
+    world.h
 )
 list (APPEND appleseedmaya_sources
     ${sources}

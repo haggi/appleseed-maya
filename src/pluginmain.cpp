@@ -30,19 +30,19 @@
 #include "shaders/asdisneymaterial.h"
 #include "shaders/asdisneymaterialoverride.h"
 #include "shaders/aslayeredshader.h"
-#include "swatchesrenderer/newswatchrenderer.h"
 #include "threads/renderqueueworker.h"
 #include "utilities/tools.h"
+#include "appleseedmaya.h"
 #include "binmeshreadercmd.h"
 #include "binmeshtranslator.h"
 #include "binmeshwritercmd.h"
-#include "mayatoappleseed.h"
-#include "mayatoappleseedglobals.h"
+#include "globalsnode.h"
 #if MAYA_API_VERSION >= 201600
-#include "mtap_mayarenderer.h"
+#include "hypershaderenderer.h"
 #endif
-#include "mayatoworld.h"
+#include "newswatchrenderer.h"
 #include "version.h"
+#include "world.h"
 
 // Maya headers.
 #include <maya/MGlobal.h>
@@ -112,16 +112,16 @@ APPLESEEDMAYA_DLL_EXPORT MStatus initializePlugin(MObject obj)
     status =
         plugin.registerCommand(
             "appleseedMaya",
-            MayaToAppleseed::creator,
-            MayaToAppleseed::syntaxCreator);
+            AppleseedMaya::creator,
+            AppleseedMaya::syntaxCreator);
     CHECK_MSTATUS_AND_RETURN_IT(status);
 
     status =
         plugin.registerNode(
             "appleseedGlobals",
-            MayaToAppleseedGlobals::id,
-            MayaToAppleseedGlobals::creator,
-            MayaToAppleseedGlobals::initialize);
+            GlobalsNode::id,
+            GlobalsNode::creator,
+            GlobalsNode::initialize);
     CHECK_MSTATUS_AND_RETURN_IT(status);
 
     status =
@@ -218,7 +218,7 @@ APPLESEEDMAYA_DLL_EXPORT MStatus uninitializePlugin(MObject obj)
             "asDisneyMaterialId");
     CHECK_MSTATUS_AND_RETURN_IT(status);
 
-    status = plugin.deregisterNode(MayaToAppleseedGlobals::id);
+    status = plugin.deregisterNode(GlobalsNode::id);
     CHECK_MSTATUS_AND_RETURN_IT(status);
 
     status = plugin.deregisterCommand("appleseedMaya");

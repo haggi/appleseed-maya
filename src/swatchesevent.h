@@ -26,18 +26,27 @@
 // THE SOFTWARE.
 //
 
-#ifndef MESH_TOOLS_H
-#define MESH_TOOLS_H
+#ifndef SWATCHESEVENT_H
+#define SWATCHESEVENT_H
 
-#include <maya/MPointArray.h>
-#include <maya/MFloatArray.h>
-#include <maya/MFloatVectorArray.h>
+// appleseed-maya headers.
+#include "utilities/concurrentqueue.h"
+
+// Maya headers.
 #include <maya/MObject.h>
-#include <maya/MIntArray.h>
 
-void getMeshData(MObject& meshObject, MPointArray& points, MFloatVectorArray& normals);
-void getMeshData(MObject& meshObject, MPointArray& points, MFloatVectorArray& normals, MFloatArray& uArray,
-    MFloatArray& vArray, MIntArray& triPointIndices, MIntArray& triNormalIndices,
-    MIntArray& triUvIndices, MIntArray& triMatIndices, MIntArray& perFaceAssignments);
+// Forward declarations.
+class NewSwatchRenderer;
 
-#endif
+struct SwatchesEvent
+{
+    int height;
+    float *pixels;
+    bool *renderDone;
+    MObject shadingNode;
+    NewSwatchRenderer *swatchRenderer;
+};
+
+static concurrent_queue<SwatchesEvent> SwatchesQueue;
+
+#endif  // !SWATCHESEVENT_H

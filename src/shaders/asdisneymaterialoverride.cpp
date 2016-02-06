@@ -29,7 +29,7 @@
 #include <maya/MGlobal.h>
 #include "asdisneymaterialoverride.h"
 #include <maya/MFragmentManager.h>
-#include "mayatoworld.h"
+#include "world.h"
 
 MHWRender::MPxSurfaceShadingNodeOverride* asDisneyMaterialOverride::creator(const MObject& obj)
 {
