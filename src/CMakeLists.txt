@@ -132,16 +132,14 @@ set (sources
     binmeshtranslator.h
     binmeshwritercmd.cpp
     binmeshwritercmd.h
+    globalsnode.cpp
+    globalsnode.h
     mayaobject.cpp
     mayaobject.h
-    mayarenderglobalsnode.cpp
-    mayarenderglobalsnode.h
     mayascene.cpp
     mayascene.h
     mayatoappleseed.cpp
     mayatoappleseed.h
-    mayatoappleseedglobals.cpp
-    mayatoappleseedglobals.h
     mayatoworld.cpp
     mayatoworld.h
     hypershaderenderer.cpp

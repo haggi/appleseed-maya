@@ -36,8 +36,8 @@
 #include "binmeshreadercmd.h"
 #include "binmeshtranslator.h"
 #include "binmeshwritercmd.h"
+#include "globalsnode.h"
 #include "mayatoappleseed.h"
-#include "mayatoappleseedglobals.h"
 #if MAYA_API_VERSION >= 201600
 #include "mtap_mayarenderer.h"
 #endif
@@ -119,9 +119,9 @@ APPLESEEDMAYA_DLL_EXPORT MStatus initializePlugin(MObject obj)
     status =
         plugin.registerNode(
             "appleseedGlobals",
-            MayaToAppleseedGlobals::id,
-            MayaToAppleseedGlobals::creator,
-            MayaToAppleseedGlobals::initialize);
+            GlobalsNode::id,
+            GlobalsNode::creator,
+            GlobalsNode::initialize);
     CHECK_MSTATUS_AND_RETURN_IT(status);
 
     status =
@@ -218,7 +218,7 @@ APPLESEEDMAYA_DLL_EXPORT MStatus uninitializePlugin(MObject obj)
             "asDisneyMaterialId");
     CHECK_MSTATUS_AND_RETURN_IT(status);
 
-    status = plugin.deregisterNode(MayaToAppleseedGlobals::id);
+    status = plugin.deregisterNode(GlobalsNode::id);
     CHECK_MSTATUS_AND_RETURN_IT(status);
 
     status = plugin.deregisterCommand("appleseedMaya");
