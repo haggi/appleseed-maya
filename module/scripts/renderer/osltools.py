@@ -172,12 +172,9 @@ def analyzeContent(content):
     return d
 
 def readShadersXMLDescription():
-    if "MayaToCommon" in path.path(__file__):
-        xmlFile = path.path("H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/resources/shaderdefinitions.xml")
-    else:
-        xmlFile = path.path(__file__).parent / "resources/shaderdefinitions.xml"
+    xmlFile = path.path(__file__).parent.parent / "resources/shaderdefinitions.xml"
     if not xmlFile.exists():
-        log.error("No shader xml file: {0}".format(xmlFile))
+        log.error("Shader definition file could not be found: {0}".format(xmlFile))
         return
     tree = ET.parse(xmlFile)
     shaders = tree.getroot()
@@ -253,13 +250,9 @@ def writeXMLShaderDescription(shaderDict=None):
     global SHADER_DICT
     if shaderDict is None:
         shaderDict = SHADER_DICT
-    xmlFile = None
-    if "MayaToCommon" in path.path(__file__):
-        xmlFile = path.path("H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/resources/shaderdefinitions.xml")
-    else:
-        xmlFile = path.path(__file__).parent / "resources/shaderdefinitions.xml"
+    xmlFile = path.path(__file__).parent.parent / "resources/shaderdefinitions.xml"
     if not xmlFile.exists():
-        log.error("No shader xml file: {0}".format(xmlFile))
+        log.error("Shader definition file could not be found: {0}".format(xmlFile))
         return
     root = ET.Element('shaders')
     for shaderKey in shaderDict.keys():
@@ -284,7 +277,6 @@ def writeXMLShaderDescription(shaderDict=None):
     root = ET.fromstring(pretty_xml_as_string)
     tree = ET.ElementTree(root)
     tree.write(xmlFile)
-
 
 def updateOSLShaderInfo(force=False, osoFiles=[]):
     pp = pprint.PrettyPrinter(indent=4)
