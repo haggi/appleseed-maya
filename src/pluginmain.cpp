@@ -39,7 +39,7 @@
 #include "mayatoappleseed.h"
 #include "mayatoappleseedglobals.h"
 #if MAYA_API_VERSION >= 201600
-#include "mtap_mayarenderer.h"
+#include "hypershaderenderer.h"
 #endif
 #include "mayatoworld.h"
 #include "version.h"

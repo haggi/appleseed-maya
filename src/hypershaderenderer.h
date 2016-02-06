@@ -33,6 +33,7 @@
 
 #include "renderer/api/scene.h"
 #include "renderer/api/project.h"
+#include "renderer/api/object.h"
 #include "renderer/global/globallogger.h"
 #include "renderer/api/rendering.h"
 #include "foundation/image/tile.h"
@@ -48,6 +49,28 @@ namespace asf = foundation;
 namespace asr = renderer;
 
 class HypershadeRenderer;
+
+class HypershadeRenderController : public asr::IRendererController
+{
+public:
+	HypershadeRenderController()
+	{
+		status = asr::IRendererController::ContinueRendering;
+	};
+	~HypershadeRenderController() {}
+	void on_rendering_begin(){};
+	void on_rendering_success(){};
+	void on_rendering_abort(){};
+	void on_frame_begin(){};
+	void on_frame_end(){};
+	void on_progress(){};
+	void release(){};
+	Status get_status() const
+	{
+		return this->status;
+	};
+	volatile Status status;
+};
 
 class HypershadeTileCallback
   : public asr::TileCallbackBase
@@ -133,6 +156,12 @@ class HypershadeRenderer : public MPxRenderer
     void copyFrameToBuffer(float *frame, int w, int h);
     void render();
 
+	// these are duplicates and should be somehow combined with the ones of the Renderer class
+	asf::auto_release_ptr<asr::MeshObject> defineStandardPlane(bool area = false);
+	asf::auto_release_ptr<asr::MeshObject> createMesh(MObject& mobject);
+	void updateMaterial(MObject materialNode, asr::Assembly *assembly);
+
+
   private:
     int width, height;
     //Render output buffer, it is R32G32B32A32_FLOAT format.
@@ -140,7 +169,7 @@ class HypershadeRenderer : public MPxRenderer
     asf::auto_release_ptr<asr::Project> project;
     std::auto_ptr<asr::MasterRenderer> mrenderer;
     asf::auto_release_ptr<HypershadeTileCallbackFactory> tileCallbackFac;
-    RenderController controller;
+	HypershadeRenderController controller;
     MUuid lastShapeId; // save the last shape id, needed by translateTransform
     MString lastMaterialName = "default";
     std::vector<IdNameStruct> objectArray;

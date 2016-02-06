@@ -26,12 +26,14 @@
 // THE SOFTWARE.
 //
 
+#include <maya/MTypes.h>
+
 #if MAYA_API_VERSION >= 201600
 
 // appleseed-maya headers.
-#include "mtap_mayarenderer.h"
 #include "utilities/logging.h"
 #include "utilities/attrtools.h"
+#include "hypershaderenderer.h"
 #include "osl/oslutils.h"
 #include "shadingtools/material.h"
 #include "shadingtools/shadingutils.h"
@@ -79,15 +81,29 @@
 #include <maya/MGlobal.h>
 #include <maya/MStringArray.h>
 #include <maya/MFnDependencyNode.h>
+#include <maya/MFnDependencyNode.h>
+#include <maya/MFnMesh.h>
+#include <maya/MItMeshPolygon.h>
+#include <maya/MPointArray.h>
+#include <maya/MFloatPointArray.h>
+#include <maya/MFloatArray.h>
+#include <maya/MFloatVectorArray.h>
+
 #include <boost/thread/locks.hpp>
 #include <boost/thread/mutex.hpp>
+
+#include "utilities/tools.h"
+#include "utilities/attrtools.h"
+#include "utilities/logging.h"
+#include "utilities/meshtools.h"
+#include "shadingtools/shadingutils.h"
 
 // Standard headers.
 #include <vector>
 
 #define kNumChannels 4
-
 #define GETASM() project->get_scene()->assemblies().get_by_name("world")
+#define MPointToAppleseed(pt) asr::GVector3((float)pt.x, (float)pt.y, (float)pt.z)
 
 HypershadeRenderer::HypershadeRenderer()
 {
@@ -577,6 +593,90 @@ MStatus HypershadeRenderer::translateShader(const MUuid& id, const MObject& node
     return MStatus::kSuccess;
 }
 
+void HypershadeRenderer::updateMaterial(MObject materialNode, asr::Assembly *assembly)
+{
+	OSLUtilClass OSLShaderClass;
+	MObject surfaceShaderNode = getConnectedInNode(materialNode, "surfaceShader");
+	MString surfaceShaderName = getObjectName(surfaceShaderNode);
+	MString shadingGroupName = getObjectName(materialNode);
+	ShadingNetwork network(surfaceShaderNode);
+	size_t numNodes = network.shaderList.size();
+
+	MString assName = "swatchRenderer_world";
+	if (assName == assembly->get_name())
+	{
+		shadingGroupName = "previewSG";
+	}
+
+	MString shaderGroupName = shadingGroupName + "_OSLShadingGroup";
+
+	asr::ShaderGroup *shaderGroup = assembly->shader_groups().get_by_name(shaderGroupName.asChar());
+
+	if (shaderGroup != nullptr)
+	{
+		shaderGroup->clear();
+	}
+	else{
+		asf::auto_release_ptr<asr::ShaderGroup> oslShadingGroup = asr::ShaderGroupFactory().create(shaderGroupName.asChar());
+		assembly->shader_groups().insert(oslShadingGroup);
+		shaderGroup = assembly->shader_groups().get_by_name(shaderGroupName.asChar());
+	}
+
+	OSLShaderClass.group = (OSL::ShaderGroup *)shaderGroup;
+
+	MFnDependencyNode shadingGroupNode(materialNode);
+	MPlug shaderPlug = shadingGroupNode.findPlug("surfaceShader");
+	OSLShaderClass.createOSLProjectionNodes(shaderPlug);
+
+	for (int shadingNodeId = 0; shadingNodeId < numNodes; shadingNodeId++)
+	{
+		ShadingNode snode = network.shaderList[shadingNodeId];
+		Logging::debug(MString("ShadingNode Id: ") + shadingNodeId + " ShadingNode name: " + snode.fullName);
+		if (shadingNodeId == (numNodes - 1))
+			Logging::debug(MString("LastNode Surface Shader: ") + snode.fullName);
+		OSLShaderClass.createOSLShadingNode(network.shaderList[shadingNodeId]);
+	}
+
+	OSLShaderClass.cleanupShadingNodeList();
+	OSLShaderClass.createAndConnectShaderNodes();
+
+	if (numNodes > 0)
+	{
+		ShadingNode snode = network.shaderList[numNodes - 1];
+		MString layer = (snode.fullName + "_interface");
+		Logging::debug(MString("Adding interface shader: ") + layer);
+		asr::ShaderGroup *sg = (asr::ShaderGroup *)OSLShaderClass.group;
+		sg->add_shader("surface", "surfaceShaderInterface", layer.asChar(), asr::ParamArray());
+		const char *srcLayer = snode.fullName.asChar();
+		const char *srcAttr = "outColor";
+		const char *dstLayer = layer.asChar();
+		const char *dstAttr = "inColor";
+		Logging::debug(MString("Connecting interface shader: ") + srcLayer + "." + srcAttr + " -> " + dstLayer + "." + dstAttr);
+		sg->add_connection(srcLayer, srcAttr, dstLayer, dstAttr);
+	}
+
+	MString physicalSurfaceName = shadingGroupName + "_physical_surface_shader";
+
+	// add shaders only if they do not yet exist
+	if (assembly->surface_shaders().get_by_name(physicalSurfaceName.asChar()) == nullptr)
+	{
+		assembly->surface_shaders().insert(
+			asr::PhysicalSurfaceShaderFactory().create(
+			physicalSurfaceName.asChar(),
+			asr::ParamArray()));
+	}
+	if (assembly->materials().get_by_name(shadingGroupName.asChar()) == nullptr)
+	{
+		assembly->materials().insert(
+			asr::OSLMaterialFactory().create(
+			shadingGroupName.asChar(),
+			asr::ParamArray()
+			.insert("surface_shader", physicalSurfaceName.asChar())
+			.insert("osl_surface", shaderGroupName.asChar())));
+	}
+
+}
+
 MStatus HypershadeRenderer::setProperty(const MUuid& id, const MString& name, bool value)
 {
     Logging::debug(MString("setProperty bool: ") + name + " " + value);
@@ -886,5 +986,107 @@ void HypershadeTileCallback::post_render(const asr::Frame* frame)
 
     this->renderer->copyFrameToBuffer(buffer.get(), width, height);
 }
+
+asf::auto_release_ptr<asr::MeshObject> HypershadeRenderer::defineStandardPlane(bool area)
+{
+	asf::auto_release_ptr<asr::MeshObject> object(asr::MeshObjectFactory::create("standardPlane", asr::ParamArray()));
+
+	if (area)
+	{
+		// Vertices.
+		object->push_vertex(asr::GVector3(-1.0f, -1.0f, 0.0f));
+		object->push_vertex(asr::GVector3(-1.0f, 1.0f, 0.0f));
+		object->push_vertex(asr::GVector3(1.0f, 1.0f, 0.0f));
+		object->push_vertex(asr::GVector3(1.0f, -1.0f, 0.0f));
+	}
+	else{
+		// Vertices.
+		object->push_vertex(asr::GVector3(-1.0f, 0.0f, -1.0f));
+		object->push_vertex(asr::GVector3(-1.0f, 0.0f, 1.0f));
+		object->push_vertex(asr::GVector3(1.0f, 0.0f, 1.0f));
+		object->push_vertex(asr::GVector3(1.0f, 0.0f, -1.0f));
+	}
+
+	if (area)
+	{
+		object->push_vertex_normal(asr::GVector3(0.0f, 0.0f, -1.0f));
+	}
+	else{
+		object->push_vertex_normal(asr::GVector3(0.0f, 1.0f, 0.0f));
+	}
+
+	object->push_tex_coords(asr::GVector2(0.0, 0.0));
+	object->push_tex_coords(asr::GVector2(1.0, 0.0));
+	object->push_tex_coords(asr::GVector2(1.0, 1.0));
+	object->push_tex_coords(asr::GVector2(0.0, 1.0));
+
+	// Triangles.
+	object->push_triangle(asr::Triangle(0, 1, 2, 0, 0, 0, 0, 1, 2, 0));
+	object->push_triangle(asr::Triangle(0, 2, 3, 0, 0, 0, 0, 2, 3, 0));
+
+	return object;
+
+}
+asf::auto_release_ptr<asr::MeshObject> HypershadeRenderer::createMesh(MObject& mobject)
+{
+	MStatus stat = MStatus::kSuccess;
+	MFnMesh meshFn(mobject, &stat);
+	CHECK_MSTATUS(stat);
+
+	MPointArray points;
+	MFloatVectorArray normals;
+	MFloatArray uArray, vArray;
+	MIntArray triPointIds, triNormalIds, triUvIds, triMatIds, perFaceAssignments;
+	getMeshData(mobject, points, normals, uArray, vArray, triPointIds, triNormalIds, triUvIds, triMatIds, perFaceAssignments);
+
+	Logging::debug(MString("Translating mesh object ") + meshFn.name().asChar());
+	MString meshFullName = makeGoodString(meshFn.fullPathName());
+	asf::auto_release_ptr<asr::MeshObject> mesh = asr::MeshObjectFactory::create(meshFullName.asChar(), asr::ParamArray());
+
+	for (uint vtxId = 0; vtxId < points.length(); vtxId++)
+	{
+		mesh->push_vertex(MPointToAppleseed(points[vtxId]));
+	}
+
+	for (uint nId = 0; nId < normals.length(); nId++)
+	{
+		mesh->push_vertex_normal(MPointToAppleseed(normals[nId]));
+	}
+
+	for (uint tId = 0; tId < uArray.length(); tId++)
+	{
+		mesh->push_tex_coords(asr::GVector2((float)uArray[tId], (float)vArray[tId]));
+	}
+
+	//getObjectShadingGroups()
+	//mesh->reserve_material_slots(obj->shadingGroups.length());
+	//for (uint sgId = 0; sgId < obj->shadingGroups.length(); sgId++)
+	//{
+	//	MString slotName = MString("slot_") + sgId;
+	//	mesh->push_material_slot(slotName.asChar());
+	//}
+
+	int numTris = triPointIds.length() / 3;
+
+	for (uint triId = 0; triId < numTris; triId++)
+	{
+		uint index = triId * 3;
+		int perFaceShadingGroup = triMatIds[triId];
+		int vtxId0 = triPointIds[index];
+		int vtxId1 = triPointIds[index + 1];
+		int vtxId2 = triPointIds[index + 2];
+		int normalId0 = triNormalIds[index];
+		int normalId1 = triNormalIds[index + 1];
+		int normalId2 = triNormalIds[index + 2];
+		int uvId0 = triUvIds[index];
+		int uvId1 = triUvIds[index + 1];
+		int uvId2 = triUvIds[index + 2];
+		mesh->push_triangle(asr::Triangle(vtxId0, vtxId1, vtxId2, normalId0, normalId1, normalId2, uvId0, uvId1, uvId2, perFaceShadingGroup));
+	}
+
+	return mesh;
+
+}
+
 
 #endif
