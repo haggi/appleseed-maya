@@ -26,29 +26,31 @@
 // THE SOFTWARE.
 //
 
+// Interface header.
 #include "binmeshwritercmd.h"
 
-#include "foundation/mesh/genericmeshfilewriter.h"
-#include "appleseedmeshwalker.h"
-
-#include <maya/MGlobal.h>
-#include <maya/MArgDatabase.h>
-#include <maya/MArgList.h>
-#include <maya/MSelectionList.h>
-#include <maya/MItSelectionList.h>
-#include <maya/MFnDependencyNode.h>
-#include <maya/MDagPath.h>
-#include <maya/MFnMeshData.h>
-#include <maya/MFnDagNode.h>
-#include <maya/MItDag.h>
-
+// appleseed-maya headers.
 #include "utilities/pystring.h"
 #include "utilities/logging.h"
 #include "utilities/tools.h"
 #include "utilities/attrtools.h"
+#include "meshwalker.h"
 #include "proxymesh.h"
 
-namespace asf = foundation;
+// appleseed.foundation headers.
+#include "foundation/mesh/genericmeshfilewriter.h"
+
+// Maya heaers.
+#include <maya/MArgDatabase.h>
+#include <maya/MArgList.h>
+#include <maya/MDagPath.h>
+#include <maya/MFnDagNode.h>
+#include <maya/MFnDependencyNode.h>
+#include <maya/MFnMeshData.h>
+#include <maya/MGlobal.h>
+#include <maya/MItDag.h>
+#include <maya/MItSelectionList.h>
+#include <maya/MSelectionList.h>
 
 void* BinMeshWriterCmd::creator()
 {
@@ -84,18 +86,15 @@ void BinMeshWriterCmd::removeSmoothMesh(MDagPath& dagPath)
     MStatus stat = MGlobal::deleteNode(node);
     if (!stat)
     {
-        MGlobal::displayError(MString("removeSmoothMesh : could not delete smooth node: ") + dagPath.fullPathName());
+        MGlobal::displayError(MString("removeSmoothMesh: could not delete smooth node: ") + dagPath.fullPathName());
     }
 }
 
 bool BinMeshWriterCmd::exportBinMeshes()
 {
-    asf::GenericMeshFileWriter globalWriter(mPath.asChar());
+    foundation::GenericMeshFileWriter globalWriter(mPath.asChar());
 
     ProxyMesh globalProxyMesh(mPercentage);
-
-    // transform
-    // single files
 
     for (uint dagPathId = 0; dagPathId < mExportObjects.length(); dagPathId++)
     {
@@ -115,7 +114,7 @@ bool BinMeshWriterCmd::exportBinMeshes()
             MString perFileMeshPath = pystring::replace(mPath.asChar(), ".binarymesh", "").c_str();
             perFileMeshPath += makeGoodString(partialPathName) + ".binarymesh";
             Logging::debug(MString("BinMeshWriterCmd::exportBinMeshes - exporting ") + partialPathName + " to  " + perFileMeshPath);
-            asf::GenericMeshFileWriter writer(perFileMeshPath.asChar());
+            foundation::GenericMeshFileWriter writer(perFileMeshPath.asChar());
             writer.write(walker);
             if (mDoProxy)
             {

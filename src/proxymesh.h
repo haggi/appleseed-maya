@@ -63,7 +63,7 @@ class ProxyMesh
 
     inline void write(const MPointArray& points)
     {
-        for (size_t i = 0, e = points.length(); i < e; ++i)
+        for (unsigned int i = 0, e = points.length(); i < e; ++i)
             write(points[i]);
     }
 

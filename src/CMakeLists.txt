@@ -106,8 +106,6 @@ source_group ("utilities" FILES
 set (sources
     appleseedmaya.cpp
     appleseedmaya.h
-    appleseedmeshwalker.cpp
-    appleseedmeshwalker.h
     appleseedrenderer.cpp
     appleseedrenderer.h
     appleseedswatchrenderer.cpp
@@ -128,6 +126,8 @@ set (sources
     mayaobject.h
     mayascene.cpp
     mayascene.h
+    meshwalker.cpp
+    meshwalker.h
     newswatchrenderer.cpp
     newswatchrenderer.h
     pluginmain.cpp

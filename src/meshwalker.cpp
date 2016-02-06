@@ -27,7 +27,7 @@
 //
 
 // Interface header.
-#include "appleseedmeshwalker.h"
+#include "meshwalker.h"
 
 // appleseed-maya headers.
 #include "shadingtools/shadingutils.h"

@@ -26,8 +26,8 @@
 // THE SOFTWARE.
 //
 
-#ifndef APPLESEED_MAYA_MESH_WALKER_H
-#define APPLESEED_MAYA_MESH_WALKER_H
+#ifndef MESHWALKER_H
+#define MESHWALKER_H
 
 // appleseed-foundation headers.
 #include "foundation/mesh/imeshwalker.h"
@@ -115,4 +115,4 @@ class MeshWalker
     MObject checkSmoothMesh();
 };
 
-#endif
+#endif  // !MESHWALKER_H
