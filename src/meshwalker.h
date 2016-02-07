@@ -26,11 +26,13 @@
 // THE SOFTWARE.
 //
 
-#ifndef APPLESEED_MAYA_MESH_WALKER_H
-#define APPLESEED_MAYA_MESH_WALKER_H
+#ifndef MESHWALKER_H
+#define MESHWALKER_H
 
-// appleseed-foundation headers.
+// appleseed.foundation headers.
+#include "foundation/math/vector.h"
 #include "foundation/mesh/imeshwalker.h"
+#include "foundation/platform/compiler.h"
 
 // Maya headers.
 #include <maya/MDagPath.h>
@@ -44,75 +46,72 @@
 #include <maya/MPointArray.h>
 
 // Standard headers.
-#include <string.h>
+#include <cstddef>
 #include <vector>
-
-struct Face
-{
-    MIntArray vtxIds;
-    MIntArray normalIds;
-    MIntArray uvIds;
-};
 
 class MeshWalker
   : public foundation::IMeshWalker
 {
   public:
+    // Constructor.
     explicit MeshWalker(const MDagPath& dagPath);
 
+    void applyTransform();
+
     // Return the name of the mesh.
-    virtual const char* get_name() const;
+    virtual const char* get_name() const APPLESEED_OVERRIDE;
 
     // Return vertices.
-    virtual size_t get_vertex_count() const;
-    virtual foundation::Vector3d get_vertex(const size_t i) const;
+    virtual size_t get_vertex_count() const APPLESEED_OVERRIDE;
+    virtual foundation::Vector3d get_vertex(const size_t i) const APPLESEED_OVERRIDE;
 
     // Return vertex normals.
-    virtual size_t get_vertex_normal_count() const;
-    virtual foundation::Vector3d get_vertex_normal(const size_t i) const;
+    virtual size_t get_vertex_normal_count() const APPLESEED_OVERRIDE;
+    virtual foundation::Vector3d get_vertex_normal(const size_t i) const APPLESEED_OVERRIDE;
 
     // Return texture coordinates.
-    virtual size_t get_tex_coords_count() const;
-    virtual foundation::Vector2d get_tex_coords(const size_t i) const;
+    virtual size_t get_tex_coords_count() const APPLESEED_OVERRIDE;
+    virtual foundation::Vector2d get_tex_coords(const size_t i) const APPLESEED_OVERRIDE;
 
     // Return material slots.
-    virtual size_t get_material_slot_count() const;
-    virtual const char* get_material_slot(const size_t i) const;
+    virtual size_t get_material_slot_count() const APPLESEED_OVERRIDE;
+    virtual const char* get_material_slot(const size_t i) const APPLESEED_OVERRIDE;
 
     // Return the number of faces.
-    virtual size_t get_face_count() const;
+    virtual size_t get_face_count() const APPLESEED_OVERRIDE;
 
     // Return the number of vertices in a given face.
-    virtual size_t get_face_vertex_count(const size_t face_index) const;
+    virtual size_t get_face_vertex_count(const size_t face_index) const APPLESEED_OVERRIDE;
 
     // Return data for a given vertex of a given face.
-    virtual size_t get_face_vertex(const size_t face_index, const size_t vertex_index) const;
-    virtual size_t get_face_vertex_normal(const size_t face_index, const size_t vertex_index) const;
-    virtual size_t get_face_tex_coords(const size_t face_index, const size_t vertex_index) const;
+    virtual size_t get_face_vertex(const size_t face_index, const size_t vertex_index) const APPLESEED_OVERRIDE;
+    virtual size_t get_face_vertex_normal(const size_t face_index, const size_t vertex_index) const APPLESEED_OVERRIDE;
+    virtual size_t get_face_tex_coords(const size_t face_index, const size_t vertex_index) const APPLESEED_OVERRIDE;
 
     // Return the material assigned to a given face.
-    virtual size_t get_face_material(const size_t face_index) const;
-
-    void setTransform();
+    virtual size_t get_face_material(const size_t face_index) const APPLESEED_OVERRIDE;
 
   private:
+    struct Face
+    {
+        MIntArray       vtxIds;
+        MIntArray       normalIds;
+        MIntArray       uvIds;
+    };
+
     MFnMesh             mMeshFn;
     MDagPath            mMeshDagPath;
     MObject             mMeshObject;
     MFnMeshData         mSmoothMeshData;
 
-    // mesh data
-    MFloatArray         mU,mV;
+    MFloatArray         mU, mV;
     MPointArray         mPoints;
     MFloatVectorArray   mNormals;
-
     MObjectArray        mShadingGroups;
     MIntArray           mPerFaceAssignments;
-    MIntArray           mPerTriangleAssignments;
     std::vector<Face>   mFaceList;
-    bool                mUseSmoothMesh;
 
     MObject checkSmoothMesh();
 };
 
-#endif
+#endif  // !MESHWALKER_H
