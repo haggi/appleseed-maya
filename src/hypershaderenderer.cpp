@@ -584,80 +584,79 @@ MStatus HypershadeRenderer::translateShader(const MUuid& id, const MObject& node
 
 void HypershadeRenderer::updateMaterial(const MObject materialNode, const asr::Assembly *assembly)
 {
-	OSLUtilClass OSLShaderClass;
-	MObject surfaceShaderNode = getConnectedInNode(materialNode, "surfaceShader");
-	MString surfaceShaderName = getObjectName(surfaceShaderNode);
-	MString shadingGroupName = getObjectName(materialNode);
-	ShadingNetwork network(surfaceShaderNode);
-	size_t numNodes = network.shaderList.size();
+    OSLUtilClass OSLShaderClass;
+    MObject surfaceShaderNode = getConnectedInNode(materialNode, "surfaceShader");
+    MString surfaceShaderName = getObjectName(surfaceShaderNode);
+    MString shadingGroupName = getObjectName(materialNode);
+    ShadingNetwork network(surfaceShaderNode);
+    size_t numNodes = network.shaderList.size();
 
     if (assembly->get_name() == "swatchRenderer_world")
-	{
-		shadingGroupName = "previewSG";
-	}
+    {
+        shadingGroupName = "previewSG";
+    }
 
-	MString shaderGroupName = shadingGroupName + "_OSLShadingGroup";
+    MString shaderGroupName = shadingGroupName + "_OSLShadingGroup";
 
-	asr::ShaderGroup *shaderGroup = assembly->shader_groups().get_by_name(shaderGroupName.asChar());
+    asr::ShaderGroup *shaderGroup = assembly->shader_groups().get_by_name(shaderGroupName.asChar());
 
-	if (shaderGroup != 0)
-	{
-		shaderGroup->clear();
-	}
-	else{
-		asf::auto_release_ptr<asr::ShaderGroup> oslShadingGroup = asr::ShaderGroupFactory().create(shaderGroupName.asChar());
-		assembly->shader_groups().insert(oslShadingGroup);
-		shaderGroup = assembly->shader_groups().get_by_name(shaderGroupName.asChar());
-	}
+    if (shaderGroup != 0)
+    {
+        shaderGroup->clear();
+    }
+    else
+    {
+        asf::auto_release_ptr<asr::ShaderGroup> oslShadingGroup = asr::ShaderGroupFactory().create(shaderGroupName.asChar());
+        assembly->shader_groups().insert(oslShadingGroup);
+        shaderGroup = assembly->shader_groups().get_by_name(shaderGroupName.asChar());
+    }
 
-	OSLShaderClass.group = (OSL::ShaderGroup *)shaderGroup;
+    OSLShaderClass.group = (OSL::ShaderGroup *)shaderGroup;
 
-	MFnDependencyNode shadingGroupNode(materialNode);
-	MPlug shaderPlug = shadingGroupNode.findPlug("surfaceShader");
-	OSLShaderClass.createOSLProjectionNodes(shaderPlug);
+    MFnDependencyNode shadingGroupNode(materialNode);
+    MPlug shaderPlug = shadingGroupNode.findPlug("surfaceShader");
+    OSLShaderClass.createOSLProjectionNodes(shaderPlug);
 
-	for (int shadingNodeId = 0; shadingNodeId < numNodes; shadingNodeId++)
-	{
-		ShadingNode snode = network.shaderList[shadingNodeId];
-		if (shadingNodeId == (numNodes - 1))
-			Logging::debug(MString("LastNode Surface Shader: ") + snode.fullName);
-		OSLShaderClass.createOSLShadingNode(network.shaderList[shadingNodeId]);
-	}
+    for (int shadingNodeId = 0; shadingNodeId < numNodes; shadingNodeId++)
+    {
+        ShadingNode snode = network.shaderList[shadingNodeId];
+        OSLShaderClass.createOSLShadingNode(network.shaderList[shadingNodeId]);
+    }
 
-	OSLShaderClass.cleanupShadingNodeList();
-	OSLShaderClass.createAndConnectShaderNodes();
+    OSLShaderClass.cleanupShadingNodeList();
+    OSLShaderClass.createAndConnectShaderNodes();
 
-	if (numNodes > 0)
-	{
-		ShadingNode snode = network.shaderList[numNodes - 1];
-		MString layer = (snode.fullName + "_interface");
-		asr::ShaderGroup *sg = (asr::ShaderGroup *)OSLShaderClass.group;
-		sg->add_shader("surface", "surfaceShaderInterface", layer.asChar(), asr::ParamArray());
-		const char *srcLayer = snode.fullName.asChar();
-		const char *srcAttr = "outColor";
-		const char *dstLayer = layer.asChar();
-		const char *dstAttr = "inColor";
-		sg->add_connection(srcLayer, srcAttr, dstLayer, dstAttr);
-	}
+    if (numNodes > 0)
+    {
+        ShadingNode snode = network.shaderList[numNodes - 1];
+        MString layer = (snode.fullName + "_interface");
+        asr::ShaderGroup *sg = (asr::ShaderGroup *)OSLShaderClass.group;
+        sg->add_shader("surface", "surfaceShaderInterface", layer.asChar(), asr::ParamArray());
+        const char *srcLayer = snode.fullName.asChar();
+        const char *srcAttr = "outColor";
+        const char *dstLayer = layer.asChar();
+        const char *dstAttr = "inColor";
+        sg->add_connection(srcLayer, srcAttr, dstLayer, dstAttr);
+    }
 
-	MString physicalSurfaceName = shadingGroupName + "_physical_surface_shader";
+    MString physicalSurfaceName = shadingGroupName + "_physical_surface_shader";
 
-	if (assembly->surface_shaders().get_by_name(physicalSurfaceName.asChar()) == 0)
-	{
-		assembly->surface_shaders().insert(
-			asr::PhysicalSurfaceShaderFactory().create(
-			physicalSurfaceName.asChar(),
-			asr::ParamArray()));
-	}
-	if (assembly->materials().get_by_name(shadingGroupName.asChar()) == 0)
-	{
-		assembly->materials().insert(
-			asr::OSLMaterialFactory().create(
-			shadingGroupName.asChar(),
-			asr::ParamArray()
-			.insert("surface_shader", physicalSurfaceName.asChar())
-			.insert("osl_surface", shaderGroupName.asChar())));
-	}
+    if (assembly->surface_shaders().get_by_name(physicalSurfaceName.asChar()) == 0)
+    {
+        assembly->surface_shaders().insert(
+            asr::PhysicalSurfaceShaderFactory().create(
+            physicalSurfaceName.asChar(),
+            asr::ParamArray()));
+    }
+    if (assembly->materials().get_by_name(shadingGroupName.asChar()) == 0)
+    {
+        assembly->materials().insert(
+            asr::OSLMaterialFactory().create(
+            shadingGroupName.asChar(),
+            asr::ParamArray()
+            .insert("surface_shader", physicalSurfaceName.asChar())
+            .insert("osl_surface", shaderGroupName.asChar())));
+    }
 }
 
 MStatus HypershadeRenderer::setProperty(const MUuid& id, const MString& name, bool value)
