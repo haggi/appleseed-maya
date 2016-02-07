@@ -74,12 +74,10 @@ class HypershadeTileCallback
 {
   public:
     HypershadeRenderer *renderer;
-    explicit HypershadeTileCallback(HypershadeRenderer *mrenderer) : renderer(mrenderer)
-    {}
-    virtual ~HypershadeTileCallback()
-    {}
-    virtual void release(){}
-    void pre_render(const size_t x, const size_t y, const size_t width, const size_t height){}
+    explicit HypershadeTileCallback(HypershadeRenderer *mrenderer);
+    virtual ~HypershadeTileCallback();
+    virtual void release();
+    void pre_render(const size_t x, const size_t y, const size_t width, const size_t height);
     void post_render(const asr::Frame* frame);
     virtual void post_render_tile(const asr::Frame* frame, const size_t tile_x, const size_t tile_y);
 };
@@ -89,19 +87,10 @@ class HypershadeTileCallbackFactory
 {
   public:
     HypershadeTileCallback *tileCallback;
-    explicit HypershadeTileCallbackFactory(HypershadeRenderer *renderer)
-    {
-        tileCallback = new HypershadeTileCallback(renderer);
-    }
-    virtual ~HypershadeTileCallbackFactory()
-    {
-        delete tileCallback;
-    }
-    virtual asr::ITileCallback* create()
-    {
-        return tileCallback;
-    };
-    virtual void release(){ delete this; };
+    explicit HypershadeTileCallbackFactory(HypershadeRenderer *renderer);
+    virtual ~HypershadeTileCallbackFactory();
+    virtual asr::ITileCallback* create();
+    virtual void release();
 };
 
 struct IdNameStruct
@@ -116,9 +105,9 @@ class HypershadeRenderer
 {
   public:
     RefreshParams refreshParams;
-    float* rb = 0;
-    int tileSize = 32;
-    int initialSize = 256;
+    float* rb;
+    int tileSize;
+    int initialSize;
     HypershadeRenderer();
     virtual ~HypershadeRenderer();
     static void* creator();
@@ -153,9 +142,7 @@ class HypershadeRenderer
     void copyTileToBuffer(asf::Tile& tile, int tile_x, int tile_y);
     void copyFrameToBuffer(float *frame, int w, int h);
     void render();
-
     void updateMaterial(const MObject materialNode, const asr::Assembly *assembly);
-
 
   private:
     int width, height;
@@ -167,7 +154,7 @@ class HypershadeRenderer
     MUuid lastShapeId; // save the last shape id, needed by translateTransform
     MString lastMaterialName;
     std::vector<IdNameStruct> objectArray;
-    bool asyncStarted = false;
+    bool asyncStarted;
 };
 
 #endif

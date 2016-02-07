@@ -103,9 +103,12 @@
 HypershadeRenderer::HypershadeRenderer()
 {
     initProject();
+    tileSize = 32;
+    initialSize = 256;
     width = height = initialSize;
     lastMaterialName = "default";
     this->rb = (float*)malloc(width*height*kNumChannels*sizeof(float));
+    asyncStarted = false;
 }
 
 HypershadeRenderer::~HypershadeRenderer()
@@ -958,8 +961,26 @@ void HypershadeTileCallback::post_render(const asr::Frame* frame)
     delete [] buffer;
 }
 
+HypershadeTileCallback::HypershadeTileCallback(HypershadeRenderer *mrenderer)
+  : renderer(mrenderer)
+{
+}
+
+HypershadeTileCallback::~HypershadeTileCallback()
+{
+}
+
+void HypershadeTileCallback::release()
+{
+}
+
+void HypershadeTileCallback::pre_render(const size_t x, const size_t y, const size_t width, const size_t height)
+{
+}
+
+
 HypershadeRenderController::HypershadeRenderController() 
-    :status(asr::IRendererController::ContinueRendering)
+  :status(asr::IRendererController::ContinueRendering)
 {
 }
 
@@ -999,5 +1020,27 @@ asr::IRendererController::Status HypershadeRenderController::get_status() const
 {
     return status;
 }
+
+
+HypershadeTileCallbackFactory::HypershadeTileCallbackFactory(HypershadeRenderer *renderer)
+{
+    tileCallback = new HypershadeTileCallback(renderer);
+}
+
+HypershadeTileCallbackFactory::~HypershadeTileCallbackFactory()
+{
+    delete tileCallback;
+}
+
+asr::ITileCallback* HypershadeTileCallbackFactory::create()
+{
+    return tileCallback;
+}
+
+void HypershadeTileCallbackFactory::release()
+{ 
+    delete this; 
+}
+
 
 #endif
