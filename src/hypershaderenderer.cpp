@@ -727,12 +727,10 @@ MStatus HypershadeRenderer::setProperty(const MUuid& id, const MString& name, co
 
 MStatus HypershadeRenderer::setShader(const MUuid& id, const MUuid& shaderId)
 {
-    Logging::debug("setShader");
     IdNameStruct objElement, shaderElement;
     std::vector<IdNameStruct>::iterator nsIt;
     for (nsIt = objectArray.begin(); nsIt != objectArray.end(); nsIt++)
     {
-        Logging::debug(MString("Search for obj id: ") + id + " in " + nsIt->id + " name: " + nsIt->name);
         if (nsIt->id == id)
         {
             objElement = *nsIt;
@@ -741,7 +739,6 @@ MStatus HypershadeRenderer::setShader(const MUuid& id, const MUuid& shaderId)
     }
     for (nsIt = objectArray.begin(); nsIt != objectArray.end(); nsIt++)
     {
-        Logging::debug(MString("Search for shader id: ") + shaderId + " in " + nsIt->id + " name: " + nsIt->name);
         if (nsIt->id == shaderId)
         {
             shaderElement = *nsIt;
@@ -753,25 +750,21 @@ MStatus HypershadeRenderer::setShader(const MUuid& id, const MUuid& shaderId)
         Logging::error(MString("Unable to find obj or shader for assignment. ShaderName: ") + shaderElement.name + " obj name " + objElement.name);
         return MS::kFailure;
     }
-    Logging::debug(MString("--------- Assign shader ") + shaderElement.name + " to object named " + objElement.name);
-
 
     asr::ObjectInstance *objInstance = GETASM()->object_instances().get_by_name(objElement.name.asChar());
     if (objInstance != 0)
         objInstance->get_front_material_mappings().insert("slot0", shaderElement.name.asChar());
     else
-        Logging::debug(MString("unable to assign shader "));
+        Logging::error(MString("unable to assign shader "));
 
     return MStatus::kSuccess;
 }
 
 MStatus HypershadeRenderer::setResolution(unsigned int w, unsigned int h)
 {
-    Logging::debug(MString("setResolution to") + w + " " + h);
     width = w;
     height = h;
 
-    // Update resolution buffer
     rb = (float*)realloc(rb, w*h*kNumChannels*sizeof(float));
 
     for (uint x = 0; x < width; x++)
@@ -820,7 +813,6 @@ MStatus HypershadeRenderer::setResolution(unsigned int w, unsigned int h)
 
 MStatus HypershadeRenderer::endSceneUpdate()
 {
-    Logging::debug("endSceneUpdate");
     controller.status = asr::IRendererController::ContinueRendering;
     ProgressParams progressParams;
     progressParams.progress = 0.0;
@@ -841,7 +833,6 @@ MStatus HypershadeRenderer::endSceneUpdate()
 
 MStatus HypershadeRenderer::destroyScene()
 {
-    Logging::debug("destroyScene");
     controller.status = asr::IRendererController::AbortRendering;
     if (renderThread.joinable())
         renderThread.join();
@@ -854,7 +845,6 @@ MStatus HypershadeRenderer::destroyScene()
 
 bool HypershadeRenderer::isSafeToUnload()
 {
-    Logging::debug("isSafeToUnload");
     return true;
 }
 
@@ -893,7 +883,7 @@ void HypershadeRenderer::copyFrameToBuffer(float *frame, int w, int h)
 {
     if ((w != width) || (h != height))
     {
-        Logging::error("wh ungleich.");
+        Logging::error("width or height from frame buffer do not match with internal one.");
         return;
     }
 
@@ -914,15 +904,12 @@ void HypershadeRenderer::copyFrameToBuffer(float *frame, int w, int h)
 
 void HypershadeTileCallback::post_render_tile(const asr::Frame* frame, const size_t tile_x, const size_t tile_y)
 {
-    Logging::debug("HypershadeTileCallback::post_render_tile");
     asf::Tile& tile = frame->image().tile(tile_x, tile_y);
     renderer->copyTileToBuffer(tile, tile_x, tile_y);
 }
 
 void HypershadeTileCallback::post_render(const asr::Frame* frame)
 {
-    Logging::debug("HypershadeTileCallback::post_render frame");
-
     const asf::Image& img = frame->image();
     const asf::CanvasProperties& frame_props = img.properties();
     const size_t tileSize = frame_props.m_tile_height;
