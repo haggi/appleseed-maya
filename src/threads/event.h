@@ -33,8 +33,8 @@
 #include "world.h"
 
 // Maya headers.
+#include <maya/MDagPath.h>
 #include <maya/MRenderView.h>
-#include <maya/MString.h>
 
 // Boost headers.
 #include "boost/shared_ptr.hpp"
@@ -45,7 +45,7 @@
 class Event
 {
   public:
-    enum Types
+    enum Type
     {
         INTERRUPT = 0,
         TILEDONE = 1,
@@ -62,16 +62,7 @@ class Event
         FRAMERENDER = 22
     };
 
-    enum PixelMode
-    {
-        RECT = 0,
-        PIXELS = 1
-    };
-
-    Types type;
-    PixelMode pixelMode;
-    size_t numPixels;
-    MString message;
+    Type type;
 
     int width;
     int height;
@@ -85,8 +76,6 @@ class Event
     Event()
     {
         type = INTERRUPT;
-        pixelMode = RECT;
-        numPixels = 0;
     }
 };
 
