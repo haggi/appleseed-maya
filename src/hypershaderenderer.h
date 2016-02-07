@@ -44,13 +44,10 @@
 #include <map>
 #include <memory>
 
-namespace asf = foundation;
-namespace asr = renderer;
-
 class HypershadeRenderer;
 
 class HypershadeTileCallback
-  : public asr::TileCallbackBase
+  : public renderer::TileCallbackBase
 {
   public:
     HypershadeRenderer *renderer;
@@ -60,12 +57,12 @@ class HypershadeTileCallback
     {}
     virtual void release(){}
     void pre_render(const size_t x, const size_t y, const size_t width, const size_t height){}
-    void post_render(const asr::Frame* frame);
-    virtual void post_render_tile(const asr::Frame* frame, const size_t tile_x, const size_t tile_y);
+    void post_render(const renderer::Frame* frame);
+    virtual void post_render_tile(const renderer::Frame* frame, const size_t tile_x, const size_t tile_y);
 };
 
 class HypershadeTileCallbackFactory
-  : public asr::ITileCallbackFactory
+  : public renderer::ITileCallbackFactory
 {
   public:
     HypershadeTileCallback *tileCallback;
@@ -77,7 +74,7 @@ class HypershadeTileCallbackFactory
     {
         delete tileCallback;
     }
-    virtual asr::ITileCallback* create()
+    virtual renderer::ITileCallback* create()
     {
         return tileCallback;
     };
@@ -129,7 +126,7 @@ class HypershadeRenderer : public MPxRenderer
 
     virtual bool isSafeToUnload();
 
-    void copyTileToBuffer(asf::Tile& tile, int tile_x, int tile_y);
+    void copyTileToBuffer(foundation::Tile& tile, int tile_x, int tile_y);
     void copyFrameToBuffer(float *frame, int w, int h);
     void render();
 
@@ -137,9 +134,9 @@ class HypershadeRenderer : public MPxRenderer
     int width, height;
     //Render output buffer, it is R32G32B32A32_FLOAT format.
     boost::thread renderThread;
-    asf::auto_release_ptr<asr::Project> project;
-    std::auto_ptr<asr::MasterRenderer> mrenderer;
-    asf::auto_release_ptr<HypershadeTileCallbackFactory> tileCallbackFac;
+    foundation::auto_release_ptr<renderer::Project> project;
+    std::auto_ptr<renderer::MasterRenderer> mrenderer;
+    foundation::auto_release_ptr<HypershadeTileCallbackFactory> tileCallbackFac;
     RenderController controller;
     MUuid lastShapeId; // save the last shape id, needed by translateTransform
     MString lastMaterialName = "default";

@@ -76,15 +76,12 @@
 #include <maya/MGlobal.h>
 #include <maya/MPlugArray.h>
 
-namespace asf = foundation;
-namespace asr = renderer;
-
 AppleseedSwatchRenderer::AppleseedSwatchRenderer()
   : mTerminateLoop(false)
 {
     const MString swatchRenderFile = getRendererHome() + "resources/swatchRender.xml";
     const MString schemaPath = getRendererHome() + "schemas/project.xsd";
-    mProject = asr::ProjectFileReader().read(swatchRenderFile.asChar(), schemaPath.asChar());
+    mProject = renderer::ProjectFileReader().read(swatchRenderFile.asChar(), schemaPath.asChar());
 
     if (mProject.get() == 0)
     {
@@ -103,7 +100,7 @@ AppleseedSwatchRenderer::AppleseedSwatchRenderer()
         mProject->search_paths().push_back(oslDirs[i].asChar());
 
     mRenderer.reset(
-        new asr::MasterRenderer(
+        new renderer::MasterRenderer(
             mProject.ref(),
             mProject->configurations().get_by_name("final")->get_inherited_parameters(),
             &mRendererController));
@@ -114,10 +111,10 @@ void AppleseedSwatchRenderer::renderSwatch(NewSwatchRenderer *sr)
     const int res = sr->resolution();
 
     const MString resString = MString("") + res + " " + res;
-    asr::ParamArray frameParams = mProject->get_frame()->get_parameters();
+    renderer::ParamArray frameParams = mProject->get_frame()->get_parameters();
     frameParams.insert("resolution", resString);
     frameParams.insert("tile_size", resString);
-    mProject->set_frame(asr::FrameFactory::create("beauty", frameParams));
+    mProject->set_frame(renderer::FrameFactory::create("beauty", frameParams));
 
     defineMaterial(sr->dNode);
 
@@ -128,11 +125,11 @@ void AppleseedSwatchRenderer::renderSwatch(NewSwatchRenderer *sr)
     float* pixels = sr->image().floatPixels();
     size_t index = 0;
 
-    const asf::Image& image = mProject->get_frame()->image();
-    const asf::CanvasProperties& props = image.properties();
+    const foundation::Image& image = mProject->get_frame()->image();
+    const foundation::CanvasProperties& props = image.properties();
     assert(props.m_channel_count == 4);
 
-    const asf::Tile& tile = mProject->get_frame()->image().tile(0, 0);
+    const foundation::Tile& tile = mProject->get_frame()->image().tile(0, 0);
 
     for (size_t y = 0; y < props.m_canvas_height; y++)
     {
@@ -146,7 +143,7 @@ void AppleseedSwatchRenderer::renderSwatch(NewSwatchRenderer *sr)
 
 namespace
 {
-    void updateMaterial(MObject materialNode, const asr::Assembly *assembly)
+    void updateMaterial(MObject materialNode, const renderer::Assembly *assembly)
     {
         OSLUtilClass OSLShaderClass;
         MObject surfaceShaderNode = getConnectedInNode(materialNode, "surfaceShader");
@@ -163,7 +160,7 @@ namespace
 
         MString shaderGroupName = shadingGroupName + "_OSLShadingGroup";
 
-        asr::ShaderGroup *shaderGroup = assembly->shader_groups().get_by_name(shaderGroupName.asChar());
+        renderer::ShaderGroup *shaderGroup = assembly->shader_groups().get_by_name(shaderGroupName.asChar());
 
         if (shaderGroup != 0)
         {
@@ -171,7 +168,7 @@ namespace
         }
         else
         {
-            asf::auto_release_ptr<asr::ShaderGroup> oslShadingGroup = asr::ShaderGroupFactory().create(shaderGroupName.asChar());
+            foundation::auto_release_ptr<renderer::ShaderGroup> oslShadingGroup = renderer::ShaderGroupFactory().create(shaderGroupName.asChar());
             assembly->shader_groups().insert(oslShadingGroup);
             shaderGroup = assembly->shader_groups().get_by_name(shaderGroupName.asChar());
         }
@@ -199,8 +196,8 @@ namespace
             ShadingNode snode = network.shaderList[numNodes - 1];
             MString layer = (snode.fullName + "_interface");
             Logging::debug(MString("Adding interface shader: ") + layer);
-            asr::ShaderGroup *sg = (asr::ShaderGroup *)OSLShaderClass.group;
-            sg->add_shader("surface", "surfaceShaderInterface", layer.asChar(), asr::ParamArray());
+            renderer::ShaderGroup *sg = (renderer::ShaderGroup *)OSLShaderClass.group;
+            sg->add_shader("surface", "surfaceShaderInterface", layer.asChar(), renderer::ParamArray());
             const char *srcLayer = snode.fullName.asChar();
             const char *srcAttr = "outColor";
             const char *dstLayer = layer.asChar();
@@ -215,16 +212,16 @@ namespace
         if (assembly->surface_shaders().get_by_name(physicalSurfaceName.asChar()) == 0)
         {
             assembly->surface_shaders().insert(
-                asr::PhysicalSurfaceShaderFactory().create(
+                renderer::PhysicalSurfaceShaderFactory().create(
                     physicalSurfaceName.asChar(),
-                    asr::ParamArray()));
+                    renderer::ParamArray()));
         }
         if (assembly->materials().get_by_name(shadingGroupName.asChar()) == 0)
         {
             assembly->materials().insert(
-                asr::OSLMaterialFactory().create(
+                renderer::OSLMaterialFactory().create(
                     shadingGroupName.asChar(),
-                    asr::ParamArray()
+                    renderer::ParamArray()
                         .insert("surface_shader", physicalSurfaceName.asChar())
                         .insert("osl_surface", shaderGroupName.asChar())));
         }
@@ -239,7 +236,7 @@ void AppleseedSwatchRenderer::defineMaterial(MObject shadingNode)
     MPlugArray pa, paOut;
     MFnDependencyNode depFn(shadingNode);
     depFn.getConnections(pa);
-    asr::Assembly *assembly = mProject->get_scene()->assemblies().get_by_name("swatchRenderer_world");
+    renderer::Assembly *assembly = mProject->get_scene()->assemblies().get_by_name("swatchRenderer_world");
     for (uint i = 0; i < pa.length(); i++)
     {
         if (pa[i].isDestination())

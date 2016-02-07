@@ -1010,7 +1010,7 @@ void OSLUtilClass::connectOSLShaders(ConnectionArray& ca)
             destAttr = "inColor";
         Logging::debug(MString("connectOSLShaders ") + srcLayer + "." + srcAttr + " -> " + destLayer + "." + destAttr);
         OSL::ShaderGroup *g = group;
-        asr::ShaderGroup *ag = (asr::ShaderGroup *)g;
+        renderer::ShaderGroup *ag = (renderer::ShaderGroup *)g;
         ag->add_connection(srcLayer, srcAttr, destLayer, destAttr.asChar());
     }
 }
@@ -1018,7 +1018,7 @@ void OSLUtilClass::connectOSLShaders(ConnectionArray& ca)
 void OSLUtilClass::createOSLShader(MString& shaderNodeType, MString& shaderName, OSLParamArray& paramArray)
 {
     Logging::debug(MString("createOSLShader ") + shaderName);
-    asr::ParamArray asParamArray;
+    renderer::ParamArray asParamArray;
     std::vector<OSLParameter>::iterator pIt;
     for (pIt = paramArray.begin(); pIt != paramArray.end(); pIt++)
     {
@@ -1033,6 +1033,6 @@ void OSLUtilClass::createOSLShader(MString& shaderNodeType, MString& shaderName,
 
     Logging::debug(MString("createOSLShader creating shader node "));
     OSL::ShaderGroup *g = group;
-    asr::ShaderGroup *ag = (asr::ShaderGroup *)g;
+    renderer::ShaderGroup *ag = (renderer::ShaderGroup *)g;
     ag->add_shader("shader", shaderNodeType.asChar(), shaderName.asChar(), asParamArray);
 }

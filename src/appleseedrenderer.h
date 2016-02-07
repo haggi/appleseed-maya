@@ -93,9 +93,6 @@ class mtap_MayaScene;
 class mtap_RenderGlobals;
 class ShadingNode;
 
-namespace asf = foundation;
-namespace asr = renderer;
-
 class AppleseedRenderer
 {
   public:
@@ -137,24 +134,24 @@ class AppleseedRenderer
     // Make an interactive update of the scene. Before this call the interactiveUpdateList should be filled appropriately.
     void doInteractiveUpdate();
 
-    asf::auto_release_ptr<asr::MeshObject> defineStandardPlane(bool area = false);
+    foundation::auto_release_ptr<renderer::MeshObject> defineStandardPlane(bool area = false);
     void defineProject();
-    void addRenderParams(asr::ParamArray& paramArray);//add current render settings to all render configurations
+    void addRenderParams(renderer::ParamArray& paramArray);//add current render settings to all render configurations
     void defineConfig();
     void defineOutput();
-    void createMesh(boost::shared_ptr<MayaObject> obj, asr::MeshObjectArray& meshArray, bool& isProxyArray);
+    void createMesh(boost::shared_ptr<MayaObject> obj, renderer::MeshObjectArray& meshArray, bool& isProxyArray);
     void createMesh(boost::shared_ptr<MayaObject> obj);
-    asr::Project *getProjectPtr(){ return this->project.get(); }
-    asf::StringArray defineMaterial(boost::shared_ptr<MayaObject> obj);
+    renderer::Project *getProjectPtr(){ return this->project.get(); }
+    foundation::StringArray defineMaterial(boost::shared_ptr<MayaObject> obj);
     void updateMaterial(MObject sufaceShader);
     void preFrame();
     void postFrame();
 
   private:
-    asf::auto_release_ptr<asr::Project> project;
-    std::auto_ptr<asr::MasterRenderer> masterRenderer;
-    std::auto_ptr<asf::ILogTarget> log_target;
-    asf::auto_release_ptr<TileCallbackFactory> tileCallbackFac;
+    foundation::auto_release_ptr<renderer::Project> project;
+    std::auto_ptr<renderer::MasterRenderer> masterRenderer;
+    std::auto_ptr<foundation::ILogTarget> log_target;
+    foundation::auto_release_ptr<TileCallbackFactory> tileCallbackFac;
     RendererController mRendererController;
     bool sceneBuilt;
 };

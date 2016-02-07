@@ -195,7 +195,7 @@ namespace
         // it updates the render database with the elements and empties the list which is then free for the next run
         // todo: maybe use wait for variables.
         while (modifiedElementList.size() > 0)
-            asf::sleep(100);
+            foundation::sleep(100);
 
         std::vector<InteractiveElement *>::iterator llIt;
         for (llIt = leafList.begin(); llIt != leafList.end(); llIt++)
@@ -481,7 +481,7 @@ namespace
                 break;
             }
 
-            asf::sleep(100);
+            foundation::sleep(100);
         }
     }
 
@@ -495,7 +495,7 @@ namespace
             {
                 getWorldPtr()->mRenderer->render();
                 while ((modifiedElementList.size() == 0) && (getWorldPtr()->getRenderType() == World::IPRRENDER) && (getWorldPtr()->getRenderState() != World::RSTATESTOPPED))
-                    asf::sleep(100);
+                    foundation::sleep(100);
                 if ((getWorldPtr()->getRenderType() != World::IPRRENDER) || (getWorldPtr()->getRenderState() == World::RSTATESTOPPED))
                     break;
                 getWorldPtr()->mRenderer->interactiveUpdateList = modifiedElementList;
@@ -548,7 +548,7 @@ namespace
     {
         Logging::debug("iprWaitForFinish.");
         while (getWorldPtr()->getRenderState() != World::RSTATENONE)
-            asf::sleep(100);
+            foundation::sleep(100);
         Logging::debug("iprWaitForFinish - Renderstate is RSTATENONE, sending event.");
         gEventQueue()->push(e);
     }
