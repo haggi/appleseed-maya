@@ -105,7 +105,7 @@ MStatus AppleseedMaya::doIt(const MArgList& args)
     if (argData.isFlagSet("-stopIpr", &stat))
     {
         Event e;
-        e.type = Event::IPRSTOP;
+        e.mType = Event::IPRSTOP;
         gEventQueue()->push(e);
         return MS::kSuccess;
     }
@@ -113,7 +113,7 @@ MStatus AppleseedMaya::doIt(const MArgList& args)
     if (argData.isFlagSet("-pauseIpr", &stat))
     {
         Event e;
-        e.type = Event::IPRPAUSE;
+        e.mType = Event::IPRPAUSE;
         gEventQueue()->push(e);
         return MS::kSuccess;
     }
@@ -123,7 +123,7 @@ MStatus AppleseedMaya::doIt(const MArgList& args)
     // set back to false.
 
     Event e;
-    e.type = Event::INITRENDER;
+    e.mType = Event::INITRENDER;
     e.renderType = World::UIRENDER;
 
     MFnDependencyNode defaultGlobals(objectFromName("defaultResolution"));

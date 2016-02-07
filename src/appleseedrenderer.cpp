@@ -179,7 +179,7 @@ void AppleseedRenderer::render()
         if (getWorldPtr()->getRenderType() == World::IPRRENDER)
         {
             Event e;
-            e.type = Event::ADDIPRCALLBACKS;
+            e.mType = Event::ADDIPRCALLBACKS;
             gEventQueue()->push(e);
 
             while (!RenderQueueWorker::iprCallbacksDone())

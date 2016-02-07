@@ -476,7 +476,7 @@ namespace
             if (escPressed && (getWorldPtr()->getRenderState() == World::RSTATERENDERING))
             {
                 Event e;
-                e.type = Event::INTERRUPT;
+                e.mType = Event::INTERRUPT;
                 gEventQueue()->push(e);
                 break;
             }
@@ -511,7 +511,7 @@ namespace
         }
 
         Event event;
-        event.type = Event::FRAMEDONE;
+        event.mType = Event::FRAMEDONE;
         gEventQueue()->push(event);
     }
 
@@ -648,7 +648,7 @@ void RenderQueueWorker::startRenderQueueWorker()
                 break;
         }
 
-        switch (e.type)
+        switch (e.mType)
         {
           case Event::INITRENDER:
             {
@@ -692,7 +692,7 @@ void RenderQueueWorker::startRenderQueueWorker()
                         beginComputation();
                 }
 
-                e.type = Event::FRAMERENDER;
+                e.mType = Event::FRAMERENDER;
                 gEventQueue()->push(e);
 
                 if (MGlobal::mayaState() != MGlobal::kBatch)
@@ -718,7 +718,7 @@ void RenderQueueWorker::startRenderQueueWorker()
                 }
                 else
                 {
-                    e.type = Event::RENDERDONE;
+                    e.mType = Event::RENDERDONE;
                     gEventQueue()->push(e);
                 }
             }
@@ -729,7 +729,7 @@ void RenderQueueWorker::startRenderQueueWorker()
                 doPostFrameJobs();
                 updateRenderView(e);
 
-                e.type = Event::FRAMERENDER;
+                e.mType = Event::FRAMERENDER;
                 gEventQueue()->push(e);
             }
             break;

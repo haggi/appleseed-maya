@@ -62,7 +62,7 @@ class Event
         FRAMERENDER = 22
     };
 
-    Type type;
+    Type mType;
 
     int width;
     int height;
@@ -72,11 +72,6 @@ class Event
     size_t tile_xmin, tile_xmax, tile_ymin, tile_ymax;
 
     boost::shared_ptr<RV_PIXEL> pixelData;
-
-    Event()
-    {
-        type = INTERRUPT;
-    }
 };
 
 #endif  // !EVENT_H

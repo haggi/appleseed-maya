@@ -118,7 +118,7 @@ void TileCallback::post_render(const renderer::Frame* frame)
     }
 
     Event e;
-    e.type = Event::TILEDONE;
+    e.mType = Event::TILEDONE;
     e.pixelData = pixels;
     e.tile_xmin = 0;
     e.tile_ymin = 0;
@@ -162,7 +162,7 @@ void TileCallback::post_render_tile(
     const size_t y = tile_y * frameProps.m_tile_height;
 
     Event e;
-    e.type = Event::TILEDONE;
+    e.mType = Event::TILEDONE;
     e.pixelData = pixels;
     e.tile_xmin = x;
     e.tile_xmax = x + tileWidth - 1;
