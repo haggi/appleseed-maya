@@ -107,7 +107,7 @@ namespace
             checkThread.join();
 
         if (MRenderView::doesRenderEditorExist())
-            MGlobal::executePythonCommand("import pymel.core as pm;pm.waitCursor(state=False);pm.refresh()");
+            MGlobal::executePythonCommand("import pymel.core as pm; pm.waitCursor(state=False); pm.refresh()");
     }
 }
 
@@ -515,41 +515,37 @@ namespace
         gEventQueue()->push(event);
     }
 
-    void updateRenderView(Event& e)
+    void updateRenderView(const Event& e)
     {
+        if (!MRenderView::doesRenderEditorExist())
+            return;
+
+        // we have cases where the render mrender view has changed but the framebuffer callback may have still the old settings.
+        // here we make sure we do not exceed the renderView area.
         boost::shared_ptr<RenderGlobals> renderGlobals = getWorldPtr()->mRenderGlobals;
-
-        const int width = renderGlobals->getWidth();
-        const int height = renderGlobals->getHeight();
-
-        if (e.pixelData)
+        if (renderGlobals->getUseRenderRegion())
         {
-            if (MRenderView::doesRenderEditorExist())
+            const int width = renderGlobals->getWidth();
+            const int height = renderGlobals->getHeight();
+
+            if ((e.tile_xmin != 0) || (e.tile_xmax != width - 1) || (e.tile_ymin != 0) || (e.tile_ymax != height - 1))
             {
-                // we have cases where the the the render mrender view has changed but the framebuffer callback may have still the old settings.
-                // here we make sure we do not exceed the renderView area.
-                if (renderGlobals->getUseRenderRegion())
-                {
-                    if ((e.tile_xmin != 0) || (e.tile_xmax != width - 1) || (e.tile_ymin != 0) || (e.tile_ymax != height - 1))
-                    {
-                        uint left, right, bottom, top;
-                        MRenderView::getRenderRegion(left, right, bottom, top);
-                        if ((left != e.tile_xmin) || (right != e.tile_xmax) || (bottom != e.tile_ymin) || (top != e.tile_ymax))
-                            return;
-                    }
-                }
-                MRenderView::updatePixels(e.tile_xmin, e.tile_xmax, e.tile_ymin, e.tile_ymax, e.pixelData.get());
-                MRenderView::refresh(e.tile_xmin, e.tile_xmax, e.tile_ymin, e.tile_ymax);
+                uint left, right, bottom, top;
+                MRenderView::getRenderRegion(left, right, bottom, top);
+                if ((left != e.tile_xmin) || (right != e.tile_xmax) || (bottom != e.tile_ymin) || (top != e.tile_ymax))
+                    return;
             }
         }
+
+        MRenderView::updatePixels(e.tile_xmin, e.tile_xmax, e.tile_ymin, e.tile_ymax, e.pixelData.get());
+        MRenderView::refresh(e.tile_xmin, e.tile_xmax, e.tile_ymin, e.tile_ymax);
     }
 
     void iprWaitForFinish(Event e)
     {
-        Logging::debug("iprWaitForFinish.");
         while (getWorldPtr()->getRenderState() != World::RSTATENONE)
             foundation::sleep(100);
-        Logging::debug("iprWaitForFinish - Renderstate is RSTATENONE, sending event.");
+
         gEventQueue()->push(e);
     }
 
@@ -727,7 +723,6 @@ void RenderQueueWorker::startRenderQueueWorker()
           case Event::FRAMEDONE:
             {
                 doPostFrameJobs();
-                updateRenderView(e);
 
                 e.mType = Event::FRAMERENDER;
                 gEventQueue()->push(e);
@@ -790,7 +785,7 @@ RenderQueueWorker::~RenderQueueWorker()
     while (RenderEventQueue.try_pop(e)) {}
 }
 
-void RenderQueueWorker::renderQueueWorkerTimerCallback(float time, float lastTime, void *userPtr)
+void RenderQueueWorker::renderQueueWorkerTimerCallback(float time, float lastTime, void* userPtr)
 {
     RenderQueueWorker::startRenderQueueWorker();
 }
