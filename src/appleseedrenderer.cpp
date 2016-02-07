@@ -834,9 +834,9 @@ void AppleseedRenderer::updateInstance(boost::shared_ptr<MayaObject> mobj)
 
         foundation::auto_release_ptr<renderer::AssemblyInstance> assemblyInstance(
             renderer::AssemblyInstanceFactory::create(
-            assemblyInstanceName.asChar(),
-            renderer::ParamArray(),
-            assemblyName.asChar()));
+                assemblyInstanceName.asChar(),
+                renderer::ParamArray(),
+                assemblyName.asChar()));
         renderer::TransformSequence &ts = assemblyInstance->transform_sequence();
         fillMatrices(mobj, ts);
         getMasterAssemblyFromProject(this->project.get())->assembly_instances().insert(assemblyInstance);
@@ -975,8 +975,6 @@ void AppleseedRenderer::doInteractiveUpdate()
     }
     interactiveUpdateList.clear();
 }
-
-#define colorAttr(c) (MString("") + c.r + " " + c.g + " " + c.g)
 
 void AppleseedRenderer::defineLight(boost::shared_ptr<MayaObject> obj)
 {

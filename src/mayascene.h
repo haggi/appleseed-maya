@@ -100,7 +100,6 @@ class MayaScene
     MString getFileName();
 
     void clearInstancerNodeList();
-    void clearObjList(std::vector<boost::shared_ptr<MayaObject> > & objList, boost::shared_ptr<MayaObject> notThisOne);
     bool lightObjectIsInLinkedLightList(boost::shared_ptr<MayaObject> lightObject, MDagPathArray& linkedLightsArray);
     void getLightLinking();
     bool listContainsAllLights(MDagPathArray& linkedLights, MDagPathArray& excludedLights);

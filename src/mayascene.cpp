@@ -190,20 +190,6 @@ boost::shared_ptr<MayaObject> MayaScene::getObject(MDagPath dp)
     return mo;
 }
 
-void MayaScene::clearObjList(std::vector<boost::shared_ptr<MayaObject> > & objList, boost::shared_ptr<MayaObject> notThisOne)
-{
-    size_t numElements = objList.size();
-    boost::shared_ptr<MayaObject> tmpCopy;
-    for (size_t i = 0; i < numElements; i++)
-    {
-        if (objList[i] == notThisOne)
-            tmpCopy = objList[i];
-    }
-    objList.clear();
-    objList.push_back(notThisOne);
-    notThisOne->index = 0;
-}
-
 // the camera from the UI is set via render command
 void MayaScene::setCurrentCamera(MDagPath camDagPath)
 {
@@ -410,7 +396,9 @@ bool MayaScene::parseScene()
                 Logging::error(MString("UI Camera not found: ") + this->uiCamera.fullPathName());
                 return false;
             }
-            clearObjList(this->camList, cam);
+
+            camList.clear();
+            camList.push_back(cam);
         }
 
         return true;
@@ -670,7 +658,6 @@ bool MayaScene::parseInstancerNew()
                 particleMObject->fullName = origObj->fullName + MString("_i_") + p;
                 particleMObject->shortName = origObj->shortName + MString("_i_") + p;
                 this->instancerNodeElements.push_back(particleMObject);
-                particleMObject->index = (int)(this->instancerNodeElements.size() - 1);
                 currentAttributes->hasInstancerConnection = true;
                 if (hasParticleSystem)
                 {
