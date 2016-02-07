@@ -26,11 +26,14 @@
 // THE SOFTWARE.
 //
 
-#ifndef MTAP_RENDERER_CONTROLLER_H
-#define MTAP_RENDERER_CONTROLLER_H
+#ifndef RENDERERCONTROLLER_H
+#define RENDERERCONTROLLER_H
 
 // appleseed.renderer headers.
 #include "renderer/api/rendering.h"
+
+// appleseed.foundation headers.
+#include "foundation/platform/compiler.h"
 
 class RendererController
   : public renderer::IRendererController
@@ -39,32 +42,31 @@ class RendererController
     // Constructor.
     RendererController();
 
-    void release();
-
     // This method is called before rendering begins.
-    void on_rendering_begin();
+    virtual void on_rendering_begin() APPLESEED_OVERRIDE;
 
     // This method is called after rendering has succeeded.
-    void on_rendering_success();
+    virtual void on_rendering_success() APPLESEED_OVERRIDE;
 
     // This method is called after rendering was aborted.
-    void on_rendering_abort();
+    virtual void on_rendering_abort() APPLESEED_OVERRIDE;
 
     // This method is called before rendering a single frame.
-    void on_frame_begin();
+    virtual void on_frame_begin() APPLESEED_OVERRIDE;
 
     // This method is called after rendering a single frame.
-    void on_frame_end();
+    virtual void on_frame_end() APPLESEED_OVERRIDE;
 
     // This method is called continuously during rendering.
-    void on_progress();
+    virtual void on_progress() APPLESEED_OVERRIDE;
 
-    Status get_status() const;
-    void set_status(const Status new_status);
+    // Return the current rendering status.
+    virtual Status get_status() const APPLESEED_OVERRIDE;
+
+    void set_status(const Status status);
 
   private:
-    volatile Status m_status;
-    void (*m_entityUpdateProc)();
+    volatile Status mStatus;
 };
 
-#endif
+#endif  // !RENDERERCONTROLLER_H

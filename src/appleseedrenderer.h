@@ -155,7 +155,7 @@ class AppleseedRenderer
     std::auto_ptr<asr::MasterRenderer> masterRenderer;
     std::auto_ptr<asf::ILogTarget> log_target;
     asf::auto_release_ptr<TileCallbackFactory> tileCallbackFac;
-    RendererController mtap_controller;
+    RendererController mRendererController;
     bool sceneBuilt;
 };
 

@@ -30,22 +30,12 @@
 #include "renderercontroller.h"
 
 RendererController::RendererController()
-  : m_entityUpdateProc(0)
-  , m_status(renderer::IRendererController::ContinueRendering)
+  : mStatus(renderer::IRendererController::ContinueRendering)
 {
-}
-
-void RendererController::release()
-{
-    delete this;
 }
 
 void RendererController::on_rendering_begin()
 {
-    if (m_entityUpdateProc != 0)
-    {
-        m_entityUpdateProc();
-    }
 }
 
 void RendererController::on_rendering_success()
@@ -58,7 +48,7 @@ void RendererController::on_rendering_abort()
 
 void RendererController::on_frame_begin()
 {
-    m_status = IRendererController::ContinueRendering;
+    mStatus = IRendererController::ContinueRendering;
 }
 
 void RendererController::on_frame_end()
@@ -71,10 +61,10 @@ void RendererController::on_progress()
 
 RendererController::Status RendererController::get_status() const
 {
-    return m_status;
+    return mStatus;
 }
 
-void RendererController::set_status(const Status new_status)
+void RendererController::set_status(const Status status)
 {
-    m_status = new_status;
+    mStatus = status;
 }

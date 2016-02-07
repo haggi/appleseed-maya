@@ -89,7 +89,7 @@ AppleseedRenderer::~AppleseedRenderer()
 
 void AppleseedRenderer::initializeRenderer()
 {
-    this->project = asr::ProjectFactory::create("mtap_project");
+    this->project = asr::ProjectFactory::create("mayaProject");
 
     std::string oslShaderPath = (getRendererHome() + "shaders").asChar();
     Logging::debug(MString("setting osl shader search path to: ") + oslShaderPath.c_str());
@@ -99,6 +99,7 @@ void AppleseedRenderer::initializeRenderer()
         Logging::debug(MString("Search path: ") + getWorldPtr()->shaderSearchPath[i]);
         project->search_paths().push_back(getWorldPtr()->shaderSearchPath[i].asChar());
     }
+
     defineConfig();
     defineScene(this->project.get());
 }
@@ -163,7 +164,7 @@ void AppleseedRenderer::render()
                 new asr::MasterRenderer(
                     this->project.ref(),
                     this->project->configurations().get_by_name("interactive")->get_inherited_parameters(),
-                    &mtap_controller,
+                    &mRendererController,
                     this->tileCallbackFac.get()));
         }
         else
@@ -172,7 +173,7 @@ void AppleseedRenderer::render()
                 new asr::MasterRenderer(
                     this->project.ref(),
                     this->project->configurations().get_by_name("final")->get_inherited_parameters(),
-                    &mtap_controller,
+                    &mRendererController,
                     this->tileCallbackFac.get()));
         }
 
@@ -190,14 +191,14 @@ void AppleseedRenderer::render()
     }
 
     getWorldPtr()->setRenderState(World::RSTATERENDERING);
-    mtap_controller.set_status(asr::IRendererController::ContinueRendering);
 
+    mRendererController.set_status(asr::IRendererController::ContinueRendering);
     masterRenderer->render();
 }
 
 void AppleseedRenderer::abortRendering()
 {
-    mtap_controller.set_status(asr::IRendererController::AbortRendering);
+    mRendererController.set_status(asr::IRendererController::AbortRendering);
 }
 
 void AppleseedRenderer::addRenderParams(asr::ParamArray& paramArray)
@@ -1111,29 +1112,29 @@ void AppleseedRenderer::defineLight(boost::shared_ptr<MayaObject> obj)
 
         ass->surface_shaders().insert(
             asr::PhysicalSurfaceShaderFactory().create(
-            physicalSurfaceName.asChar(),
-            asr::ParamArray()));
+                physicalSurfaceName.asChar(),
+                asr::ParamArray()));
 
         ass->materials().insert(
             asr::GenericMaterialFactory().create(
-            areaLightMaterialName.asChar(),
-            asr::ParamArray()
-            .insert("surface_shader", physicalSurfaceName.asChar())
-            .insert("edf", edfName.asChar())));
+                areaLightMaterialName.asChar(),
+                asr::ParamArray()
+                    .insert("surface_shader", physicalSurfaceName.asChar())
+                    .insert("edf", edfName.asChar())));
 
         asr::ParamArray objInstanceParamArray;
         addVisibilityFlags(obj, objInstanceParamArray);
 
         ass->object_instances().insert(
             asr::ObjectInstanceFactory::create(
-            objectInstanceName.asChar(),
-            objInstanceParamArray,
-            meshPtr->get_name(),
-            asf::Transformd::from_local_to_parent(appleMatrix),
-            asf::StringDictionary()
-            .insert("slot0", areaLightMaterialName.asChar()),
-            asf::StringDictionary()
-            .insert("slot0", "default")));
+                objectInstanceName.asChar(),
+                objInstanceParamArray,
+                meshPtr->get_name(),
+                asf::Transformd::from_local_to_parent(appleMatrix),
+                asf::StringDictionary()
+                    .insert("slot0", areaLightMaterialName.asChar()),
+                asf::StringDictionary()
+                    .insert("slot0", "default")));
 
         if (lightAssemblyInstance != 0)
             fillMatrices(obj, lightAssemblyInstance->transform_sequence());
@@ -1226,17 +1227,17 @@ void AppleseedRenderer::updateMaterial(MObject materialNode)
     {
         assembly->surface_shaders().insert(
             asr::PhysicalSurfaceShaderFactory().create(
-            physicalSurfaceName.asChar(),
-            asr::ParamArray()));
+                physicalSurfaceName.asChar(),
+                asr::ParamArray()));
     }
     if (assembly->materials().get_by_name(shadingGroupName.asChar()) == 0)
     {
         assembly->materials().insert(
             asr::OSLMaterialFactory().create(
-            shadingGroupName.asChar(),
-            asr::ParamArray()
-            .insert("surface_shader", physicalSurfaceName.asChar())
-            .insert("osl_surface", shaderGroupName.asChar())));
+                shadingGroupName.asChar(),
+                asr::ParamArray()
+                    .insert("surface_shader", physicalSurfaceName.asChar())
+                    .insert("osl_surface", shaderGroupName.asChar())));
     }
 }
 
