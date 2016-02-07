@@ -588,7 +588,7 @@ class AppleseedRenderer(renderer.MayaToRenderer):
             # TODO this is windows only, search for another solution...
             numThreads = int(os.environ['NUMBER_OF_PROCESSORS'])
             self.renderGlobalsNode.threads.set(numThreads)
-            # lets reduce the number of threads to stay as interactive as possible
+            # Let's reduce the number of threads to stay as interactive as possible.
             if self.ipr_isrunning:
                 if numThreads > 4:
                     numThreads = numThreads - 1

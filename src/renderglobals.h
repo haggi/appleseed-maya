@@ -121,12 +121,15 @@ class RenderGlobals
 
     bool inBatch;
 
-    void setWidth(int w) { this->imgWidth = w; };
-    void setHeight(int h) { this->imgHeight = h; };
-    void setWidthHeight(int w, int h) { this->imgWidth = w; this->imgHeight = h; };
-    void getWidthHeight(int& w, int& h){ w = this->imgWidth; h = this->imgHeight; };
-    int getWidth(){ return this->imgWidth; };
-    int getHeight(){ return this->imgHeight; };
+    void setResolution(const int w, const int h)
+    {
+        imgWidth = w;
+        imgHeight = h;
+    }
+
+    int getWidth() const { return imgWidth; }
+    int getHeight() const { return imgHeight; }
+
     float updateFrameNumber(); // returns the current frame number and incements the currentFrameIndex
     float getFrameNumber();
     bool frameListDone();

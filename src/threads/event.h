@@ -51,18 +51,13 @@ class Event
         TILEDONE = 1,
         FRAMEDONE = 2,
         RENDERDONE = 3,
-        PRETILE = 4,
-        FRAMEUPDATE = 5,
         IPRSTART = 6,
         IPRSTOP = 7,
         IPRPAUSE = 8,
         IPRREMOVE = 9,
-        IPRUPDATE = 10,
         IPRFRAMEDONE = 11,
         UPDATEUI = 17,
-        RENDERERROR = 18,
         INITRENDER = 19,
-        INTERACTIVEFBCALLBACK = 20,
         ADDIPRCALLBACKS = 21,
         FRAMERENDER = 22
     };

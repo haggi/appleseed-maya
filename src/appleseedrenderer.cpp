@@ -153,8 +153,6 @@ void AppleseedRenderer::postFrame()
 
 void AppleseedRenderer::render()
 {
-    Logging::debug("AppleseedRenderer::render");
-
     if (!sceneBuilt)
     {
         this->tileCallbackFac.reset(new TileCallbackFactory());
@@ -275,40 +273,38 @@ void AppleseedRenderer::defineConfig()
 
     this->project->configurations()
         .get_by_name("final")->get_parameters()
-        .insert_path("pixel_renderer", pixel_renderer);
+            .insert_path("pixel_renderer", pixel_renderer)
+            .insert_path("generic_tile_renderer.sampler", pixel_renderer);
 
     this->project->configurations()
-        .get_by_name("final")->get_parameters()
-        .insert_path("generic_tile_renderer.sampler", pixel_renderer);
-    this->project->configurations()
         .get_by_name("interactive")->get_parameters()
-        .insert_path("generic_tile_renderer.sampler", pixel_renderer);
+            .insert_path("generic_tile_renderer.sampler", pixel_renderer);
 
     if (renderGlobals->getUseRenderRegion())
     {
+        const int imgWidth = renderGlobals->getWidth();
+        const int imgHeight = renderGlobals->getHeight();
+
         int left, right, bottom, top;
-        int imgWidth, imgHeight;
-        renderGlobals->getWidthHeight(imgWidth, imgHeight);
         renderGlobals->getRenderRegion(left, bottom, right, top);
-        int ybot = (imgHeight - bottom);
-        int ytop = (imgHeight - top);
-        int ymin = ybot <  ytop ? ybot :  ytop;
-        int ymax = ybot >  ytop ? ybot :  ytop;
-        MString regionString = MString("") + left + " " + ymin + " " + right + " " + ymax;
-        Logging::debug("Render region is turned on rendering: " + regionString);
-        this->project->configurations()
-        .get_by_name("final")->get_parameters()
-        .insert_path("generic_tile_renderer.crop_window", regionString.asChar());
+
+        const int ybot = imgHeight - bottom;
+        const int ytop = imgHeight - top;
+        const int ymin = ybot < ytop ? ybot : ytop;
+        const int ymax = ybot > ytop ? ybot : ytop;
+
+        const MString regionString = MString("") + left + " " + ymin + " " + right + " " + ymax;
+
+        project->configurations()
+            .get_by_name("final")->get_parameters()
+            .insert_path("generic_tile_renderer.crop_window", regionString);
     }
 
     this->project->configurations()
-    .get_by_name("interactive")->get_parameters()
-    .insert_path("generic_tile_renderer.filter", renderGlobals->filterTypeString.toLowerCase().asChar())
-    .insert_path("generic_tile_renderer.filter_size", renderGlobals->filterSize);
+        .get_by_name("interactive")->get_parameters()
+            .insert_path("generic_tile_renderer.filter", renderGlobals->filterTypeString.toLowerCase().asChar())
+            .insert_path("generic_tile_renderer.filter_size", renderGlobals->filterSize);
 
-#ifdef _DEBUG
-    project->configurations().get_by_name("final")->get_parameters().insert_path("uniform_pixel_renderer.samples", "4");
-#endif
     asr::Configuration *cfg = project->configurations().get_by_name("interactive");
     asr::ParamArray &params = cfg->get_parameters();
     params.insert_path("generic_tile_renderer.filter", renderGlobals->filterTypeString.toLowerCase().asChar());
@@ -339,8 +335,10 @@ void AppleseedRenderer::defineCamera(boost::shared_ptr<MayaObject> cam)
     Logging::debug(MString("Creating camera shape: ") + cam->shortName);
     float horizontalFilmAperture = 24.892f;
     float verticalFilmAperture = 18.669f;
-    int width, height;
-    renderGlobals->getWidthHeight(width, height);
+
+    const int width = renderGlobals->getWidth();
+    const int height = renderGlobals->getHeight();
+
     float imageAspect = (float)width / (float)height;
     bool dof = renderGlobals->doDof;
     float mtap_cameraType = 0;
@@ -418,25 +416,22 @@ void AppleseedRenderer::defineCamera()
 
 void AppleseedRenderer::defineOutput()
 {
-    asr::Frame *frame = project->get_frame();
-    if (frame == 0)
+    if (project->get_frame() == 0)
     {
         MFnDependencyNode depFn(getRenderGlobalsNode());
         boost::shared_ptr<RenderGlobals> renderGlobals = getWorldPtr()->mRenderGlobals;
-        Logging::debug("AppleseedRenderer::defineOutput");
-        int width, height;
-        renderGlobals->getWidthHeight(width, height);
-        MString res = MString("") + width + " " + height;
-        MString colorSpaceString = getEnumString("colorSpace", depFn);
-        MString tileSize =  MString("") + renderGlobals->tilesize + " " + renderGlobals->tilesize;
+
+        const int width = renderGlobals->getWidth();
+        const int height = renderGlobals->getHeight();
+
         project->set_frame(
             asr::FrameFactory::create(
-            "beauty",
-            asr::ParamArray()
-            .insert("camera", project->get_scene()->get_camera()->get_name())
-            .insert("resolution", res.asChar())
-            .insert("tile_size", tileSize.asChar())
-            .insert("color_space", colorSpaceString.asChar())));
+                "beauty",
+                asr::ParamArray()
+                    .insert("camera", project->get_scene()->get_camera()->get_name())
+                    .insert("resolution", MString("") + width + " " + height)
+                    .insert("tile_size", MString("") + renderGlobals->tilesize + " " + renderGlobals->tilesize)
+                    .insert("color_space", getEnumString("colorSpace", depFn))));
     }
 }
 
@@ -674,15 +669,12 @@ asf::auto_release_ptr<asr::MeshObject> AppleseedRenderer::defineStandardPlane(bo
         object->push_vertex(asr::GVector3(1.0f, 0.0f, 1.0f));
         object->push_vertex(asr::GVector3(1.0f, 0.0f, -1.0f));
     }
+
     // Vertex normals.
     if (area)
-    {
         object->push_vertex_normal(asr::GVector3(0.0f, 0.0f, -1.0f));
-    }
-    else
-    {
-        object->push_vertex_normal(asr::GVector3(0.0f, 1.0f, 0.0f));
-    }
+    else object->push_vertex_normal(asr::GVector3(0.0f, 1.0f, 0.0f));
+
     object->push_tex_coords(asr::GVector2(0.0, 0.0));
     object->push_tex_coords(asr::GVector2(1.0, 0.0));
     object->push_tex_coords(asr::GVector2(1.0, 1.0));
@@ -719,11 +711,8 @@ void AppleseedRenderer::createMesh(boost::shared_ptr<MayaObject> obj)
     // Create a new mesh object.
     asf::auto_release_ptr<asr::MeshObject> mesh = asr::MeshObjectFactory::create(meshFullName.asChar(), asr::ParamArray());
 
-    Logging::debug(MString("//object ") + meshFn.name());
     for (uint vtxId = 0; vtxId < points.length(); vtxId++)
-    {
         mesh->push_vertex(MPointToAppleseed(points[vtxId]));
-    }
 
     for (uint nId = 0; nId < normals.length(); nId++)
     {
@@ -736,9 +725,7 @@ void AppleseedRenderer::createMesh(boost::shared_ptr<MayaObject> obj)
     }
 
     for (uint tId = 0; tId < uArray.length(); tId++)
-    {
         mesh->push_tex_coords(asr::GVector2((float)uArray[tId], (float)vArray[tId]));
-    }
 
     mesh->reserve_material_slots(obj->shadingGroups.length());
     for (uint sgId = 0; sgId < obj->shadingGroups.length(); sgId++)
@@ -802,12 +789,12 @@ void AppleseedRenderer::createMesh(boost::shared_ptr<MayaObject> obj)
     }
     ass->object_instances().insert(
         asr::ObjectInstanceFactory::create(
-        objectInstanceName.asChar(),
-        objInstanceParamArray,
-        meshPtr->get_name(),
-        asf::Transformd::from_local_to_parent(appleMatrix),
-        asf::StringDictionary()
-        .insert("slot0", "default")));
+            objectInstanceName.asChar(),
+            objInstanceParamArray,
+            meshPtr->get_name(),
+            asf::Transformd::from_local_to_parent(appleMatrix),
+            asf::StringDictionary()
+                .insert("slot0", "default")));
 }
 
 void AppleseedRenderer::updateGeometry(boost::shared_ptr<MayaObject> mobj)

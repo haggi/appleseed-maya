@@ -134,12 +134,6 @@ class AppleseedRenderer
 
     void abortRendering();
 
-    // This method can be called after a rendering is finished and
-    // the user wants to modify the color mapping of the final rendering.
-    // All interactive callbacks should be pushed into the worker queue with INTERACTIVEFBCALLBACK so that we don't get
-    // any race conditions if the callback takes longer than the next call.
-    void interactiveFbCallback() {}
-
     // Make an interactive update of the scene. Before this call the interactiveUpdateList should be filled appropriately.
     void doInteractiveUpdate();
 
