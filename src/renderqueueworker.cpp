@@ -29,7 +29,16 @@
 // Interface header.
 #include "renderqueueworker.h"
 
+// appleseed-maya headers.
+#include "utilities/logging.h"
+#include "utilities/tools.h"
+#include "mayascene.h"
+#include "world.h"
 
+// appleseed.foundation headers.
+#include "foundation/platform/thread.h"
+
+// Maya headers.
 #include <maya/MGlobal.h>
 #include <maya/MSceneMessage.h>
 #include <maya/MTimerMessage.h>
@@ -41,13 +50,7 @@
 #include <maya/MFnDagNode.h>
 #include <maya/MFnMesh.h>
 
-#include "utilities/logging.h"
-#include "utilities/tools.h"
-#include "mayascene.h"
-#include "world.h"
-
-#include "foundation/platform/thread.h"
-
+// Standard headers.
 #include <ctime>
 #include <map>
 
@@ -108,7 +111,7 @@ namespace
     }
 }
 
-concurrent_queue<Event>* theRenderEventQueue()
+concurrent_queue<Event>* gEventQueue()
 {
     return &RenderEventQueue;
 }
@@ -474,7 +477,7 @@ namespace
             {
                 Event e;
                 e.type = Event::INTERRUPT;
-                theRenderEventQueue()->push(e);
+                gEventQueue()->push(e);
                 break;
             }
 
@@ -509,7 +512,7 @@ namespace
 
         Event event;
         event.type = Event::FRAMEDONE;
-        theRenderEventQueue()->push(event);
+        gEventQueue()->push(event);
     }
 
     void updateRenderView(Event& e)
@@ -547,7 +550,7 @@ namespace
         while (getWorldPtr()->getRenderState() != World::RSTATENONE)
             asf::sleep(100);
         Logging::debug("iprWaitForFinish - Renderstate is RSTATENONE, sending event.");
-        theRenderEventQueue()->push(e);
+        gEventQueue()->push(e);
     }
 
     void doPreFrameJobs()
@@ -638,10 +641,10 @@ void RenderQueueWorker::startRenderQueueWorker()
     {
         Event e;
         if (MGlobal::mayaState() == MGlobal::kBatch)
-            theRenderEventQueue()->wait_and_pop(e);
+            gEventQueue()->wait_and_pop(e);
         else
         {
-            if (!theRenderEventQueue()->try_pop(e))
+            if (!gEventQueue()->try_pop(e))
                 break;
         }
 
@@ -690,7 +693,7 @@ void RenderQueueWorker::startRenderQueueWorker()
                 }
 
                 e.type = Event::FRAMERENDER;
-                theRenderEventQueue()->push(e);
+                gEventQueue()->push(e);
 
                 if (MGlobal::mayaState() != MGlobal::kBatch)
                 {
@@ -716,7 +719,7 @@ void RenderQueueWorker::startRenderQueueWorker()
                 else
                 {
                     e.type = Event::RENDERDONE;
-                    theRenderEventQueue()->push(e);
+                    gEventQueue()->push(e);
                 }
             }
             break;
@@ -727,7 +730,7 @@ void RenderQueueWorker::startRenderQueueWorker()
                 updateRenderView(e);
 
                 e.type = Event::FRAMERENDER;
-                theRenderEventQueue()->push(e);
+                gEventQueue()->push(e);
             }
             break;
 

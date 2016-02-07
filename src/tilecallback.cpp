@@ -30,7 +30,7 @@
 #include "tilecallback.h"
 
 // appleseed-maya headers.
-#include "threads/renderqueueworker.h"
+#include "renderqueueworker.h"
 
 // appleseed.renderer headers.
 #include "renderer/api/frame.h"
@@ -124,7 +124,7 @@ void TileCallback::post_render(const renderer::Frame* frame)
     e.tile_ymin = 0;
     e.tile_xmax = frameProps.m_canvas_width - 1;
     e.tile_ymax = frameProps.m_canvas_height - 1;
-    theRenderEventQueue()->push(e);
+    gEventQueue()->push(e);
 }
 
 void TileCallback::post_render_tile(
@@ -168,7 +168,7 @@ void TileCallback::post_render_tile(
     e.tile_xmax = x + tileWidth - 1;
     e.tile_ymin = frameProps.m_canvas_height - y - tileHeight;
     e.tile_ymax = frameProps.m_canvas_height - y - 1;
-    theRenderEventQueue()->push(e);
+    gEventQueue()->push(e);
 }
 
 void TileCallbackFactory::release()

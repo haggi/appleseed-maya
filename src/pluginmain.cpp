@@ -30,7 +30,6 @@
 #include "shaders/asdisneymaterial.h"
 #include "shaders/asdisneymaterialoverride.h"
 #include "shaders/aslayeredshader.h"
-#include "threads/renderqueueworker.h"
 #include "utilities/tools.h"
 #include "appleseedmaya.h"
 #include "binmeshreadercmd.h"
@@ -41,6 +40,7 @@
 #include "hypershaderenderer.h"
 #endif
 #include "newswatchrenderer.h"
+#include "renderqueueworker.h"
 #include "version.h"
 #include "world.h"
 

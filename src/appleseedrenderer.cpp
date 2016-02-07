@@ -34,7 +34,6 @@
 #include "shadingtools/material.h"
 #include "shadingtools/shaderdefinitions.h"
 #include "shadingtools/shadingutils.h"
-#include "threads/renderqueueworker.h"
 #include "utilities/attrtools.h"
 #include "utilities/logging.h"
 #include "utilities/pystring.h"
@@ -42,6 +41,7 @@
 #include "appleseedutils.h"
 #include "mayascene.h"
 #include "renderglobals.h"
+#include "renderqueueworker.h"
 #include "tilecallback.h"
 #include "world.h"
 
@@ -180,7 +180,7 @@ void AppleseedRenderer::render()
         {
             Event e;
             e.type = Event::ADDIPRCALLBACKS;
-            theRenderEventQueue()->push(e);
+            gEventQueue()->push(e);
 
             while (!RenderQueueWorker::iprCallbacksDone())
                 asf::sleep(10);

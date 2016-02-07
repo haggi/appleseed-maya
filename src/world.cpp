@@ -30,11 +30,11 @@
 #include "world.h"
 
 // appleseed-maya headers.
-#include "threads/renderqueueworker.h"
 #include "utilities/logging.h"
 #include "appleseedrenderer.h"
 #include "appleseedswatchrenderer.h"
 #include "mayascene.h"
+#include "renderqueueworker.h"
 
 // Maya headers.
 #include <maya/MGlobal.h>

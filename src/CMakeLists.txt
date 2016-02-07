@@ -73,18 +73,6 @@ source_group ("shadingtools" FILES
     ${shadingtools_sources}
 )
 
-set (threads_sources
-    threads/event.h
-    threads/renderqueueworker.cpp
-    threads/renderqueueworker.h
-)
-list (APPEND appleseedmaya_sources
-    ${threads_sources}
-)
-source_group ("threads" FILES
-    ${threads_sources}
-)
-
 set (utilities_sources
     utilities/attrtools.cpp
     utilities/attrtools.h
@@ -118,6 +106,7 @@ set (sources
     binmeshtranslator.h
     binmeshwritercmd.cpp
     binmeshwritercmd.h
+    event.h
     globalsnode.cpp
     globalsnode.h
     hypershaderenderer.cpp
@@ -137,6 +126,8 @@ set (sources
     renderercontroller.h
     renderglobals.cpp
     renderglobals.h
+    renderqueueworker.cpp
+    renderqueueworker.h
     tilecallback.cpp
     tilecallback.h
     version.cpp

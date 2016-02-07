@@ -26,57 +26,23 @@
 // THE SOFTWARE.
 //
 
-#ifndef THREADS_EVENT_H
-#define THREADS_EVENT_H
+#ifndef RENDERQUEUEWORKER_H
+#define RENDERQUEUEWORKER_H
 
-// appleseed-maya headers.
-#include "world.h"
+#include "utilities/concurrentqueue.h"
+#include "event.h"
 
-// Maya headers.
-#include <maya/MDagPath.h>
-#include <maya/MRenderView.h>
+concurrent_queue<Event>* gEventQueue();
 
-// Boost headers.
-#include "boost/shared_ptr.hpp"
-
-// Standard headers.
-#include <cstddef>
-
-class Event
+class RenderQueueWorker
 {
   public:
-    enum Type
-    {
-        INTERRUPT = 0,
-        TILEDONE = 1,
-        FRAMEDONE = 2,
-        RENDERDONE = 3,
-        IPRSTART = 6,
-        IPRSTOP = 7,
-        IPRPAUSE = 8,
-        IPRREMOVE = 9,
-        IPRFRAMEDONE = 11,
-        UPDATEUI = 17,
-        INITRENDER = 19,
-        ADDIPRCALLBACKS = 21,
-        FRAMERENDER = 22
-    };
+    ~RenderQueueWorker();
 
-    Type type;
-
-    int width;
-    int height;
-    bool useRenderRegion;
-    MDagPath cameraDagPath;
-    World::RenderType renderType;
-    size_t tile_xmin, tile_xmax, tile_ymin, tile_ymax;
-
-    boost::shared_ptr<RV_PIXEL> pixelData;
-
-    Event()
-    {
-        type = INTERRUPT;
-    }
+    static void startRenderQueueWorker();
+    static void renderQueueWorkerTimerCallback(float time, float lastTime, void *userPtr);
+    static void IPRUpdateCallbacks();
+    static bool iprCallbacksDone();
 };
 
-#endif  // !THREADS_EVENT_H
+#endif  // !RENDERQUEUEWORKER_H

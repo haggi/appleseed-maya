@@ -26,6 +26,15 @@
 // THE SOFTWARE.
 //
 
+#include "shadingtools/shadingutils.h"
+#include "utilities/logging.h"
+#include "utilities/tools.h"
+#include "utilities/attrtools.h"
+#include "utilities/pystring.h"
+#include "mayascene.h"
+#include "renderqueueworker.h"
+#include "world.h"
+
 #include <maya/MDagPath.h>
 #include <maya/MItDag.h>
 #include <maya/MFnDagNode.h>
@@ -45,15 +54,6 @@
 #include <maya/MFileIO.h>
 #include <maya/MFnSingleIndexedComponent.h>
 #include <maya/MFnComponent.h>
-
-#include "mayascene.h"
-#include "utilities/logging.h"
-#include "utilities/tools.h"
-#include "utilities/attrtools.h"
-#include "utilities/pystring.h"
-#include "shadingtools/shadingutils.h"
-#include "threads/renderqueueworker.h"
-#include "world.h"
 
 MayaScene::MayaScene()
   : renderType(NORMAL)
