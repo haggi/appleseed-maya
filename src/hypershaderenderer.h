@@ -89,9 +89,6 @@ class HypershadeRenderer
 {
   public:
     RefreshParams refreshParams;
-    float* rb;
-    int tileSize;
-    int initialSize;
     HypershadeRenderer();
     virtual ~HypershadeRenderer();
     static void* creator();
@@ -129,6 +126,9 @@ class HypershadeRenderer
     void updateMaterial(const MObject materialNode, const asr::Assembly *assembly);
 
   private:
+    float* rb;
+    int tileSize;
+    int initialSize;
     int width, height;
     boost::thread renderThread;
     asf::auto_release_ptr<asr::Project> project;

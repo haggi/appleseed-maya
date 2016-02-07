@@ -278,7 +278,7 @@ MStatus HypershadeRenderer::startAsync(const JobParams& params)
 
 MStatus HypershadeRenderer::stopAsync()
 {
-    controller.status = asr::IRendererController::AbortRendering;
+    controller.set_status(asr::IRendererController::AbortRendering);
     if (renderThread.joinable())
         renderThread.join();
     asyncStarted = false;
@@ -287,7 +287,7 @@ MStatus HypershadeRenderer::stopAsync()
 
 MStatus HypershadeRenderer::beginSceneUpdate()
 {
-    controller.status = asr::IRendererController::AbortRendering;
+    controller.set_status(asr::IRendererController::AbortRendering);
     if (renderThread.joinable())
         renderThread.join();
     if (project.get() == 0)
@@ -803,7 +803,7 @@ MStatus HypershadeRenderer::setResolution(unsigned int w, unsigned int h)
 
 MStatus HypershadeRenderer::endSceneUpdate()
 {
-    controller.status = asr::IRendererController::ContinueRendering;
+    controller.set_status(asr::IRendererController::ContinueRendering);
     ProgressParams progressParams;
     progressParams.progress = 0.0;
     progress(progressParams);
@@ -823,7 +823,7 @@ MStatus HypershadeRenderer::endSceneUpdate()
 
 MStatus HypershadeRenderer::destroyScene()
 {
-    controller.status = asr::IRendererController::AbortRendering;
+    controller.set_status(asr::IRendererController::AbortRendering);
     if (renderThread.joinable())
         renderThread.join();
 
@@ -948,46 +948,6 @@ void HypershadeTileCallback::release()
 void HypershadeTileCallback::pre_render(const size_t x, const size_t y, const size_t width, const size_t height)
 {
 }
-
-HypershadeRenderController::HypershadeRenderController() 
-  :status(asr::IRendererController::ContinueRendering)
-{
-}
-
-void HypershadeRenderController::on_rendering_begin()
-{
-}
-
-void HypershadeRenderController::on_rendering_success()
-{
-}
-
-void HypershadeRenderController::on_rendering_abort()
-{
-}
-
-void HypershadeRenderController::on_frame_begin()
-{
-}
-
-void HypershadeRenderController::on_frame_end()
-{
-}
-
-void HypershadeRenderController::on_progress()
-{
-}
-
-void HypershadeRenderController::release()
-{
-    delete this;
-}
-
-asr::IRendererController::Status HypershadeRenderController::get_status() const
-{
-    return status;
-}
-
 
 HypershadeTileCallbackFactory::HypershadeTileCallbackFactory(HypershadeRenderer* renderer)
 {
