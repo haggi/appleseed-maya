@@ -37,6 +37,7 @@
 #include "threads/renderqueueworker.h"
 #include "utilities/attrtools.h"
 #include "utilities/logging.h"
+#include "utilities/meshtools.h"
 #include "utilities/pystring.h"
 #include "utilities/tools.h"
 #include "appleseedutils.h"
@@ -654,47 +655,6 @@ namespace
     }
 }
 
-asf::auto_release_ptr<asr::MeshObject> AppleseedRenderer::defineStandardPlane(bool area)
-{
-    asf::auto_release_ptr<asr::MeshObject> object(asr::MeshObjectFactory::create("stdPlane", asr::ParamArray()));
-
-    if (area)
-    {
-        // Vertices.
-        object->push_vertex(asr::GVector3(-1.0f, -1.0f, 0.0f));
-        object->push_vertex(asr::GVector3(-1.0f, 1.0f, 0.0f));
-        object->push_vertex(asr::GVector3(1.0f, 1.0f, 0.0f));
-        object->push_vertex(asr::GVector3(1.0f, -1.0f, 0.0f));
-    }
-    else
-    {
-        // Vertices.
-        object->push_vertex(asr::GVector3(-1.0f, 0.0f, -1.0f));
-        object->push_vertex(asr::GVector3(-1.0f, 0.0f, 1.0f));
-        object->push_vertex(asr::GVector3(1.0f, 0.0f, 1.0f));
-        object->push_vertex(asr::GVector3(1.0f, 0.0f, -1.0f));
-    }
-    // Vertex normals.
-    if (area)
-    {
-        object->push_vertex_normal(asr::GVector3(0.0f, 0.0f, -1.0f));
-    }
-    else
-    {
-        object->push_vertex_normal(asr::GVector3(0.0f, 1.0f, 0.0f));
-    }
-    object->push_tex_coords(asr::GVector2(0.0, 0.0));
-    object->push_tex_coords(asr::GVector2(1.0, 0.0));
-    object->push_tex_coords(asr::GVector2(1.0, 1.0));
-    object->push_tex_coords(asr::GVector2(0.0, 1.0));
-
-    // Triangles.
-    object->push_triangle(asr::Triangle(0, 1, 2, 0, 0, 0, 0, 1, 2, 0));
-    object->push_triangle(asr::Triangle(0, 2, 3, 0, 0, 0, 0, 2, 3, 0));
-
-    return object;
-}
-
 void AppleseedRenderer::createMesh(boost::shared_ptr<MayaObject> obj)
 {
     // If the mesh has an attribute called "mtap_standin_path" and it contains a valid entry, then try to read the
@@ -1090,7 +1050,7 @@ void AppleseedRenderer::defineLight(boost::shared_ptr<MayaObject> obj)
     if (obj->mobject.hasFn(MFn::kAreaLight))
     {
         MString areaLightName = obj->fullNiceName;
-        asf::auto_release_ptr<asr::MeshObject> plane = defineStandardPlane(true);
+        asf::auto_release_ptr<asr::MeshObject> plane = defineStandardPlane();
         plane->set_name(areaLightName.asChar());
         MayaObject *assemblyObject = getAssemblyMayaObject(obj.get());
         asr::Assembly *ass = getCreateObjectAssembly(obj);

@@ -142,8 +142,6 @@ class AppleseedRenderer
 
     // Make an interactive update of the scene. Before this call the interactiveUpdateList should be filled appropriately.
     void doInteractiveUpdate();
-
-    asf::auto_release_ptr<asr::MeshObject> defineStandardPlane(bool area = false);
     void defineProject();
     void addRenderParams(asr::ParamArray& paramArray);//add current render settings to all render configurations
     void defineConfig();
