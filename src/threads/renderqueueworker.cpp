@@ -53,8 +53,6 @@
 
 namespace
 {
-    int numTiles = 0;
-    int tilesDone = 0;
     MCallbackId idleCallbackId = 0;
     MCallbackId nodeAddedCallbackId = 0;
     MCallbackId nodeRemovedCallbackId = 0;
@@ -461,26 +459,25 @@ namespace
 
     void computationEventThread()
     {
-        bool done = false;
         bool renderingStarted = false;
-        while (!done)
+
+        while (true)
         {
             if (getWorldPtr()->getRenderState() == World::RSTATERENDERING)
                 renderingStarted = true;
-            if (renderingStarted && (getWorldPtr()->getRenderState() != World::RSTATERENDERING))
-                done = true;
+
+            if (renderingStarted && getWorldPtr()->getRenderState() != World::RSTATERENDERING)
+                break;
+
             if (escPressed && (getWorldPtr()->getRenderState() == World::RSTATERENDERING))
             {
-                Logging::debug("computationEventThread::InterruptRequested.");
-                done = true;
                 Event e;
                 e.type = Event::INTERRUPT;
                 theRenderEventQueue()->push(e);
+                break;
             }
-            if (!done)
-                asf::sleep(100);
-            else
-                Logging::debug("computationEventThread done");
+
+            asf::sleep(100);
         }
     }
 
@@ -651,7 +648,6 @@ void RenderQueueWorker::startRenderQueueWorker()
         {
           case Event::INITRENDER:
             {
-                Logging::debug("Event::InitRendering");
                 renderStartTime = clock();
                 getWorldPtr()->setRenderType(e.renderType);
 
@@ -691,6 +687,7 @@ void RenderQueueWorker::startRenderQueueWorker()
                     if (getWorldPtr()->getRenderType() == World::UIRENDER)
                         beginComputation();
                 }
+
                 e.type = Event::FRAMERENDER;
                 theRenderEventQueue()->push(e);
 
@@ -699,20 +696,11 @@ void RenderQueueWorker::startRenderQueueWorker()
                     boost::thread cet = boost::thread(computationEventThread);
                     cet.detach();
                 }
-
-                // calculate numtiles
-                int numTX = (int)ceil((float)width/(float)getWorldPtr()->mRenderGlobals->tilesize);
-                int numTY = (int)ceil((float)height/(float)getWorldPtr()->mRenderGlobals->tilesize);
-                numTiles = numTX * numTY;
-                tilesDone = 0;
-
-                break;
             }
+            break;
 
           case Event::FRAMERENDER:
             {
-                Logging::debug("Event::Framerender");
-
                 if (sceneThread.joinable())
                     sceneThread.join();
 
@@ -733,24 +721,23 @@ void RenderQueueWorker::startRenderQueueWorker()
             break;
 
           case Event::FRAMEDONE:
-            Logging::debug("Event::FRAMEDONE");
-            doPostFrameJobs();
-            updateRenderView(e);
-            e.type = Event::FRAMERENDER;
-            theRenderEventQueue()->push(e);
+            {
+                doPostFrameJobs();
+                updateRenderView(e);
+
+                e.type = Event::FRAMERENDER;
+                theRenderEventQueue()->push(e);
+            }
             break;
 
           case Event::RENDERDONE:
             {
-                Logging::debug("Event::RENDERDONE");
-
                 if (MGlobal::mayaState() != MGlobal::kBatch)
                     endComputation();
 
                 if (getWorldPtr()->getRenderType() == World::IPRRENDER)
-                {
                     removeCallbacks();
-                }
+
                 getWorldPtr()->setRenderState(World::RSTATEDONE);
                 renderEndTime = clock();
 
@@ -770,30 +757,19 @@ void RenderQueueWorker::startRenderQueueWorker()
             return;     // note: terminate the loop
 
           case Event::INTERRUPT:
-            Logging::debug("Event::INTERRUPT");
             getWorldPtr()->mRenderer->abortRendering();
             break;
 
           case Event::IPRSTOP:
-            Logging::debug("Event::IPRSTOP");
             getWorldPtr()->setRenderState(World::RSTATESTOPPED);
             getWorldPtr()->mRenderer->abortRendering();
             break;
 
           case Event::TILEDONE:
-            {
-                updateRenderView(e);
-                if (getWorldPtr()->getRenderType() != World::IPRRENDER)
-                {
-                    tilesDone++;
-                    const int percentDone = (100 * tilesDone) / numTiles;
-                    Logging::progress(MString() + percentDone + "% done");
-                }
-            }
+            updateRenderView(e);
             break;
 
           case Event::ADDIPRCALLBACKS:
-            Logging::debug("Event::ADDIPRCALLBACKS");
             addIPRCallbacks();
             break;
         }
