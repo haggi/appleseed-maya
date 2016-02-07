@@ -35,6 +35,7 @@
 #include "shadingtools/shadingutils.h"
 #include "utilities/attrtools.h"
 #include "utilities/logging.h"
+#include "utilities/meshtools.h"
 #include "utilities/oslutils.h"
 #include "utilities/pystring.h"
 #include "utilities/tools.h"
@@ -650,44 +651,6 @@ namespace
     }
 }
 
-foundation::auto_release_ptr<renderer::MeshObject> AppleseedRenderer::defineStandardPlane(bool area)
-{
-    foundation::auto_release_ptr<renderer::MeshObject> object(renderer::MeshObjectFactory::create("stdPlane", renderer::ParamArray()));
-
-    if (area)
-    {
-        // Vertices.
-        object->push_vertex(renderer::GVector3(-1.0f, -1.0f, 0.0f));
-        object->push_vertex(renderer::GVector3(-1.0f, 1.0f, 0.0f));
-        object->push_vertex(renderer::GVector3(1.0f, 1.0f, 0.0f));
-        object->push_vertex(renderer::GVector3(1.0f, -1.0f, 0.0f));
-    }
-    else
-    {
-        // Vertices.
-        object->push_vertex(renderer::GVector3(-1.0f, 0.0f, -1.0f));
-        object->push_vertex(renderer::GVector3(-1.0f, 0.0f, 1.0f));
-        object->push_vertex(renderer::GVector3(1.0f, 0.0f, 1.0f));
-        object->push_vertex(renderer::GVector3(1.0f, 0.0f, -1.0f));
-    }
-
-    // Vertex normals.
-    if (area)
-        object->push_vertex_normal(renderer::GVector3(0.0f, 0.0f, -1.0f));
-    else object->push_vertex_normal(renderer::GVector3(0.0f, 1.0f, 0.0f));
-
-    object->push_tex_coords(renderer::GVector2(0.0, 0.0));
-    object->push_tex_coords(renderer::GVector2(1.0, 0.0));
-    object->push_tex_coords(renderer::GVector2(1.0, 1.0));
-    object->push_tex_coords(renderer::GVector2(0.0, 1.0));
-
-    // Triangles.
-    object->push_triangle(renderer::Triangle(0, 1, 2, 0, 0, 0, 0, 1, 2, 0));
-    object->push_triangle(renderer::Triangle(0, 2, 3, 0, 0, 0, 0, 2, 3, 0));
-
-    return object;
-}
-
 void AppleseedRenderer::createMesh(boost::shared_ptr<MayaObject> obj)
 {
     // If the mesh has an attribute called "mtap_standin_path" and it contains a valid entry, then try to read the
@@ -1076,7 +1039,7 @@ void AppleseedRenderer::defineLight(boost::shared_ptr<MayaObject> obj)
     if (obj->mobject.hasFn(MFn::kAreaLight))
     {
         MString areaLightName = obj->fullNiceName;
-        foundation::auto_release_ptr<renderer::MeshObject> plane = defineStandardPlane(true);
+        foundation::auto_release_ptr<renderer::MeshObject> plane = defineStandardPlane();
         plane->set_name(areaLightName.asChar());
         MayaObject *assemblyObject = getAssemblyMayaObject(obj.get());
         renderer::Assembly *ass = getCreateObjectAssembly(obj);

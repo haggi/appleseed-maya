@@ -133,8 +133,7 @@ class AppleseedRenderer
 
     // Make an interactive update of the scene. Before this call the interactiveUpdateList should be filled appropriately.
     void doInteractiveUpdate();
-
-    foundation::auto_release_ptr<renderer::MeshObject> defineStandardPlane(bool area = false);
+	
     void defineProject();
     void addRenderParams(renderer::ParamArray& paramArray);//add current render settings to all render configurations
     void defineConfig();

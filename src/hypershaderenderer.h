@@ -26,59 +26,66 @@
 // THE SOFTWARE.
 //
 
-#ifndef MAYA_RENDERER_H
-#define MAYA_RENDERER_H
+#ifndef HYPERSHADERENDERER_H
+#define HYPERSHADERENDERER_H
+
+// Include first as this defines MAYA_API_VERSION.
+#include <maya/MTypes.h>
 
 #if MAYA_API_VERSION >= 201600
 
-#include "renderer/api/scene.h"
-#include "renderer/api/project.h"
-#include "renderer/global/globallogger.h"
-#include "renderer/api/rendering.h"
-#include "foundation/image/tile.h"
+// appleseed-maya headers.
+#include "renderercontroller.h"
 
-#include <maya/MTypes.h>
+// appleseed.renderer headers.
+#include "renderer/api/object.h"
+#include "renderer/api/project.h"
+#include "renderer/api/rendering.h"
+
+// appleseed.foundation headers.
+#include "foundation/platform/compiler.h"
+#include "foundation/utility/autoreleaseptr.h"
+
+// Maya headers.
 #include <maya/MPxRenderer.h>
+#include <maya/MObject.h>
+#include <maya/MString.h>
 
 // Standard headers.
-#include <map>
 #include <memory>
+#include <vector>
 
+// Forward declarations.
+namespace foundation    { class Tile; }
+namespace renderer      { class Frame; }
 class HypershadeRenderer;
 
 class HypershadeTileCallback
   : public renderer::TileCallbackBase
 {
   public:
-    HypershadeRenderer *renderer;
-    explicit HypershadeTileCallback(HypershadeRenderer *mrenderer) : renderer(mrenderer)
-    {}
-    virtual ~HypershadeTileCallback()
-    {}
-    virtual void release(){}
-    void pre_render(const size_t x, const size_t y, const size_t width, const size_t height){}
-    void post_render(const renderer::Frame* frame);
-    virtual void post_render_tile(const renderer::Frame* frame, const size_t tile_x, const size_t tile_y);
+    explicit HypershadeTileCallback(HypershadeRenderer* renderer);
+    virtual void release() APPLESEED_OVERRIDE;
+
+    virtual void pre_render(const size_t x, const size_t y, const size_t width, const size_t height) APPLESEED_OVERRIDE;
+    virtual void post_render_tile(const renderer::Frame* frame, const size_t tile_x, const size_t tile_y) APPLESEED_OVERRIDE;
+    virtual void post_render(const renderer::Frame* frame) APPLESEED_OVERRIDE;
+
+  private:
+    std::auto_ptr<HypershadeRenderer> mRenderer;
 };
 
 class HypershadeTileCallbackFactory
   : public renderer::ITileCallbackFactory
 {
   public:
-    HypershadeTileCallback *tileCallback;
-    explicit HypershadeTileCallbackFactory(HypershadeRenderer *renderer)
-    {
-        tileCallback = new HypershadeTileCallback(renderer);
-    }
-    virtual ~HypershadeTileCallbackFactory()
-    {
-        delete tileCallback;
-    }
-    virtual renderer::ITileCallback* create()
-    {
-        return tileCallback;
-    };
-    virtual void release(){ delete this; };
+    explicit HypershadeTileCallbackFactory(HypershadeRenderer* renderer);
+    virtual void release() APPLESEED_OVERRIDE;
+
+    virtual renderer::ITileCallback* create() APPLESEED_OVERRIDE;
+
+  private:
+    std::auto_ptr<HypershadeTileCallback> mTileCallback;
 };
 
 struct IdNameStruct
@@ -88,13 +95,10 @@ struct IdNameStruct
     MObject mobject; // I need to know if I have a light or a mesh or a camera
 };
 
-class HypershadeRenderer : public MPxRenderer
+class HypershadeRenderer 
+  : public MPxRenderer
 {
   public:
-    RefreshParams refreshParams;
-    float* rb = 0;
-    int tileSize = 32;
-    int initialSize = 256;
     HypershadeRenderer();
     virtual ~HypershadeRenderer();
     static void* creator();
@@ -129,21 +133,25 @@ class HypershadeRenderer : public MPxRenderer
     void copyTileToBuffer(foundation::Tile& tile, int tile_x, int tile_y);
     void copyFrameToBuffer(float *frame, int w, int h);
     void render();
+    void updateMaterial(const MObject materialNode, const renderer::Assembly* assembly);
 
   private:
+    float* rb;
+    int tileSize;
+    int initialSize;
     int width, height;
-    //Render output buffer, it is R32G32B32A32_FLOAT format.
+    RefreshParams refreshParams;
     boost::thread renderThread;
     foundation::auto_release_ptr<renderer::Project> project;
     std::auto_ptr<renderer::MasterRenderer> mrenderer;
     foundation::auto_release_ptr<HypershadeTileCallbackFactory> tileCallbackFac;
-    RenderController controller;
+    RendererController controller;
     MUuid lastShapeId; // save the last shape id, needed by translateTransform
-    MString lastMaterialName = "default";
+    MString lastMaterialName;
     std::vector<IdNameStruct> objectArray;
-    bool asyncStarted = false;
+    bool asyncStarted;
 };
 
 #endif
 
-#endif
+#endif  // !HYPERSHADERENDERER_H

@@ -68,6 +68,8 @@ set (utilities_sources
     utilities/concurrentqueue.h
     utilities/logging.cpp
     utilities/logging.h
+    utilities/meshtools.cpp
+    utilities/meshtools.h
     utilities/oslutils.cpp
     utilities/oslutils.h
     utilities/pystring.cpp

@@ -26,22 +26,19 @@
 // THE SOFTWARE.
 //
 
+// Interface header.
+#include "hypershaderenderer.h"
+
 #if MAYA_API_VERSION >= 201600
 
 // appleseed-maya headers.
-#include "mtap_mayarenderer.h"
-#include "utilities/logging.h"
-#include "utilities/attrtools.h"
-#include "utilities/oslutils.h"
 #include "shadingtools/material.h"
 #include "shadingtools/shadingutils.h"
-#include "renderer/global/globallogger.h"
-#include "renderer/api/environment.h"
-#include "renderer/api/environmentedf.h"
-#include "renderer/api/texture.h"
-#include "renderer/api/environmentshader.h"
-#include "renderer/api/edf.h"
-#include "renderer/modeling/shadergroup/shadergroup.h"
+#include "utilities/attrtools.h"
+#include "utilities/logging.h"
+#include "utilities/meshtools.h"
+#include "utilities/oslutils.h"
+#include "utilities/tools.h"
 #include "appleseedutils.h"
 #include "world.h"
 
@@ -49,7 +46,10 @@
 #include "renderer/api/bsdf.h"
 #include "renderer/api/camera.h"
 #include "renderer/api/color.h"
+#include "renderer/api/edf.h"
 #include "renderer/api/environment.h"
+#include "renderer/api/environmentedf.h"
+#include "renderer/api/environmentshader.h"
 #include "renderer/api/frame.h"
 #include "renderer/api/light.h"
 #include "renderer/api/log.h"
@@ -58,7 +58,9 @@
 #include "renderer/api/project.h"
 #include "renderer/api/rendering.h"
 #include "renderer/api/scene.h"
+#include "renderer/api/shadergroup.h"
 #include "renderer/api/surfaceshader.h"
+#include "renderer/api/texture.h"
 #include "renderer/api/utility.h"
 
 // appleseed.foundation headers.
@@ -74,26 +76,33 @@
 #include "foundation/utility/searchpaths.h"
 
 // Maya headers.
-#include <maya/MPlugArray.h>
-#include <maya/MPlug.h>
-#include <maya/MGlobal.h>
-#include <maya/MStringArray.h>
+#include <maya/MFloatArray.h>
+#include <maya/MFloatPointArray.h>
+#include <maya/MFloatVectorArray.h>
 #include <maya/MFnDependencyNode.h>
-#include <boost/thread/locks.hpp>
-#include <boost/thread/mutex.hpp>
+#include <maya/MFnMesh.h>
+#include <maya/MGlobal.h>
+#include <maya/MItMeshPolygon.h>
+#include <maya/MPlug.h>
+#include <maya/MPlugArray.h>
+#include <maya/MPointArray.h>
+#include <maya/MStringArray.h>
 
 // Standard headers.
 #include <vector>
 
 #define kNumChannels 4
-
 #define GETASM() project->get_scene()->assemblies().get_by_name("world")
 
 HypershadeRenderer::HypershadeRenderer()
 {
     initProject();
+    tileSize = 32;
+    initialSize = 256;
     width = height = initialSize;
+    lastMaterialName = "default";
     this->rb = (float*)malloc(width*height*kNumChannels*sizeof(float));
+    asyncStarted = false;
 }
 
 HypershadeRenderer::~HypershadeRenderer()
@@ -221,14 +230,12 @@ void HypershadeRenderer::initProject()
 
     for (uint i = 0; i < getWorldPtr()->shaderSearchPath.length(); i++)
     {
-        Logging::debug(MString("Search path: ") + getWorldPtr()->shaderSearchPath[i]);
         project->search_paths().push_back(getWorldPtr()->shaderSearchPath[i].asChar());
     }
 }
 
 bool HypershadeRenderer::isRunningAsync()
 {
-    Logging::debug("isRunningAsync");
     return true;
 }
 
@@ -248,8 +255,6 @@ void HypershadeRenderer::render()
     else
         return;
 
-    Logging::debug("renderthread done.");
-
     pp.progress = 2.0;
     progress(pp);
 }
@@ -261,17 +266,13 @@ static void startRenderThread(HypershadeRenderer* renderPtr)
 
 MStatus HypershadeRenderer::startAsync(const JobParams& params)
 {
-    Logging::debug("startAsync:");
-    Logging::debug(MString("\tJobDescr: ") + params.description + " max threads: " + params.maxThreads);
-    Logging::debug(MString("started async"));
     asyncStarted = true;
     return MStatus::kSuccess;
 }
 
 MStatus HypershadeRenderer::stopAsync()
 {
-    Logging::debug("stopAsync");
-    controller.status = renderer::IRendererController::AbortRendering;
+    controller.set_status(renderer::IRendererController::AbortRendering);
     if (renderThread.joinable())
         renderThread.join();
     asyncStarted = false;
@@ -280,14 +281,12 @@ MStatus HypershadeRenderer::stopAsync()
 
 MStatus HypershadeRenderer::beginSceneUpdate()
 {
-    Logging::debug("beginSceneUpdate");
-    controller.status = renderer::IRendererController::AbortRendering;
+    controller.set_status(renderer::IRendererController::AbortRendering);
     if (renderThread.joinable())
         renderThread.join();
     if (project.get() == 0)
         initProject();
     project->get_frame()->clear_main_image();
-
     return MStatus::kSuccess;
 }
 
@@ -298,15 +297,14 @@ MStatus HypershadeRenderer::translateMesh(const MUuid& id, const MObject& node)
     MString meshName = depFn.name();
     MString meshIdName = meshName;
     MString meshInstName = meshIdName + "_instance";
-    Logging::debug(MString("translateMesh ") + meshIdName);
 
     renderer::Object *obj = GETASM()->objects().get_by_name(meshIdName.asChar());
     if (obj != 0)
     {
-        Logging::debug(MString("Mesh object ") + meshName + " is already defined, removing...");
         GETASM()->objects().remove(obj);
         GETASM()->bump_version_id();
     }
+
     foundation::auto_release_ptr<renderer::MeshObject> mesh = createMesh(mobject);
     mesh->set_name(meshIdName.asChar());
     GETASM()->objects().insert(foundation::auto_release_ptr<renderer::Object>(mesh));
@@ -327,7 +325,6 @@ MStatus HypershadeRenderer::translateLightSource(const MUuid& id, const MObject&
     MString lightInstName = lightName + "_instance";
     MString lightIdName = lightName + "_" + id;
 
-    Logging::debug(MString("translateLightSource: ") + depFn.name() + " from type: " + node.apiTypeStr());
     if (node.hasFn(MFn::kAreaLight))
     {
         renderer::MeshObject *meshPtr = (renderer::MeshObject *)GETASM()->objects().get_by_name(lightIdName.asChar());
@@ -388,8 +385,6 @@ MStatus HypershadeRenderer::translateLightSource(const MUuid& id, const MObject&
 
 MStatus HypershadeRenderer::translateCamera(const MUuid& id, const MObject& node)
 {
-    Logging::debug("translateCamera");
-
     renderer::Camera *camera = project->get_scene()->get_camera();
     MFnDependencyNode depFn(node);
     MString camName = depFn.name();
@@ -414,9 +409,10 @@ MStatus HypershadeRenderer::translateCamera(const MUuid& id, const MObject& node
     camParams.insert("focal_distance", (MString("") + focusDistance).asChar());
     camParams.insert("f_stop", (MString("") + fStop).asChar());
 
-    foundation::auto_release_ptr<renderer::Camera> appleCam = renderer::PinholeCameraFactory().create(
-        camName.asChar(),
-        camParams);
+    foundation::auto_release_ptr<renderer::Camera> appleCam(
+        renderer::PinholeCameraFactory().create(
+            camName.asChar(),
+            camParams));
     project->get_scene()->set_camera(appleCam);
 
     IdNameStruct idName;
@@ -430,7 +426,6 @@ MStatus HypershadeRenderer::translateCamera(const MUuid& id, const MObject& node
 
 MStatus HypershadeRenderer::translateEnvironment(const MUuid& id, EnvironmentType type)
 {
-    Logging::debug("translateEnvironment");
     IdNameStruct idName;
     idName.id = id;
     idName.name = MString("Environment");
@@ -441,7 +436,6 @@ MStatus HypershadeRenderer::translateEnvironment(const MUuid& id, EnvironmentTyp
 
 MStatus HypershadeRenderer::translateTransform(const MUuid& id, const MUuid& childId, const MMatrix& matrix)
 {
-    Logging::debug(MString("translateTransform id: ") + id + " childId " + childId);
     MObject shapeNode;
     IdNameStruct idNameObj;
     std::vector<IdNameStruct>::iterator nsIt;
@@ -449,7 +443,6 @@ MStatus HypershadeRenderer::translateTransform(const MUuid& id, const MUuid& chi
     {
         if (nsIt->id == lastShapeId)
         {
-            Logging::debug(MString("Found id object for transform: ") + nsIt->name);
             shapeNode = nsIt->mobject;
             idNameObj = *nsIt;
         }
@@ -465,7 +458,6 @@ MStatus HypershadeRenderer::translateTransform(const MUuid& id, const MUuid& chi
         renderer::ObjectInstance *objInst = GETASM()->object_instances().get_by_name(elementInstName.asChar());
         if (objInst != 0)
         {
-            Logging::debug(MString("Removing already existing inst object: ") + elementInstName);
             GETASM()->object_instances().remove(objInst);
         }
         GETASM()->object_instances().get_by_name(elementInstName.asChar());
@@ -498,25 +490,22 @@ MStatus HypershadeRenderer::translateTransform(const MUuid& id, const MUuid& chi
         renderer::ObjectInstance *objInst = GETASM()->object_instances().get_by_name(elementInstName.asChar());
         if (objInst != 0)
         {
-            Logging::debug(MString("Removing already existing inst object: ") + elementInstName);
             GETASM()->object_instances().remove(objInst);
         }
-        Logging::debug(MString("area light transform: ") + idNameObj.name);
         MString areaLightMaterialName = elementName + "_material";
         renderer::ParamArray instParams;
         instParams.insert_path("visibility.camera", false); // set primary visibility to false for area lights
 
         GETASM()->object_instances().insert(
             renderer::ObjectInstanceFactory::create(
-            elementInstName.asChar(),
-            instParams,
-            elementName.asChar(),
-            foundation::Transformd::from_local_to_parent(appleMatrix),
-            foundation::StringDictionary()
-            .insert("slot0", areaLightMaterialName.asChar()),
-            foundation::StringDictionary()
-            .insert("slot0", areaLightMaterialName.asChar())
-            ));
+                elementInstName.asChar(),
+                instParams,
+                elementName.asChar(),
+                foundation::Transformd::from_local_to_parent(appleMatrix),
+                foundation::StringDictionary()
+                    .insert("slot0", areaLightMaterialName.asChar()),
+                foundation::StringDictionary()
+                    .insert("slot0", areaLightMaterialName.asChar())));
     }
 
     IdNameStruct idName;
@@ -577,44 +566,113 @@ MStatus HypershadeRenderer::translateShader(const MUuid& id, const MObject& node
     return MStatus::kSuccess;
 }
 
+void HypershadeRenderer::updateMaterial(const MObject materialNode, const renderer::Assembly* assembly)
+{
+    OSLUtilClass OSLShaderClass;
+    MObject surfaceShaderNode = getConnectedInNode(materialNode, "surfaceShader");
+    const MString surfaceShaderName = getObjectName(surfaceShaderNode);
+    MString shadingGroupName = getObjectName(materialNode);
+    ShadingNetwork network(surfaceShaderNode);
+    const size_t numNodes = network.shaderList.size();
+
+    if (assembly->get_name() == "swatchRenderer_world")
+    {
+        shadingGroupName = "previewSG";
+    }
+
+    MString shaderGroupName = shadingGroupName + "_OSLShadingGroup";
+
+    renderer::ShaderGroup *shaderGroup = assembly->shader_groups().get_by_name(shaderGroupName.asChar());
+
+    if (shaderGroup != 0)
+    {
+        shaderGroup->clear();
+    }
+    else
+    {
+        foundation::auto_release_ptr<renderer::ShaderGroup> oslShadingGroup = renderer::ShaderGroupFactory().create(shaderGroupName.asChar());
+        assembly->shader_groups().insert(oslShadingGroup);
+        shaderGroup = assembly->shader_groups().get_by_name(shaderGroupName.asChar());
+    }
+
+    OSLShaderClass.group = (OSL::ShaderGroup *)shaderGroup;
+
+    MFnDependencyNode shadingGroupNode(materialNode);
+    MPlug shaderPlug = shadingGroupNode.findPlug("surfaceShader");
+    OSLShaderClass.createOSLProjectionNodes(shaderPlug);
+
+    for (int shadingNodeId = 0; shadingNodeId < numNodes; shadingNodeId++)
+    {
+        ShadingNode snode = network.shaderList[shadingNodeId];
+        OSLShaderClass.createOSLShadingNode(network.shaderList[shadingNodeId]);
+    }
+
+    OSLShaderClass.cleanupShadingNodeList();
+    OSLShaderClass.createAndConnectShaderNodes();
+
+    if (numNodes > 0)
+    {
+        ShadingNode snode = network.shaderList[numNodes - 1];
+        MString layer = (snode.fullName + "_interface");
+        renderer::ShaderGroup *sg = (renderer::ShaderGroup *)OSLShaderClass.group;
+        sg->add_shader("surface", "surfaceShaderInterface", layer.asChar(), renderer::ParamArray());
+        const char *srcLayer = snode.fullName.asChar();
+        const char *srcAttr = "outColor";
+        const char *dstLayer = layer.asChar();
+        const char *dstAttr = "inColor";
+        sg->add_connection(srcLayer, srcAttr, dstLayer, dstAttr);
+    }
+
+    MString physicalSurfaceName = shadingGroupName + "_physical_surface_shader";
+
+    if (assembly->surface_shaders().get_by_name(physicalSurfaceName.asChar()) == 0)
+    {
+        assembly->surface_shaders().insert(
+            renderer::PhysicalSurfaceShaderFactory().create(
+            physicalSurfaceName.asChar(),
+            renderer::ParamArray()));
+    }
+    if (assembly->materials().get_by_name(shadingGroupName.asChar()) == 0)
+    {
+        assembly->materials().insert(
+            renderer::OSLMaterialFactory().create(
+            shadingGroupName.asChar(),
+            renderer::ParamArray()
+                .insert("surface_shader", physicalSurfaceName.asChar())
+                .insert("osl_surface", shaderGroupName.asChar())));
+    }
+}
+
 MStatus HypershadeRenderer::setProperty(const MUuid& id, const MString& name, bool value)
 {
-    Logging::debug(MString("setProperty bool: ") + name + " " + value);
     return MStatus::kSuccess;
 }
 
 MStatus HypershadeRenderer::setProperty(const MUuid& id, const MString& name, int value)
 {
-    Logging::debug(MString("setProperty int: ") + name + " " + value);
     return MStatus::kSuccess;
 }
 
 MStatus HypershadeRenderer::setProperty(const MUuid& id, const MString& name, float value)
 {
-    Logging::debug(MString("setProperty float: ") + name + " " + value);
     return MStatus::kSuccess;
 }
 
 MStatus HypershadeRenderer::setProperty(const MUuid& id, const MString& name, const MString& value)
 {
-    Logging::debug(MString("setProperty string: ") + name + " " + value);
-
     IdNameStruct idNameObj;
     std::vector<IdNameStruct>::iterator nsIt;
     for (nsIt = objectArray.begin(); nsIt != objectArray.end(); nsIt++)
     {
         if (nsIt->id == id)
         {
-            Logging::debug(MString("Found id object for string property: ") + nsIt->name);
             if (nsIt->name == "Environment")
             {
                 if (name == "imageFile")
                 {
-                    Logging::debug(MString("Setting environment image file to: ") + value);
                     renderer::Texture *tex = project->get_scene()->textures().get_by_name("envTex");
                     if (tex != 0)
                     {
-                        Logging::debug(MString("Removing already existing env texture."));
                         project->get_scene()->textures().remove(tex);
                     }
                     MString imageFile = value;
@@ -653,12 +711,10 @@ MStatus HypershadeRenderer::setProperty(const MUuid& id, const MString& name, co
 
 MStatus HypershadeRenderer::setShader(const MUuid& id, const MUuid& shaderId)
 {
-    Logging::debug("setShader");
     IdNameStruct objElement, shaderElement;
     std::vector<IdNameStruct>::iterator nsIt;
     for (nsIt = objectArray.begin(); nsIt != objectArray.end(); nsIt++)
     {
-        Logging::debug(MString("Search for obj id: ") + id + " in " + nsIt->id + " name: " + nsIt->name);
         if (nsIt->id == id)
         {
             objElement = *nsIt;
@@ -667,38 +723,33 @@ MStatus HypershadeRenderer::setShader(const MUuid& id, const MUuid& shaderId)
     }
     for (nsIt = objectArray.begin(); nsIt != objectArray.end(); nsIt++)
     {
-        Logging::debug(MString("Search for shader id: ") + shaderId + " in " + nsIt->id + " name: " + nsIt->name);
         if (nsIt->id == shaderId)
         {
             shaderElement = *nsIt;
             break;
         }
     }
-    if ((objElement.mobject == MObject::kNullObj) || (shaderElement.mobject == MObject::kNullObj))
+    if (objElement.mobject == MObject::kNullObj || shaderElement.mobject == MObject::kNullObj)
     {
         Logging::error(MString("Unable to find obj or shader for assignment. ShaderName: ") + shaderElement.name + " obj name " + objElement.name);
         return MS::kFailure;
     }
-    Logging::debug(MString("--------- Assign shader ") + shaderElement.name + " to object named " + objElement.name);
-
 
     renderer::ObjectInstance *objInstance = GETASM()->object_instances().get_by_name(objElement.name.asChar());
     if (objInstance != 0)
         objInstance->get_front_material_mappings().insert("slot0", shaderElement.name.asChar());
     else
-        Logging::debug(MString("unable to assign shader "));
+        Logging::error(MString("unable to assign shader"));
 
     return MStatus::kSuccess;
 }
 
 MStatus HypershadeRenderer::setResolution(unsigned int w, unsigned int h)
 {
-    Logging::debug(MString("setResolution to") + w + " " + h);
     width = w;
     height = h;
 
-    // Update resolution buffer
-    rb = (float*)realloc(rb, w*h*kNumChannels*sizeof(float));
+    rb = (float*)realloc(rb, w * h * kNumChannels * sizeof(float));
 
     for (uint x = 0; x < width; x++)
     {
@@ -724,8 +775,8 @@ MStatus HypershadeRenderer::setResolution(unsigned int w, unsigned int h)
         MString dim = camParams.get_path("film_dimensions");
         MStringArray values;
         dim.split(' ', values);
-        float filmWidth = values[0].asFloat();
-        float filmHeight = filmWidth * h / (float)w;
+        const float filmWidth = values[0].asFloat();
+        const float filmHeight = filmWidth * h / (float)w;
         camParams.insert("film_dimensions", (MString("") + filmWidth + " " + filmHeight).asChar());
     }
 
@@ -733,11 +784,11 @@ MStatus HypershadeRenderer::setResolution(unsigned int w, unsigned int h)
         renderer::FrameFactory::create(
         "beauty",
         renderer::ParamArray()
-        .insert("camera", camName.asChar())
-        .insert("resolution", res.asChar())
-        .insert("tile_size", tileString.asChar())
-        .insert("pixel_format", "float")
-        .insert("color_space", "linear_rgb")));
+            .insert("camera", camName.asChar())
+            .insert("resolution", res.asChar())
+            .insert("tile_size", tileString.asChar())
+            .insert("pixel_format", "float")
+            .insert("color_space", "linear_rgb")));
 
     project->get_frame()->get_parameters().insert("pixel_format", "float");
 
@@ -746,8 +797,7 @@ MStatus HypershadeRenderer::setResolution(unsigned int w, unsigned int h)
 
 MStatus HypershadeRenderer::endSceneUpdate()
 {
-    Logging::debug("endSceneUpdate");
-    controller.status = renderer::IRendererController::ContinueRendering;
+    controller.set_status(renderer::IRendererController::ContinueRendering);
     ProgressParams progressParams;
     progressParams.progress = 0.0;
     progress(progressParams);
@@ -762,12 +812,12 @@ MStatus HypershadeRenderer::endSceneUpdate()
         progressParams.progress = 2.0f;
         progress(progressParams);
     }
+
     return MStatus::kSuccess;
 }
 
 MStatus HypershadeRenderer::destroyScene()
 {
-    Logging::debug("destroyScene");
     controller.status = renderer::IRendererController::AbortRendering;
     if (renderThread.joinable())
         renderThread.join();
@@ -780,7 +830,6 @@ MStatus HypershadeRenderer::destroyScene()
 
 bool HypershadeRenderer::isSafeToUnload()
 {
-    Logging::debug("isSafeToUnload");
     return true;
 }
 
@@ -802,7 +851,8 @@ void HypershadeRenderer::copyTileToBuffer(foundation::Tile& tile, int tile_x, in
             rb[index + 3] = tile.get_component<float>(x, y, 3);
         }
     }
-    ////The image is R32G32B32A32_Float format
+
+    // The image is in R32G32B32A32_Float format.
     refreshParams.bottom = 0;
     refreshParams.top = height - 1;
     refreshParams.bytesPerChannel = sizeof(float);
@@ -815,11 +865,11 @@ void HypershadeRenderer::copyTileToBuffer(foundation::Tile& tile, int tile_x, in
     refresh(refreshParams);
 }
 
-void HypershadeRenderer::copyFrameToBuffer(float *frame, int w, int h)
+void HypershadeRenderer::copyFrameToBuffer(float* frame, int w, int h)
 {
     if ((w != width) || (h != height))
     {
-        Logging::error("wh ungleich.");
+        Logging::error("width or height from frame buffer do not match with internal one.");
         return;
     }
 
@@ -840,23 +890,19 @@ void HypershadeRenderer::copyFrameToBuffer(float *frame, int w, int h)
 
 void HypershadeTileCallback::post_render_tile(const renderer::Frame* frame, const size_t tile_x, const size_t tile_y)
 {
-    Logging::debug("HypershadeTileCallback::post_render_tile");
     foundation::Tile& tile = frame->image().tile(tile_x, tile_y);
     renderer->copyTileToBuffer(tile, tile_x, tile_y);
 }
 
 void HypershadeTileCallback::post_render(const renderer::Frame* frame)
 {
-    Logging::debug("HypershadeTileCallback::post_render frame");
-
     const foundation::Image& img = frame->image();
     const foundation::CanvasProperties& frame_props = img.properties();
     const size_t tileSize = frame_props.m_tile_height;
-    size_t numPixels = frame_props.m_canvas_width * frame_props.m_canvas_height;
     const size_t width = frame_props.m_canvas_width;
     const size_t height = frame_props.m_canvas_height;
 
-    float* buffer = new float[numPixels * kNumChannels];
+    float* buffer = new float[frame_props.m_pixel_count * kNumChannels];
 
     for (size_t tile_y = 0; tile_y < frame_props.m_tile_count_y; tile_y++)
     {
@@ -872,10 +918,10 @@ void HypershadeTileCallback::post_render(const renderer::Frame* frame)
                 {
                     const size_t index = (((height - 1) - (tile_y * tileSize + y)) * width + (tile_x * tileSize) + x) * kNumChannels;
 
-                    rb[index + 0] = tile.get_component<float>(x, y, 0);
-                    rb[index + 1] = tile.get_component<float>(x, y, 1);
-                    rb[index + 2] = tile.get_component<float>(x, y, 2);
-                    rb[index + 3] = tile.get_component<float>(x, y, 3);
+                    rb[index] = tile.get_component<float>(x, y, 0);
+                    buffer[index + 1] = tile.get_component<float>(x, y, 1);
+                    buffer[index + 2] = tile.get_component<float>(x, y, 2);
+                    buffer[index + 3] = tile.get_component<float>(x, y, 3);
                 }
             }
         }
@@ -884,6 +930,35 @@ void HypershadeTileCallback::post_render(const renderer::Frame* frame)
     renderer->copyFrameToBuffer(buffer, width, height);
 
     delete [] buffer;
+}
+
+HypershadeTileCallback::HypershadeTileCallback(HypershadeRenderer* renderer)
+  : mRenderer(renderer)
+{
+}
+
+void HypershadeTileCallback::release()
+{
+    delete this;
+}
+
+void HypershadeTileCallback::pre_render(const size_t x, const size_t y, const size_t width, const size_t height)
+{
+}
+
+HypershadeTileCallbackFactory::HypershadeTileCallbackFactory(HypershadeRenderer* renderer)
+{
+    mTileCallback.reset(new HypershadeTileCallback(renderer));
+}
+
+renderer::ITileCallback* HypershadeTileCallbackFactory::create()
+{
+    return mTileCallback.get();
+}
+
+void HypershadeTileCallbackFactory::release()
+{ 
+    delete this; 
 }
 
 #endif
