@@ -90,7 +90,7 @@ AppleseedRenderer::~AppleseedRenderer()
 
 void AppleseedRenderer::initializeRenderer()
 {
-    this->project = renderer::ProjectFactory::create("mayaProject");
+    project = renderer::ProjectFactory::create("mayaProject");
 
     std::string oslShaderPath = (getRendererHome() + "shaders").asChar();
     Logging::debug(MString("setting osl shader search path to: ") + oslShaderPath.c_str());
@@ -102,7 +102,7 @@ void AppleseedRenderer::initializeRenderer()
     }
 
     defineConfig();
-    defineScene(this->project.get());
+    defineScene(project.get());
 }
 
 void AppleseedRenderer::unInitializeRenderer()
@@ -111,15 +111,15 @@ void AppleseedRenderer::unInitializeRenderer()
     getWorldPtr()->setRenderType(World::RTYPENONE);
 
     // todo: isn't this supposed to be reset()?
-    this->project.release();
+    project.release();
 }
 
 void AppleseedRenderer::defineProject()
 {
     defineCamera(); // first camera
     defineOutput(); // output accesses camera so define it after camera
-    defineMasterAssembly(this->project.get());
-    defineDefaultMaterial(this->project.get());
+    defineMasterAssembly(project.get());
+    defineDefaultMaterial(project.get());
     defineEnvironment();
     defineGeometry();
     defineLights();
@@ -157,25 +157,25 @@ void AppleseedRenderer::render()
 {
     if (!sceneBuilt)
     {
-        this->tileCallbackFac.reset(new TileCallbackFactory());
+        tileCallbackFac.reset(new TileCallbackFactory());
 
         if (getWorldPtr()->getRenderType() == World::IPRRENDER)
         {
             masterRenderer.reset(
                 new renderer::MasterRenderer(
-                    this->project.ref(),
-                    this->project->configurations().get_by_name("interactive")->get_inherited_parameters(),
+                    project.ref(),
+                    project->configurations().get_by_name("interactive")->get_inherited_parameters(),
                     &mRendererController,
-                    this->tileCallbackFac.get()));
+                    tileCallbackFac.get()));
         }
         else
         {
             masterRenderer.reset(
                 new renderer::MasterRenderer(
-                    this->project.ref(),
-                    this->project->configurations().get_by_name("final")->get_inherited_parameters(),
+                    project.ref(),
+                    project->configurations().get_by_name("final")->get_inherited_parameters(),
                     &mRendererController,
-                    this->tileCallbackFac.get()));
+                    tileCallbackFac.get()));
         }
 
         if (getWorldPtr()->getRenderType() == World::IPRRENDER)
@@ -266,19 +266,19 @@ void AppleseedRenderer::defineConfig()
     boost::shared_ptr<RenderGlobals> renderGlobals = getWorldPtr()->mRenderGlobals;
 
     project->add_default_configurations();
-    addRenderParams(this->project->configurations().get_by_name("final")->get_parameters());
-    addRenderParams(this->project->configurations().get_by_name("interactive")->get_parameters());
+    addRenderParams(project->configurations().get_by_name("final")->get_parameters());
+    addRenderParams(project->configurations().get_by_name("interactive")->get_parameters());
 
     int renderer = getEnumInt("pixel_renderer", renderGlobalsFn);
     const char *pixel_renderers[2] = { "adaptive", "uniform" };
     const char *pixel_renderer = pixel_renderers[renderer];
 
-    this->project->configurations()
+    project->configurations()
         .get_by_name("final")->get_parameters()
             .insert_path("pixel_renderer", pixel_renderer)
             .insert_path("generic_tile_renderer.sampler", pixel_renderer);
 
-    this->project->configurations()
+    project->configurations()
         .get_by_name("interactive")->get_parameters()
             .insert_path("generic_tile_renderer.sampler", pixel_renderer);
 
@@ -302,7 +302,7 @@ void AppleseedRenderer::defineConfig()
             .insert_path("generic_tile_renderer.crop_window", regionString);
     }
 
-    this->project->configurations()
+    project->configurations()
         .get_by_name("interactive")->get_parameters()
             .insert_path("generic_tile_renderer.filter", renderGlobals->filterTypeString.toLowerCase().asChar())
             .insert_path("generic_tile_renderer.filter_size", renderGlobals->filterSize);
@@ -802,7 +802,7 @@ void AppleseedRenderer::updateInstance(boost::shared_ptr<MayaObject> mobj)
                 assemblyName.asChar()));
         renderer::TransformSequence &ts = assemblyInstance->transform_sequence();
         fillMatrices(mobj, ts);
-        getMasterAssemblyFromProject(this->project.get())->assembly_instances().insert(assemblyInstance);
+        getMasterAssemblyFromProject(project.get())->assembly_instances().insert(assemblyInstance);
     }
 }
 
@@ -850,7 +850,7 @@ void AppleseedRenderer::defineGeometry()
             assemblyName.asChar()));
         renderer::TransformSequence &ts = assemblyInstance->transform_sequence();
         fillMatrices(mobj, ts);
-        getMasterAssemblyFromProject(this->project.get())->assembly_instances().insert(assemblyInstance);
+        getMasterAssemblyFromProject(project.get())->assembly_instances().insert(assemblyInstance);
     }
 }
 
@@ -900,7 +900,7 @@ void AppleseedRenderer::doInteractiveUpdate()
                 if (typeName == shaderNames[si])
                 {
                     Logging::debug(MString("AppleseedRenderer::doInteractiveUpdate - found shader.") + iElement->name);
-                    this->defineMaterial(iElement->obj);
+                    defineMaterial(iElement->obj);
                 }
             }
         }
@@ -1135,7 +1135,7 @@ void AppleseedRenderer::updateMaterial(MObject materialNode)
     MString shaderGroupName = shadingGroupName + "_OSLShadingGroup";
     ShadingNetwork network(surfaceShaderNode);
     size_t numNodes = network.shaderList.size();
-    renderer::Assembly *assembly = getMasterAssemblyFromProject(this->project.get());
+    renderer::Assembly *assembly = getMasterAssemblyFromProject(project.get());
     renderer::ShaderGroup *shaderGroup = assembly->shader_groups().get_by_name(shaderGroupName.asChar());
 
     if (shaderGroup != 0)

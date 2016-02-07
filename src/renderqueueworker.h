@@ -37,8 +37,6 @@ concurrent_queue<Event>* gEventQueue();
 class RenderQueueWorker
 {
   public:
-    ~RenderQueueWorker();
-
     static void startRenderQueueWorker();
     static void renderQueueWorkerTimerCallback(float time, float lastTime, void *userPtr);
     static void IPRUpdateCallbacks();

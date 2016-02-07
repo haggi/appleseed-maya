@@ -279,7 +279,6 @@ namespace
 
     void IPRNodeAddedCallback(MObject& node, void *userPtr)
     {
-        Logging::debug(MString("IPRNodeAddedCallback. Node: ") + getObjectName(node));
         boost::shared_ptr<MayaScene> mayaScene = getWorldPtr()->mScene;
         MStatus stat;
 
@@ -744,13 +743,6 @@ void RenderQueueWorker::startRenderQueueWorker()
         if (MGlobal::mayaState() != MGlobal::kBatch)
             break;
     }
-}
-
-RenderQueueWorker::~RenderQueueWorker()
-{
-    // Empty the queue.
-    Event e;
-    while (RenderEventQueue.try_pop(e)) {}
 }
 
 void RenderQueueWorker::renderQueueWorkerTimerCallback(float time, float lastTime, void* userPtr)
