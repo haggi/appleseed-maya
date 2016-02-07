@@ -188,8 +188,6 @@ namespace
             }
         }
 
-        Logging::debug(MString("iprFindLeafNodes ") + leafList.size());
-
         // the idea is that the renderer waits in IPR mode for an non empty modifiesElementList,
         // it updates the render database with the elements and empties the list which is then free for the next run
         // todo: maybe use wait for variables.
@@ -344,39 +342,36 @@ namespace
         }
     }
 
-    void IPRNodeRemovedCallback(MObject& node, void *userPtr)
+    void IPRNodeRemovedCallback(MObject& node, void* userPtr)
     {
-        Logging::debug(MString("IPRNodeRemovedCallback. Removing node: ") + getObjectName(node));
-
-        //get the callback id and remove the callback for this node and remove the callback from the list
-        std::map<MCallbackId, MObject>::iterator idIter;
+        // Get the callback id, remove the callback for this node and remove the callback from the list.
         MCallbackId nodeCallbackId = 0;
-        for (idIter = objIdMap.begin(); idIter != objIdMap.end(); idIter++)
+        for (std::map<MCallbackId, MObject>::iterator i = objIdMap.begin(); i != objIdMap.end(); i++)
         {
-            if (idIter->second == node)
+            if (i->second == node)
             {
-                MNodeMessage::removeCallback(idIter->first);
-                nodeCallbackId = idIter->first;
+                MNodeMessage::removeCallback(i->first);
+                nodeCallbackId = i->first;
                 break;
             }
         }
         if (nodeCallbackId != 0)
             objIdMap.erase(nodeCallbackId);
 
-        // get the MayaObject element and mark it as removed.
+        // Get the MayaObject element and mark it as removed.
         boost::shared_ptr<MayaScene> mayaScene = getWorldPtr()->mScene;
-        std::map<uint, InteractiveElement>::iterator iter;
-        for (iter = mayaScene->interactiveUpdateMap.begin(); iter != mayaScene->interactiveUpdateMap.end(); iter++)
+        for (std::map<uint, InteractiveElement>::iterator i = mayaScene->interactiveUpdateMap.begin();
+             i != mayaScene->interactiveUpdateMap.end();
+             ++i)
         {
-            InteractiveElement ie = iter->second;
-
+            const InteractiveElement& ie = i->second;
             if (ie.node == node)
             {
                 if (ie.obj)
                 {
                     ie.obj->removed = true;
-                    // trigger a ipr scene update
-                    idInteractiveMap[nodeCallbackId] = &mayaScene->interactiveUpdateMap[iter->first];
+                    // Trigger an IPR scene update.
+                    idInteractiveMap[nodeCallbackId] = &mayaScene->interactiveUpdateMap[i->first];
                     break;
                 }
             }
@@ -444,14 +439,20 @@ namespace
     {
         if (idleCallbackId != 0)
             MMessage::removeCallback(idleCallbackId);
+
         if (nodeAddedCallbackId != 0)
             MDGMessage::removeCallback(nodeAddedCallbackId);
+
         if (nodeRemovedCallbackId != 0)
             MDGMessage::removeCallback(nodeRemovedCallbackId);
-        idleCallbackId = nodeRemovedCallbackId = nodeAddedCallbackId = 0;
-        std::vector<MCallbackId>::iterator iter;
-        for (iter = nodeCallbacks.begin(); iter != nodeCallbacks.end(); iter++)
-            MMessage::removeCallback(*iter);
+
+        idleCallbackId = 0;
+        nodeRemovedCallbackId = 0;
+        nodeAddedCallbackId = 0;
+
+        for (std::vector<MCallbackId>::iterator i = nodeCallbacks.begin(); i != nodeCallbacks.end(); i++)
+            MMessage::removeCallback(*i);
+
         nodeCallbacks.clear();
         objIdMap.clear();
         modifiedElementList.clear(); // make sure that the iprFindLeafNodes exits with an empty list
