@@ -82,7 +82,6 @@
 #include <maya/MFloatPointArray.h>
 #include <maya/MFloatVectorArray.h>
 #include <maya/MFnDependencyNode.h>
-#include <maya/MFnDependencyNode.h>
 #include <maya/MFnMesh.h>
 #include <maya/MGlobal.h>
 #include <maya/MItMeshPolygon.h>
@@ -576,10 +575,10 @@ void HypershadeRenderer::updateMaterial(const MObject materialNode, const asr::A
 {
     OSLUtilClass OSLShaderClass;
     MObject surfaceShaderNode = getConnectedInNode(materialNode, "surfaceShader");
-    MString surfaceShaderName = getObjectName(surfaceShaderNode);
+    const MString surfaceShaderName = getObjectName(surfaceShaderNode);
     MString shadingGroupName = getObjectName(materialNode);
-    ShadingNetwork network(surfaceShaderNode);
-    size_t numNodes = network.shaderList.size();
+    const ShadingNetwork network(surfaceShaderNode);
+    const size_t numNodes = network.shaderList.size();
 
     if (assembly->get_name() == "swatchRenderer_world")
     {
@@ -644,8 +643,8 @@ void HypershadeRenderer::updateMaterial(const MObject materialNode, const asr::A
             asr::OSLMaterialFactory().create(
             shadingGroupName.asChar(),
             asr::ParamArray()
-            .insert("surface_shader", physicalSurfaceName.asChar())
-            .insert("osl_surface", shaderGroupName.asChar())));
+                .insert("surface_shader", physicalSurfaceName.asChar())
+                .insert("osl_surface", shaderGroupName.asChar())));
     }
 }
 
