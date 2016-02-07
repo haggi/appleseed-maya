@@ -33,7 +33,7 @@
 
 #if MAYA_API_VERSION >= 201600
 
-#include "renderer/global/globallogger.h"
+#include "renderer/api/log.h"
 #include "renderer/api/object.h"
 #include "renderer/api/project.h"
 #include "renderer/api/rendering.h"
@@ -57,16 +57,15 @@ class HypershadeRenderController
 {
   public:
     HypershadeRenderController();
-    ~HypershadeRenderController();
-	void on_rendering_begin();
-	void on_rendering_success();
-	void on_rendering_abort();
-	void on_frame_begin();
-	void on_frame_end();
-	void on_progress();
-	void release();
-	Status get_status() const;
-	volatile Status status;
+    void on_rendering_begin();
+    void on_rendering_success();
+    void on_rendering_abort();
+    void on_frame_begin();
+    void on_frame_end();
+    void on_progress();
+    void release();
+    Status get_status() const;
+    volatile Status status;
 };
 
 class HypershadeTileCallback
@@ -75,7 +74,6 @@ class HypershadeTileCallback
   public:
     HypershadeRenderer *renderer;
     explicit HypershadeTileCallback(HypershadeRenderer *mrenderer);
-    virtual ~HypershadeTileCallback();
     virtual void release();
     void pre_render(const size_t x, const size_t y, const size_t width, const size_t height);
     void post_render(const asr::Frame* frame);
@@ -150,7 +148,7 @@ class HypershadeRenderer
     asf::auto_release_ptr<asr::Project> project;
     std::auto_ptr<asr::MasterRenderer> mrenderer;
     asf::auto_release_ptr<HypershadeTileCallbackFactory> tileCallbackFac;
-	HypershadeRenderController controller;
+    HypershadeRenderController controller;
     MUuid lastShapeId; // save the last shape id, needed by translateTransform
     MString lastMaterialName;
     std::vector<IdNameStruct> objectArray;

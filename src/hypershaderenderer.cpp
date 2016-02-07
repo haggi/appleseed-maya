@@ -46,7 +46,7 @@
 #include "renderer/api/environmentedf.h"
 #include "renderer/api/environmentshader.h"
 #include "renderer/api/texture.h"
-#include "renderer/global/globallogger.h"
+#include "renderer/api/log.h"
 #include "renderer/modeling/shadergroup/shadergroup.h"
 
 // appleseed.renderer headers.
@@ -303,7 +303,6 @@ MStatus HypershadeRenderer::translateMesh(const MUuid& id, const MObject& node)
     MString meshName = depFn.name();
     MString meshIdName = meshName;
     MString meshInstName = meshIdName + "_instance";
-    Logging::debug(MString("translateMesh ") + meshIdName);
 
     asr::Object *obj = GETASM()->objects().get_by_name(meshIdName.asChar());
     if (obj != 0)
@@ -332,7 +331,6 @@ MStatus HypershadeRenderer::translateLightSource(const MUuid& id, const MObject&
     MString lightInstName = lightName + "_instance";
     MString lightIdName = lightName + "_" + id;
 
-    Logging::debug(MString("translateLightSource: ") + depFn.name() + " from type: " + node.apiTypeStr());
     if (node.hasFn(MFn::kAreaLight))
     {
         asr::MeshObject *meshPtr = (asr::MeshObject *)GETASM()->objects().get_by_name(lightIdName.asChar());
@@ -393,8 +391,6 @@ MStatus HypershadeRenderer::translateLightSource(const MUuid& id, const MObject&
 
 MStatus HypershadeRenderer::translateCamera(const MUuid& id, const MObject& node)
 {
-    Logging::debug("translateCamera");
-
     asr::Camera *camera = project->get_scene()->get_camera();
     MFnDependencyNode depFn(node);
     MString camName = depFn.name();
@@ -435,7 +431,6 @@ MStatus HypershadeRenderer::translateCamera(const MUuid& id, const MObject& node
 
 MStatus HypershadeRenderer::translateEnvironment(const MUuid& id, EnvironmentType type)
 {
-    Logging::debug("translateEnvironment");
     IdNameStruct idName;
     idName.id = id;
     idName.name = MString("Environment");
@@ -446,7 +441,6 @@ MStatus HypershadeRenderer::translateEnvironment(const MUuid& id, EnvironmentTyp
 
 MStatus HypershadeRenderer::translateTransform(const MUuid& id, const MUuid& childId, const MMatrix& matrix)
 {
-    Logging::debug(MString("translateTransform id: ") + id + " childId " + childId);
     MObject shapeNode;
     IdNameStruct idNameObj;
     std::vector<IdNameStruct>::iterator nsIt;
@@ -454,7 +448,6 @@ MStatus HypershadeRenderer::translateTransform(const MUuid& id, const MUuid& chi
     {
         if (nsIt->id == lastShapeId)
         {
-            Logging::debug(MString("Found id object for transform: ") + nsIt->name);
             shapeNode = nsIt->mobject;
             idNameObj = *nsIt;
         }
@@ -470,7 +463,6 @@ MStatus HypershadeRenderer::translateTransform(const MUuid& id, const MUuid& chi
         asr::ObjectInstance *objInst = GETASM()->object_instances().get_by_name(elementInstName.asChar());
         if (objInst != 0)
         {
-            Logging::debug(MString("Removing already existing inst object: ") + elementInstName);
             GETASM()->object_instances().remove(objInst);
         }
         GETASM()->object_instances().get_by_name(elementInstName.asChar());
@@ -503,10 +495,8 @@ MStatus HypershadeRenderer::translateTransform(const MUuid& id, const MUuid& chi
         asr::ObjectInstance *objInst = GETASM()->object_instances().get_by_name(elementInstName.asChar());
         if (objInst != 0)
         {
-            Logging::debug(MString("Removing already existing inst object: ") + elementInstName);
             GETASM()->object_instances().remove(objInst);
         }
-        Logging::debug(MString("area light transform: ") + idNameObj.name);
         MString areaLightMaterialName = elementName + "_material";
         asr::ParamArray instParams;
         instParams.insert_path("visibility.camera", false); // set primary visibility to false for area lights
@@ -582,7 +572,7 @@ MStatus HypershadeRenderer::translateShader(const MUuid& id, const MObject& node
     return MStatus::kSuccess;
 }
 
-void HypershadeRenderer::updateMaterial(const MObject materialNode, const asr::Assembly *assembly)
+void HypershadeRenderer::updateMaterial(const MObject materialNode, const asr::Assembly* assembly)
 {
     OSLUtilClass OSLShaderClass;
     MObject surfaceShaderNode = getConnectedInNode(materialNode, "surfaceShader");
@@ -879,7 +869,7 @@ void HypershadeRenderer::copyTileToBuffer(asf::Tile& tile, int tile_x, int tile_
     refresh(refreshParams);
 }
 
-void HypershadeRenderer::copyFrameToBuffer(float *frame, int w, int h)
+void HypershadeRenderer::copyFrameToBuffer(float* frame, int w, int h)
 {
     if ((w != width) || (h != height))
     {
@@ -913,11 +903,10 @@ void HypershadeTileCallback::post_render(const asr::Frame* frame)
     const asf::Image& img = frame->image();
     const asf::CanvasProperties& frame_props = img.properties();
     const size_t tileSize = frame_props.m_tile_height;
-    size_t numPixels = frame_props.m_canvas_width * frame_props.m_canvas_height;
     const size_t width = frame_props.m_canvas_width;
     const size_t height = frame_props.m_canvas_height;
 
-    float* buffer = new float[numPixels * kNumChannels];
+    float* buffer = new float[frame_props.m_pixel_count * kNumChannels];
 
     for (size_t tile_y = 0; tile_y < frame_props.m_tile_count_y; tile_y++)
     {
@@ -947,12 +936,8 @@ void HypershadeTileCallback::post_render(const asr::Frame* frame)
     delete [] buffer;
 }
 
-HypershadeTileCallback::HypershadeTileCallback(HypershadeRenderer *mrenderer)
+HypershadeTileCallback::HypershadeTileCallback(HypershadeRenderer* mrenderer)
   : renderer(mrenderer)
-{
-}
-
-HypershadeTileCallback::~HypershadeTileCallback()
 {
 }
 
@@ -964,13 +949,8 @@ void HypershadeTileCallback::pre_render(const size_t x, const size_t y, const si
 {
 }
 
-
 HypershadeRenderController::HypershadeRenderController() 
   :status(asr::IRendererController::ContinueRendering)
-{
-}
-
-HypershadeRenderController::~HypershadeRenderController()
 {
 }
 
@@ -1000,6 +980,7 @@ void HypershadeRenderController::on_progress()
 
 void HypershadeRenderController::release()
 {
+    delete this;
 }
 
 asr::IRendererController::Status HypershadeRenderController::get_status() const
@@ -1008,7 +989,7 @@ asr::IRendererController::Status HypershadeRenderController::get_status() const
 }
 
 
-HypershadeTileCallbackFactory::HypershadeTileCallbackFactory(HypershadeRenderer *renderer)
+HypershadeTileCallbackFactory::HypershadeTileCallbackFactory(HypershadeRenderer* renderer)
 {
     tileCallback = new HypershadeTileCallback(renderer);
 }
