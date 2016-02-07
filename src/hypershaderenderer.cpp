@@ -577,7 +577,7 @@ void HypershadeRenderer::updateMaterial(const MObject materialNode, const asr::A
     MObject surfaceShaderNode = getConnectedInNode(materialNode, "surfaceShader");
     const MString surfaceShaderName = getObjectName(surfaceShaderNode);
     MString shadingGroupName = getObjectName(materialNode);
-    const ShadingNetwork network(surfaceShaderNode);
+    ShadingNetwork network(surfaceShaderNode);
     const size_t numNodes = network.shaderList.size();
 
     if (assembly->get_name() == "swatchRenderer_world")
@@ -951,7 +951,7 @@ void HypershadeTileCallback::pre_render(const size_t x, const size_t y, const si
 
 HypershadeTileCallbackFactory::HypershadeTileCallbackFactory(HypershadeRenderer* renderer)
 {
-    tileCallback = boost::shared_ptr<HypershadeTileCallback>(new HypershadeTileCallback(renderer));
+    tileCallback = std::auto_ptr<HypershadeTileCallback>(new HypershadeTileCallback(renderer));
 }
 
 asr::ITileCallback* HypershadeTileCallbackFactory::create()

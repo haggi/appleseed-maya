@@ -45,8 +45,6 @@
 
 #include <maya/MPxRenderer.h>
 
-#include <boost/shared_ptr.hpp>
-
 // Standard headers.
 #include <map>
 #include <memory>
@@ -66,7 +64,7 @@ class HypershadeTileCallback
     void post_render(const asr::Frame* frame);
     virtual void post_render_tile(const asr::Frame* frame, const size_t tile_x, const size_t tile_y);
   private:
-    boost::shared_ptr<HypershadeRenderer> renderer;
+    std::auto_ptr<HypershadeRenderer> renderer;
 
 };
 
@@ -78,7 +76,7 @@ class HypershadeTileCallbackFactory
     virtual asr::ITileCallback* create();
     virtual void release();
   private:
-    boost::shared_ptr<HypershadeTileCallback> tileCallback;
+    std::auto_ptr<HypershadeTileCallback> tileCallback;
 };
 
 struct IdNameStruct
