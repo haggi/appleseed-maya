@@ -223,45 +223,26 @@ void getMeshData(const MObject& meshObject, MPointArray& points, MFloatVectorArr
     }
 }
 
-asf::auto_release_ptr<asr::MeshObject> defineStandardPlane(const bool area)
+asf::auto_release_ptr<asr::MeshObject> defineStandardPlane()
 {
     asf::auto_release_ptr<asr::MeshObject> object(asr::MeshObjectFactory::create("standardPlane", asr::ParamArray()));
 
-    if (area)
-    {
-        // Vertices.
-        object->push_vertex(asr::GVector3(-1.0f, -1.0f, 0.0f));
-        object->push_vertex(asr::GVector3(-1.0f, 1.0f, 0.0f));
-        object->push_vertex(asr::GVector3(1.0f, 1.0f, 0.0f));
-        object->push_vertex(asr::GVector3(1.0f, -1.0f, 0.0f));
-    }
-    else{
-        // Vertices.
-        object->push_vertex(asr::GVector3(-1.0f, 0.0f, -1.0f));
-        object->push_vertex(asr::GVector3(-1.0f, 0.0f, 1.0f));
-        object->push_vertex(asr::GVector3(1.0f, 0.0f, 1.0f));
-        object->push_vertex(asr::GVector3(1.0f, 0.0f, -1.0f));
-    }
+    object->push_vertex(asr::GVector3(-1.0f, 0.0f, -1.0f));
+    object->push_vertex(asr::GVector3(-1.0f, 0.0f, 1.0f));
+    object->push_vertex(asr::GVector3(1.0f, 0.0f, 1.0f));
+    object->push_vertex(asr::GVector3(1.0f, 0.0f, -1.0f));
 
-    if (area)
-    {
-        object->push_vertex_normal(asr::GVector3(0.0f, 0.0f, -1.0f));
-    }
-    else{
-        object->push_vertex_normal(asr::GVector3(0.0f, 1.0f, 0.0f));
-    }
+    object->push_vertex_normal(asr::GVector3(0.0f, 1.0f, 0.0f));
 
     object->push_tex_coords(asr::GVector2(0.0, 0.0));
     object->push_tex_coords(asr::GVector2(1.0, 0.0));
     object->push_tex_coords(asr::GVector2(1.0, 1.0));
     object->push_tex_coords(asr::GVector2(0.0, 1.0));
 
-    // Triangles.
     object->push_triangle(asr::Triangle(0, 1, 2, 0, 0, 0, 0, 1, 2, 0));
     object->push_triangle(asr::Triangle(0, 2, 3, 0, 0, 0, 0, 2, 3, 0));
 
     return object;
-
 }
 
 asf::auto_release_ptr<asr::MeshObject> createMesh(const MObject& mobject)

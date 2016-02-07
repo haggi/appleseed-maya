@@ -44,7 +44,7 @@ void getMeshData(const MObject& meshObject, MPointArray& points, MFloatVectorArr
 void getMeshData(const MObject& meshObject, MPointArray& points, MFloatVectorArray& normals, MFloatArray& uArray,
     MFloatArray& vArray, MIntArray& triPointIndices, MIntArray& triNormalIndices,
     MIntArray& triUvIndices, MIntArray& triMatIndices, MIntArray& perFaceAssignments);
-asf::auto_release_ptr<asr::MeshObject> defineStandardPlane(const bool area = false);
+asf::auto_release_ptr<asr::MeshObject> defineStandardPlane();
 asf::auto_release_ptr<asr::MeshObject> createMesh(const MObject& mobject);
 
 

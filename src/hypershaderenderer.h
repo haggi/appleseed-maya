@@ -55,7 +55,7 @@ class HypershadeRenderer;
 class HypershadeRenderController 
   : public asr::IRendererController
 {
-public:
+  public:
     HypershadeRenderController();
     ~HypershadeRenderController();
 	void on_rendering_begin();
