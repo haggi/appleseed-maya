@@ -30,7 +30,8 @@
 #include "tilecallback.h"
 
 // appleseed-maya headers.
-#include "renderqueueworker.h"
+#include "renderglobals.h"
+#include "world.h"
 
 // appleseed.renderer headers.
 #include "renderer/api/frame.h"
@@ -59,6 +60,47 @@ void TileCallback::pre_render(
     const size_t            width,
     const size_t            height)
 {
+}
+
+namespace
+{
+    void updateRenderView(
+        const unsigned int  xMin,
+        const unsigned int  xMax,
+        const unsigned int  yMin,
+        const unsigned int  yMax,
+        RV_PIXEL*           pixels)
+    {
+        if (!MRenderView::doesRenderEditorExist())
+            return;
+
+        // We have cases where the render view has changed but the framebuffer callback may have still the old settings.
+        // Here we make sure we do not exceed the render view area.
+        // todo: is this still relevant?
+        if (getWorldPtr()->mRenderGlobals->getUseRenderRegion())
+        {
+            const int width = getWorldPtr()->mRenderGlobals->getWidth();
+            const int height = getWorldPtr()->mRenderGlobals->getHeight();
+
+            if (xMin != 0 ||
+                yMin != 0 ||
+                xMax != width - 1 ||
+                yMax != height - 1)
+            {
+                unsigned int left, right, bottom, top;
+                MRenderView::getRenderRegion(left, right, bottom, top);
+
+                if (left != xMin ||
+                    right != xMax ||
+                    bottom != yMin ||
+                    top != yMax)
+                    return;
+            }
+        }
+
+        MRenderView::updatePixels(xMin, xMax, yMin, yMax, pixels);
+        MRenderView::refresh(xMin, xMax, yMin, yMax);
+    }
 }
 
 void TileCallback::post_render(const renderer::Frame* frame)
@@ -117,14 +159,12 @@ void TileCallback::post_render(const renderer::Frame* frame)
         }
     }
 
-    Event e;
-    e.mType = Event::TILEDONE;
-    e.pixelData = pixels;
-    e.tile_xmin = 0;
-    e.tile_ymin = 0;
-    e.tile_xmax = frameProps.m_canvas_width - 1;
-    e.tile_ymax = frameProps.m_canvas_height - 1;
-    gEventQueue()->push(e);
+    updateRenderView(
+        0,
+        0,
+        static_cast<unsigned int>(frameProps.m_canvas_width - 1),
+        static_cast<unsigned int>(frameProps.m_canvas_height - 1),
+        pixelsPtr);
 }
 
 void TileCallback::post_render_tile(
@@ -161,14 +201,12 @@ void TileCallback::post_render_tile(
     const size_t x = tile_x * frameProps.m_tile_width;
     const size_t y = tile_y * frameProps.m_tile_height;
 
-    Event e;
-    e.mType = Event::TILEDONE;
-    e.pixelData = pixels;
-    e.tile_xmin = x;
-    e.tile_xmax = x + tileWidth - 1;
-    e.tile_ymin = frameProps.m_canvas_height - y - tileHeight;
-    e.tile_ymax = frameProps.m_canvas_height - y - 1;
-    gEventQueue()->push(e);
+    updateRenderView(
+        static_cast<unsigned int>(x),
+        static_cast<unsigned int>(x + tileWidth - 1),
+        static_cast<unsigned int>(frameProps.m_canvas_height - y - tileHeight),
+        static_cast<unsigned int>(frameProps.m_canvas_height - y - 1),
+        pixelsPtr);
 }
 
 void TileCallbackFactory::release()

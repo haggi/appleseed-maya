@@ -39,20 +39,18 @@
 #include "foundation/platform/thread.h"
 
 // Maya headers.
-#include <maya/MGlobal.h>
-#include <maya/MSceneMessage.h>
-#include <maya/MTimerMessage.h>
-#include <maya/MNodeMessage.h>
 #include <maya/MDGMessage.h>
-#include <maya/MEventMessage.h>
-#include <maya/MItDependencyNodes.h>
-#include <maya/MItDag.h>
 #include <maya/MFnDagNode.h>
-#include <maya/MFnMesh.h>
+#include <maya/MGlobal.h>
+#include <maya/MItDag.h>
+#include <maya/MNodeMessage.h>
+#include <maya/MRenderView.h>
+#include <maya/MTimerMessage.h>
 
 // Standard headers.
 #include <ctime>
 #include <map>
+#include <vector>
 
 namespace
 {
@@ -515,32 +513,6 @@ namespace
         gEventQueue()->push(event);
     }
 
-    void updateRenderView(const Event& e)
-    {
-        if (!MRenderView::doesRenderEditorExist())
-            return;
-
-        // we have cases where the render mrender view has changed but the framebuffer callback may have still the old settings.
-        // here we make sure we do not exceed the renderView area.
-        boost::shared_ptr<RenderGlobals> renderGlobals = getWorldPtr()->mRenderGlobals;
-        if (renderGlobals->getUseRenderRegion())
-        {
-            const int width = renderGlobals->getWidth();
-            const int height = renderGlobals->getHeight();
-
-            if ((e.tile_xmin != 0) || (e.tile_xmax != width - 1) || (e.tile_ymin != 0) || (e.tile_ymax != height - 1))
-            {
-                uint left, right, bottom, top;
-                MRenderView::getRenderRegion(left, right, bottom, top);
-                if ((left != e.tile_xmin) || (right != e.tile_xmax) || (bottom != e.tile_ymin) || (top != e.tile_ymax))
-                    return;
-            }
-        }
-
-        MRenderView::updatePixels(e.tile_xmin, e.tile_xmax, e.tile_ymin, e.tile_ymax, e.pixelData.get());
-        MRenderView::refresh(e.tile_xmin, e.tile_xmax, e.tile_ymin, e.tile_ymax);
-    }
-
     void iprWaitForFinish(Event e)
     {
         while (getWorldPtr()->getRenderState() != World::RSTATENONE)
@@ -762,10 +734,6 @@ void RenderQueueWorker::startRenderQueueWorker()
           case Event::IPRSTOP:
             getWorldPtr()->setRenderState(World::RSTATESTOPPED);
             getWorldPtr()->mRenderer->abortRendering();
-            break;
-
-          case Event::TILEDONE:
-            updateRenderView(e);
             break;
 
           case Event::ADDIPRCALLBACKS:

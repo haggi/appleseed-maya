@@ -34,13 +34,6 @@
 
 // Maya headers.
 #include <maya/MDagPath.h>
-#include <maya/MRenderView.h>
-
-// Boost headers.
-#include "boost/shared_ptr.hpp"
-
-// Standard headers.
-#include <cstddef>
 
 class Event
 {
@@ -48,7 +41,6 @@ class Event
     enum Type
     {
         INTERRUPT = 0,
-        TILEDONE = 1,
         FRAMEDONE = 2,
         RENDERDONE = 3,
         IPRSTART = 6,
@@ -63,15 +55,11 @@ class Event
     };
 
     Type mType;
-
     int width;
     int height;
     bool useRenderRegion;
     MDagPath cameraDagPath;
     World::RenderType renderType;
-    size_t tile_xmin, tile_xmax, tile_ymin, tile_ymax;
-
-    boost::shared_ptr<RV_PIXEL> pixelData;
 };
 
 #endif  // !EVENT_H
