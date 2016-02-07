@@ -30,10 +30,10 @@
 #include "appleseedswatchrenderer.h"
 
 // appleseed-maya headers.
-#include "osl/oslutils.h"
 #include "shadingtools/material.h"
 #include "shadingtools/shadingutils.h"
 #include "utilities/logging.h"
+#include "utilities/oslutils.h"
 #include "utilities/tools.h"
 #include "newswatchrenderer.h"
 #include "world.h"

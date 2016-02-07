@@ -32,7 +32,7 @@
 #include "mtap_mayarenderer.h"
 #include "utilities/logging.h"
 #include "utilities/attrtools.h"
-#include "osl/oslutils.h"
+#include "utilities/oslutils.h"
 #include "shadingtools/material.h"
 #include "shadingtools/shadingutils.h"
 #include "renderer/global/globallogger.h"

@@ -30,12 +30,12 @@
 #include "appleseedrenderer.h"
 
 // appleseed-maya headers.
-#include "osl/oslutils.h"
 #include "shadingtools/material.h"
 #include "shadingtools/shaderdefinitions.h"
 #include "shadingtools/shadingutils.h"
 #include "utilities/attrtools.h"
 #include "utilities/logging.h"
+#include "utilities/oslutils.h"
 #include "utilities/pystring.h"
 #include "utilities/tools.h"
 #include "appleseedutils.h"

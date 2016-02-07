@@ -26,7 +26,9 @@
 // THE SOFTWARE.
 //
 
+// Interface header.
 #include "oslutils.h"
+
 #include "renderglobals.h"
 #include "utilities/logging.h"
 #include "utilities/tools.h"

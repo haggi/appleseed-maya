@@ -30,17 +30,6 @@ include_directories (
     .
 )
 
-set (osl_sources
-    osl/oslutils.cpp
-    osl/oslutils.h
-)
-list (APPEND appleseedmaya_sources
-    ${osl_sources}
-)
-source_group ("osl" FILES
-    ${osl_sources}
-)
-
 set (shaders_sources
     shaders/asdisneymaterial.cpp
     shaders/asdisneymaterial.h
@@ -79,6 +68,8 @@ set (utilities_sources
     utilities/concurrentqueue.h
     utilities/logging.cpp
     utilities/logging.h
+    utilities/oslutils.cpp
+    utilities/oslutils.h
     utilities/pystring.cpp
     utilities/pystring.h
     utilities/tools.cpp
