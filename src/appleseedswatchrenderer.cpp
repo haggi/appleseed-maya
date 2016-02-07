@@ -29,6 +29,15 @@
 // Interface header.
 #include "appleseedswatchrenderer.h"
 
+// appleseed-maya headers.
+#include "osl/oslutils.h"
+#include "shadingtools/material.h"
+#include "shadingtools/shadingutils.h"
+#include "utilities/logging.h"
+#include "utilities/tools.h"
+#include "newswatchrenderer.h"
+#include "world.h"
+
 // appleseed.renderer headers.
 #include "renderer/api/bsdf.h"
 #include "renderer/api/camera.h"
@@ -61,16 +70,6 @@
 #include "foundation/utility/log/consolelogtarget.h"
 #include "foundation/utility/autoreleaseptr.h"
 #include "foundation/utility/searchpaths.h"
-
-// appleseed-maya headers.
-#include "osl/oslutils.h"
-#include "shadingtools/material.h"
-#include "shadingtools/shadingutils.h"
-#include "utilities/logging.h"
-#include "utilities/tools.h"
-#include "newswatchrenderer.h"
-#include "swatchesevent.h"
-#include "world.h"
 
 // Maya headers.
 #include <maya/MFnDependencyNode.h>
@@ -110,11 +109,6 @@ AppleseedSwatchRenderer::AppleseedSwatchRenderer()
             &mRendererController));
 }
 
-AppleseedSwatchRenderer::~AppleseedSwatchRenderer()
-{
-    terminateAppleseedSwatchRender(this);
-}
-
 void AppleseedSwatchRenderer::renderSwatch(NewSwatchRenderer *sr)
 {
     const int res = sr->resolution();
@@ -146,27 +140,6 @@ void AppleseedSwatchRenderer::renderSwatch(NewSwatchRenderer *sr)
         {
             for (size_t c = 0; c < 4; c++)
                 pixels[index++] = tile.get_component<float>(x, y, c);
-        }
-    }
-}
-
-void AppleseedSwatchRenderer::mainLoop()
-{
-    Logging::debug("Starting AppleseedSwatchRenderer main loop.");
-
-    SwatchesEvent swatchEvent;
-    while (!mTerminateLoop)
-    {
-        SwatchesQueue.wait_and_pop(swatchEvent);
-
-        if (swatchEvent.renderDone == 0)
-        {
-            Logging::debug(MString("AppleseedSwatchRenderer main Loop: received a null ptr. Terminating loop"));
-            mTerminateLoop = true;
-        }
-        else
-        {
-            *swatchEvent.renderDone = true;
         }
     }
 }
@@ -243,17 +216,17 @@ namespace
         {
             assembly->surface_shaders().insert(
                 asr::PhysicalSurfaceShaderFactory().create(
-                physicalSurfaceName.asChar(),
-                asr::ParamArray()));
+                    physicalSurfaceName.asChar(),
+                    asr::ParamArray()));
         }
         if (assembly->materials().get_by_name(shadingGroupName.asChar()) == 0)
         {
             assembly->materials().insert(
                 asr::OSLMaterialFactory().create(
-                shadingGroupName.asChar(),
-                asr::ParamArray()
-                .insert("surface_shader", physicalSurfaceName.asChar())
-                .insert("osl_surface", shaderGroupName.asChar())));
+                    shadingGroupName.asChar(),
+                    asr::ParamArray()
+                        .insert("surface_shader", physicalSurfaceName.asChar())
+                        .insert("osl_surface", shaderGroupName.asChar())));
         }
     }
 }
@@ -285,20 +258,4 @@ void AppleseedSwatchRenderer::defineMaterial(MObject shadingNode)
             }
         }
     }
-}
-
-void AppleseedSwatchRenderer::startAppleseedSwatchRender(AppleseedSwatchRenderer* swRend)
-{
-    if (swRend != 0)
-    {
-        swRend->mainLoop();
-        delete swRend;
-    }
-}
-
-void AppleseedSwatchRenderer::terminateAppleseedSwatchRender(AppleseedSwatchRenderer* swRend)
-{
-    SwatchesEvent swatchEvent;
-    SwatchesQueue.push(swatchEvent);
-    swRend->mTerminateLoop = true;
 }

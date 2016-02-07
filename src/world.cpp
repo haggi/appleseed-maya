@@ -26,13 +26,15 @@
 // THE SOFTWARE.
 //
 
+// Interface header.
+#include "world.h"
+
 // appleseed-maya headers.
 #include "threads/renderqueueworker.h"
 #include "utilities/logging.h"
 #include "appleseedrenderer.h"
 #include "appleseedswatchrenderer.h"
 #include "mayascene.h"
-#include "world.h"
 
 // Maya headers.
 #include <maya/MGlobal.h>
@@ -58,6 +60,8 @@ World* getWorldPtr()
 }
 
 World::World()
+  : mRenderType(RTYPENONE)
+  , mRenderState(RSTATENONE)
 {
     // in batch mode we do not need any renderView callbacks, and timer callbacks do not work anyway in batch
     if (MGlobal::mayaState() != MGlobal::kBatch)
@@ -74,12 +78,6 @@ World::World()
         shaderSearchPath.append(oslDirs[i].asChar());
 
     mSwatchRenderer.reset(new AppleseedSwatchRenderer());
-
-    boost::thread swatchRenderThread(AppleseedSwatchRenderer::startAppleseedSwatchRender, mSwatchRenderer.get());
-    swatchRenderThread.detach();
-
-    renderType = RTYPENONE;
-    renderState = RSTATENONE;
 }
 
 World::~World()
@@ -99,4 +97,29 @@ void World::cleanUpAfterRender()
 {
     // After a normal rendering we do not need the Maya scene data any more. Remove it to save memory.
     worldPointer->mScene.reset();
+}
+
+void World::setRenderType(RenderType type)
+{
+    mRenderType = type;
+}
+
+World::RenderType World::getRenderType()
+{
+    return mRenderType;
+}
+
+void World::setRenderState(RenderState state)
+{
+    mRenderState = state;
+}
+
+World::RenderState World::getRenderState()
+{
+    return mRenderState;
+}
+
+AppleseedSwatchRenderer* World::getSwatchRenderer()
+{
+    return mSwatchRenderer.get();
 }

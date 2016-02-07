@@ -47,13 +47,8 @@ class AppleseedSwatchRenderer
 {
   public:
     AppleseedSwatchRenderer();
-    ~AppleseedSwatchRenderer();
 
-    void mainLoop();
     void renderSwatch(NewSwatchRenderer* sr);
-
-    static void startAppleseedSwatchRender(AppleseedSwatchRenderer* swRend);
-    static void terminateAppleseedSwatchRender(AppleseedSwatchRenderer* swRend);
 
   private:
     foundation::auto_release_ptr<renderer::Project> mProject;

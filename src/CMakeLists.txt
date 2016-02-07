@@ -137,7 +137,6 @@ set (sources
     renderercontroller.h
     renderglobals.cpp
     renderglobals.h
-    swatchesevent.h
     tilecallback.cpp
     tilecallback.h
     version.cpp

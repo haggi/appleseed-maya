@@ -56,6 +56,15 @@ class World
     World();
     ~World();
 
+    boost::shared_ptr<MayaScene> mScene;
+    boost::shared_ptr<AppleseedRenderer> mRenderer;
+    boost::shared_ptr<RenderGlobals> mRenderGlobals;
+
+    MStringArray shaderSearchPath;
+
+    void initializeRenderEnvironment();
+    void cleanUpAfterRender();
+
     enum RenderType
     {
         RTYPENONE = 0,
@@ -64,6 +73,9 @@ class World
         BATCHRENDER,
         IPRRENDER
     };
+
+    void setRenderType(RenderType type);
+    RenderType getRenderType();
 
     enum RenderState
     {
@@ -76,49 +88,19 @@ class World
         RSTATETRANSLATING
     };
 
-    boost::shared_ptr<MayaScene> mScene;
-    boost::shared_ptr<AppleseedRenderer> mRenderer;
-    boost::shared_ptr<RenderGlobals> mRenderGlobals;
+    void setRenderState(RenderState state);
+    RenderState getRenderState();
 
-    MStringArray shaderSearchPath;
-
-    void initializeRenderEnvironment();
-
-    void setRenderType(RenderType type)
-    {
-        renderType = type;
-    }
-
-    RenderType getRenderType()
-    {
-        return renderType;
-    }
-
-    void setRenderState(RenderState state)
-    {
-        renderState = state;
-    }
-
-    RenderState getRenderState()
-    {
-        return renderState;
-    }
-
-    AppleseedSwatchRenderer* getSwatchRenderer()
-    {
-        return mSwatchRenderer.get();
-    }
-
-    void cleanUpAfterRender();
+    AppleseedSwatchRenderer* getSwatchRenderer();
 
   private:
-    RenderType renderType;
-    RenderState renderState;
-    std::auto_ptr<AppleseedSwatchRenderer> mSwatchRenderer;
+    RenderType                              mRenderType;
+    RenderState                             mRenderState;
+    std::auto_ptr<AppleseedSwatchRenderer>  mSwatchRenderer;
 };
 
 void deleteWorld();
 void defineWorld();
-World *getWorldPtr();
+World* getWorldPtr();
 
 #endif  // !WORLD_H
