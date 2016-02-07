@@ -942,6 +942,7 @@ HypershadeTileCallback::HypershadeTileCallback(HypershadeRenderer* mrenderer)
 
 void HypershadeTileCallback::release()
 {
+    delete this;
 }
 
 void HypershadeTileCallback::pre_render(const size_t x, const size_t y, const size_t width, const size_t height)
@@ -950,17 +951,12 @@ void HypershadeTileCallback::pre_render(const size_t x, const size_t y, const si
 
 HypershadeTileCallbackFactory::HypershadeTileCallbackFactory(HypershadeRenderer* renderer)
 {
-    tileCallback = new HypershadeTileCallback(renderer);
-}
-
-HypershadeTileCallbackFactory::~HypershadeTileCallbackFactory()
-{
-    delete tileCallback;
+    tileCallback = boost::shared_ptr<HypershadeTileCallback>(new HypershadeTileCallback(renderer));
 }
 
 asr::ITileCallback* HypershadeTileCallbackFactory::create()
 {
-    return tileCallback;
+    return tileCallback.get();
 }
 
 void HypershadeTileCallbackFactory::release()

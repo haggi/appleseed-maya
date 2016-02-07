@@ -45,6 +45,8 @@
 
 #include <maya/MPxRenderer.h>
 
+#include <boost/shared_ptr.hpp>
+
 // Standard headers.
 #include <map>
 #include <memory>
@@ -58,23 +60,25 @@ class HypershadeTileCallback
   : public asr::TileCallbackBase
 {
   public:
-    HypershadeRenderer *renderer;
     explicit HypershadeTileCallback(HypershadeRenderer *mrenderer);
     virtual void release();
     void pre_render(const size_t x, const size_t y, const size_t width, const size_t height);
     void post_render(const asr::Frame* frame);
     virtual void post_render_tile(const asr::Frame* frame, const size_t tile_x, const size_t tile_y);
+  private:
+    boost::shared_ptr<HypershadeRenderer> renderer;
+
 };
 
 class HypershadeTileCallbackFactory
   : public asr::ITileCallbackFactory
 {
   public:
-    HypershadeTileCallback *tileCallback;
     explicit HypershadeTileCallbackFactory(HypershadeRenderer *renderer);
-    virtual ~HypershadeTileCallbackFactory();
     virtual asr::ITileCallback* create();
     virtual void release();
+  private:
+    boost::shared_ptr<HypershadeTileCallback> tileCallback;
 };
 
 struct IdNameStruct
@@ -88,7 +92,6 @@ class HypershadeRenderer
   : public MPxRenderer
 {
   public:
-    RefreshParams refreshParams;
     HypershadeRenderer();
     virtual ~HypershadeRenderer();
     static void* creator();
@@ -130,6 +133,7 @@ class HypershadeRenderer
     int tileSize;
     int initialSize;
     int width, height;
+    RefreshParams refreshParams;
     boost::thread renderThread;
     asf::auto_release_ptr<asr::Project> project;
     std::auto_ptr<asr::MasterRenderer> mrenderer;
