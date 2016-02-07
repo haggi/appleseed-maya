@@ -247,34 +247,22 @@ asr::AssemblyInstance *getExistingObjectAssemblyInstance(MayaObject *obj)
     return ass->assembly_instances().get_by_name(assemblyInstanceName.asChar());
 }
 
-// colors are defined in the scene scope, makes handling easier
-void mayaColorToFloat(const MColor col, float *floatCol, float *alpha)
-{
-    floatCol[0] = col.r;
-    floatCol[1] = col.g;
-    floatCol[2] = col.b;
-    *alpha = col.a;
-}
-
 void defineColor(asr::Project *project, const char *name, MColor color, float intensity, MString colorSpace)
 {
-    asr::Scene *scene = project->get_scene();
-    asr::ColorEntity *col = scene->colors().get_by_name(name);
-    if (col != 0)
-        scene->colors().remove(col);
+    asr::Scene* scene = project->get_scene();
 
-    float colorDef[3];
-    float alpha = color.a;
-    mayaColorToFloat(color, colorDef, &alpha);
-    asf::auto_release_ptr<asr::ColorEntity> colorEntity = asr::ColorEntityFactory::create(
-        name,
-        asr::ParamArray()
-        .insert("color_space", colorSpace.asChar())
-        .insert("multiplier", intensity),
-        asr::ColorValueArray(3, colorDef),
-        asr::ColorValueArray(1, &alpha));
+    asr::ColorEntity* previous = scene->colors().get_by_name(name);
+    if (previous != 0)
+        scene->colors().remove(previous);
 
-    scene->colors().insert(colorEntity);
+    scene->colors().insert(
+        asr::ColorEntityFactory::create(
+            name,
+            asr::ParamArray()
+                .insert("color_space", colorSpace)
+                .insert("multiplier", intensity),
+            asr::ColorValueArray(3, &color.r),
+            asr::ColorValueArray(1, &color.a)));
 }
 
 // check if a texture is connected to this attribute. If yes, return the texture name, if not define the currentColor and return the color name.
@@ -380,8 +368,8 @@ void fillTransformMatrices(MMatrix matrix, asr::AssemblyInstance *assInstance)
     MMatrix colMatrix = matrix;
     MMatrixToAMatrix(colMatrix, appMatrix);
     assInstance->transform_sequence().set_transform(
-            0.0f,
-            asf::Transformd::from_local_to_parent(appMatrix));
+        0.0f,
+        asf::Transformd::from_local_to_parent(appMatrix));
 }
 
 void fillMatrices(boost::shared_ptr<MayaObject> obj, asr::TransformSequence& transformSequence)
@@ -445,66 +433,34 @@ void MMatrixToAMatrix(MMatrix& mayaMatrix, asf::Matrix4d& appleMatrix)
             appleMatrix[i * 4 + k] = rowMatrix[i][k];
 }
 
-void addVisibilityFlags(MObject& obj, asr::ParamArray& paramArray)
-{
-    MFnDependencyNode depFn(obj);
-
-    if (obj.hasFn(MFn::kMesh))
-    {
-        if (!getBoolAttr("primaryVisibility", depFn, true))
-            paramArray.insert_path("visibility.camera", false);
-
-        if (!getBoolAttr("castsShadows", depFn, true))
-            paramArray.insert_path("visibility.shadow", false);
-
-        if (!getBoolAttr("visibleInRefractions", depFn, true))
-            paramArray.insert_path("visibility.transparency", false);
-
-        if (!getBoolAttr("mtap_visibleLights", depFn, true))
-            paramArray.insert_path("visibility.light", false);
-
-        if (!getBoolAttr("mtap_visibleProbe", depFn, true))
-            paramArray.insert_path("visibility.probe", false);
-
-        if (!getBoolAttr("mtap_visibleGlossy", depFn, true))
-            paramArray.insert_path("visibility.glossy", false);
-
-        if (!getBoolAttr("mtap_visibleSpecular", depFn, true))
-            paramArray.insert_path("visibility.specular", false);
-
-        if (!getBoolAttr("mtap_visibleDiffuse", depFn, true))
-            paramArray.insert_path("visibility.diffuse", false);
-    }
-
-    if (obj.hasFn(MFn::kAreaLight))
-    {
-        if (!getBoolAttr("primaryVisibility", depFn, true))
-            paramArray.insert_path("visibility.camera", false);
-
-        if (!getBoolAttr("castsShadows", depFn, true))
-            paramArray.insert_path("visibility.shadow", false);
-
-        if (!getBoolAttr("visibleInRefractions", depFn, true))
-            paramArray.insert_path("visibility.transparency", false);
-
-        if (!getBoolAttr("mtap_visibleLights", depFn, true))
-            paramArray.insert_path("visibility.light", false);
-
-        if (!getBoolAttr("mtap_visibleProbe", depFn, true))
-            paramArray.insert_path("visibility.probe", false);
-
-        if (!getBoolAttr("mtap_visibleGlossy", depFn, true))
-            paramArray.insert_path("visibility.glossy", false);
-
-        if (!getBoolAttr("mtap_visibleSpecular", depFn, true))
-            paramArray.insert_path("visibility.specular", false);
-
-        if (!getBoolAttr("mtap_visibleDiffuse", depFn, true))
-            paramArray.insert_path("visibility.diffuse", false);
-    }
-}
-
 void addVisibilityFlags(boost::shared_ptr<MayaObject> obj, asr::ParamArray& paramArray)
 {
-    addVisibilityFlags(obj->mobject, paramArray);
+    MFnDependencyNode depFn(obj->mobject);
+
+    if (obj->mobject.hasFn(MFn::kMesh) || obj->mobject.hasFn(MFn::kAreaLight))
+    {
+        if (!getBoolAttr("primaryVisibility", depFn, true))
+            paramArray.insert_path("visibility.camera", false);
+
+        if (!getBoolAttr("castsShadows", depFn, true))
+            paramArray.insert_path("visibility.shadow", false);
+
+        if (!getBoolAttr("visibleInRefractions", depFn, true))
+            paramArray.insert_path("visibility.transparency", false);
+
+        if (!getBoolAttr("mtap_visibleLights", depFn, true))
+            paramArray.insert_path("visibility.light", false);
+
+        if (!getBoolAttr("mtap_visibleProbe", depFn, true))
+            paramArray.insert_path("visibility.probe", false);
+
+        if (!getBoolAttr("mtap_visibleGlossy", depFn, true))
+            paramArray.insert_path("visibility.glossy", false);
+
+        if (!getBoolAttr("mtap_visibleSpecular", depFn, true))
+            paramArray.insert_path("visibility.specular", false);
+
+        if (!getBoolAttr("mtap_visibleDiffuse", depFn, true))
+            paramArray.insert_path("visibility.diffuse", false);
+    }
 }

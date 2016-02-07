@@ -26,17 +26,16 @@
 // THE SOFTWARE.
 //
 
-#ifndef APPLESEED_UTILS_H
-#define APPLESEED_UTILS_H
-
-#include "renderer/api/light.h"
-#include "renderer/api/scene.h"
-#include "renderer/api/project.h"
+#ifndef APPLESEEDUTILS_H
+#define APPLESEEDUTILS_H
 
 #include "foundation/math/matrix.h"
 
-#include <maya/MFnDependencyNode.h>
+#include "renderer/api/light.h"
+#include "renderer/api/project.h"
+#include "renderer/api/scene.h"
 
+#include <maya/MFnDependencyNode.h>
 #include <maya/MMatrix.h>
 
 // Forward declarations.
@@ -65,12 +64,10 @@ void fillTransformMatrices(boost::shared_ptr<MayaObject> obj, asr::Light *assIns
 void fillTransformMatrices(MMatrix matrix, asr::AssemblyInstance *assInstance);
 void fillMatrices(boost::shared_ptr<MayaObject> obj, asr::TransformSequence& transformSequence);
 
-void mayaColorToFloat(const MColor col, const float *floatCol, float *alpha);
 void defineColor(asr::Project *project, const char *name, const MColor color, const float intensity, MString colorSpace = "srgb");
 MString colorOrMap(asr::Project *project, MFnDependencyNode& shaderNode, MString& attributeName);
 void removeTextureEntityIfItExists(MString& textureName);
 MString defineTexture(MFnDependencyNode& shader, MString& attributeName);
 void addVisibilityFlags(boost::shared_ptr<MayaObject> obj, asr::ParamArray& paramArray);
-void addVisibilityFlags(MObject& obj, asr::ParamArray& paramArray);
 
-#endif
+#endif  // !APPLESEEDUTILS_H
