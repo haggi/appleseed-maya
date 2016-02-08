@@ -26,24 +26,19 @@
 // THE SOFTWARE.
 //
 
-#include <maya/MTypes.h>
+// Interface header.
+#include "hypershaderenderer.h"
 
 #if MAYA_API_VERSION >= 201600
 
 // appleseed-maya headers.
-#include "utilities/logging.h"
-#include "utilities/attrtools.h"
-#include "hypershaderenderer.h"
-#include "osl/oslutils.h"
 #include "shadingtools/material.h"
 #include "shadingtools/shadingutils.h"
-#include "renderer/global/globallogger.h"
-#include "renderer/api/environment.h"
-#include "renderer/api/environmentedf.h"
-#include "renderer/api/texture.h"
-#include "renderer/api/environmentshader.h"
-#include "renderer/api/edf.h"
-#include "renderer/modeling/shadergroup/shadergroup.h"
+#include "utilities/attrtools.h"
+#include "utilities/logging.h"
+#include "utilities/meshtools.h"
+#include "utilities/oslutils.h"
+#include "utilities/tools.h"
 #include "appleseedutils.h"
 #include "world.h"
 
@@ -51,7 +46,10 @@
 #include "renderer/api/bsdf.h"
 #include "renderer/api/camera.h"
 #include "renderer/api/color.h"
+#include "renderer/api/edf.h"
 #include "renderer/api/environment.h"
+#include "renderer/api/environmentedf.h"
+#include "renderer/api/environmentshader.h"
 #include "renderer/api/frame.h"
 #include "renderer/api/light.h"
 #include "renderer/api/log.h"
@@ -60,7 +58,9 @@
 #include "renderer/api/project.h"
 #include "renderer/api/rendering.h"
 #include "renderer/api/scene.h"
+#include "renderer/api/shadergroup.h"
 #include "renderer/api/surfaceshader.h"
+#include "renderer/api/texture.h"
 #include "renderer/api/utility.h"
 
 // appleseed.foundation headers.
@@ -76,40 +76,33 @@
 #include "foundation/utility/searchpaths.h"
 
 // Maya headers.
-#include <maya/MPlugArray.h>
-#include <maya/MPlug.h>
-#include <maya/MGlobal.h>
-#include <maya/MStringArray.h>
-#include <maya/MFnDependencyNode.h>
+#include <maya/MFloatArray.h>
+#include <maya/MFloatPointArray.h>
+#include <maya/MFloatVectorArray.h>
 #include <maya/MFnDependencyNode.h>
 #include <maya/MFnMesh.h>
+#include <maya/MGlobal.h>
 #include <maya/MItMeshPolygon.h>
+#include <maya/MPlug.h>
+#include <maya/MPlugArray.h>
 #include <maya/MPointArray.h>
-#include <maya/MFloatPointArray.h>
-#include <maya/MFloatArray.h>
-#include <maya/MFloatVectorArray.h>
-
-#include <boost/thread/locks.hpp>
-#include <boost/thread/mutex.hpp>
-
-#include "utilities/tools.h"
-#include "utilities/attrtools.h"
-#include "utilities/logging.h"
-#include "utilities/meshtools.h"
-#include "shadingtools/shadingutils.h"
+#include <maya/MStringArray.h>
 
 // Standard headers.
 #include <vector>
 
 #define kNumChannels 4
 #define GETASM() project->get_scene()->assemblies().get_by_name("world")
-#define MPointToAppleseed(pt) asr::GVector3((float)pt.x, (float)pt.y, (float)pt.z)
 
 HypershadeRenderer::HypershadeRenderer()
 {
     initProject();
+    tileSize = 32;
+    initialSize = 256;
     width = height = initialSize;
+    lastMaterialName = "default";
     this->rb = (float*)malloc(width*height*kNumChannels*sizeof(float));
+    asyncStarted = false;
 }
 
 HypershadeRenderer::~HypershadeRenderer()
@@ -124,66 +117,66 @@ void HypershadeRenderer::initEnv()
     MString mayaRoot = getenv("MAYA_LOCATION");
     MString envMapAttrName = mayaRoot + "/presets/Assets/IBL/Exterior1_Color.exr";
 
-    asr::ParamArray fileparams;
+    renderer::ParamArray fileparams;
     fileparams.insert("filename", envMapAttrName.asChar());
     fileparams.insert("color_space", "linear_rgb");
 
-    asf::SearchPaths searchPaths;
-    asf::auto_release_ptr<asr::Texture> textureElement(
-        asr::DiskTexture2dFactory().create(
+    foundation::SearchPaths searchPaths;
+    foundation::auto_release_ptr<renderer::Texture> textureElement(
+        renderer::DiskTexture2dFactory().create(
         "envTex",
         fileparams,
         searchPaths));
 
     project->get_scene()->textures().insert(textureElement);
 
-    asr::ParamArray tInstParams;
+    renderer::ParamArray tInstParams;
     tInstParams.insert("addressing_mode", "clamp");
     tInstParams.insert("filtering_mode", "bilinear");
 
     MString textureInstanceName = "envTex_texInst";
-    asf::auto_release_ptr<asr::TextureInstance> tinst = asr::TextureInstanceFactory().create(
+    foundation::auto_release_ptr<renderer::TextureInstance> tinst = renderer::TextureInstanceFactory().create(
         textureInstanceName.asChar(),
         tInstParams,
         "envTex");
     project->get_scene()->texture_instances().insert(tinst);
 
 
-    asf::auto_release_ptr<asr::EnvironmentEDF> environmentEDF = asr::LatLongMapEnvironmentEDFFactory().create(
+    foundation::auto_release_ptr<renderer::EnvironmentEDF> environmentEDF = renderer::LatLongMapEnvironmentEDFFactory().create(
         "sky_edf",
-        asr::ParamArray()
+        renderer::ParamArray()
         .insert("radiance", textureInstanceName.asChar())
         .insert("radiance_multiplier", 1.0)
         .insert("horizontal_shift", -45.0f)
         .insert("vertical_shift", 10.0f)
         );
 
-    asr::EnvironmentEDF *sky = project->get_scene()->environment_edfs().get_by_name("sky_edf");
+    renderer::EnvironmentEDF *sky = project->get_scene()->environment_edfs().get_by_name("sky_edf");
     if (sky != 0)
         project->get_scene()->environment_edfs().remove(sky);
     project->get_scene()->environment_edfs().insert(environmentEDF);
 
-    asr::EnvironmentShader *shader = project->get_scene()->environment_shaders().get_by_name("sky_shader");
+    renderer::EnvironmentShader *shader = project->get_scene()->environment_shaders().get_by_name("sky_shader");
     if (shader != 0)
         project->get_scene()->environment_shaders().remove(shader);
 
     project->get_scene()->environment_shaders().insert(
-        asr::EDFEnvironmentShaderFactory().create(
+        renderer::EDFEnvironmentShaderFactory().create(
         "sky_shader",
-        asr::ParamArray()
+        renderer::ParamArray()
         .insert("environment_edf", "sky_edf")));
 
     project->get_scene()->set_environment(
-        asr::EnvironmentFactory::create(
+        renderer::EnvironmentFactory::create(
         "sky",
-        asr::ParamArray()
+        renderer::ParamArray()
         .insert("environment_edf", "sky_edf")
         .insert("environment_shader", "sky_shader")));
 }
 
 void HypershadeRenderer::initProject()
 {
-    project = asr::ProjectFactory::create("mayaRendererProject");
+    project = renderer::ProjectFactory::create("mayaRendererProject");
     project->add_default_configurations();
     project->configurations().get_by_name("final")->get_parameters().insert("rendering_threads", 16);
     project->configurations().get_by_name("interactive")->get_parameters().insert("rendering_threads", 16);
@@ -196,8 +189,8 @@ void HypershadeRenderer::initProject()
     defineMasterAssembly(project.get());
     defineDefaultMaterial(project.get());
 
-    asr::Configuration *cfg = project->configurations().get_by_name("interactive");
-    asr::ParamArray &params = cfg->get_parameters();
+    renderer::Configuration *cfg = project->configurations().get_by_name("interactive");
+    renderer::ParamArray &params = cfg->get_parameters();
     params.insert("sample_renderer", "generic");
     params.insert("sample_generator", "generic");
     params.insert("tile_renderer", "generic");
@@ -217,9 +210,9 @@ void HypershadeRenderer::initProject()
     MString tileString = MString("") + tileSize + " " + tileSize;
 
     project->set_frame(
-        asr::FrameFactory::create(
+        renderer::FrameFactory::create(
         "beauty",
-        asr::ParamArray()
+        renderer::ParamArray()
         .insert("resolution", res.asChar())
         .insert("tile_size", tileString.asChar())
         .insert("color_space", "linear_rgb")));
@@ -229,7 +222,7 @@ void HypershadeRenderer::initProject()
     tileCallbackFac.reset(new HypershadeTileCallbackFactory(this));
 
     mrenderer.reset(
-        new asr::MasterRenderer(
+        new renderer::MasterRenderer(
             project.ref(),
             project->configurations().get_by_name("interactive")->get_inherited_parameters(),
             &controller,
@@ -237,14 +230,12 @@ void HypershadeRenderer::initProject()
 
     for (uint i = 0; i < getWorldPtr()->shaderSearchPath.length(); i++)
     {
-        Logging::debug(MString("Search path: ") + getWorldPtr()->shaderSearchPath[i]);
         project->search_paths().push_back(getWorldPtr()->shaderSearchPath[i].asChar());
     }
 }
 
 bool HypershadeRenderer::isRunningAsync()
 {
-    Logging::debug("isRunningAsync");
     return true;
 }
 
@@ -264,8 +255,6 @@ void HypershadeRenderer::render()
     else
         return;
 
-    Logging::debug("renderthread done.");
-
     pp.progress = 2.0;
     progress(pp);
 }
@@ -277,17 +266,13 @@ static void startRenderThread(HypershadeRenderer* renderPtr)
 
 MStatus HypershadeRenderer::startAsync(const JobParams& params)
 {
-    Logging::debug("startAsync:");
-    Logging::debug(MString("\tJobDescr: ") + params.description + " max threads: " + params.maxThreads);
-    Logging::debug(MString("started async"));
     asyncStarted = true;
     return MStatus::kSuccess;
 }
 
 MStatus HypershadeRenderer::stopAsync()
 {
-    Logging::debug("stopAsync");
-    controller.status = asr::IRendererController::AbortRendering;
+    controller.set_status(renderer::IRendererController::AbortRendering);
     if (renderThread.joinable())
         renderThread.join();
     asyncStarted = false;
@@ -296,14 +281,12 @@ MStatus HypershadeRenderer::stopAsync()
 
 MStatus HypershadeRenderer::beginSceneUpdate()
 {
-    Logging::debug("beginSceneUpdate");
-    controller.status = asr::IRendererController::AbortRendering;
+    controller.set_status(renderer::IRendererController::AbortRendering);
     if (renderThread.joinable())
         renderThread.join();
     if (project.get() == 0)
         initProject();
     project->get_frame()->clear_main_image();
-
     return MStatus::kSuccess;
 }
 
@@ -314,18 +297,17 @@ MStatus HypershadeRenderer::translateMesh(const MUuid& id, const MObject& node)
     MString meshName = depFn.name();
     MString meshIdName = meshName;
     MString meshInstName = meshIdName + "_instance";
-    Logging::debug(MString("translateMesh ") + meshIdName);
 
-    asr::Object *obj = GETASM()->objects().get_by_name(meshIdName.asChar());
+    renderer::Object *obj = GETASM()->objects().get_by_name(meshIdName.asChar());
     if (obj != 0)
     {
-        Logging::debug(MString("Mesh object ") + meshName + " is already defined, removing...");
         GETASM()->objects().remove(obj);
         GETASM()->bump_version_id();
     }
-    asf::auto_release_ptr<asr::MeshObject> mesh = createMesh(mobject);
+
+    foundation::auto_release_ptr<renderer::MeshObject> mesh = createMesh(mobject);
     mesh->set_name(meshIdName.asChar());
-    GETASM()->objects().insert(asf::auto_release_ptr<asr::Object>(mesh));
+    GETASM()->objects().insert(foundation::auto_release_ptr<renderer::Object>(mesh));
 
     IdNameStruct idName;
     idName.id = id;
@@ -343,52 +325,51 @@ MStatus HypershadeRenderer::translateLightSource(const MUuid& id, const MObject&
     MString lightInstName = lightName + "_instance";
     MString lightIdName = lightName + "_" + id;
 
-    Logging::debug(MString("translateLightSource: ") + depFn.name() + " from type: " + node.apiTypeStr());
     if (node.hasFn(MFn::kAreaLight))
     {
-        asr::MeshObject *meshPtr = (asr::MeshObject *)GETASM()->objects().get_by_name(lightIdName.asChar());
+        renderer::MeshObject *meshPtr = (renderer::MeshObject *)GETASM()->objects().get_by_name(lightIdName.asChar());
         if (meshPtr != 0)
             GETASM()->objects().remove(meshPtr);
 
-        asf::auto_release_ptr<asr::MeshObject> plane = defineStandardPlane();
+        foundation::auto_release_ptr<renderer::MeshObject> plane = defineStandardPlane();
         plane->set_name(lightIdName.asChar());
-        GETASM()->objects().insert(asf::auto_release_ptr<asr::Object>(plane));
+        GETASM()->objects().insert(foundation::auto_release_ptr<renderer::Object>(plane));
 
-        meshPtr = (asr::MeshObject *)GETASM()->objects().get_by_name(lightIdName.asChar());
+        meshPtr = (renderer::MeshObject *)GETASM()->objects().get_by_name(lightIdName.asChar());
 
         MString areaLightMaterialName = lightIdName + "_material";
         MString physicalSurfaceName = lightIdName + "_physical_surface_shader";
         MString areaLightColorName = lightIdName + "_color";
         MString edfName = lightIdName + "_edf";
-        asr::ParamArray edfParams;
+        renderer::ParamArray edfParams;
         MColor color = getColorAttr("color", depFn);
         defineColor(project.get(), areaLightColorName.asChar(), color, getFloatAttr("intensity", depFn, 1.0f) * 1);
         edfParams.insert("radiance", areaLightColorName.asChar());
 
-        asr::EDF *edfPtr = GETASM()->edfs().get_by_name(edfName.asChar());
+        renderer::EDF *edfPtr = GETASM()->edfs().get_by_name(edfName.asChar());
         if (edfPtr != 0)
             GETASM()->edfs().remove(edfPtr);
 
-        asf::auto_release_ptr<asr::EDF> edf = asr::DiffuseEDFFactory().create(edfName.asChar(), edfParams);
+        foundation::auto_release_ptr<renderer::EDF> edf = renderer::DiffuseEDFFactory().create(edfName.asChar(), edfParams);
         GETASM()->edfs().insert(edf);
 
-        asr::SurfaceShader *ss = GETASM()->surface_shaders().get_by_name(physicalSurfaceName.asChar());
+        renderer::SurfaceShader *ss = GETASM()->surface_shaders().get_by_name(physicalSurfaceName.asChar());
         if (ss != 0)
             GETASM()->surface_shaders().remove(ss);
 
         GETASM()->surface_shaders().insert(
-            asr::PhysicalSurfaceShaderFactory().create(
+            renderer::PhysicalSurfaceShaderFactory().create(
             physicalSurfaceName.asChar(),
-            asr::ParamArray()));
+            renderer::ParamArray()));
 
-        asr::Material *ma = GETASM()->materials().get_by_name(areaLightMaterialName.asChar());
+        renderer::Material *ma = GETASM()->materials().get_by_name(areaLightMaterialName.asChar());
         if (ma != 0)
             GETASM()->materials().remove(ma);
 
         GETASM()->materials().insert(
-            asr::GenericMaterialFactory().create(
+            renderer::GenericMaterialFactory().create(
             areaLightMaterialName.asChar(),
-            asr::ParamArray()
+            renderer::ParamArray()
             .insert("surface_shader", physicalSurfaceName.asChar())
             .insert("edf", edfName.asChar())));
 
@@ -404,14 +385,12 @@ MStatus HypershadeRenderer::translateLightSource(const MUuid& id, const MObject&
 
 MStatus HypershadeRenderer::translateCamera(const MUuid& id, const MObject& node)
 {
-    Logging::debug("translateCamera");
-
-    asr::Camera *camera = project->get_scene()->get_camera();
+    renderer::Camera *camera = project->get_scene()->get_camera();
     MFnDependencyNode depFn(node);
     MString camName = depFn.name();
 
     float imageAspect = (float)width / (float)height;
-    asr::ParamArray camParams;
+    renderer::ParamArray camParams;
     float horizontalFilmAperture = getFloatAttr("horizontalFilmAperture", depFn, 24.892f);
     float verticalFilmAperture = getFloatAttr("verticalFilmAperture", depFn, 18.669f);
     float focalLength = getFloatAttr("focalLength", depFn, 35.0f);
@@ -430,9 +409,10 @@ MStatus HypershadeRenderer::translateCamera(const MUuid& id, const MObject& node
     camParams.insert("focal_distance", (MString("") + focusDistance).asChar());
     camParams.insert("f_stop", (MString("") + fStop).asChar());
 
-    asf::auto_release_ptr<asr::Camera> appleCam = asr::PinholeCameraFactory().create(
-        camName.asChar(),
-        camParams);
+    foundation::auto_release_ptr<renderer::Camera> appleCam(
+        renderer::PinholeCameraFactory().create(
+            camName.asChar(),
+            camParams));
     project->get_scene()->set_camera(appleCam);
 
     IdNameStruct idName;
@@ -446,7 +426,6 @@ MStatus HypershadeRenderer::translateCamera(const MUuid& id, const MObject& node
 
 MStatus HypershadeRenderer::translateEnvironment(const MUuid& id, EnvironmentType type)
 {
-    Logging::debug("translateEnvironment");
     IdNameStruct idName;
     idName.id = id;
     idName.name = MString("Environment");
@@ -457,7 +436,6 @@ MStatus HypershadeRenderer::translateEnvironment(const MUuid& id, EnvironmentTyp
 
 MStatus HypershadeRenderer::translateTransform(const MUuid& id, const MUuid& childId, const MMatrix& matrix)
 {
-    Logging::debug(MString("translateTransform id: ") + id + " childId " + childId);
     MObject shapeNode;
     IdNameStruct idNameObj;
     std::vector<IdNameStruct>::iterator nsIt;
@@ -465,7 +443,6 @@ MStatus HypershadeRenderer::translateTransform(const MUuid& id, const MUuid& chi
     {
         if (nsIt->id == lastShapeId)
         {
-            Logging::debug(MString("Found id object for transform: ") + nsIt->name);
             shapeNode = nsIt->mobject;
             idNameObj = *nsIt;
         }
@@ -473,34 +450,33 @@ MStatus HypershadeRenderer::translateTransform(const MUuid& id, const MUuid& chi
     MString elementInstName = idNameObj.name + "_instance";
     MString elementName = idNameObj.name;
     MMatrix mayaMatrix = matrix;
-    asf::Matrix4d appleMatrix;
+    foundation::Matrix4d appleMatrix;
     MMatrixToAMatrix(mayaMatrix, appleMatrix);
 
     if (idNameObj.mobject.hasFn(MFn::kMesh))
     {
-        asr::ObjectInstance *objInst = GETASM()->object_instances().get_by_name(elementInstName.asChar());
+        renderer::ObjectInstance *objInst = GETASM()->object_instances().get_by_name(elementInstName.asChar());
         if (objInst != 0)
         {
-            Logging::debug(MString("Removing already existing inst object: ") + elementInstName);
             GETASM()->object_instances().remove(objInst);
         }
         GETASM()->object_instances().get_by_name(elementInstName.asChar());
         GETASM()->object_instances().insert(
-            asr::ObjectInstanceFactory::create(
+            renderer::ObjectInstanceFactory::create(
             elementInstName.asChar(),
-            asr::ParamArray(),
+            renderer::ParamArray(),
             elementName.asChar(),
-            asf::Transformd::from_local_to_parent(appleMatrix),
-            asf::StringDictionary()
+            foundation::Transformd::from_local_to_parent(appleMatrix),
+            foundation::StringDictionary()
             .insert("slot0", lastMaterialName),
-            asf::StringDictionary()
+            foundation::StringDictionary()
             .insert("slot0", lastMaterialName)));
     }
 
     if (idNameObj.mobject.hasFn(MFn::kCamera))
     {
-        asr::Camera *cam = project->get_scene()->get_camera();
-        cam->transform_sequence().set_transform(0, asf::Transformd::from_local_to_parent(appleMatrix));
+        renderer::Camera *cam = project->get_scene()->get_camera();
+        cam->transform_sequence().set_transform(0, foundation::Transformd::from_local_to_parent(appleMatrix));
     }
 
     if (idNameObj.mobject.hasFn(MFn::kAreaLight))
@@ -511,28 +487,25 @@ MStatus HypershadeRenderer::translateTransform(const MUuid& id, const MUuid& chi
         MMatrix lightMatrix = tm.asMatrix() * mayaMatrix;
         MMatrixToAMatrix(lightMatrix, appleMatrix);
 
-        asr::ObjectInstance *objInst = GETASM()->object_instances().get_by_name(elementInstName.asChar());
+        renderer::ObjectInstance *objInst = GETASM()->object_instances().get_by_name(elementInstName.asChar());
         if (objInst != 0)
         {
-            Logging::debug(MString("Removing already existing inst object: ") + elementInstName);
             GETASM()->object_instances().remove(objInst);
         }
-        Logging::debug(MString("area light transform: ") + idNameObj.name);
         MString areaLightMaterialName = elementName + "_material";
-        asr::ParamArray instParams;
+        renderer::ParamArray instParams;
         instParams.insert_path("visibility.camera", false); // set primary visibility to false for area lights
 
         GETASM()->object_instances().insert(
-            asr::ObjectInstanceFactory::create(
-            elementInstName.asChar(),
-            instParams,
-            elementName.asChar(),
-            asf::Transformd::from_local_to_parent(appleMatrix),
-            asf::StringDictionary()
-            .insert("slot0", areaLightMaterialName.asChar()),
-            asf::StringDictionary()
-            .insert("slot0", areaLightMaterialName.asChar())
-            ));
+            renderer::ObjectInstanceFactory::create(
+                elementInstName.asChar(),
+                instParams,
+                elementName.asChar(),
+                foundation::Transformd::from_local_to_parent(appleMatrix),
+                foundation::StringDictionary()
+                    .insert("slot0", areaLightMaterialName.asChar()),
+                foundation::StringDictionary()
+                    .insert("slot0", areaLightMaterialName.asChar())));
     }
 
     IdNameStruct idName;
@@ -557,7 +530,7 @@ MStatus HypershadeRenderer::translateShader(const MUuid& id, const MObject& node
         MPlugArray pa, paOut;
         MFnDependencyNode depFn(node);
         depFn.getConnections(pa);
-        asr::Assembly *assembly = project->get_scene()->assemblies().get_by_name("swatchRenderer_world");
+        renderer::Assembly *assembly = project->get_scene()->assemblies().get_by_name("swatchRenderer_world");
         for (uint i = 0; i < pa.length(); i++)
         {
             if (pa[i].isDestination())
@@ -576,7 +549,7 @@ MStatus HypershadeRenderer::translateShader(const MUuid& id, const MObject& node
             }
         }
     }
-    asr::Assembly *assembly = GETASM();
+    renderer::Assembly *assembly = GETASM();
     updateMaterial(sgNode, assembly);
 
     MObject surfaceShaderNode = getConnectedInNode(sgNode, "surfaceShader");
@@ -593,128 +566,113 @@ MStatus HypershadeRenderer::translateShader(const MUuid& id, const MObject& node
     return MStatus::kSuccess;
 }
 
-void HypershadeRenderer::updateMaterial(MObject materialNode, asr::Assembly *assembly)
+void HypershadeRenderer::updateMaterial(const MObject materialNode, const renderer::Assembly* assembly)
 {
-	OSLUtilClass OSLShaderClass;
-	MObject surfaceShaderNode = getConnectedInNode(materialNode, "surfaceShader");
-	MString surfaceShaderName = getObjectName(surfaceShaderNode);
-	MString shadingGroupName = getObjectName(materialNode);
-	ShadingNetwork network(surfaceShaderNode);
-	size_t numNodes = network.shaderList.size();
+    OSLUtilClass OSLShaderClass;
+    MObject surfaceShaderNode = getConnectedInNode(materialNode, "surfaceShader");
+    const MString surfaceShaderName = getObjectName(surfaceShaderNode);
+    MString shadingGroupName = getObjectName(materialNode);
+    ShadingNetwork network(surfaceShaderNode);
+    const size_t numNodes = network.shaderList.size();
 
-	MString assName = "swatchRenderer_world";
-	if (assName == assembly->get_name())
-	{
-		shadingGroupName = "previewSG";
-	}
+    if (assembly->get_name() == "swatchRenderer_world")
+    {
+        shadingGroupName = "previewSG";
+    }
 
-	MString shaderGroupName = shadingGroupName + "_OSLShadingGroup";
+    MString shaderGroupName = shadingGroupName + "_OSLShadingGroup";
 
-	asr::ShaderGroup *shaderGroup = assembly->shader_groups().get_by_name(shaderGroupName.asChar());
+    renderer::ShaderGroup *shaderGroup = assembly->shader_groups().get_by_name(shaderGroupName.asChar());
 
-	if (shaderGroup != nullptr)
-	{
-		shaderGroup->clear();
-	}
-	else{
-		asf::auto_release_ptr<asr::ShaderGroup> oslShadingGroup = asr::ShaderGroupFactory().create(shaderGroupName.asChar());
-		assembly->shader_groups().insert(oslShadingGroup);
-		shaderGroup = assembly->shader_groups().get_by_name(shaderGroupName.asChar());
-	}
+    if (shaderGroup != 0)
+    {
+        shaderGroup->clear();
+    }
+    else
+    {
+        foundation::auto_release_ptr<renderer::ShaderGroup> oslShadingGroup = renderer::ShaderGroupFactory().create(shaderGroupName.asChar());
+        assembly->shader_groups().insert(oslShadingGroup);
+        shaderGroup = assembly->shader_groups().get_by_name(shaderGroupName.asChar());
+    }
 
-	OSLShaderClass.group = (OSL::ShaderGroup *)shaderGroup;
+    OSLShaderClass.group = (OSL::ShaderGroup *)shaderGroup;
 
-	MFnDependencyNode shadingGroupNode(materialNode);
-	MPlug shaderPlug = shadingGroupNode.findPlug("surfaceShader");
-	OSLShaderClass.createOSLProjectionNodes(shaderPlug);
+    MFnDependencyNode shadingGroupNode(materialNode);
+    MPlug shaderPlug = shadingGroupNode.findPlug("surfaceShader");
+    OSLShaderClass.createOSLProjectionNodes(shaderPlug);
 
-	for (int shadingNodeId = 0; shadingNodeId < numNodes; shadingNodeId++)
-	{
-		ShadingNode snode = network.shaderList[shadingNodeId];
-		Logging::debug(MString("ShadingNode Id: ") + shadingNodeId + " ShadingNode name: " + snode.fullName);
-		if (shadingNodeId == (numNodes - 1))
-			Logging::debug(MString("LastNode Surface Shader: ") + snode.fullName);
-		OSLShaderClass.createOSLShadingNode(network.shaderList[shadingNodeId]);
-	}
+    for (int shadingNodeId = 0; shadingNodeId < numNodes; shadingNodeId++)
+    {
+        ShadingNode snode = network.shaderList[shadingNodeId];
+        OSLShaderClass.createOSLShadingNode(network.shaderList[shadingNodeId]);
+    }
 
-	OSLShaderClass.cleanupShadingNodeList();
-	OSLShaderClass.createAndConnectShaderNodes();
+    OSLShaderClass.cleanupShadingNodeList();
+    OSLShaderClass.createAndConnectShaderNodes();
 
-	if (numNodes > 0)
-	{
-		ShadingNode snode = network.shaderList[numNodes - 1];
-		MString layer = (snode.fullName + "_interface");
-		Logging::debug(MString("Adding interface shader: ") + layer);
-		asr::ShaderGroup *sg = (asr::ShaderGroup *)OSLShaderClass.group;
-		sg->add_shader("surface", "surfaceShaderInterface", layer.asChar(), asr::ParamArray());
-		const char *srcLayer = snode.fullName.asChar();
-		const char *srcAttr = "outColor";
-		const char *dstLayer = layer.asChar();
-		const char *dstAttr = "inColor";
-		Logging::debug(MString("Connecting interface shader: ") + srcLayer + "." + srcAttr + " -> " + dstLayer + "." + dstAttr);
-		sg->add_connection(srcLayer, srcAttr, dstLayer, dstAttr);
-	}
+    if (numNodes > 0)
+    {
+        ShadingNode snode = network.shaderList[numNodes - 1];
+        MString layer = (snode.fullName + "_interface");
+        renderer::ShaderGroup *sg = (renderer::ShaderGroup *)OSLShaderClass.group;
+        sg->add_shader("surface", "surfaceShaderInterface", layer.asChar(), renderer::ParamArray());
+        const char *srcLayer = snode.fullName.asChar();
+        const char *srcAttr = "outColor";
+        const char *dstLayer = layer.asChar();
+        const char *dstAttr = "inColor";
+        sg->add_connection(srcLayer, srcAttr, dstLayer, dstAttr);
+    }
 
-	MString physicalSurfaceName = shadingGroupName + "_physical_surface_shader";
+    MString physicalSurfaceName = shadingGroupName + "_physical_surface_shader";
 
-	// add shaders only if they do not yet exist
-	if (assembly->surface_shaders().get_by_name(physicalSurfaceName.asChar()) == nullptr)
-	{
-		assembly->surface_shaders().insert(
-			asr::PhysicalSurfaceShaderFactory().create(
-			physicalSurfaceName.asChar(),
-			asr::ParamArray()));
-	}
-	if (assembly->materials().get_by_name(shadingGroupName.asChar()) == nullptr)
-	{
-		assembly->materials().insert(
-			asr::OSLMaterialFactory().create(
-			shadingGroupName.asChar(),
-			asr::ParamArray()
-			.insert("surface_shader", physicalSurfaceName.asChar())
-			.insert("osl_surface", shaderGroupName.asChar())));
-	}
-
+    if (assembly->surface_shaders().get_by_name(physicalSurfaceName.asChar()) == 0)
+    {
+        assembly->surface_shaders().insert(
+            renderer::PhysicalSurfaceShaderFactory().create(
+            physicalSurfaceName.asChar(),
+            renderer::ParamArray()));
+    }
+    if (assembly->materials().get_by_name(shadingGroupName.asChar()) == 0)
+    {
+        assembly->materials().insert(
+            renderer::OSLMaterialFactory().create(
+            shadingGroupName.asChar(),
+            renderer::ParamArray()
+                .insert("surface_shader", physicalSurfaceName.asChar())
+                .insert("osl_surface", shaderGroupName.asChar())));
+    }
 }
 
 MStatus HypershadeRenderer::setProperty(const MUuid& id, const MString& name, bool value)
 {
-    Logging::debug(MString("setProperty bool: ") + name + " " + value);
     return MStatus::kSuccess;
 }
 
 MStatus HypershadeRenderer::setProperty(const MUuid& id, const MString& name, int value)
 {
-    Logging::debug(MString("setProperty int: ") + name + " " + value);
     return MStatus::kSuccess;
 }
 
 MStatus HypershadeRenderer::setProperty(const MUuid& id, const MString& name, float value)
 {
-    Logging::debug(MString("setProperty float: ") + name + " " + value);
     return MStatus::kSuccess;
 }
 
 MStatus HypershadeRenderer::setProperty(const MUuid& id, const MString& name, const MString& value)
 {
-    Logging::debug(MString("setProperty string: ") + name + " " + value);
-
     IdNameStruct idNameObj;
     std::vector<IdNameStruct>::iterator nsIt;
     for (nsIt = objectArray.begin(); nsIt != objectArray.end(); nsIt++)
     {
         if (nsIt->id == id)
         {
-            Logging::debug(MString("Found id object for string property: ") + nsIt->name);
             if (nsIt->name == "Environment")
             {
                 if (name == "imageFile")
                 {
-                    Logging::debug(MString("Setting environment image file to: ") + value);
-                    asr::Texture *tex = project->get_scene()->textures().get_by_name("envTex");
+                    renderer::Texture *tex = project->get_scene()->textures().get_by_name("envTex");
                     if (tex != 0)
                     {
-                        Logging::debug(MString("Removing already existing env texture."));
                         project->get_scene()->textures().remove(tex);
                     }
                     MString imageFile = value;
@@ -724,20 +682,20 @@ MStatus HypershadeRenderer::setProperty(const MUuid& id, const MString& name, co
                         imageFile = mayaRoot + "/presets/Assets/IBL/black.exr";
                     }
 
-                    asr::ParamArray& pa = project->get_scene()->environment_edfs().get_by_name("sky_edf")->get_parameters();
+                    renderer::ParamArray& pa = project->get_scene()->environment_edfs().get_by_name("sky_edf")->get_parameters();
                     if (MString(pa.get_path("radiance")) != "envTex_texInst")
                     {
                         pa.insert("radiance", "envTex_texInst");
                         project->get_scene()->environment_edfs().get_by_name("sky_edf")->bump_version_id();
                     }
 
-                    asr::ParamArray fileparams;
+                    renderer::ParamArray fileparams;
                     fileparams.insert("filename", imageFile.asChar());
                     fileparams.insert("color_space", "linear_rgb");
 
-                    asf::SearchPaths searchPaths;
-                    asf::auto_release_ptr<asr::Texture> textureElement(
-                        asr::DiskTexture2dFactory().create(
+                    foundation::SearchPaths searchPaths;
+                    foundation::auto_release_ptr<renderer::Texture> textureElement(
+                        renderer::DiskTexture2dFactory().create(
                         "envTex",
                         fileparams,
                         searchPaths));
@@ -753,12 +711,10 @@ MStatus HypershadeRenderer::setProperty(const MUuid& id, const MString& name, co
 
 MStatus HypershadeRenderer::setShader(const MUuid& id, const MUuid& shaderId)
 {
-    Logging::debug("setShader");
     IdNameStruct objElement, shaderElement;
     std::vector<IdNameStruct>::iterator nsIt;
     for (nsIt = objectArray.begin(); nsIt != objectArray.end(); nsIt++)
     {
-        Logging::debug(MString("Search for obj id: ") + id + " in " + nsIt->id + " name: " + nsIt->name);
         if (nsIt->id == id)
         {
             objElement = *nsIt;
@@ -767,38 +723,33 @@ MStatus HypershadeRenderer::setShader(const MUuid& id, const MUuid& shaderId)
     }
     for (nsIt = objectArray.begin(); nsIt != objectArray.end(); nsIt++)
     {
-        Logging::debug(MString("Search for shader id: ") + shaderId + " in " + nsIt->id + " name: " + nsIt->name);
         if (nsIt->id == shaderId)
         {
             shaderElement = *nsIt;
             break;
         }
     }
-    if ((objElement.mobject == MObject::kNullObj) || (shaderElement.mobject == MObject::kNullObj))
+    if (objElement.mobject == MObject::kNullObj || shaderElement.mobject == MObject::kNullObj)
     {
         Logging::error(MString("Unable to find obj or shader for assignment. ShaderName: ") + shaderElement.name + " obj name " + objElement.name);
         return MS::kFailure;
     }
-    Logging::debug(MString("--------- Assign shader ") + shaderElement.name + " to object named " + objElement.name);
 
-
-    asr::ObjectInstance *objInstance = GETASM()->object_instances().get_by_name(objElement.name.asChar());
+    renderer::ObjectInstance *objInstance = GETASM()->object_instances().get_by_name(objElement.name.asChar());
     if (objInstance != 0)
         objInstance->get_front_material_mappings().insert("slot0", shaderElement.name.asChar());
     else
-        Logging::debug(MString("unable to assign shader "));
+        Logging::error(MString("unable to assign shader"));
 
     return MStatus::kSuccess;
 }
 
 MStatus HypershadeRenderer::setResolution(unsigned int w, unsigned int h)
 {
-    Logging::debug(MString("setResolution to") + w + " " + h);
     width = w;
     height = h;
 
-    // Update resolution buffer
-    rb = (float*)realloc(rb, w*h*kNumChannels*sizeof(float));
+    rb = (float*)realloc(rb, w * h * kNumChannels * sizeof(float));
 
     for (uint x = 0; x < width; x++)
     {
@@ -815,29 +766,29 @@ MStatus HypershadeRenderer::setResolution(unsigned int w, unsigned int h)
     MString res = MString("") + width + " " + height;
     MString tileString = MString("") + tileSize + " " + tileSize;
 
-    asr::Camera *cam = project->get_scene()->get_camera();
+    renderer::Camera *cam = project->get_scene()->get_camera();
     MString camName = "";
     if (cam != 0)
     {
         camName = project->get_scene()->get_camera()->get_name();
-        asr::ParamArray &camParams = cam->get_parameters();
+        renderer::ParamArray &camParams = cam->get_parameters();
         MString dim = camParams.get_path("film_dimensions");
         MStringArray values;
         dim.split(' ', values);
-        float filmWidth = values[0].asFloat();
-        float filmHeight = filmWidth * h / (float)w;
+        const float filmWidth = values[0].asFloat();
+        const float filmHeight = filmWidth * h / (float)w;
         camParams.insert("film_dimensions", (MString("") + filmWidth + " " + filmHeight).asChar());
     }
 
     project->set_frame(
-        asr::FrameFactory::create(
+        renderer::FrameFactory::create(
         "beauty",
-        asr::ParamArray()
-        .insert("camera", camName.asChar())
-        .insert("resolution", res.asChar())
-        .insert("tile_size", tileString.asChar())
-        .insert("pixel_format", "float")
-        .insert("color_space", "linear_rgb")));
+        renderer::ParamArray()
+            .insert("camera", camName.asChar())
+            .insert("resolution", res.asChar())
+            .insert("tile_size", tileString.asChar())
+            .insert("pixel_format", "float")
+            .insert("color_space", "linear_rgb")));
 
     project->get_frame()->get_parameters().insert("pixel_format", "float");
 
@@ -846,8 +797,7 @@ MStatus HypershadeRenderer::setResolution(unsigned int w, unsigned int h)
 
 MStatus HypershadeRenderer::endSceneUpdate()
 {
-    Logging::debug("endSceneUpdate");
-    controller.status = asr::IRendererController::ContinueRendering;
+    controller.set_status(renderer::IRendererController::ContinueRendering);
     ProgressParams progressParams;
     progressParams.progress = 0.0;
     progress(progressParams);
@@ -862,13 +812,13 @@ MStatus HypershadeRenderer::endSceneUpdate()
         progressParams.progress = 2.0f;
         progress(progressParams);
     }
+
     return MStatus::kSuccess;
 }
 
 MStatus HypershadeRenderer::destroyScene()
 {
-    Logging::debug("destroyScene");
-    controller.status = asr::IRendererController::AbortRendering;
+    controller.status = renderer::IRendererController::AbortRendering;
     if (renderThread.joinable())
         renderThread.join();
 
@@ -880,11 +830,10 @@ MStatus HypershadeRenderer::destroyScene()
 
 bool HypershadeRenderer::isSafeToUnload()
 {
-    Logging::debug("isSafeToUnload");
     return true;
 }
 
-void HypershadeRenderer::copyTileToBuffer(asf::Tile& tile, int tile_x, int tile_y)
+void HypershadeRenderer::copyTileToBuffer(foundation::Tile& tile, int tile_x, int tile_y)
 {
     size_t tw = tile.get_width();
     size_t th = tile.get_height();
@@ -902,7 +851,8 @@ void HypershadeRenderer::copyTileToBuffer(asf::Tile& tile, int tile_x, int tile_
             rb[index + 3] = tile.get_component<float>(x, y, 3);
         }
     }
-    ////The image is R32G32B32A32_Float format
+
+    // The image is in R32G32B32A32_Float format.
     refreshParams.bottom = 0;
     refreshParams.top = height - 1;
     refreshParams.bytesPerChannel = sizeof(float);
@@ -915,11 +865,11 @@ void HypershadeRenderer::copyTileToBuffer(asf::Tile& tile, int tile_x, int tile_
     refresh(refreshParams);
 }
 
-void HypershadeRenderer::copyFrameToBuffer(float *frame, int w, int h)
+void HypershadeRenderer::copyFrameToBuffer(float* frame, int w, int h)
 {
     if ((w != width) || (h != height))
     {
-        Logging::error("wh ungleich.");
+        Logging::error("width or height from frame buffer do not match with internal one.");
         return;
     }
 
@@ -938,31 +888,27 @@ void HypershadeRenderer::copyFrameToBuffer(float *frame, int w, int h)
     refresh(refreshParams);
 }
 
-void HypershadeTileCallback::post_render_tile(const asr::Frame* frame, const size_t tile_x, const size_t tile_y)
+void HypershadeTileCallback::post_render_tile(const renderer::Frame* frame, const size_t tile_x, const size_t tile_y)
 {
-    Logging::debug("HypershadeTileCallback::post_render_tile");
-    asf::Tile& tile = frame->image().tile(tile_x, tile_y);
+    foundation::Tile& tile = frame->image().tile(tile_x, tile_y);
     renderer->copyTileToBuffer(tile, tile_x, tile_y);
 }
 
-void HypershadeTileCallback::post_render(const asr::Frame* frame)
+void HypershadeTileCallback::post_render(const renderer::Frame* frame)
 {
-    Logging::debug("HypershadeTileCallback::post_render frame");
-
-    const asf::Image& img = frame->image();
-    const asf::CanvasProperties& frame_props = img.properties();
+    const foundation::Image& img = frame->image();
+    const foundation::CanvasProperties& frame_props = img.properties();
     const size_t tileSize = frame_props.m_tile_height;
-    size_t numPixels = frame_props.m_canvas_width * frame_props.m_canvas_height;
     const size_t width = frame_props.m_canvas_width;
     const size_t height = frame_props.m_canvas_height;
 
-    float* buffer = new float[numPixels * kNumChannels];
+    float* buffer = new float[frame_props.m_pixel_count * kNumChannels];
 
     for (size_t tile_y = 0; tile_y < frame_props.m_tile_count_y; tile_y++)
     {
         for (size_t tile_x = 0; tile_x < frame_props.m_tile_count_x; tile_x++)
         {
-            const asf::Tile& tile = frame->image().tile(tile_x, tile_y);
+            const foundation::Tile& tile = frame->image().tile(tile_x, tile_y);
             const size_t tw = tile.get_width();
             const size_t th = tile.get_height();
 
@@ -972,10 +918,10 @@ void HypershadeTileCallback::post_render(const asr::Frame* frame)
                 {
                     const size_t index = (((height - 1) - (tile_y * tileSize + y)) * width + (tile_x * tileSize) + x) * kNumChannels;
 
-                    rb[index + 0] = tile.get_component<float>(x, y, 0);
-                    rb[index + 1] = tile.get_component<float>(x, y, 1);
-                    rb[index + 2] = tile.get_component<float>(x, y, 2);
-                    rb[index + 3] = tile.get_component<float>(x, y, 3);
+                    rb[index] = tile.get_component<float>(x, y, 0);
+                    buffer[index + 1] = tile.get_component<float>(x, y, 1);
+                    buffer[index + 2] = tile.get_component<float>(x, y, 2);
+                    buffer[index + 3] = tile.get_component<float>(x, y, 3);
                 }
             }
         }
@@ -986,106 +932,33 @@ void HypershadeTileCallback::post_render(const asr::Frame* frame)
     delete [] buffer;
 }
 
-asf::auto_release_ptr<asr::MeshObject> HypershadeRenderer::defineStandardPlane(bool area)
+HypershadeTileCallback::HypershadeTileCallback(HypershadeRenderer* renderer)
+  : mRenderer(renderer)
 {
-	asf::auto_release_ptr<asr::MeshObject> object(asr::MeshObjectFactory::create("standardPlane", asr::ParamArray()));
-
-	if (area)
-	{
-		// Vertices.
-		object->push_vertex(asr::GVector3(-1.0f, -1.0f, 0.0f));
-		object->push_vertex(asr::GVector3(-1.0f, 1.0f, 0.0f));
-		object->push_vertex(asr::GVector3(1.0f, 1.0f, 0.0f));
-		object->push_vertex(asr::GVector3(1.0f, -1.0f, 0.0f));
-	}
-	else{
-		// Vertices.
-		object->push_vertex(asr::GVector3(-1.0f, 0.0f, -1.0f));
-		object->push_vertex(asr::GVector3(-1.0f, 0.0f, 1.0f));
-		object->push_vertex(asr::GVector3(1.0f, 0.0f, 1.0f));
-		object->push_vertex(asr::GVector3(1.0f, 0.0f, -1.0f));
-	}
-
-	if (area)
-	{
-		object->push_vertex_normal(asr::GVector3(0.0f, 0.0f, -1.0f));
-	}
-	else{
-		object->push_vertex_normal(asr::GVector3(0.0f, 1.0f, 0.0f));
-	}
-
-	object->push_tex_coords(asr::GVector2(0.0, 0.0));
-	object->push_tex_coords(asr::GVector2(1.0, 0.0));
-	object->push_tex_coords(asr::GVector2(1.0, 1.0));
-	object->push_tex_coords(asr::GVector2(0.0, 1.0));
-
-	// Triangles.
-	object->push_triangle(asr::Triangle(0, 1, 2, 0, 0, 0, 0, 1, 2, 0));
-	object->push_triangle(asr::Triangle(0, 2, 3, 0, 0, 0, 0, 2, 3, 0));
-
-	return object;
-
-}
-asf::auto_release_ptr<asr::MeshObject> HypershadeRenderer::createMesh(MObject& mobject)
-{
-	MStatus stat = MStatus::kSuccess;
-	MFnMesh meshFn(mobject, &stat);
-	CHECK_MSTATUS(stat);
-
-	MPointArray points;
-	MFloatVectorArray normals;
-	MFloatArray uArray, vArray;
-	MIntArray triPointIds, triNormalIds, triUvIds, triMatIds, perFaceAssignments;
-	getMeshData(mobject, points, normals, uArray, vArray, triPointIds, triNormalIds, triUvIds, triMatIds, perFaceAssignments);
-
-	Logging::debug(MString("Translating mesh object ") + meshFn.name().asChar());
-	MString meshFullName = makeGoodString(meshFn.fullPathName());
-	asf::auto_release_ptr<asr::MeshObject> mesh = asr::MeshObjectFactory::create(meshFullName.asChar(), asr::ParamArray());
-
-	for (uint vtxId = 0; vtxId < points.length(); vtxId++)
-	{
-		mesh->push_vertex(MPointToAppleseed(points[vtxId]));
-	}
-
-	for (uint nId = 0; nId < normals.length(); nId++)
-	{
-		mesh->push_vertex_normal(MPointToAppleseed(normals[nId]));
-	}
-
-	for (uint tId = 0; tId < uArray.length(); tId++)
-	{
-		mesh->push_tex_coords(asr::GVector2((float)uArray[tId], (float)vArray[tId]));
-	}
-
-	//getObjectShadingGroups()
-	//mesh->reserve_material_slots(obj->shadingGroups.length());
-	//for (uint sgId = 0; sgId < obj->shadingGroups.length(); sgId++)
-	//{
-	//	MString slotName = MString("slot_") + sgId;
-	//	mesh->push_material_slot(slotName.asChar());
-	//}
-
-	int numTris = triPointIds.length() / 3;
-
-	for (uint triId = 0; triId < numTris; triId++)
-	{
-		uint index = triId * 3;
-		int perFaceShadingGroup = triMatIds[triId];
-		int vtxId0 = triPointIds[index];
-		int vtxId1 = triPointIds[index + 1];
-		int vtxId2 = triPointIds[index + 2];
-		int normalId0 = triNormalIds[index];
-		int normalId1 = triNormalIds[index + 1];
-		int normalId2 = triNormalIds[index + 2];
-		int uvId0 = triUvIds[index];
-		int uvId1 = triUvIds[index + 1];
-		int uvId2 = triUvIds[index + 2];
-		mesh->push_triangle(asr::Triangle(vtxId0, vtxId1, vtxId2, normalId0, normalId1, normalId2, uvId0, uvId1, uvId2, perFaceShadingGroup));
-	}
-
-	return mesh;
-
 }
 
+void HypershadeTileCallback::release()
+{
+    delete this;
+}
+
+void HypershadeTileCallback::pre_render(const size_t x, const size_t y, const size_t width, const size_t height)
+{
+}
+
+HypershadeTileCallbackFactory::HypershadeTileCallbackFactory(HypershadeRenderer* renderer)
+{
+    mTileCallback.reset(new HypershadeTileCallback(renderer));
+}
+
+renderer::ITileCallback* HypershadeTileCallbackFactory::create()
+{
+    return mTileCallback.get();
+}
+
+void HypershadeTileCallbackFactory::release()
+{ 
+    delete this; 
+}
 
 #endif

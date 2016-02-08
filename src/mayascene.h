@@ -70,12 +70,9 @@ class MayaScene
         START = 0,
         TRANSLATE = 1,
         RENDERING = 2,
-        FRAMEDONE = 3,
-        RENDERERROR = 4,
         UNDEF = 5
     };
 
-    bool good;
     RenderType renderType;
     RenderState renderState;
     std::vector<int> lightIdentifier; // plugids for detecting new lighttypes
@@ -93,9 +90,6 @@ class MayaScene
     bool renderingStarted;
     bool parseInstancerNew(); // parse only particle instancer nodes, its a bit more complex
 
-    bool cando_ipr;
-    bool canDoIPR();
-
     MDagPath uiCamera;
 
     MFn::Type updateElement;
@@ -106,14 +100,11 @@ class MayaScene
     MString getFileName();
 
     void clearInstancerNodeList();
-    void clearObjList(std::vector<boost::shared_ptr<MayaObject> > & objList);
-    void clearObjList(std::vector<boost::shared_ptr<MayaObject> > & objList, boost::shared_ptr<MayaObject> notThisOne);
     bool lightObjectIsInLinkedLightList(boost::shared_ptr<MayaObject> lightObject, MDagPathArray& linkedLightsArray);
     void getLightLinking();
     bool listContainsAllLights(MDagPathArray& linkedLights, MDagPathArray& excludedLights);
     MDagPath getWorld();
 
-    void getPasses();
     void setCurrentCamera(MDagPath camera);
     void checkParent(boost::shared_ptr<MayaObject> obj);
 
@@ -124,9 +115,8 @@ class MayaScene
     void setRenderType(RenderType rtype);
     boost::shared_ptr<MayaObject> getObject(MObject obj);
     boost::shared_ptr<MayaObject> getObject(MDagPath dp);
-    void init();
+
     MayaScene();
-    ~MayaScene();
 
     // interactive elements
     std::map<uint, InteractiveElement> interactiveUpdateMap;

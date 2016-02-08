@@ -47,9 +47,6 @@
 #include "utilities/logging.h"
 #include "utilities/tools.h"
 
-namespace asr = renderer;
-namespace asf = foundation;
-
 void* BinMeshReaderCmd::creator()
 {
     return new BinMeshReaderCmd();
@@ -69,12 +66,12 @@ void BinMeshReaderCmd::printUsage()
 
 bool BinMeshReaderCmd::importBinMeshes()
 {
-    asf::SearchPaths searchPaths;
-    asr::MeshObjectArray meshArray;
+    foundation::SearchPaths searchPaths;
+    renderer::MeshObjectArray meshArray;
 
-    asr::ParamArray params;
+    renderer::ParamArray params;
     params.insert("filename", mPath.asChar());
-    if (!asr::MeshObjectReader::read(searchPaths, mPath.asChar(), params, meshArray))
+    if (!renderer::MeshObjectReader::read(searchPaths, mPath.asChar(), params, meshArray))
     {
         Logging::error(MString("Unable to read meshes from ") + mPath);
         return false;
@@ -97,14 +94,14 @@ bool BinMeshReaderCmd::importBinMeshes()
 
         for (unsigned int vtxId = 0; vtxId < numVertices; vtxId++)
         {
-            asr::GVector3 p = meshArray[meshId]->get_vertex(vtxId);
+            renderer::GVector3 p = meshArray[meshId]->get_vertex(vtxId);
             points[vtxId] = MPoint(p.x, p.y, p.z);
         }
 
         for (unsigned int triId = 0; triId < numTriangles; triId++)
         {
             faceVertexCounts.append(3);
-            asr::Triangle tri = meshArray[meshId]->get_triangle(triId);
+            renderer::Triangle tri = meshArray[meshId]->get_triangle(triId);
             faceConnects.append(tri.m_v0);
             faceConnects.append(tri.m_v1);
             faceConnects.append(tri.m_v2);
@@ -115,14 +112,14 @@ bool BinMeshReaderCmd::importBinMeshes()
 
         for (unsigned int uvId = 0; uvId < numUVs; uvId++)
         {
-            asr::GVector2 uv = meshArray[meshId]->get_tex_coords(uvId);
+            renderer::GVector2 uv = meshArray[meshId]->get_tex_coords(uvId);
             uArray[uvId] = uv.x;
             vArray[uvId] = uv.y;
         }
 
         for (unsigned int nId = 0; nId < numNormals; nId++)
         {
-            asr::GVector3 v = meshArray[meshId]->get_vertex_normal(nId);
+            renderer::GVector3 v = meshArray[meshId]->get_vertex_normal(nId);
             normals[nId] = MVector(v.x, v.y, v.z);
         }
 

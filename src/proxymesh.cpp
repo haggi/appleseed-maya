@@ -26,19 +26,137 @@
 // THE SOFTWARE.
 //
 
+// Interface header.
 #include "proxymesh.h"
+
+// appleseed-maya headers.
 #include "utilities/tools.h"
 
+// Maya headers.
 #include <maya/MGlobal.h>
 
-namespace asf = foundation;
-
-ProxyMesh::ProxyMesh(float percentage)
+ProxyMesh::ProxyMesh(const float percentage)
+  : mPercentage(percentage)
+  , mPolySizeMultiplier(1.0f / percentage * 0.5f)
+  , mMin(1000000.0, 1000000.0, 1000000.0)
+  , mMax(-1000000.0, -1000000.0, -1000000.0)
 {
-    mPercentage = percentage;
-    mPolySizeMultiplier = 1.0f/percentage * 0.5;
-    mMin = MPoint(1000000.0,1000000.0,1000000.0);
-    mMax = MPoint(-1000000.0,-1000000.0,-1000000.0);
+}
+
+void ProxyMesh::addMesh(const foundation::IMeshWalker& walker)
+{
+    mPoints.append(0,0,0); // bbox min
+    mPoints.append(0,0,0); // bbox max both will be filled later
+
+    size_t numFaces = walker.get_face_count();
+
+    size_t numMaterials = walker.get_material_slot_count();
+    size_t materialBaseId = mShadingGroupNames.length();
+
+    for (size_t matId = 0; matId < numMaterials; matId++)
+        mShadingGroupNames.append(walker.get_material_slot(matId));
+
+    for (size_t faceId = 0; faceId < numFaces; faceId++)
+    {
+        float r = rnd();
+        if (r < mPercentage)
+        {
+            size_t firstFaceVertex = mPoints.length();
+            size_t numVertices = walker.get_face_vertex_count(faceId); // at the moment its always 3
+            for (size_t faceVtx = 0; faceVtx < numVertices; faceVtx++)
+            {
+                size_t vtxId = walker.get_face_vertex(faceId, faceVtx);
+                foundation::Vector3d vertex = walker.get_vertex(vtxId);
+                MPoint vtx(vertex.x, vertex.y, vertex.z);
+                mPoints.append(vtx);
+                setBBox(vtx);
+            }
+
+            size_t matId = walker.get_face_material(faceId) + materialBaseId;
+            mPolyShaderIds.append(matId);
+
+            scaleFace(firstFaceVertex, numVertices);
+        }
+    }
+
+    mPoints[0] = mMin;
+    mPoints[1] = mMax;
+}
+
+void ProxyMesh::writeFile(const MString& fileName)
+{
+    //
+    // ProxyMesh File Layout:
+    //
+    //   number of shading groups (int)
+    //   for every shading group:
+    //       length of the shading group name (int)
+    //       shading group name
+    //   number of faces (int)
+    //   for every face:
+    //       shader id (int)
+    //   number of points (int)
+    //   bbox min point
+    //   bbox max point
+    //   points
+    //
+
+    mProxyFile.open(fileName.asChar(), std::ios_base::out | std::ios_base::binary);
+
+    if (!mProxyFile.good())
+    {
+        MGlobal::displayError(MString("ProxyMesh::writeFile: Could not open ") + fileName + " for output");
+        return;
+    }
+
+    // Number of shading groups.
+    write(static_cast<int>(mShadingGroupNames.length()));
+
+    // Shading group names.
+    for (unsigned int i = 0; i < mShadingGroupNames.length(); i++)
+        write(mShadingGroupNames[i]);
+
+    // Number of faces.
+    write(static_cast<int>(mPolyShaderIds.length()));
+    for (unsigned int i = 0; i < mPolyShaderIds.length(); i++)
+        write(mPolyShaderIds[i]);
+
+    // The first two points contain the bounding box of the geometry.
+    // Here we only write the number of triangle points.
+    write(static_cast<int>(mPoints.length() - 2));
+    for (unsigned int i = 0; i < mPoints.length(); i++)
+        write(mPoints[i]);
+
+    mProxyFile.close();
+}
+
+void ProxyMesh::write(const int value)
+{
+    mProxyFile.write(reinterpret_cast<const char*>(&value), sizeof(int));
+}
+
+void ProxyMesh::write(const double value)
+{
+    mProxyFile.write(reinterpret_cast<const char*>(&value), sizeof(double));
+}
+
+void ProxyMesh::write(const MPoint& point)
+{
+    write(point.x);
+    write(point.y);
+    write(point.z);
+}
+
+void ProxyMesh::write(const MPointArray& points)
+{
+    for (unsigned int i = 0, e = points.length(); i < e; ++i)
+        write(points[i]);
+}
+
+void ProxyMesh::write(const MString& value)
+{
+    write(static_cast<int>(value.length()));
+    mProxyFile.write(value.asChar(), value.length());
 }
 
 void ProxyMesh::setMin(const MPoint& vtx)
@@ -75,9 +193,7 @@ void ProxyMesh::scaleFace(int firstVertexIndex, int numVertices)
 {
     MPoint faceCenter;
     for (size_t faceVtx = 0; faceVtx < numVertices; faceVtx++)
-    {
         faceCenter += mPoints[firstVertexIndex + faceVtx];
-    }
 
     faceCenter = faceCenter / numVertices;
 
@@ -87,98 +203,3 @@ void ProxyMesh::scaleFace(int firstVertexIndex, int numVertices)
         mPoints[firstVertexIndex + faceVtx] = scaledPoint;
     }
 }
-
-void ProxyMesh::addMesh(const asf::IMeshWalker& walker)
-{
-    mPoints.append(0,0,0); // bbox min
-    mPoints.append(0,0,0); // bbox max both will be filled later
-
-    size_t numFaces = walker.get_face_count();
-
-    size_t numMaterials = walker.get_material_slot_count();
-    size_t materialBaseId = this->mShadingGroupNames.length();
-
-    mObjectShaderStartId.append(this->mShadingGroupNames.length());
-
-    for (size_t matId = 0; matId < numMaterials; matId++)
-        this->mShadingGroupNames.append(walker.get_material_slot(matId));
-
-    for (size_t faceId = 0; faceId < numFaces; faceId++)
-    {
-        float r = rnd();
-        if (r < mPercentage)
-        {
-            size_t firstFaceVertex = mPoints.length();
-            size_t numVertices = walker.get_face_vertex_count(faceId); // at the moment its always 3
-            for (size_t faceVtx = 0; faceVtx < numVertices; faceVtx++)
-            {
-                size_t vtxId = walker.get_face_vertex(faceId, faceVtx);
-                asf::Vector3d vertex = walker.get_vertex(vtxId);
-                MPoint vtx(vertex.x, vertex.y, vertex.z);
-                mPoints.append(vtx);
-                setBBox(vtx);
-            }
-            size_t matId = walker.get_face_material(faceId) + materialBaseId;
-            mPolyShaderIds.append(matId);
-
-            scaleFace(firstFaceVertex, numVertices);
-        }
-    }
-
-    mPoints[0] = mMin;
-    mPoints[1] = mMax;
-
-}
-
-/*
-ProxyMesh File Layout:
-numshaders int
-for every shader
-    stringlen
-    string
-numfaces
-for every face
-    shaderid
-numberOfPoints int
-bboxmin point
-bboxmax point
-for every point
-    points
-*/
-void ProxyMesh::writeFile(const MString& fileName)
-{
-    mProxyFile.open(fileName.asChar(),  std::ios_base::out | std::ios_base::binary);
-
-    if (mProxyFile.good())
-    {
-        // numshaders
-        this->write((int)this->mShadingGroupNames.length());
-        // shadingGroup names
-        MGlobal::displayInfo(MString("Object has ") + this->mShadingGroupNames.length() + " materials assigned");
-        for (size_t shaderId = 0; shaderId < this->mShadingGroupNames.length(); shaderId++)
-        {
-            this->write(this->mShadingGroupNames[shaderId]);
-            MGlobal::displayInfo(MString("Material ") + shaderId + " name: " + this->mShadingGroupNames[shaderId]);
-        }
-        // numfaces
-        this->write((int)this->mPolyShaderIds.length());
-        for (size_t pId = 0; pId < this->mPolyShaderIds.length(); pId++)
-        {
-            this->write(this->mPolyShaderIds[pId]);
-        }
-        MGlobal::displayInfo(MString("Written num polyShaderIds: ") + this->mPolyShaderIds.length() + " faces " + ((mPoints.length() - 2)/3));
-
-        // the first two points contain the bounding box of the geometry
-        // here we only write the number of triangle points.
-        this->write((int)(mPoints.length() - 2));
-        for (uint i = 0; i < mPoints.length(); i++)
-            this->write(mPoints[i]);
-        MGlobal::displayInfo(MString("Written ") + ((int)(mPoints.length() - 2)) + " points == " + ((mPoints.length() - 2)/3) + " triangles");
-        mProxyFile.close();
-    }
-    else
-    {
-        MGlobal::displayError(MString("ProxyMesh::write: Could not open ") + fileName + " for output");
-    }
-}
-

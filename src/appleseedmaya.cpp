@@ -30,11 +30,11 @@
 #include "appleseedmaya.h"
 
 // appleseed-maya headers.
-#include "threads/event.h"
-#include "threads/renderqueueworker.h"
 #include "utilities/attrtools.h"
 #include "utilities/logging.h"
 #include "utilities/tools.h"
+#include "event.h"
+#include "renderqueueworker.h"
 #include "world.h"
 
 // Maya headers.
@@ -105,16 +105,16 @@ MStatus AppleseedMaya::doIt(const MArgList& args)
     if (argData.isFlagSet("-stopIpr", &stat))
     {
         Event e;
-        e.type = Event::IPRSTOP;
-        theRenderEventQueue()->push(e);
+        e.mType = Event::IPRSTOP;
+        gEventQueue()->push(e);
         return MS::kSuccess;
     }
 
     if (argData.isFlagSet("-pauseIpr", &stat))
     {
         Event e;
-        e.type = Event::IPRPAUSE;
-        theRenderEventQueue()->push(e);
+        e.mType = Event::IPRPAUSE;
+        gEventQueue()->push(e);
         return MS::kSuccess;
     }
 
@@ -123,7 +123,7 @@ MStatus AppleseedMaya::doIt(const MArgList& args)
     // set back to false.
 
     Event e;
-    e.type = Event::INITRENDER;
+    e.mType = Event::INITRENDER;
     e.renderType = World::UIRENDER;
 
     MFnDependencyNode defaultGlobals(objectFromName("defaultResolution"));
@@ -150,7 +150,7 @@ MStatus AppleseedMaya::doIt(const MArgList& args)
         e.cameraDagPath.extendToShape();
     }
 
-    theRenderEventQueue()->push(e);
+    gEventQueue()->push(e);
 
     if (MGlobal::mayaState() == MGlobal::kBatch)
         RenderQueueWorker::startRenderQueueWorker();

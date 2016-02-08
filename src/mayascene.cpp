@@ -26,6 +26,15 @@
 // THE SOFTWARE.
 //
 
+#include "shadingtools/shadingutils.h"
+#include "utilities/logging.h"
+#include "utilities/tools.h"
+#include "utilities/attrtools.h"
+#include "utilities/pystring.h"
+#include "mayascene.h"
+#include "renderqueueworker.h"
+#include "world.h"
+
 #include <maya/MDagPath.h>
 #include <maya/MItDag.h>
 #include <maya/MFnDagNode.h>
@@ -46,33 +55,11 @@
 #include <maya/MFnSingleIndexedComponent.h>
 #include <maya/MFnComponent.h>
 
-#include "mayascene.h"
-#include "utilities/logging.h"
-#include "utilities/tools.h"
-#include "utilities/attrtools.h"
-#include "utilities/pystring.h"
-#include "shadingtools/shadingutils.h"
-#include "threads/renderqueueworker.h"
-#include "world.h"
-
 MayaScene::MayaScene()
+  : renderType(NORMAL)
+  , renderState(MayaScene::UNDEF)
+  , renderingStarted(false)
 {
-    Logging::debug("MayaScene::MayaScene()");
-    this->init();
-}
-
-void MayaScene::init()
-{
-    this->cando_ipr = false;
-    this->good = true;
-    this->renderType = NORMAL;
-    this->renderState = MayaScene::UNDEF;
-    this->renderingStarted = false;
-}
-
-MayaScene::~MayaScene()
-{
-    Logging::debug("MayaScene::~MayaScene()");
 }
 
 // Here is checked if the linklist is complete, what means that we do not have to do any
@@ -179,10 +166,6 @@ void MayaScene::getLightLinking()
     }
 }
 
-void MayaScene::getPasses()
-{
-}
-
 boost::shared_ptr<MayaObject> MayaScene::getObject(MObject obj)
 {
     boost::shared_ptr<MayaObject> mo;
@@ -205,25 +188,6 @@ boost::shared_ptr<MayaObject> MayaScene::getObject(MDagPath dp)
             return this->objectList[objId];
     }
     return mo;
-}
-
-void MayaScene::clearObjList(std::vector<boost::shared_ptr<MayaObject> > & objList)
-{
-    objList.clear();
-}
-
-void MayaScene::clearObjList(std::vector<boost::shared_ptr<MayaObject> > & objList, boost::shared_ptr<MayaObject> notThisOne)
-{
-    size_t numElements = objList.size();
-    boost::shared_ptr<MayaObject> tmpCopy;
-    for (size_t i = 0; i < numElements; i++)
-    {
-        if (objList[i] == notThisOne)
-            tmpCopy = objList[i];
-    }
-    objList.clear();
-    objList.push_back(notThisOne);
-    notThisOne->index = 0;
 }
 
 // the camera from the UI is set via render command
@@ -344,11 +308,6 @@ MString MayaScene::getFileName()
     return MString(currentFile.c_str());
 }
 
-bool MayaScene::canDoIPR()
-{
-    return this->cando_ipr;
-}
-
 void MayaScene::setRenderType(RenderType rtype)
 {
     this->renderType = rtype;
@@ -415,10 +374,9 @@ bool MayaScene::parseSceneHierarchy(MDagPath currentPath, int level, boost::shar
 bool MayaScene::parseScene()
 {
     origObjects.clear();
-
-    clearObjList(this->objectList);
-    clearObjList(this->camList);
-    clearObjList(this->lightList);
+    objectList.clear();
+    camList.clear();
+    lightList.clear();
 
     MDagPath world = getWorld();
     if (parseSceneHierarchy(world, 0, boost::shared_ptr<ObjectAttributes>(), boost::shared_ptr<MayaObject>()))
@@ -438,20 +396,19 @@ bool MayaScene::parseScene()
                 Logging::error(MString("UI Camera not found: ") + this->uiCamera.fullPathName());
                 return false;
             }
-            clearObjList(this->camList, cam);
+
+            camList.clear();
+            camList.push_back(cam);
         }
-        this->good = true;
 
         return true;
     }
+
     return false;
 }
 
 bool MayaScene::updateScene(MFn::Type updateElement)
 {
-
-    Logging::debug(MString("MayaScene::updateSceneNew."));
-
     for (int objId = 0; objId < this->objectList.size(); objId++)
     {
         boost::shared_ptr<MayaObject> obj = this->objectList[objId];
@@ -460,7 +417,6 @@ bool MayaScene::updateScene(MFn::Type updateElement)
             continue;
 
         obj->updateObject();
-        Logging::debug(MString("updateObj ") + objId + ": " + obj->dagPath.fullPathName());
 
         // this part is only used if motionblur is turned on, else we have no MbElement::None
         if (!obj->motionBlurred)
@@ -520,7 +476,6 @@ bool MayaScene::updateScene()
         }
     }
 
-
     std::vector<boost::shared_ptr<MayaObject> > ::iterator mIter;
     mIter = this->lightList.begin();
     for (; mIter != this->lightList.end(); mIter++)
@@ -557,8 +512,6 @@ void MayaScene::clearInstancerNodeList()
 
 bool MayaScene::updateInstancer()
 {
-    Logging::debug("update instancer.");
-
     // updates only required for a transform step
     if (!getWorldPtr()->mRenderGlobals->isTransformStep())
         return true;
@@ -644,7 +597,6 @@ bool MayaScene::parseInstancerNew()
                 }
             }
         }
-        //MFnParticleSystem
 
         // give me all instances in this instancer
         instFn.allInstances(allPaths, allMatrices, pathStartIndices, pathIndices);
@@ -706,7 +658,6 @@ bool MayaScene::parseInstancerNew()
                 particleMObject->fullName = origObj->fullName + MString("_i_") + p;
                 particleMObject->shortName = origObj->shortName + MString("_i_") + p;
                 this->instancerNodeElements.push_back(particleMObject);
-                particleMObject->index = (int)(this->instancerNodeElements.size() - 1);
                 currentAttributes->hasInstancerConnection = true;
                 if (hasParticleSystem)
                 {
@@ -719,5 +670,6 @@ bool MayaScene::parseInstancerNew()
             }
         }
     }
+
     return true;
 }

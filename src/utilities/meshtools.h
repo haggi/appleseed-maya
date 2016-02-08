@@ -26,27 +26,17 @@
 // THE SOFTWARE.
 //
 
-#ifndef SWATCHESEVENT_H
-#define SWATCHESEVENT_H
+#ifndef UTILITIES_MESHTOOLS_H
+#define UTILITIES_MESHTOOLS_H
 
-// appleseed-maya headers.
-#include "utilities/concurrentqueue.h"
-
-// Maya headers.
-#include <maya/MObject.h>
+// appleseed.foundation headers.
+#include "foundation/utility/autoreleaseptr.h"
 
 // Forward declarations.
-class NewSwatchRenderer;
+namespace renderer  { class MeshObject; }
+class MObject;
 
-struct SwatchesEvent
-{
-    int height;
-    float *pixels;
-    bool *renderDone;
-    MObject shadingNode;
-    NewSwatchRenderer *swatchRenderer;
-};
+foundation::auto_release_ptr<renderer::MeshObject> defineStandardPlane();
+foundation::auto_release_ptr<renderer::MeshObject> createMesh(const MObject& mobject);
 
-static concurrent_queue<SwatchesEvent> SwatchesQueue;
-
-#endif  // !SWATCHESEVENT_H
+#endif  //! UTILITIES_MESHTOOLS_H
