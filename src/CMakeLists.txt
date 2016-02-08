@@ -30,17 +30,6 @@ include_directories (
     .
 )
 
-set (osl_sources
-    osl/oslutils.cpp
-    osl/oslutils.h
-)
-list (APPEND appleseedmaya_sources
-    ${osl_sources}
-)
-source_group ("osl" FILES
-    ${osl_sources}
-)
-
 set (shaders_sources
     shaders/asdisneymaterial.cpp
     shaders/asdisneymaterial.h
@@ -73,24 +62,16 @@ source_group ("shadingtools" FILES
     ${shadingtools_sources}
 )
 
-set (threads_sources
-    threads/event.h
-    threads/renderqueueworker.cpp
-    threads/renderqueueworker.h
-)
-list (APPEND appleseedmaya_sources
-    ${threads_sources}
-)
-source_group ("threads" FILES
-    ${threads_sources}
-)
-
 set (utilities_sources
     utilities/attrtools.cpp
     utilities/attrtools.h
     utilities/concurrentqueue.h
     utilities/logging.cpp
     utilities/logging.h
+    utilities/meshtools.cpp
+    utilities/meshtools.h
+    utilities/oslutils.cpp
+    utilities/oslutils.h
     utilities/pystring.cpp
     utilities/pystring.h
     utilities/tools.cpp
@@ -106,8 +87,6 @@ source_group ("utilities" FILES
 set (sources
     appleseedmaya.cpp
     appleseedmaya.h
-    appleseedmeshwalker.cpp
-    appleseedmeshwalker.h
     appleseedrenderer.cpp
     appleseedrenderer.h
     appleseedswatchrenderer.cpp
@@ -120,6 +99,7 @@ set (sources
     binmeshtranslator.h
     binmeshwritercmd.cpp
     binmeshwritercmd.h
+    event.h
     globalsnode.cpp
     globalsnode.h
     hypershaderenderer.cpp
@@ -128,6 +108,8 @@ set (sources
     mayaobject.h
     mayascene.cpp
     mayascene.h
+    meshwalker.cpp
+    meshwalker.h
     newswatchrenderer.cpp
     newswatchrenderer.h
     pluginmain.cpp
@@ -137,7 +119,8 @@ set (sources
     renderercontroller.h
     renderglobals.cpp
     renderglobals.h
-    swatchesevent.h
+    renderqueueworker.cpp
+    renderqueueworker.h
     tilecallback.cpp
     tilecallback.h
     version.cpp

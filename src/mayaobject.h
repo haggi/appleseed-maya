@@ -90,7 +90,6 @@ class MayaObject
     MString shortName;
     MString fullName;
     MString fullNiceName;
-    int index;
     MDagPath dagPath;
     bool removed; // in IPR we simply flag an object as removed instead of really removing it
     boost::shared_ptr<ObjectAttributes> attributes;

@@ -26,73 +26,21 @@
 // THE SOFTWARE.
 //
 
-#ifndef THREADS_EVENT_H
-#define THREADS_EVENT_H
+#ifndef RENDERQUEUEWORKER_H
+#define RENDERQUEUEWORKER_H
 
-// appleseed-maya headers.
-#include "world.h"
+#include "utilities/concurrentqueue.h"
+#include "event.h"
 
-// Maya headers.
-#include <maya/MRenderView.h>
-#include <maya/MString.h>
+concurrent_queue<Event>* gEventQueue();
 
-// Boost headers.
-#include "boost/shared_ptr.hpp"
-
-// Standard headers.
-#include <cstddef>
-
-class Event
+class RenderQueueWorker
 {
   public:
-    enum Types
-    {
-        INTERRUPT = 0,
-        TILEDONE = 1,
-        FRAMEDONE = 2,
-        RENDERDONE = 3,
-        PRETILE = 4,
-        FRAMEUPDATE = 5,
-        IPRSTART = 6,
-        IPRSTOP = 7,
-        IPRPAUSE = 8,
-        IPRREMOVE = 9,
-        IPRUPDATE = 10,
-        IPRFRAMEDONE = 11,
-        UPDATEUI = 17,
-        RENDERERROR = 18,
-        INITRENDER = 19,
-        INTERACTIVEFBCALLBACK = 20,
-        ADDIPRCALLBACKS = 21,
-        FRAMERENDER = 22
-    };
-
-    enum PixelMode
-    {
-        RECT = 0,
-        PIXELS = 1
-    };
-
-    Types type;
-    PixelMode pixelMode;
-    size_t numPixels;
-    MString message;
-
-    int width;
-    int height;
-    bool useRenderRegion;
-    MDagPath cameraDagPath;
-    World::RenderType renderType;
-    size_t tile_xmin, tile_xmax, tile_ymin, tile_ymax;
-
-    boost::shared_ptr<RV_PIXEL> pixelData;
-
-    Event()
-    {
-        type = INTERRUPT;
-        pixelMode = RECT;
-        numPixels = 0;
-    }
+    static void startRenderQueueWorker();
+    static void renderQueueWorkerTimerCallback(float time, float lastTime, void *userPtr);
+    static void IPRUpdateCallbacks();
+    static bool iprCallbacksDone();
 };
 
-#endif  // !THREADS_EVENT_H
+#endif  // !RENDERQUEUEWORKER_H

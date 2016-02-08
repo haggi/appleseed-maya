@@ -30,10 +30,11 @@
 #define APPLESEEDSWATCHRENDERER_H
 
 // appleseed.renderer headers.
-#include "renderer/api/log.h"
 #include "renderer/api/project.h"
 #include "renderer/api/rendering.h"
-#include "renderer/api/scene.h"
+
+// appleseed.foundation headers.
+#include "foundation/utility/autoreleaseptr.h"
 
 // Standard headers.
 #include <memory>
@@ -46,23 +47,14 @@ class AppleseedSwatchRenderer
 {
   public:
     AppleseedSwatchRenderer();
-    ~AppleseedSwatchRenderer();
 
-    void mainLoop();
-    void setSize(int size);
-    void setShader(MObject shader);
-    void renderSwatch(NewSwatchRenderer *sr);
-    void fillSwatch(float *pixels);
-    bool terminateLoop;
-    bool enableSwatchRenderer;
+    void renderSwatch(NewSwatchRenderer* sr);
 
-    foundation::auto_release_ptr<renderer::Scene> scene;
-    foundation::auto_release_ptr<renderer::Project> project;
-    std::auto_ptr<renderer::MasterRenderer> mrenderer;
-    renderer::DefaultRendererController renderer_controller;
-
-    static void startAppleseedSwatchRender(AppleseedSwatchRenderer* swRend);
-    static void terminateAppleseedSwatchRender(AppleseedSwatchRenderer* swRend);
+  private:
+    foundation::auto_release_ptr<renderer::Project> mProject;
+    std::auto_ptr<renderer::MasterRenderer>         mRenderer;
+    renderer::DefaultRendererController             mRendererController;
+    bool                                            mTerminateLoop;
 
     void defineMaterial(MObject shadingNode);
 };

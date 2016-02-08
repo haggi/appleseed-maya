@@ -30,7 +30,8 @@
 #include "tilecallback.h"
 
 // appleseed-maya headers.
-#include "threads/renderqueueworker.h"
+#include "renderglobals.h"
+#include "world.h"
 
 // appleseed.renderer headers.
 #include "renderer/api/frame.h"
@@ -61,14 +62,55 @@ void TileCallback::pre_render(
 {
 }
 
+namespace
+{
+    void updateRenderView(
+        const unsigned int  xMin,
+        const unsigned int  xMax,
+        const unsigned int  yMin,
+        const unsigned int  yMax,
+        RV_PIXEL*           pixels)
+    {
+        if (!MRenderView::doesRenderEditorExist())
+            return;
+
+        // We have cases where the render view has changed but the framebuffer callback may have still the old settings.
+        // Here we make sure we do not exceed the render view area.
+        // todo: is this still relevant?
+        if (getWorldPtr()->mRenderGlobals->getUseRenderRegion())
+        {
+            const int width = getWorldPtr()->mRenderGlobals->getWidth();
+            const int height = getWorldPtr()->mRenderGlobals->getHeight();
+
+            if (xMin != 0 ||
+                yMin != 0 ||
+                xMax != width - 1 ||
+                yMax != height - 1)
+            {
+                unsigned int left, right, bottom, top;
+                MRenderView::getRenderRegion(left, right, bottom, top);
+
+                if (left != xMin ||
+                    right != xMax ||
+                    bottom != yMin ||
+                    top != yMax)
+                    return;
+            }
+        }
+
+        MRenderView::updatePixels(xMin, xMax, yMin, yMax, pixels);
+        MRenderView::refresh(xMin, xMax, yMin, yMax);
+    }
+}
+
 void TileCallback::post_render(const renderer::Frame* frame)
 {
-    const foundation::CanvasProperties& frame_props = frame->image().properties();
+    const foundation::CanvasProperties& frameProps = frame->image().properties();
 
-    boost::shared_ptr<RV_PIXEL> pixels(new RV_PIXEL[frame_props.m_pixel_count]);
+    boost::shared_ptr<RV_PIXEL> pixels(new RV_PIXEL[frameProps.m_pixel_count]);
     RV_PIXEL* pixelsPtr = pixels.get();
 
-    for (size_t i = 0; i < frame_props.m_pixel_count; i++)
+    for (size_t i = 0; i < frameProps.m_pixel_count; i++)
     {
         pixelsPtr[i].r = 255.0f;
         pixelsPtr[i].g = 0.0f;
@@ -77,36 +119,37 @@ void TileCallback::post_render(const renderer::Frame* frame)
     }
 
     foundation::Tile float_tile_storage(
-        frame_props.m_tile_width,
-        frame_props.m_tile_height,
-        frame_props.m_channel_count,
+        frameProps.m_tile_width,
+        frameProps.m_tile_height,
+        frameProps.m_channel_count,
         foundation::PixelFormatFloat);
 
-    for (size_t tile_y = 0; tile_y < frame_props.m_tile_count_y; tile_y++)
+    for (size_t tile_y = 0; tile_y < frameProps.m_tile_count_y; tile_y++)
     {
-        for (size_t tile_x = 0; tile_x < frame_props.m_tile_count_x; tile_x++)
+        for (size_t tile_x = 0; tile_x < frameProps.m_tile_count_x; tile_x++)
         {
             const foundation::Tile& tile = frame->image().tile(tile_x, tile_y);
             const size_t tileWidth = tile.get_width();
             const size_t tileHeight = tile.get_height();
 
-            foundation::Tile fp_rgb_tile(
+            // Tile with the right pixel format in the right color space.
+            foundation::Tile finalTile(
                 tile,
                 foundation::PixelFormatFloat,
                 float_tile_storage.get_storage());
-            frame->transform_to_output_color_space(fp_rgb_tile);
+            frame->transform_to_output_color_space(finalTile);
 
             for (size_t y = 0; y < tileHeight; y++)
             {
                 for (size_t x = 0; x < tileWidth; x++)
                 {
                     const size_t pixelIndex =
-                        frame_props.m_canvas_width * (frame_props.m_canvas_height - tile_y * frame_props.m_tile_height - y - 1) +
-                        tile_x * frame_props.m_tile_width +
+                        frameProps.m_canvas_width * (frameProps.m_canvas_height - tile_y * frameProps.m_tile_height - y - 1) +
+                        tile_x * frameProps.m_tile_width +
                         x;
-                    assert(pixelIndex < frame_props.m_pixel_count);
+                    assert(pixelIndex < frameProps.m_pixel_count);
 
-                    const float* source = reinterpret_cast<const float*>(fp_rgb_tile.pixel(x, y));
+                    const float* source = reinterpret_cast<const float*>(finalTile.pixel(x, y));
                     pixelsPtr[pixelIndex].r = foundation::saturate(source[0]) * 255.0f;
                     pixelsPtr[pixelIndex].g = foundation::saturate(source[1]) * 255.0f;
                     pixelsPtr[pixelIndex].b = foundation::saturate(source[2]) * 255.0f;
@@ -116,14 +159,12 @@ void TileCallback::post_render(const renderer::Frame* frame)
         }
     }
 
-    Event e;
-    e.type = Event::TILEDONE;
-    e.pixelData = pixels;
-    e.tile_xmin = 0;
-    e.tile_ymin = 0;
-    e.tile_xmax = frame_props.m_canvas_width - 1;
-    e.tile_ymax = frame_props.m_canvas_height - 1;
-    theRenderEventQueue()->push(e);
+    updateRenderView(
+        0,
+        0,
+        static_cast<unsigned int>(frameProps.m_canvas_width - 1),
+        static_cast<unsigned int>(frameProps.m_canvas_height - 1),
+        pixelsPtr);
 }
 
 void TileCallback::post_render_tile(
@@ -131,13 +172,15 @@ void TileCallback::post_render_tile(
     const size_t            tile_x,
     const size_t            tile_y)
 {
-    const foundation::CanvasProperties& frame_props = frame->image().properties();
-    const foundation::Tile& tile = frame->image().tile(tile_x, tile_y);
+    const foundation::Image& image = frame->image();
+    const foundation::CanvasProperties& frameProps = image.properties();
+    const foundation::Tile& tile = image.tile(tile_x, tile_y);
     const size_t tileWidth = tile.get_width();
     const size_t tileHeight = tile.get_height();
 
-    foundation::Tile fp_rgb_tile(tile, foundation::PixelFormatFloat);
-    frame->transform_to_output_color_space(fp_rgb_tile);
+    // Tile with the right pixel format in the right color space.
+    foundation::Tile finalTile(tile, foundation::PixelFormatFloat);
+    frame->transform_to_output_color_space(finalTile);
 
     boost::shared_ptr<RV_PIXEL> pixels(new RV_PIXEL[tileWidth * tileHeight]);
     RV_PIXEL* pixelsPtr = pixels.get();
@@ -146,7 +189,7 @@ void TileCallback::post_render_tile(
     {
         for (size_t x = 0; x < tileWidth; x++)
         {
-            const float* source = reinterpret_cast<const float*>(fp_rgb_tile.pixel(x, tileHeight - y - 1));
+            const float* source = reinterpret_cast<const float*>(finalTile.pixel(x, tileHeight - y - 1));
             const size_t pixelIndex = y * tileWidth + x;
             pixelsPtr[pixelIndex].r = foundation::saturate(source[0]) * 255.0f;
             pixelsPtr[pixelIndex].g = foundation::saturate(source[1]) * 255.0f;
@@ -155,17 +198,15 @@ void TileCallback::post_render_tile(
         }
     }
 
-    const size_t x = tile_x * frame_props.m_tile_width;
-    const size_t y = tile_y * frame_props.m_tile_height;
+    const size_t x = tile_x * frameProps.m_tile_width;
+    const size_t y = tile_y * frameProps.m_tile_height;
 
-    Event e;
-    e.type = Event::TILEDONE;
-    e.pixelData = pixels;
-    e.tile_xmin = x;
-    e.tile_xmax = x + tileWidth - 1;
-    e.tile_ymin = frame_props.m_canvas_height - y - tileHeight;
-    e.tile_ymax = frame_props.m_canvas_height - y - 1;
-    theRenderEventQueue()->push(e);
+    updateRenderView(
+        static_cast<unsigned int>(x),
+        static_cast<unsigned int>(x + tileWidth - 1),
+        static_cast<unsigned int>(frameProps.m_canvas_height - y - tileHeight),
+        static_cast<unsigned int>(frameProps.m_canvas_height - y - 1),
+        pixelsPtr);
 }
 
 void TileCallbackFactory::release()
