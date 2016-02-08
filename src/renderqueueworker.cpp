@@ -67,46 +67,6 @@ namespace
 
     boost::thread sceneThread;
     concurrent_queue<Event> RenderEventQueue;
-
-    bool escPressed;
-    bool checkDone;
-    boost::thread checkThread;
-
-    void checkInterrupt()
-    {
-        while (!checkDone)
-        {
-    #ifdef _WIN32
-            if (GetAsyncKeyState(VK_ESCAPE))
-            {
-                escPressed = true;
-                break;
-            }
-    #endif
-            foundation::sleep(100);
-        }
-    }
-
-    void beginComputation()
-    {
-        escPressed = false;
-        checkDone = false;
-        checkThread = boost::thread(checkInterrupt);
-
-        if (MRenderView::doesRenderEditorExist())
-            MGlobal::executePythonCommand("import pymel.core as pm;pm.waitCursor(state=True);");
-    }
-
-    void endComputation()
-    {
-        checkDone = true;
-
-        if (checkThread.joinable())
-            checkThread.join();
-
-        if (MRenderView::doesRenderEditorExist())
-            MGlobal::executePythonCommand("import pymel.core as pm; pm.waitCursor(state=False); pm.refresh()");
-    }
 }
 
 concurrent_queue<Event>* gEventQueue()
@@ -470,7 +430,7 @@ namespace
             if (renderingStarted && getWorldPtr()->getRenderState() != World::RSTATERENDERING)
                 break;
 
-            if (escPressed && (getWorldPtr()->getRenderState() == World::RSTATERENDERING))
+            if (GetAsyncKeyState(VK_ESCAPE) && getWorldPtr()->getRenderState() == World::RSTATERENDERING)
             {
                 Event e;
                 e.mType = Event::INTERRUPT;
@@ -641,14 +601,15 @@ void RenderQueueWorker::startRenderQueueWorker()
                 getWorldPtr()->mScene->uiCamera = e.cameraDagPath;
                 getWorldPtr()->mRenderer->initializeRenderer(); // init renderer with all type, image size etc.
 
-                const int width = getWorldPtr()->mRenderGlobals->getWidth();
-                const int height = getWorldPtr()->mRenderGlobals->getHeight();
-
                 if (MRenderView::doesRenderEditorExist())
                 {
                     MRenderView::endRender();
+
+                    const int width = getWorldPtr()->mRenderGlobals->getWidth();
+                    const int height = getWorldPtr()->mRenderGlobals->getHeight();
                     MRenderView::startRender(width, height, true, true);
                 }
+
                 getWorldPtr()->setRenderState(World::RSTATETRANSLATING);
                 boost::shared_ptr<MayaScene> mayaScene = getWorldPtr()->mScene;
 
@@ -656,7 +617,10 @@ void RenderQueueWorker::startRenderQueueWorker()
                 {
                     // we only need renderComputation (means esc-able rendering) if we render in UI (==NORMAL)
                     if (getWorldPtr()->getRenderType() == World::UIRENDER)
-                        beginComputation();
+                    {
+                        if (MRenderView::doesRenderEditorExist())
+                            MGlobal::executePythonCommand("import pymel.core as pm; pm.waitCursor(state=True);");
+                    }
                 }
 
                 e.mType = Event::FRAMERENDER;
@@ -703,7 +667,10 @@ void RenderQueueWorker::startRenderQueueWorker()
           case Event::RENDERDONE:
             {
                 if (MGlobal::mayaState() != MGlobal::kBatch)
-                    endComputation();
+                {
+                    if (MRenderView::doesRenderEditorExist())
+                        MGlobal::executePythonCommand("import pymel.core as pm; pm.waitCursor(state=False); pm.refresh()");
+                }
 
                 if (getWorldPtr()->getRenderType() == World::IPRRENDER)
                     removeCallbacks();
