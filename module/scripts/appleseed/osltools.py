@@ -122,7 +122,7 @@ def analyzeContent(content):
     for line in content:
         if len(line) == 0:
             continue
-        if line.startswith("shader"):
+        if line.startswith("shader") or line.startswith("surface"):
             d['name'] = line.split(" ")[1].replace("\"", "")
             d['mayaClassification'] = ""
             d['mayaId'] = 0
@@ -152,6 +152,7 @@ def analyzeContent(content):
                 if "max = " in line:
                     currentElement['max'] = line.split(" ")[-1]
                 if "help = " in line:
+                    print "helpline", line         
                     currentElement['help'] = " ".join(line.split("=")[1:]).replace("\"", "").strip()
                 if "mayaClassification = " in line:
                     #print "mayaClassification", " ".join(line.split("=")[1:]).replace("\"", "").strip()
@@ -172,7 +173,7 @@ def analyzeContent(content):
     return d
 
 def readShadersXMLDescription():
-    xmlFile = path.path(__file__).parent.parent / "resources/shaderdefinitions.xml"
+    xmlFile = path.path(__file__).parent.parent.parent / "resources/shaderdefinitions.xml"
     if not xmlFile.exists():
         log.error("Shader definition file could not be found: {0}".format(xmlFile))
         return
@@ -250,7 +251,7 @@ def writeXMLShaderDescription(shaderDict=None):
     global SHADER_DICT
     if shaderDict is None:
         shaderDict = SHADER_DICT
-    xmlFile = path.path(__file__).parent.parent / "resources/shaderdefinitions.xml"
+    xmlFile = path.path(__file__).parent.parent.parent / "resources/shaderdefinitions.xml"
     if not xmlFile.exists():
         log.error("Shader definition file could not be found: {0}".format(xmlFile))
         return
