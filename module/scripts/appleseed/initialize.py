@@ -36,7 +36,6 @@ import path
 import optimizetextures
 import aenodetemplates as aet
 import appleseedmenu as appleseedmenu
-import appleseedshadertools as shadertools
 import tempfile
 import osltools as osltools
 
@@ -604,14 +603,12 @@ class AppleseedRenderer(renderer.MayaToRenderer):
                 self.renderGlobalsNode.optimizedTexturePath.set(str(optimizedPath))
 
             # craete optimized exr textures
-            mtap_optimizetextures.preRenderOptimizeTextures(optimizedFilePath=self.renderGlobalsNode.optimizedTexturePath.get())
-            shadertools.createAutoShaderNodes()
+            optimizetextures.preRenderOptimizeTextures(optimizedFilePath=self.renderGlobalsNode.optimizedTexturePath.get())
 
         osltools.compileAllShaders()
 
     def postRenderProcedure(self):
-        mtap_optimizetextures.postRenderOptimizeTextures()
-        shadertools.removeAutoShaderNodes()
+        optimizetextures.postRenderOptimizeTextures()
 
     def afterGlobalsNodeReplacement(self):
         log.debug("afterGlobalsNodeReplacement")
@@ -674,7 +671,7 @@ def loadAETemplates():
             templateName = d.basename().replace(".py", "")
             pythonCommand = "import {1}.aetemplate.{0}".format(templateName, rendererName.lower())
             melCommand = 'python("{0}");'.format(pythonCommand)
-            # log.debug("load aeTemplate: " + templateName + " : " + melCommand)
+            log.debug("load aeTemplate: " + templateName + " : " + melCommand)
             pm.mel.eval(melCommand)
 
 def loadPlugins():

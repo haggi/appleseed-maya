@@ -28,7 +28,7 @@
 
 import pymel.core as pm
 import logging
-import renderer.osltools
+import appleseed.osltools as osltools
 
 log = logging.getLogger("ui")
 
@@ -42,10 +42,10 @@ class BaseTemplate(pm.ui.AETemplate):
 
 class AEuberShaderTemplate(BaseTemplate):
     def __init__(self, nodeName):
-        renderer.osltools.readShadersXMLDescription()
+        osltools.readShadersXMLDescription()
         self.shaderDesc = {}
-        if renderer.osltools.SHADER_DICT.has_key('uberShader'):
-            inDesc = renderer.osltools.SHADER_DICT['uberShader']['inputs']
+        if osltools.SHADER_DICT.has_key('uberShader'):
+            inDesc = osltools.SHADER_DICT['uberShader']['inputs']
             print "AEuberShaderTemplate osl shder dict inputs:", inDesc
             for i in inDesc:
                 self.shaderDesc[i['name']] = i['help']
