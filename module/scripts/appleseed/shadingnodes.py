@@ -30,7 +30,7 @@ import logging
 import sys
 import maya.OpenMaya as om
 import maya.OpenMayaMPx as OpenMayaMPx
-import renderer.osltools as osltools
+import osltools as osltools
 import metashadernode as meta
 
 # to get a unused id for on-the-fly nodes,  try to find an unused id

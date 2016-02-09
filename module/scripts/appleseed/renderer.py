@@ -33,7 +33,6 @@ import path
 import pymel.core as pm
 import uiutils as uiUtils
 import commonglobals as commonGlobals
-import commonglobalsmel as commonGlobalsMel
 
 log = logging.getLogger("renderLogger")
 

@@ -33,12 +33,12 @@ import traceback
 import sys
 import os
 import path
-import mtap_optimizetextures
-from renderer import aenodetemplates as aet
-from renderer import appleseedmenu as appleseedmenu
-from renderer import appleseedshadertools as shadertools
+import optimizetextures
+import aenodetemplates as aet
+import appleseedmenu as appleseedmenu
+import appleseedshadertools as shadertools
 import tempfile
-import renderer.osltools as osltools
+import osltools as osltools
 
 reload(renderer)
 
