@@ -39,8 +39,8 @@ class RenderQueueWorker
   public:
     static void startRenderQueueWorker();
     static void renderQueueWorkerTimerCallback(float time, float lastTime, void *userPtr);
-    static void IPRUpdateCallbacks();
-    static bool iprCallbacksDone();
 };
+
+void initRender(Event e);
 
 #endif  // !RENDERQUEUEWORKER_H

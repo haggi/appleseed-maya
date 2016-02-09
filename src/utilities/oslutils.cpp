@@ -68,23 +68,13 @@ OSLUtilClass::OSLUtilClass()
 
 void OSLUtilClass::saveOSLNodeNameInArray(MString& oslNodeName)
 {
-    if (getWorldPtr()->getRenderType() == World::SWATCHRENDER)
-        this->definedOSLSWNodes.push_back(oslNodeName);
-    else
-        this->definedOSLNodes.push_back(oslNodeName);
+    this->definedOSLNodes.push_back(oslNodeName);
 }
 
 bool OSLUtilClass::doesOSLNodeAlreadyExist(MString& oslNode)
 {
-    std::vector<MString> nodes;
-    if (getWorldPtr()->getRenderType() == World::SWATCHRENDER)
-        nodes = definedOSLSWNodes;
-    else
-        nodes = definedOSLNodes;
-
     std::vector<MString>::iterator it;
-    std::vector<MString> nodesList = nodes;
-    for (it = nodesList.begin(); it != nodesList.end(); it++)
+    for (it = definedOSLNodes.begin(); it != definedOSLNodes.end(); it++)
     {
         if (*it == oslNode)
             return true;
@@ -929,7 +919,6 @@ void OSLUtilClass::initOSLUtil()
     projectionNodes.clear();
     projectionConnectNodes.clear();
     definedOSLNodes.clear();
-    definedOSLSWNodes.clear();
 }
 
 void OSLUtilClass::connectProjectionNodes(MObject& projNode)

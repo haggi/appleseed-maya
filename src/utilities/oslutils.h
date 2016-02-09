@@ -312,7 +312,6 @@ class OSLUtilClass
     std::vector<MObject> projectionConnectNodes;
 
     std::vector<MString> definedOSLNodes;
-    std::vector<MString> definedOSLSWNodes;
     ConnectionArray connectionList;
     std::vector<OSLNodeStruct> oslNodeArray;
 
