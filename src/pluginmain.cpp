@@ -158,7 +158,7 @@ APPLESEEDMAYA_DLL_EXPORT MStatus initializePlugin(MObject obj)
             "}\n");
     CHECK_MSTATUS_AND_RETURN_IT(status);
 
-    setRendererHome(getenv("MTAP_HOME"));
+    setRendererHome(getenv("APPLESEED_MAYA_HOME"));
 
     status = MGlobal::executePythonCommand("import appleseed.initialize; appleseed.initialize.initRenderer()", true, false);
     CHECK_MSTATUS_AND_RETURN_IT(status);
