@@ -68,11 +68,9 @@ World::World()
         timerCallbackId = MTimerMessage::addTimerCallback(0.001, RenderQueueWorker::renderQueueWorkerTimerCallback);
 
     std::string oslShaderPath = (getRendererHome() + "shaders").asChar();
-    Logging::debug(MString("setting osl shader search path to: ") + oslShaderPath.c_str());
 
     MStringArray oslDirs;
-    MGlobal::executePythonCommand("import renderer.osltools as osl; osl.getOSODirs();", oslDirs, false, false);
-    MGlobal::displayInfo(MString("Found ") + oslDirs.length() + " OSL directories.");
+    MGlobal::executePythonCommand("import appleseed.osltools as osl; osl.getOSODirs();", oslDirs, false, false);
 
     for (uint i = 0; i < oslDirs.length(); i++)
         shaderSearchPath.append(oslDirs[i].asChar());

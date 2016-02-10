@@ -88,13 +88,9 @@ AppleseedSwatchRenderer::AppleseedSwatchRenderer()
         Logging::error(MString("Unable to load swatch render file correctly: ") + swatchRenderFile);
         return;
     }
-    else
-    {
-        Logging::info(MString("Successfully loaded swatch render file."));
-    }
 
     MStringArray oslDirs;
-    MGlobal::executePythonCommand("import renderer.osltools as osl; osl.getOSODirs();", oslDirs, false, false);
+    MGlobal::executePythonCommand("import appleseed.osltools as osl; osl.getOSODirs();", oslDirs, false, false);
 
     for (unsigned int i = 0; i < oslDirs.length(); i++)
         mProject->search_paths().push_back(oslDirs[i].asChar());

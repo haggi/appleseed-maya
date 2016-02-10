@@ -675,16 +675,19 @@ def loadAETemplates():
             pm.mel.eval(melCommand)
 
 def loadPlugins():
-    plugins = ["loadshadersplugin"]
-    osltools.compileAllShaders() # compile shaders and update shader info on demand
-    for plugin in plugins:
+    python_plugins = ["loadshadersplugin"]
+    currentPath = path.path(__file__).dirname()
+    
+    osltools.compileAllShaders() # compile shaders and update shaders xml file
+    for plugin in python_plugins:
         try:
-            log.debug("Loading additional plugin: {0}".format(plugin))
+            pluginPath = "{0}/{1}.py".format(currentPath, plugin) 
+            log.debug("Loading additional plugin: {0}".format(pluginPath))
             if not pm.pluginInfo(plugin, query=True, loaded=True):
-                pm.loadPlugin(plugin)
+                pm.loadPlugin(pluginPath)
         except:
             traceback.print_exc(file=sys.__stderr__)
-            log.error("Loading of additional plugin: {0} failed.".format(plugin))
+            log.error("Loading of additional plugin: {0} failed.".format(pluginPath))
 
 def theRenderer():
     return AppleseedRenderer.theRenderer()
