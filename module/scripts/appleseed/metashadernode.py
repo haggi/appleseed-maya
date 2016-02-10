@@ -54,21 +54,16 @@ class MetaClass(OpenMayaMPx.MPxNode):
         for output in cls.data['outputs']:
             print "register OutputAttribute", output
             if output['type'] == 'output pointer': #this is a OSL closure name
-                #print "Adding output", output['name']
                 cls.output = nAttr.createColor(output['name'],output['name'])
                 output['attr'] = cls.output
-                #setOutputAttr()
                 cls.addAttribute( cls.output )
             if output['type'] == 'color':
-                #print "Adding output", output['name']
                 cls.output = nAttr.createColor(output['name'],output['name'])
                 output['attr'] = cls.output
-                #setOutputAttr()
                 cls.addAttribute( cls.output )
             if output['type'] == 'float':
                 cls.output = nAttr.create(output['name'],output['name'], om.MFnNumericData.kFloat)
                 output['attr'] = cls.output
-                #setOutputAttr()
                 cls.addAttribute( cls.output )
 
         for inputElement in cls.data['inputs']:
@@ -93,7 +88,6 @@ class MetaClass(OpenMayaMPx.MPxNode):
                 if inputElement.has_key('default'):
                     if inputElement['default'].startswith('['):
                         default = map(float, ast.literal_eval(inputElement['default']))
-                        print "InputElement color: ", inputElement['name'], "default", default
                         nAttr.setDefault(default[0],default[1],default[2])
                     else:
                         nAttr.setDefault(1.0, 0.0, 0.0)
@@ -155,11 +149,9 @@ class MetaClass(OpenMayaMPx.MPxNode):
                 cls.attributeAffects(cls.input, cls.output)
 
     def compute(self, plug, dataBlock):
-
         found = False
         for output in type(self).data['outputs']:
             if plug == output['attr']:
-                print "Compute output attribut found", output['name']
                 if output['type'] == 'color':
                     resultColor = om.MFloatVector(0.0,0.0,0.0)
                     outColorHandle = dataBlock.outputValue( output['attr'] )
@@ -177,36 +169,3 @@ class MetaClass(OpenMayaMPx.MPxNode):
 
     def __init__(self):
         OpenMayaMPx.MPxNode.__init__(self)
-
-class TestClass(object):
-    @classmethod
-    def create(cls):
-        for key in cls.data.keys():
-            #print "Element:",key,"data",cls.data[key]
-            if key == "inParams":
-                print "Creating input parameters"
-                paramList = cls.data["inParams"]
-            for p in paramList:
-                print "\tName", p["name"]
-                print "\tType", p["type"]
-            if key == "outParams":
-                print "Creating out parameter"
-                paramList = cls.data["outParams"]
-            for p in paramList:
-                print "\tName", p["name"]
-                print "\tType", p["type"]
-
-
-
-def createDynamicNodes():
-    plugin = OpenMayaMPx.MFnPlugin.findPlugin("testPlugin")
-    print "Plugin:", plugin
-
-#nodes = []
-#for key in nodeDict.keys():
-#    print "CreateNode", key
-#    X = type(key, (TestClass,), dict(data=nodeDict[key]))
-#    nodes.append(X)
-
-#for n in nodes:
-#    n.create()

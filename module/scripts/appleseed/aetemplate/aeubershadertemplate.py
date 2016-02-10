@@ -26,9 +26,11 @@
 # THE SOFTWARE.
 #
 
-import pymel.core as pm
-import logging
 import appleseed.osltools as osltools
+
+import pymel.core as pm
+
+import logging
 
 log = logging.getLogger("ui")
 
@@ -46,7 +48,6 @@ class AEuberShaderTemplate(BaseTemplate):
         self.shaderDesc = {}
         if osltools.SHADER_DICT.has_key('uberShader'):
             inDesc = osltools.SHADER_DICT['uberShader']['inputs']
-            print "AEuberShaderTemplate osl shder dict inputs:", inDesc
             for i in inDesc:
                 self.shaderDesc[i['name']] = i['help']
         BaseTemplate.__init__(self, nodeName)
@@ -157,9 +158,6 @@ class AEuberShaderTemplate(BaseTemplate):
         self.beginLayout("SSS", collapse=False)
         self.addControl("SSS1", label="Enable SSS", changeCommand=self.update)
         self.addControl("SSS1Color", label="SSS Color", changeCommand=self.update)
-        #self.addControl("SSS1Weight", label="Color Multiplier", changeCommand=self.update)
-        #self.addControl("SSS1Radius", label="Radius per Color", changeCommand=self.update)
-        #self.addControl("SSS1RadiusMultiplier", label="Radius Multiplier", changeCommand=self.update)
         self.addControl("SSS1RadiusMultiplier", label="Radius", changeCommand=self.update)
         self.endLayout()
 

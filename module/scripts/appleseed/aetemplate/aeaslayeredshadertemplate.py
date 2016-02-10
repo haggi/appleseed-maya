@@ -42,12 +42,9 @@ class BaseTemplate(pm.ui.AETemplate):
     def beginLayout(self, name, collapse=True):
         pm.ui.AETemplate.beginLayout(self, name, collapse=collapse)
 
-
-
 class AEasLayeredShaderTemplate(BaseTemplate):
     def __init__(self, nodeName):
         BaseTemplate.__init__(self,nodeName)
-        log.debug("AEasLayeredShaderTemplate")
         self.thisNode = None
         self.node = pm.PyNode(self.nodeName)
         self.layersUi = None
@@ -63,7 +60,6 @@ class AEasLayeredShaderTemplate(BaseTemplate):
         self.endScrollLayout()
 
     def addLayer(self, *args):
-        log.debug("addLayer")
         numElements = self.thisNode.materialEntryMtl.numElements()
         index = 0;
         if numElements > 0:
@@ -140,15 +136,11 @@ class AEasLayeredShaderTemplate(BaseTemplate):
 
     def moveLayerUp(self, *args):
         layerNumber = args[0]
-        log.debug("moveLayerUp {0}".format(layerNumber))
-
-        print "this node", self.thisNode
-
         firstIndex = self.thisNode.materialEntryMtl.elementByPhysicalIndex(0).index()
-        if layerNumber == firstIndex:
-            log.debug("Layer is first layer, cannot move up")
-            return
 
+        if layerNumber == firstIndex:
+            return
+        
         indexAbove = -1
         for entryId in range(self.thisNode.materialEntryMtl.numElements()):
             if self.thisNode.materialEntryMtl.elementByPhysicalIndex(entryId).index() == layerNumber:
@@ -162,14 +154,11 @@ class AEasLayeredShaderTemplate(BaseTemplate):
         self.moveLayer(layerNumber, indexAbove)
         self.layersReplace("none")
 
-
     def moveLayerDown(self, *args):
         layerNumber = args[0]
-        log.debug("moveLayerDown {0}".format(layerNumber))
 
         lastIndex = self.thisNode.materialEntryMtl.elementByPhysicalIndex(self.thisNode.materialEntryMtl.numElements()-1).index()
         if layerNumber == lastIndex:
-            log.debug("Layer is last layer, cannot move down.")
             return
 
         newIndex = -1
@@ -188,17 +177,14 @@ class AEasLayeredShaderTemplate(BaseTemplate):
     def layersReplace(self, attribute):
         if attribute is not "none":
             self.thisNode = pm.PyNode(attribute).node()
-        log.debug("layersReplace {0}".format(attribute))
         pm.setUITemplate("attributeEditorTemplate", pushTemplate=True)
         materialEntries = self.thisNode.materialEntryMtl.numElements()
-        #print "layersReplace: node has ", self.thisNode.materialEntryMtl.numElements(), "layers"
         if self.layersUi is not None and pm.columnLayout(self.layersUi, q=True, exists=True):
             pm.deleteUI(self.layersUi)
         with pm.columnLayout(adj=True, parent=self.uiParent) as self.layersUi:
             for layerNumber in range(materialEntries):
                 layerIndex = self.thisNode.materialEntryMtl.elementByPhysicalIndex(layerNumber).index()
                 with pm.frameLayout(label="Layer {0}".format(layerNumber), collapsable=True, collapse=False, bv=True) as fl:
-                    log.debug("create layers UI {0}".format(self.thisNode.materialEntryMtl[layerIndex]))
                     with pm.columnLayout(adj=True):
                         attribute = self.thisNode.materialEntryMtl[layerIndex]
                         if attribute.isConnected():
@@ -212,11 +198,9 @@ class AEasLayeredShaderTemplate(BaseTemplate):
                         pm.button(label="Remove Layer", c=pm.Callback(self.removeLayer, layerIndex), height=18)
                         pm.button(label="Layer Up", c=pm.Callback(self.moveLayerUp, layerIndex), height=18)
                         pm.button(label="Layer Down", c=pm.Callback(self.moveLayerDown, layerIndex), height=18)
-
         pm.setUITemplate("attributeEditorTemplate", popTemplate=True)
 
     def layersNew(self, attribute):
-        log.debug("layersNew {0}".format(attribute))
         self.uiParent = pm.setParent(query=True)
         pm.button(label="Add Layer", c=self.addLayer, parent=self.uiParent)
         self.layersReplace(attribute)

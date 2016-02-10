@@ -45,12 +45,10 @@ class BinaryMesh(object):
 
     def loadStandins(self):
         meshName = self.path.split("/")[-1].replace(".binarymesh", "")
-        print "creating stdin node for mesh", meshName
         standInMesh = pm.createNode("mesh")
         standInMesh.getParent().rename(meshName + "_standIn")
         standInMeshNode = pm.createNode("mtap_standinMeshNode")
         standInMeshNode.rename(meshName + "_standInCreator")
-        print "Setting binmesh path to", self.path
         standInMeshNode.binMeshFile.set(self.path)
         standInMeshNode.outputMesh >> standInMesh.inMesh
 
@@ -122,12 +120,9 @@ class StandinOptions(pm.ui.Window):
 
         bpath = path + "/" + prefix  + ".binarymesh"
 #TODO: convert namespace to clean name
-        print "pm.binMeshWriterCmd({0}, doProxy = {1}, path={2}, doTransform = {3}, percentage={4}, oneFilePerMesh={5})".format(selection, doProxy, bpath, useTransform, percentage, oneFilePerMesh)
-
         pm.binMeshWriterCmd(selection, doProxy = doProxy, path=bpath, doTransform = useTransform, percentage=percentage, oneFilePerMesh=oneFilePerMesh)
 
         if not doProxy:
-            log.debug("No proxy creation.")
             return
 
         # we we write multiple meshes into one file, we should create one standin mesh only
@@ -135,16 +130,13 @@ class StandinOptions(pm.ui.Window):
             selection = [bpath]
         for mesh in selection:
             meshName = mesh.split("/")[-1].replace(".binarymesh", "")
-            print "creating stdin node for mesh", meshName
             standInMesh = pm.createNode("mesh")
             standInMesh.getParent().rename(meshName + "_standIn")
             standInMeshNode = pm.createNode("mtap_standinMeshNode")
             standInMeshNode.rename(meshName + "_standInCreator")
             bpath = path + "/" + prefix + meshName  + ".binarymesh"
-            print "Setting binmesh path to", bpath
             standInMeshNode.binMeshFile.set(bpath)
             standInMeshNode.outputMesh >> standInMesh.inMesh
-
         self.cancel()
 
     def cancel(self, *args):
@@ -152,7 +144,6 @@ class StandinOptions(pm.ui.Window):
 
     def fileBrowser(self, *args):
         erg = pm.fileDialog2(dialogStyle=2, fileMode=2)
-        print "Result", erg
         if len(erg) > 0:
             if len(erg[0]) > 0:
                 exportPath = erg[0]
@@ -189,21 +180,17 @@ class StandinOptions(pm.ui.Window):
         pm.setUITemplate("DefaultTemplate", popTemplate=True)
 
 def createStandin(*args):
-    print "create standin", args
     sio = StandinOptions()
     sio.perform()
 
 def createStandinOptions(*args):
-    print "create standin options", args
     sio = StandinOptions()
     sio.show()
 
 def readStandin(*args):
-    log.debug("read standin")
     ff = "*.binarymesh"
     filename = pm.fileDialog2(fileMode=1, caption="Select binarymesh", fileFilter = ff)
     if len(filename) > 0:
-        print "Reading binarymesh", filename
         bm = BinaryMesh()
         bm.path = filename[0]
         bm.loadStandins()

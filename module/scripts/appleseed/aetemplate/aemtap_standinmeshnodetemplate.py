@@ -39,11 +39,9 @@ class BaseTemplate(pm.ui.AETemplate):
     def beginLayout(self, name, collapse=True):
         pm.ui.AETemplate.beginLayout(self, name, collapse=collapse)
 
-
 class AEmtap_standinMeshNodeTemplate(BaseTemplate):
     def __init__(self, nodeName):
         BaseTemplate.__init__(self,nodeName)
-        log.debug("AEmtap_standinMeshNodeTemplate")
         self.thisNode = None
         self.node = pm.PyNode(self.nodeName)
         self.beginScrollLayout()

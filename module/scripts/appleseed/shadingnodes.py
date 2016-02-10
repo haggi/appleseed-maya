@@ -26,12 +26,14 @@
 # THE SOFTWARE.
 #
 
-import logging
-import sys
+import metashadernode as meta
+import osltools as osltools
+
 import maya.OpenMaya as om
 import maya.OpenMayaMPx as OpenMayaMPx
-import osltools as osltools
-import metashadernode as meta
+
+import logging
+import sys
 
 # to get a unused id for on-the-fly nodes,  try to find an unused id
 # the LAST_ID is the official last ID (0x0 - 0x7FFFF) for site internal plugins

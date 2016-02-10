@@ -26,15 +26,14 @@
 # THE SOFTWARE.
 #
 
-import pymel.core as pm
 import logging
+import pymel.core as pm
 import uiutils as uiUtils
 
 log = logging.getLogger("renderLogger")
 
 class OpenMayaCommonGlobals(object):
     def __init__(self, renderNode=None):
-        print "CREATE OpenMayaCommonGlobals"
         self.renderGlobalsNodeName = renderNode.name()
         self.renderNode = renderNode
         self.defaultGlobals = pm.SCENE.defaultRenderGlobals
@@ -144,11 +143,9 @@ class OpenMayaCommonGlobals(object):
 
     def updateExrUI(self):
         ext = self.renderNode.imageFormat.getEnums().keys()[self.renderNode.imageFormat.get()]
-        print "updateExrUI imageFormat extension", ext
         if self.rendererTabUiDict.has_key('common'):
             uiDict = self.rendererTabUiDict['common']
             if ext.lower() == "exr":
-                print "Exr, activating contrls"
                 uiDict['exrOptionsLayout'].setEnable(True)
             else:
                 uiDict['exrOptionsLayout'].setEnable(False)
@@ -223,9 +220,7 @@ class OpenMayaCommonGlobals(object):
         paddedFrameString = "{0:0" + str(settings.framePadding) + "d}."
         if settings.isAnimated():
             numberFormat = paddedFrameString.format(int(pm.SCENE.defaultRenderGlobals.startFrame.get()))
-
         completeFileName = "{prefix}.{numbering}{ext}".format(prefix=prefix, numbering=numberFormat, ext=ext)
-
         uiDict['imgname'].setLabel("File Name: " + completeFileName)
         """
         <Scene>
@@ -238,7 +233,6 @@ class OpenMayaCommonGlobals(object):
         """
 
     def OpenMayaCommonGlobalsCreateTab(self):
-        log.debug("OpenMayaCommonGlobalsCreateTab()")
         scLo = "scrollLayout"
         parentForm = pm.setParent(query=True)
         pm.setUITemplate("attributeEditorTemplate", pushTemplate=True)
@@ -290,13 +284,11 @@ class OpenMayaCommonGlobals(object):
                         uiDict['imageSizePresets'] = pm.optionMenuGrp(label="Presets:", changeCommand=self.setImageSize)
                         for imgFormat in self.imageFormatData:
                             pm.menuItem(imgFormat[0])
-                        # uiDict['imageSizePresets'].setSelect(12)
 
                         self.addRenderDefaultResGlobalsUIElement(attName='aspectLock', uiType='bool', displayName='Maintain aspect ratio', uiDict=uiDict)
                         self.addRenderDefaultResGlobalsUIElement(attName='width', uiType='int', displayName='Width:', uiDict=uiDict, callback=pm.Callback(self.updateImageSize, "width"))
                         self.addRenderDefaultResGlobalsUIElement(attName='height', uiType='int', displayName='Height:', uiDict=uiDict, callback=pm.Callback(self.updateImageSize, "height"))
                         self.addRenderDefaultResGlobalsUIElement(attName='deviceAspectRatio', uiType='float', displayName='Device Aspect:', uiDict=uiDict, callback=pm.Callback(self.updateImageSize, "devAsp"))
-                        # self.addRenderDefaultResGlobalsUIElement(attName='pixelAspect', uiType='float', displayName='Pixel Aspect:', uiDict=uiDict, callback=self.updateImageSize)
 
                 with pm.frameLayout(label="Render Scripts", collapsable=True, collapse=False):
                     with pm.columnLayout(adjustableColumn=True, width=400):
@@ -323,7 +315,6 @@ class OpenMayaCommonGlobals(object):
         pm.scriptJob(event=("SelectionChanged", self.selectionChangedEvent))
 
     def updateFrameSettings(self):
-        log.debug("OpenMayaCommonGlobalsUpdateTab()")
         if not self.rendererTabUiDict.has_key('common'):
             return
         uiDict = self.rendererTabUiDict['common']
@@ -336,10 +327,8 @@ class OpenMayaCommonGlobals(object):
             uiDict['frameRangeLayout'].setEnable(False)
 
     def OpenMayaCommonGlobalsUpdateTab(self):
-        log.debug("OpenMayaCommonGlobalsUpdateTab()")
         if not self.rendererTabUiDict.has_key('common'):
             return
         uiDict = self.rendererTabUiDict['common']
-
         self.updateFrameSettings()
         self.updateCamerasUI()

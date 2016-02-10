@@ -39,12 +39,9 @@ class BaseTemplate(pm.ui.AETemplate):
     def beginLayout(self, name, collapse=True):
         pm.ui.AETemplate.beginLayout(self, name, collapse=collapse)
 
-
-
 class AEasDisneyMaterialTemplate(BaseTemplate):
     def __init__(self, nodeName):
         BaseTemplate.__init__(self,nodeName)
-        log.debug("AEasDisneyMaterialTemplate")
         self.thisNode = None
         self.node = pm.PyNode(self.nodeName)
         pm.mel.AEswatchDisplay(nodeName)
@@ -66,7 +63,6 @@ class AEasDisneyMaterialTemplate(BaseTemplate):
     def buildBody(self, nodeName):
         self.thisNode = pm.PyNode(nodeName)
         self.beginLayout("ShaderSettings" ,collapse=0)
-
         self.addControl("BaseColor", label="Base Color")
         self.addControl("Subsurface", label="Subsurface")
         self.addControl("Metallic", label="Metallic")
@@ -79,5 +75,4 @@ class AEasDisneyMaterialTemplate(BaseTemplate):
         self.addControl("Clearcoat", label="Clearcoat")
         self.addControl("ClearcoatGloss", label="Clearcoat Gloss")
         self.callCustom(self.bumpNew, self.bumpReplace,"normalCamera")
-
         self.endLayout()

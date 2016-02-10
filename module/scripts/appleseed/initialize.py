@@ -26,18 +26,18 @@
 # THE SOFTWARE.
 #
 
-import pymel.core as pm
-import logging
-import renderer as renderer
-import traceback
-import sys
-import os
-import path
-import optimizetextures
 import aenodetemplates as aet
 import appleseedmenu as appleseedmenu
-import tempfile
+import logging
+import optimizetextures
+import os
 import osltools as osltools
+import path
+import pymel.core as pm
+import renderer as renderer
+import sys
+import tempfile
+import traceback
 
 reload(renderer)
 
@@ -71,8 +71,8 @@ class AppleseedRenderer(renderer.MayaToRenderer):
         return [(i, v) for i, v in enumerate(attr.getEnums().keys())]
 
     def updateTest(self, dummy=None):
-        print "UpdateTest", dummy
-
+        pass
+    
     def addUserTabs(self):
         pm.renderer(self.rendererName, edit=True, addGlobalsTab=self.renderTabMelProcedure("AOVs"))
         pm.renderer(self.rendererName, edit=True, addGlobalsTab=self.renderTabMelProcedure("Environment"))
@@ -121,17 +121,14 @@ class AppleseedRenderer(renderer.MayaToRenderer):
                 try:
                     sunConnection = self.renderGlobalsNode.physicalSunConnection.listConnections()[0]
                 except:
-                    log.info("No asSunLight connected, searching for one.")
                     try:
                         sunConnection = pm.ls("asSunLight")[0]
                         sunConnection.message >> self.renderGlobalsNode.physicalSunConnection
                     except:
-                        log.info("No light called asSunLight in scene, creating a new one.")
                         lightShape = pm.createNode("directionalLight")
                         sunConnection = lightShape.getParent()
                         sunConnection.rename("asSunLight")
                         sunConnection.message >> self.renderGlobalsNode.physicalSunConnection
-
                 envDict['pskPhySun'].setText(str(sunConnection))
 
             skyModel = self.renderGlobalsNode.skyModel.get()
@@ -151,9 +148,7 @@ class AppleseedRenderer(renderer.MayaToRenderer):
         if envType == 6:
             pass
 
-
     def AppleseedEnvironmentCreateTab(self):
-        log.debug("AppleseedEnvironmentCreateTab()")
         self.createGlobalsNode()
         parentForm = pm.setParent(query=True)
         pm.setUITemplate("attributeEditorTemplate", pushTemplate=True)
@@ -178,10 +173,6 @@ class AppleseedRenderer(renderer.MayaToRenderer):
                         envDict['environmentMap'] = pm.attrColorSliderGrp(label="Environment Map", at=self.renderGlobalsNodeName + ".environmentMap")
                         self.addRenderGlobalsUIElement(attName='latlongHoShift', uiType='float', displayName='LatLong Horiz Shift:', uiDict=uiDict)
                         self.addRenderGlobalsUIElement(attName='latlongVeShift', uiType='float', displayName='LatLong Vertical Shift:', uiDict=uiDict)
-#                         envDict['latLongHShift'] = pm.floatFieldGrp(label="LatLong Horiz Shift:", value1=1.0, numberOfFields=1)
-#                         pm.connectControl(envDict['latLongHShift'], self.renderGlobalsNodeName + ".latlongHoShift", index=2)
-#                         envDict['latLongVShift'] = pm.floatFieldGrp(label="LatLong Vertical Shift:", value1=1.0, numberOfFields=1)
-#                         pm.connectControl(envDict['latLongVShift'], self.renderGlobalsNodeName + ".latlongVeShift", index=2)
 
                 with pm.frameLayout(label="Physical Sky", collapsable=False):
                     with pm.columnLayout(self.rendererName + "ColumnLayout", adjustableColumn=True, width=400):
@@ -193,7 +184,6 @@ class AppleseedRenderer(renderer.MayaToRenderer):
                         envDict['pskPhySun'] = pm.textFieldGrp(label="Sunobject:", text="", editable=False)
                         envDict['pskSunExitMulti'] = pm.floatFieldGrp(label="sunExitance Multiplier:", value1=1.0, numberOfFields=1)
                         pm.connectControl(envDict['pskSunExitMulti'], self.renderGlobalsNodeName + ".sunExitanceMultiplier", index=2)
-                        # pm.connectControl(envDict['pskPhySun'], self.renderGlobalsNodeName + ".physicalSunConnection", index=2)
                         pm.separator()
                         envDict['pskGrAlbedo'] = pm.floatFieldGrp(label="Ground Albedo:", value1=1.0, numberOfFields=1)
                         pm.connectControl(envDict['pskGrAlbedo'], self.renderGlobalsNodeName + ".ground_albedo", index=2)
@@ -203,10 +193,6 @@ class AppleseedRenderer(renderer.MayaToRenderer):
                         pm.connectControl(envDict['pskLumMulti'], self.renderGlobalsNodeName + ".luminance_multiplier", index=2)
                         envDict['pskSatMulti'] = pm.floatFieldGrp(label="Saturation Multiplier:", value1=1.0, numberOfFields=1)
                         pm.connectControl(envDict['pskSatMulti'], self.renderGlobalsNodeName + ".saturation_multiplier", index=2)
-                        # envDict['pskSunAzi'] = pm.floatFieldGrp(label="Sun Azimut:", value1=1.0, numberOfFields=1)
-                        # pm.connectControl(envDict['pskSunAzi'], self.renderGlobalsNodeName + ".sun_phi", index=2)
-                        # envDict['pskSunEle'] = pm.floatFieldGrp(label="Sun Elevation:", value1=1.0, numberOfFields=1)
-                        # pm.connectControl(envDict['pskSunEle'], self.renderGlobalsNodeName + ".sun_theta", index=2)
                         envDict['pskTurb'] = pm.floatFieldGrp(label="Turbidity:", value1=1.0, numberOfFields=1)
                         pm.connectControl(envDict['pskTurb'], self.renderGlobalsNodeName + ".turbidity", index=2)
                         envDict['pskTurbMax'] = pm.floatFieldGrp(label="Turbidity Max:", value1=1.0, numberOfFields=1)
@@ -216,19 +202,15 @@ class AppleseedRenderer(renderer.MayaToRenderer):
 
         pm.setUITemplate("attributeEditorTemplate", popTemplate=True)
         pm.formLayout(parentForm, edit=True, attachForm=[ (scLo, "top", 0), (scLo, "bottom", 0), (scLo, "left", 0), (scLo, "right", 0) ])
-
         pm.scriptJob(attributeChange=[self.renderGlobalsNode.environmentType, pm.Callback(self.uiCallback, tab="environment")])
         pm.scriptJob(attributeChange=[self.renderGlobalsNode.skyModel, pm.Callback(self.uiCallback, tab="environment")])
         pm.scriptJob(attributeChange=[self.renderGlobalsNode.physicalSun, pm.Callback(self.uiCallback, tab="environment")])
-
         self.updateEnvironment()
 
     def AppleseedEnvironmentUpdateTab(self):
-        log.debug("AppleseedEnvironmentUpdateTab()")
         self.updateEnvironment()
 
     def AppleseedAOVSelectCommand(self, whichField):
-        log.debug("AppleseedAOVSelectCommand")
         aovDict = self.rendererTabUiDict['aovs']
         if whichField == "source":
             pm.button(aovDict['aovButton'], edit=True, enable=True, label="Add selected Shaders")
@@ -248,7 +230,6 @@ class AppleseedRenderer(renderer.MayaToRenderer):
         aovDict = self.rendererTabUiDict['aovs']
         label = pm.button(aovDict['aovButton'], query=True, label=True)
         if "Add selected Shaders" in label:
-            log.debug("AppleseedAOVButtonCommand: adding selected shaders")
             selectedItems = pm.textScrollList(aovDict['aovSourceField'], query=True, selectItem=True)
             for item in selectedItems:
                 log.debug("Adding " + item)
@@ -261,7 +242,6 @@ class AppleseedRenderer(renderer.MayaToRenderer):
             self.AppleseedAOVUpdateDestList()
 
         if "Remove selected Shaders" in label:
-            log.debug("AppleseedAOVButtonCommand: removing selected shaders")
             selectedItems = pm.textScrollList(aovDict['aovDestField'], query=True, selectItem=True)
             for item in selectedItems:
                 shaderName = item.split(" ")[0]
@@ -273,7 +253,6 @@ class AppleseedRenderer(renderer.MayaToRenderer):
             self.AppleseedAOVUpdateDestList()
 
     def AppleseedDoubleClickCommand(self):
-        log.debug("AppleseedDoubleClickCommand")
         aovDict = self.rendererTabUiDict['aovs']
         selectedItems = pm.textScrollList(aovDict['aovDestField'], query=True, selectItem=True)
         pm.select(selectedItems[0].split(" ")[0])
@@ -286,7 +265,6 @@ class AppleseedRenderer(renderer.MayaToRenderer):
         return aovList
 
     def AppleseedAOVsCreateTab(self):
-        log.debug("AppleseedAOVsCreateTab()")
         aovDict = {}
         self.rendererTabUiDict['aovs'] = aovDict
         self.createGlobalsNode()
@@ -317,7 +295,6 @@ class AppleseedRenderer(renderer.MayaToRenderer):
         self.OpenMayaCommonGlobalsUpdateTab()
 
     def AppleseedRendererCreateTab(self):
-        log.debug("AppleseedRendererCreateTab()")
         self.createGlobalsNode()
         parentForm = pm.setParent(query=True)
         pm.setUITemplate("renderGlobalsTemplate", pushTemplate=True)
@@ -328,13 +305,10 @@ class AppleseedRenderer(renderer.MayaToRenderer):
         uiDict = {}
         self.rendererTabUiDict['common'] = uiDict
 
-
         with pm.scrollLayout(scLo, horizontalScrollBarThickness=0):
             with pm.columnLayout(self.rendererName + "ColumnLayout", adjustableColumn=True, width=400):
                 with pm.frameLayout(label="Pixel Sampler", collapsable=True, collapse=False):
                     with pm.columnLayout(self.rendererName + "ColumnLayout", adjustableColumn=True, width=400):
-                        # attr = pm.Attribute(self.renderGlobalsNodeName + ".pixel_renderer")
-                        # ui = pm.attrEnumOptionMenuGrp(label="Pixel Sampler", at=self.renderGlobalsNodeName + ".pixel_renderer", ei=self.getEnumList(attr))
                         self.addRenderGlobalsUIElement(attName='pixel_renderer', uiType='enum', displayName='Pixel Sampler', default='0', uiDict=uiDict, callback=self.AppleseedRendererUpdateTab)
                         self.addRenderGlobalsUIElement(attName='minSamples', uiType='int', displayName='Min Samples', default=False, uiDict=uiDict)
                         self.addRenderGlobalsUIElement(attName='maxSamples', uiType='int', displayName='Max Samples', default=False, uiDict=uiDict)
@@ -342,7 +316,6 @@ class AppleseedRenderer(renderer.MayaToRenderer):
                         self.addRenderGlobalsUIElement(attName='enable_diagnostics', uiType='bool', displayName="Diagnostic AOV's", default=False, uiDict=uiDict)
                         pm.separator()
                         self.addRenderGlobalsUIElement(attName='frameRendererPasses', uiType='int', displayName='Passes', uiDict=uiDict)
-
 
                 with pm.frameLayout(label="Filtering", collapsable=True, collapse=False):
                     with pm.columnLayout(self.rendererName + "ColumnLayout", adjustableColumn=True, width=400):
@@ -382,15 +355,10 @@ class AppleseedRenderer(renderer.MayaToRenderer):
         pm.setUITemplate("renderGlobalsTemplate", popTemplate=True)
         pm.setUITemplate("attributeEditorTemplate", popTemplate=True)
         pm.formLayout(parentForm, edit=True, attachForm=[ (scLo, "top", 0), (scLo, "bottom", 0), (scLo, "left", 0), (scLo, "right", 0) ])
-
-        # pm.scriptJob(attributeChange=[self.renderGlobalsNode.samplingType, pm.Callback(self.KrayRendererUIUpdateCallback, "sampling")])
-
-        # self.updateEnvironment()
         self.AppleseedRendererUpdateTab()
 
     def AppleseedRendererUpdateTab(self, dummy=None):
         self.createGlobalsNode()
-        log.debug("AppleseedRendererUpdateTab()")
         if not self.rendererTabUiDict.has_key('common'):
             return
 
@@ -446,10 +414,8 @@ class AppleseedRenderer(renderer.MayaToRenderer):
 
 
     def xmlFileBrowse(self, args=None):
-        print "xmlfile", args
         filename = pm.fileDialog2(fileMode=0, caption="XML Export File Name")
         if len(filename) > 0:
-            print "Got filename", filename
             self.rendererTabUiDict['xml']['xmlFile'].setText(filename[0])
 
     def dirBrowse(self, args=None):
@@ -458,7 +424,6 @@ class AppleseedRenderer(renderer.MayaToRenderer):
             self.rendererTabUiDict['opti']['optiField'].setText(dirname[0])
 
     def AppleseedTranslatorCreateTab(self):
-        log.debug("AppleseedTranslatorCreateTab()")
         self.createGlobalsNode()
         parentForm = pm.setParent(query=True)
         pm.setUITemplate("attributeEditorTemplate", pushTemplate=True)
@@ -473,16 +438,6 @@ class AppleseedRenderer(renderer.MayaToRenderer):
                 with pm.frameLayout(label="{0} export".format(self.rendererName), collapsable=True, collapse=False):
                     ui = pm.checkBoxGrp(label="Export {0} Scene file:".format(self.rendererName), value1=False)
                     pm.connectControl(ui, self.renderGlobalsNodeName + ".exportSceneFile", index=2)
-#                     xmlDict = {}
-#                     self.rendererTabUiDict['xml'] = xmlDict
-#                     defaultXMLPath = pm.workspace.path + "/" + pm.sceneName().basename().split(".")[0] + ".appleseed"
-#                     if not defaultXMLPath.dirname().exists():
-#                         defaultXMLPath.dirname().makedirs()
-#                     with pm.rowLayout(nc=3):
-#                         xmlDict['xmlFileText'] = pm.text(label="Export to")
-#                         xmlDict['xmlFile'] = pm.textField(text=defaultXMLPath)
-#                         pm.symbolButton(image="navButtonBrowse.png", c=self.xmlFileBrowse)
-#                         pm.connectControl(xmlDict['xmlFile'], self.renderGlobalsNodeName + ".exportSceneFileName", index=2)
 
                 with pm.frameLayout(label="Optimize Textures", collapsable=True, collapse=False):
                     optiDict = {}
@@ -503,11 +458,9 @@ class AppleseedRenderer(renderer.MayaToRenderer):
         pm.formLayout(parentForm, edit=True, attachForm=[ (scLo, "top", 0), (scLo, "bottom", 0), (scLo, "left", 0), (scLo, "right", 0) ])
 
     def AppleseedTranslatorUpdateTab(self):
-        log.debug("AppleseedTranslatorUpdateTab()")
-
+        pass
+    
     def uiCallback(self, **args):
-        log.debug("uiCallback()")
-
         if args['tab'] == "environment":
             self.updateEnvironment()
 
@@ -554,8 +507,6 @@ class AppleseedRenderer(renderer.MayaToRenderer):
         pm.addExtension(nodeType="areaLight", longName="mtap_visibleTransparency", attributeType="bool", defaultValue=True)
 
     def renderProcedure(self, width, height, doShadows, doGlow, camera, options):
-        log.debug("renderProcedure")
-        print "renderProcedure", width, height, doShadows, doGlow, camera, options
         self.createGlobalsNode()
         self.preRenderProcedure()
         self.setImageName()
@@ -567,8 +518,6 @@ class AppleseedRenderer(renderer.MayaToRenderer):
 
     def startIprRenderProcedure(self, editor, resolutionX, resolutionY, camera):
         self.ipr_isrunning = True
-        log.debug("startIprRenderProcedure")
-        print "startIprRenderProcedure", editor, resolutionX, resolutionY, camera
         self.createGlobalsNode()
         self.preRenderProcedure()
         self.setImageName()
@@ -577,7 +526,6 @@ class AppleseedRenderer(renderer.MayaToRenderer):
 
     def stopIprRenderProcedure(self):
         self.ipr_isrunning = False
-        log.debug("stopIprRenderProcedure")
         pm.appleseedMaya(stopIpr=True)
         self.postRenderProcedure()
 
@@ -602,38 +550,24 @@ class AppleseedRenderer(renderer.MayaToRenderer):
                     optimizedPath.makedirs()
                 self.renderGlobalsNode.optimizedTexturePath.set(str(optimizedPath))
 
-            # craete optimized exr textures
             optimizetextures.preRenderOptimizeTextures(optimizedFilePath=self.renderGlobalsNode.optimizedTexturePath.get())
-
         osltools.compileAllShaders()
 
     def postRenderProcedure(self):
         optimizetextures.postRenderOptimizeTextures()
 
     def afterGlobalsNodeReplacement(self):
-        log.debug("afterGlobalsNodeReplacement")
         self.rendererTabUiDict = {}
 
     def aeTemplateCallback(self, nodeName):
-        log.debug("aeTemplateCallback: " + nodeName)
         aet.AEappleseedNodeTemplate(nodeName)
 
     def connectNodeToNodeOverrideCallback(self, srcNode, destNode):
-        log.debug("connectNodeToNodeOverrideCallback {0} {1}".format(srcNode, destNode))
         dn = pm.PyNode(destNode)
         sn = pm.PyNode(srcNode)
-#         if dn.type() in ["CoronaSurface"]:
-#             if sn.hasAttr("outColor"):
-#                 sn.outColor >> dn.diffuse
-#                 return 0
-#             if sn.type() == "CoronaRoundCorners":
-#                 sn.outNormal >> dn.roundCornersMap
-#                 return 0
         return 1
 
     def createRenderNode(self, nodeType=None, postCommand=None):
-        print "createRenderNode nodeType ", nodeType, "postCommand", postCommand
-        log.debug("createRenderNode callback for renderer {0} with node: {1}".format(self.rendererName.lower(), nodeType))
         nodeClass = None
         rendererName = self.rendererName.lower()
         for cl in pm.getClassification(nodeType):
@@ -671,7 +605,6 @@ def loadAETemplates():
             templateName = d.basename().replace(".py", "")
             pythonCommand = "import {1}.aetemplate.{0}".format(templateName, rendererName.lower())
             melCommand = 'python("{0}");'.format(pythonCommand)
-            log.debug("load aeTemplate: " + templateName + " : " + melCommand)
             pm.mel.eval(melCommand)
 
 def loadPlugins():
@@ -694,7 +627,6 @@ def theRenderer():
 
 def initRenderer():
     try:
-        log.debug("Init renderer appleseed")
         theRenderer().registerRenderer()
         if not pm.about(batch=True):
             loadAETemplates()
@@ -707,7 +639,6 @@ def initRenderer():
 def unregister():
     theRenderer().removeRendererMenu()
     theRenderer().unRegisterRenderer()
-    log.debug("Unregister done")
 
 def uiCallback(*args):
     theRenderer().uiCallback(args)

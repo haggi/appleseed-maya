@@ -858,6 +858,138 @@
 	<shader>
 		<inputs>
 			<input>
+				<name>Normal</name>
+				<min>0</min>
+				<default>[ 0.0, 0.0, 0.0 ]</default>
+				<max>1</max>
+				<hint />
+				<type>vector</type>
+				<help />
+			</input>
+			<input>
+				<name>Tangent</name>
+				<min>0</min>
+				<default>[ 0.0, 0.0, 0.0 ]</default>
+				<max>1</max>
+				<hint />
+				<type>vector</type>
+				<help />
+			</input>
+			<input>
+				<name>BaseColor</name>
+				<min>0</min>
+				<default>[0.5, 0.5, 0.5]</default>
+				<max>1</max>
+				<hint />
+				<type>vector</type>
+				<help />
+			</input>
+			<input>
+				<name>Subsurface</name>
+				<min>0</min>
+				<default>0</default>
+				<max>1</max>
+				<hint />
+				<type>float</type>
+				<help />
+			</input>
+			<input>
+				<name>Metallic</name>
+				<min>0</min>
+				<default>0</default>
+				<max>1</max>
+				<hint />
+				<type>float</type>
+				<help />
+			</input>
+			<input>
+				<name>Specular</name>
+				<min>0</min>
+				<default>0.5</default>
+				<max>1</max>
+				<hint />
+				<type>float</type>
+				<help />
+			</input>
+			<input>
+				<name>SpecularTint</name>
+				<min>0</min>
+				<default>0</default>
+				<max>1</max>
+				<hint />
+				<type>float</type>
+				<help />
+			</input>
+			<input>
+				<name>Anisotropic</name>
+				<min>0</min>
+				<default>0</default>
+				<max>1</max>
+				<hint />
+				<type>float</type>
+				<help />
+			</input>
+			<input>
+				<name>Roughness</name>
+				<min>0</min>
+				<default>0.5</default>
+				<max>1</max>
+				<hint />
+				<type>float</type>
+				<help />
+			</input>
+			<input>
+				<name>Sheen</name>
+				<min>0</min>
+				<default>0</default>
+				<max>1</max>
+				<hint />
+				<type>float</type>
+				<help />
+			</input>
+			<input>
+				<name>SheenTint</name>
+				<min>0</min>
+				<default>0.5</default>
+				<max>1</max>
+				<hint />
+				<type>float</type>
+				<help />
+			</input>
+			<input>
+				<name>Clearcoat</name>
+				<min>0</min>
+				<default>0</default>
+				<max>1</max>
+				<hint />
+				<type>float</type>
+				<help />
+			</input>
+			<input>
+				<name>ClearcoatGloss</name>
+				<min>0</min>
+				<default>1</default>
+				<max>1</max>
+				<hint />
+				<type>float</type>
+				<help />
+			</input>
+		</inputs>
+		<name>as_disney_material</name>
+		<outputs>
+			<output>
+				<type>output pointer</type>
+				<name>outColor</name>
+				<help />
+			</output>
+		</outputs>
+		<mayaId>0</mayaId>
+		<mayaClassification>None</mayaClassification>
+		<help>Material based on the Disney BRDF</help>
+	</shader>
+	<shader>
+		<inputs>
+			<input>
 				<name>operation</name>
 				<min>0</min>
 				<default>0</default>
@@ -1293,7 +1425,7 @@
 			<input>
 				<name>specularIOR1</name>
 				<min>0.001</min>
-				<default>10</default>
+				<default>1.5</default>
 				<max>3</max>
 				<hint>softmax</hint>
 				<type>float</type>

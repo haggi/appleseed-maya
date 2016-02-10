@@ -27,11 +27,11 @@
 #
 
 import path
-import logging
-import subprocess
 import pymel.core as pm
+import logging
 import os
 import shutil
+import subprocess
 import sys
 import xml.etree.cElementTree as ET
 import xml.dom.minidom as minidom
@@ -68,7 +68,6 @@ def compileOSLShaders(renderer="Corona"):
             pm.mel.trace(line.strip())
 
 def getShaderInfo(shaderPath):
-    print "Getting shader info for path", shaderPath
     osoFiles = getOSOFiles(shaderPath)
     return osoFiles
 
@@ -77,7 +76,6 @@ def getOSODirs(renderer = "appleseed"):
         shaderDir = os.environ['{0}_OSL_SHADERS_LOCATION'.format(renderer.upper())]
     except KeyError:
         shaderDir = path.path(__file__).parent + "/shaders"
-        print "Error: there is no environmentvariable called OSL_SHADERS_LOCATION. Please create one and point it to the base shader dir."
     osoDirs = set()
     for root, dirname, files in os.walk(shaderDir):
         for filename in files:
@@ -90,7 +88,6 @@ def getOSOFiles(renderer = "appleseed"):
         shaderDir = os.environ['{0}_OSL_SHADERS_LOCATION'.format(renderer.upper())]
     except KeyError:
         shaderDir = path.path(__file__).parent + "/shaders"
-        print "Error: there is no environmentvariable called OSL_SHADERS_LOCATION. Please create one and point it to the base shader dir."
 
     osoFiles = set()
     for root, dirname, files in os.walk(shaderDir):
@@ -104,7 +101,6 @@ def getOSLFiles(renderer = "appleseed"):
         shaderDir = os.environ['{0}_OSL_SHADERS_LOCATION'.format(renderer.upper())]
     except KeyError:
         shaderDir = path.path(__file__).parent + "/shaders"
-        print "Error: there is no environmentvariable called OSL_SHADERS_LOCATION. Please create one and point it to the base shader dir."
 
     osoFiles = set()
     for root, dirname, files in os.walk(shaderDir):
@@ -116,7 +112,6 @@ def getOSLFiles(renderer = "appleseed"):
 import pprint
 
 def analyzeContent(content):
-    print "Analyze Content", content
     d = {}
     currentElement = None
     for line in content:
@@ -152,13 +147,10 @@ def analyzeContent(content):
                 if "max = " in line:
                     currentElement['max'] = line.split(" ")[-1]
                 if "help = " in line:
-                    print "helpline", line         
                     currentElement['help'] = " ".join(line.split("=")[1:]).replace("\"", "").strip()
                 if "mayaClassification = " in line:
-                    #print "mayaClassification", " ".join(line.split("=")[1:]).replace("\"", "").strip()
                     currentElement['mayaClassification'] = " ".join(line.split("=")[1:]).replace("\"", "").strip()
                 if "mayaId = " in line:
-                    #print "Found maya id", int(line.split("=")[-1])
                     currentElement['mayaId'] = int(line.split("=")[-1])
             if line.startswith("\""): # found a parameter
                 currentElement = {}
@@ -179,8 +171,6 @@ def readShadersXMLDescription():
         return
     tree = ET.parse(xmlFile)
     shaders = tree.getroot()
-    log.debug("Reading shader info file: {0}".format(xmlFile))
-    #sys.stdout.write("Reading shader info file: {0}\n".format(xmlFile))
     shaderDict = {}
     for shader in shaders:
         shDict = {}
@@ -291,7 +281,6 @@ def updateOSLShaderInfo(force=False, osoFiles=[]):
     for osoFile in osoFiles:
         infoCmd = cmd + " " + osoFile
         shaderName = path.path(osoFile).basename().replace(".oso", "")
-        log.info("Updating shader info for shader {1}. cmd: {0}".format(infoCmd, shaderName))
         process = subprocess.Popen(infoCmd, bufsize=1, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, creationflags=IDLE_PRIORITY_CLASS)
         content = []
         while 1:
@@ -307,11 +296,9 @@ def updateOSLShaderInfo(force=False, osoFiles=[]):
 
 
 def compileAllShaders(renderer = "appleseed"):
-    print "cas"
     try:
         shaderDir = os.environ['{0}_OSL_SHADERS_LOCATION'.format(renderer.upper())]
     except KeyError:
-        log.error("Error: there is no environmentvariable called OSL_SHADERS_LOCATION. Please create one and point it to the base shader dir.")
         # we expect this file in module/scripts so we can try to find the shaders in ../shaders
         log.error("Trying to find the shaders dir from current file: {0}".format(__file__))
         shaderDir = path.path(__file__).parent / "shaders"
@@ -319,7 +306,6 @@ def compileAllShaders(renderer = "appleseed"):
             log.info("Using found shaders directory {0}".format(shaderDir))
 
     include_dir = os.path.join(shaderDir, "src/include")
-    log.info("reading shaders from {0}".format(shaderDir))
     oslc_cmd = "oslc"
     failureDict = {}
     osoInfoShaders = []
@@ -336,21 +322,15 @@ def compileAllShaders(renderer = "appleseed"):
 
                 if osoOutputFile.exists():
                     if osoOutputFile.mtime > oslInputFile.mtime:
-                        log.debug("oso file {0} up to date, no compilation needed.".format(osoOutputFile.basename()))
                         continue
                     else:
                         osoOutputFile.remove()
-
-                log.debug("compiling shader: {0}".format(oslInputFile))
-
+                        
                 saved_wd = os.getcwd()
                 os.chdir(root)
                 compileCmd = oslc_cmd + " -v -I" + include_dir + ' -o '+ osoOutputPath + ' ' + oslInputFile
-                log.debug("compile command: {0}".format(compileCmd))
-
                 IDLE_PRIORITY_CLASS = 64
                 process = subprocess.Popen(compileCmd, bufsize=1, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, creationflags=IDLE_PRIORITY_CLASS)
-
                 progress = []
                 fail = False
                 while 1:
@@ -363,7 +343,6 @@ def compileAllShaders(renderer = "appleseed"):
                     if "error" in line:
                         fail = True
                 if fail:
-                    print "set dict", osoOutputFile.basename(), "to", progress
                     failureDict[osoOutputFile.basename()] = progress
                 else:
                     osoInfoShaders.append(osoOutputPath)
@@ -374,7 +353,5 @@ def compileAllShaders(renderer = "appleseed"):
         for key, content in failureDict.iteritems():
             log.info("Shader {0}\n{1}\n\n".format(key, "\n".join(content)))
     else:
-        log.info("Shader compilation done.")
         if len(osoInfoShaders) > 0:
-            log.info("Updating shaderInfoFile.")
             updateOSLShaderInfo(force=False, osoFiles=osoInfoShaders)

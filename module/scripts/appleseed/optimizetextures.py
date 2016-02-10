@@ -32,6 +32,7 @@ import logging
 import os
 import subprocess
 import shutil
+import sys
 
 log = logging.getLogger("mtapLogger")
 
@@ -55,11 +56,7 @@ def makeExrTiled(sourceFile):
         return False
 
 def makeExr(sourceFile, destFile):
-
-    #TODO:currently use mentalrays imf_copy, maybe there is a better way...
-    #cmd = "\"" + os.environ['MENTALRAY_LOCATION'] + "bin/imf_copy\" "
     cmd = "imf_copy {0} {1}".format(sourceFile, destFile)
-    log.debug(cmd)
     try:
         if subprocess.call(cmd, shell = True) is not 0:
             log.error("Conversion of {0} to {1} failed".format(sourceFile, destFile))
@@ -67,12 +64,9 @@ def makeExr(sourceFile, destFile):
     except:
         log.warning("Conversion to exr failed: {0}\nskipping file.".format(sys.exc_info()[0]))
         return False
-
     makeExrTiled(destFile)
 
 def makeDestFile( sourceFile, destFile ):
-    log.debug("Convert file {0} to {1}".format(sourceFile, destFile))
-
     if not destFile.dirname().exists():
         destFile.makedirs()
 
@@ -82,10 +76,8 @@ def makeDestFile( sourceFile, destFile ):
     return True
 
 def preRenderOptimizeTextures(destFormat = "exr", optimizedFilePath = ""):
-
     for fileTexture in pm.ls(type="file"):
         fileNamePath = path.path(fileTexture.fileTextureName.get())
-        log.debug("Check file texture:" + fileNamePath)
 
         if not fileNamePath.exists():
             log.debug("Original file texture {0} could not be found, skipping.".format(fileNamePath))
@@ -96,7 +88,7 @@ def preRenderOptimizeTextures(destFormat = "exr", optimizedFilePath = ""):
             continue
 
         if fileNamePath.lower().startswith(optimizedFilePath.lower()):
-            log.debug("Orig file is already local - skipping conversion.")
+            log.debug("Orig file is already converted - skipping conversion.")
             continue
 
         if fileNamePath.endswith(destFormat):
@@ -116,7 +108,6 @@ def preRenderOptimizeTextures(destFormat = "exr", optimizedFilePath = ""):
         elif fileNamePath.startswith("/"):
             localPath = optimizedFilePath / fileNamePath[1:]
         localPath = path.path("{0}.{1}".format(localPath, destFormat))
-        log.debug("Local destination path {0}".format(localPath.realpath()))
         localPath = localPath.realpath()
 
         doConvert = True
@@ -127,7 +118,7 @@ def preRenderOptimizeTextures(destFormat = "exr", optimizedFilePath = ""):
 
         if doConvert:
             if not makeDestFile(fileNamePath.realpath(), path.path(localPath.replace(".exr", "_t.exr")).realpath()):
-                log.debug("Problem converting {0}".format(fileNamePath))
+                log.error("Problem converting {0}".format(fileNamePath))
                 continue
 
         if not fileTexture.hasAttr("origFilePath"):

@@ -46,7 +46,6 @@ class AEappleseedNodeTemplate(BaseTemplate):
         self.thisNode = None
         self.node = pm.PyNode(self.nodeName)
         self.buildBody(nodeName)
-        log.debug("AEappleSeedNodeTemplate")
 
     def updateUI(self, nodeName):
         self.thisNode = pm.PyNode(nodeName)
@@ -110,17 +109,7 @@ class AEappleseedNodeTemplate(BaseTemplate):
             self.addControl("mtap_visibleSpecular", label="Visible For Specular Rays")
             self.addControl("mtap_visibleDiffuse", label="Visible For Diffulse Rays")
             self.addControl("mtap_visibleTransparency", label="Visible For Transparent Rays")
-
             self.endLayout()
-
-#        if self.thisNode.type() == "shadingEngine":
-#            self.beginLayout("AppleSeed" ,collapse=1)
-#            self.addControl("mtap_mat_bsdf", label="Bsdf")
-#            self.addControl("mtap_mat_edf", label="Edf")
-#            self.addControl("mtap_mat_surfaceShader", label="Surface Shader")
-#            self.addControl("mtap_mat_alphaMap", label="Alpha Map")
-#            self.addControl("mtap_mat_normalMap", label="Normal Map")
-#            self.endLayout()
 
     def buildBody(self, nodeName):
         self.buildAppleSeedTemplates(nodeName)
