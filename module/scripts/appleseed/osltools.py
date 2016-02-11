@@ -26,9 +26,9 @@
 # THE SOFTWARE.
 #
 
+import logging
 import path
 import pymel.core as pm
-import logging
 import os
 import shutil
 import subprocess
@@ -40,33 +40,6 @@ SHADER_DICT = {}
 
 log = logging.getLogger("renderLogger")
 
-def compileOSLShaders(renderer="Corona"):
-    oslShaderPath = path.path("H:/UserDatenHaggi/Documents/coding/OpenMaya/src/mayaTo{0}/mt{1}_devmodule/shaders".format(renderer, renderer[:2].lower()))
-    oslShadersToCompile = []
-    for p in oslShaderPath.listdir("*.osl"):
-        oslFile = path.path(p)
-        osoFile = path.path(p[:-3] + "oso")
-        if osoFile.exists():
-            if osoFile.mtime < oslFile.mtime:
-                osoFile.remove()
-        if osoFile.exists():
-            continue
-        oslShadersToCompile.append(oslFile)
-
-    for oslShader in oslShadersToCompile:
-        cmd = "{compiler} -v -o {output} {oslFile}".format(compiler="oslc.exe", output=oslShader.replace(".osl", ".oso"), oslFile=oslShader)
-        log.debug("Compiling osl shader: {0}".format(oslShader))
-        log.debug("Command: {0}".format(cmd))
-
-        IDLE_PRIORITY_CLASS = 64
-        process = subprocess.Popen(cmd, bufsize=1, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, creationflags=IDLE_PRIORITY_CLASS)
-
-        while 1:
-            line = process.stdout.readline()
-            if not line: break
-            log.debug(line)
-            pm.mel.trace(line.strip())
-
 def getShaderInfo(shaderPath):
     osoFiles = getOSOFiles(shaderPath)
     return osoFiles
@@ -75,7 +48,7 @@ def getOSODirs(renderer = "appleseed"):
     try:
         shaderDir = os.environ['{0}_OSL_SHADERS_LOCATION'.format(renderer.upper())]
     except KeyError:
-        shaderDir = path.path(__file__).parent + "/shaders"
+        shaderDir = path.path(__file__).parent.parent.parent + "/shaders"
     osoDirs = set()
     for root, dirname, files in os.walk(shaderDir):
         for filename in files:
@@ -87,8 +60,7 @@ def getOSOFiles(renderer = "appleseed"):
     try:
         shaderDir = os.environ['{0}_OSL_SHADERS_LOCATION'.format(renderer.upper())]
     except KeyError:
-        shaderDir = path.path(__file__).parent + "/shaders"
-
+        shaderDir = path.path(__file__).parent.parent.parent + "/shaders"
     osoFiles = set()
     for root, dirname, files in os.walk(shaderDir):
         for filename in files:
@@ -100,8 +72,7 @@ def getOSLFiles(renderer = "appleseed"):
     try:
         shaderDir = os.environ['{0}_OSL_SHADERS_LOCATION'.format(renderer.upper())]
     except KeyError:
-        shaderDir = path.path(__file__).parent + "/shaders"
-
+        shaderDir = path.path(__file__).parent.parent.parent + "/shaders"
     osoFiles = set()
     for root, dirname, files in os.walk(shaderDir):
         for filename in files:
@@ -300,8 +271,8 @@ def compileAllShaders(renderer = "appleseed"):
         shaderDir = os.environ['{0}_OSL_SHADERS_LOCATION'.format(renderer.upper())]
     except KeyError:
         # we expect this file in module/scripts so we can try to find the shaders in ../shaders
-        log.error("Trying to find the shaders dir from current file: {0}".format(__file__))
-        shaderDir = path.path(__file__).parent / "shaders"
+        log.error("Could not get path from APPLESEED_OSL_SHADERS_LOCATION. Trying to find the shaders dir relative to current file: {0}".format(__file__))
+        shaderDir = path.path(__file__).parent.parent.parent / "shaders"
         if shaderDir.exists():
             log.info("Using found shaders directory {0}".format(shaderDir))
 

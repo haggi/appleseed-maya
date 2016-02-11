@@ -45,14 +45,12 @@ class MetaClass(OpenMayaMPx.MPxNode):
         eAttr = om.MFnEnumAttribute()
 
         def setOutputAttr():
-            print "Set output attributes"
             nAttr.setStorable(0)
             nAttr.setHidden(0)
             nAttr.setReadable(1)
             nAttr.setWritable(0)
 
         for output in cls.data['outputs']:
-            print "register OutputAttribute", output
             if output['type'] == 'output pointer': #this is a OSL closure name
                 cls.output = nAttr.createColor(output['name'],output['name'])
                 output['attr'] = cls.output
@@ -67,14 +65,12 @@ class MetaClass(OpenMayaMPx.MPxNode):
                 cls.addAttribute( cls.output )
 
         for inputElement in cls.data['inputs']:
-            print "register InputAttribute", inputElement
             if inputElement['type'] == 'vector':
                 if inputElement.has_key('hint') and inputElement['hint'] == "useAsColor":
                     cls.input = nAttr.createColor(inputElement['name'],inputElement['name'])
                 else:
                     cls.input = nAttr.createPoint(inputElement['name'],inputElement['name'])
                 if inputElement.has_key('default'):
-                    print "InputElement vector: ", inputElement['name'], "default", inputElement['default']
                     if inputElement['default'].startswith('['):
                         default = map(float, ast.literal_eval(inputElement['default']))
                         nAttr.setDefault(default[0],default[1],default[2])
