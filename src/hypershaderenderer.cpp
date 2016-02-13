@@ -818,7 +818,7 @@ MStatus HypershadeRenderer::endSceneUpdate()
 
 MStatus HypershadeRenderer::destroyScene()
 {
-    controller.status = renderer::IRendererController::AbortRendering;
+    controller.set_status(renderer::IRendererController::AbortRendering);
     if (renderThread.joinable())
         renderThread.join();
 
@@ -891,7 +891,7 @@ void HypershadeRenderer::copyFrameToBuffer(float* frame, int w, int h)
 void HypershadeTileCallback::post_render_tile(const renderer::Frame* frame, const size_t tile_x, const size_t tile_y)
 {
     foundation::Tile& tile = frame->image().tile(tile_x, tile_y);
-    renderer->copyTileToBuffer(tile, tile_x, tile_y);
+    mRenderer->copyTileToBuffer(tile, tile_x, tile_y);
 }
 
 void HypershadeTileCallback::post_render(const renderer::Frame* frame)
@@ -918,7 +918,7 @@ void HypershadeTileCallback::post_render(const renderer::Frame* frame)
                 {
                     const size_t index = (((height - 1) - (tile_y * tileSize + y)) * width + (tile_x * tileSize) + x) * kNumChannels;
 
-                    rb[index] = tile.get_component<float>(x, y, 0);
+                    buffer[index + 0] = tile.get_component<float>(x, y, 0);
                     buffer[index + 1] = tile.get_component<float>(x, y, 1);
                     buffer[index + 2] = tile.get_component<float>(x, y, 2);
                     buffer[index + 3] = tile.get_component<float>(x, y, 3);
@@ -927,7 +927,7 @@ void HypershadeTileCallback::post_render(const renderer::Frame* frame)
         }
     }
 
-    renderer->copyFrameToBuffer(buffer, width, height);
+    mRenderer->copyFrameToBuffer(buffer, width, height);
 
     delete [] buffer;
 }
