@@ -46,6 +46,11 @@
         - if one is found, follow the chain to the leaf nodes and place the projection part before the leaf
     So I create a structure which saves the projection nodes for every leaf node
 */
+
+#include "../shadingtools/shadingnode.h"
+#include "../utilities/tools.h"
+#include "OSL/oslexec.h"
+
 #include <maya/MObject.h>
 #include <maya/MObjectArray.h>
 #include <maya/MPlug.h>
@@ -55,13 +60,9 @@
 #include <maya/MMatrix.h>
 #include <maya/MFloatVector.h>
 #include <maya/MFnDependencyNode.h>
+#include <math.h>
 #include <vector>
-#include "OSL/oslexec.h"
 #include "boost/variant.hpp"
-#include "math.h"
-
-#include "../shadingtools/shadingnode.h"
-#include "../utilities/tools.h"
 
 #define ARRAY_MAX_ENTRIES 10
 
@@ -70,49 +71,16 @@ class OSLShadingNetworkRenderer;
 static std::vector<MString> DefinedOSLNodes;
 static std::vector<MString> DefinedOSLSWNodes;
 
-struct Connection
+class Connection
 {
+  public:
+    Connection();
+    Connection(MString sn, MString sa, MString dn, MString da);
+    bool operator==(const Connection& otherOne);
     MString sourceNode;
     MString sourceAttribute;
     MString destNode;
     MString destAttribute;
-
-    static MString validateParameter(MString name)
-    {
-        if (name == "min")
-            return "inMin";
-        if (name == "max")
-            return "inMax";
-        if (name == "vector")
-            return "inVector";
-        if (name == "matrix")
-            return "inMatrix";
-        if (name == "color")
-            return "inColor";
-        return name;
-    }
-
-    Connection()
-    {
-    }
-
-    Connection(MString sn, MString sa, MString dn, MString da)
-    {
-        sourceNode = validateParameter(sn);
-        sourceAttribute = validateParameter(sa);
-        destNode = validateParameter(dn);
-        destAttribute = validateParameter(da);
-    }
-
-    bool operator==(const Connection& otherOne)
-    {
-        if (sourceNode == otherOne.sourceNode)
-            if (destNode == otherOne.destNode)
-                if (sourceAttribute == otherOne.sourceAttribute)
-                    if (destAttribute == otherOne.destAttribute)
-                        return true;
-        return false;
-    }
 };
 
 struct SimpleVector
@@ -125,153 +93,29 @@ struct SimpleMatrix
     float f[4][4];
 };
 
-struct OSLParameter
+class OSLParameter
 {
+  public:
     MString name;
     OIIO::TypeDesc type;
     MVector mvector;
     boost::variant<int, float, SimpleVector, SimpleMatrix, std::string> value;
-
-    static MString validateParameter(const MString& pname)
-    {
-        if (pname == "min")
-            return "inMin";
-        if (pname == "max")
-            return "inMax";
-        if (pname == "vector")
-            return "inVector";
-        if (pname == "matrix")
-            return "inMatrix";
-        if (pname == "color")
-            return "inColor";
-        return pname;
-    }
-
-    OSLParameter(const MString& pname, float pvalue)
-    {
-        name = pname;
-        value = pvalue;
-        type = OSL::TypeDesc::TypeFloat;
-    }
-
-    OSLParameter(const MString& pname, int pvalue)
-    {
-        name = pname;
-        value = pvalue;
-        type = OSL::TypeDesc::TypeInt;
-    }
-
-    OSLParameter(const MString& pname, const MString& pvalue)
-    {
-        name = pname;
-        value = pvalue.asChar();
-        type = OSL::TypeDesc::TypeString;
-    }
-
-    OSLParameter(const MString& pname, const MVector& pvalue)
-    {
-        name = validateParameter(pname);
-        SimpleVector s;
-        s.f[0] = pvalue.x;
-        s.f[1] = pvalue.y;
-        s.f[2] = pvalue.z;
-        value = s;
-        type = OSL::TypeDesc::TypeVector;
-    }
-
-    OSLParameter(const MString& pname, const MMatrix& pvalue)
-    {
-        name = validateParameter(pname);
-        SimpleMatrix m;
-        pvalue.get(m.f);
-        value = m;
-        type = OSL::TypeDesc::TypeMatrix;
-    }
-
-    OSLParameter(const MString& pname, const MColor& pvalue)
-    {
-        name = validateParameter(pname);
-        SimpleVector s;
-        s.f[0] = pvalue.r;
-        s.f[1] = pvalue.g;
-        s.f[2] = pvalue.b;
-        value = s;
-        type = OSL::TypeDesc::TypeVector;
-    }
-
-    OSLParameter(const MString& pname, bool pvalue)
-    {
-        name = pname;
-        value = (int)pvalue;
-        type = OSL::TypeDesc::TypeInt;
-    }
-
-    OSLParameter(const char *pname, float pvalue)
-    {
-        name = pname;
-        value = pvalue;
-        type = OSL::TypeDesc::TypeFloat;
-    }
-
-    OSLParameter(const char *pname, int pvalue)
-    {
-        name = pname;
-        value = pvalue;
-        type = OSL::TypeDesc::TypeInt;
-    }
-
-    OSLParameter(const char *pname, const MString& pvalue)
-    {
-        name = pname;
-        value = pvalue.asChar();
-        type = OSL::TypeDesc::TypeString;
-    }
-
-    OSLParameter(const char *pname, const std::string& pvalue)
-    {
-        name = pname;
-        value = pvalue.c_str();
-        type = OSL::TypeDesc::TypeString;
-    }
-
-    OSLParameter(const char *pname, const MVector& pvalue)
-    {
-        name = validateParameter(pname);
-        SimpleVector s;
-        s.f[0] = pvalue.x;
-        s.f[1] = pvalue.y;
-        s.f[2] = pvalue.z;
-        value = s;
-        type = OSL::TypeDesc::TypeVector;
-        mvector = pvalue;
-    }
-
-    OSLParameter(const char *pname, const MMatrix& pvalue)
-    {
-        name = validateParameter(pname);
-        SimpleMatrix m;
-        pvalue.get(m.f);
-        value = m;
-        type = OSL::TypeDesc::TypeMatrix;
-    }
-
-    OSLParameter(const char *pname, const MColor& pvalue)
-    {
-        name = validateParameter(pname);
-        SimpleVector s;
-        s.f[0] = pvalue.r;
-        s.f[1] = pvalue.g;
-        s.f[2] = pvalue.b;
-        value = s;
-        type = OSL::TypeDesc::TypeVector;
-    }
-
-    OSLParameter(const char *pname, bool pvalue)
-    {
-        name = pname;
-        value = (int)pvalue;
-        type = OSL::TypeDesc::TypeInt;
-    }
+  public:
+    OSLParameter(const MString& pname, float pvalue);
+    OSLParameter(const MString& pname, int pvalue);
+    OSLParameter(const MString& pname, const MString& pvalue);
+    OSLParameter(const MString& pname, const MVector& pvalue);
+    OSLParameter(const MString& pname, const MMatrix& pvalue);
+    OSLParameter(const MString& pname, const MColor& pvalue);
+    OSLParameter(const MString& pname, bool pvalue);
+    OSLParameter(const char *pname, float pvalue);
+    OSLParameter(const char *pname, int pvalue);
+    OSLParameter(const char *pname, const MString& pvalue);
+    OSLParameter(const char *pname, const std::string& pvalue);
+    OSLParameter(const char *pname, const MVector& pvalue);
+    OSLParameter(const char *pname, const MMatrix& pvalue);
+    OSLParameter(const char *pname, const MColor& pvalue);
+    OSLParameter(const char *pname, bool pvalue);
 };
 
 struct ProjectionUtil

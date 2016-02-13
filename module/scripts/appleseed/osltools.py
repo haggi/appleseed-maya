@@ -28,6 +28,7 @@
 
 import logging
 import path
+import pprint
 import pymel.core as pm
 import os
 import shutil
@@ -80,7 +81,20 @@ def getOSLFiles(renderer = "appleseed"):
                 osoFiles.add(os.path.join(root, filename).replace("\\", "/"))
     return list(osoFiles)
 
-import pprint
+def reverseValidate(pname):
+    if pname == "inMin":
+        return "min"
+    if pname == "inMax":
+        return "max";
+    if pname == "inVector":
+        return "vector";
+    if pname == "inMatrix":
+        return "matrix";
+    if pname == "inColor":
+        return "color";
+    if pname == "outOutput":
+        return "output";
+    return pname;
 
 def analyzeContent(content):
     d = {}
@@ -100,7 +114,7 @@ def analyzeContent(content):
             if line.startswith("Default value"):
                 currentElement['default'] = line.split(" ")[-1].replace("\"", "")
                 if currentElement.has_key("type"):
-                    if currentElement["type"] in ["color", "vector"]:
+                    if currentElement["type"] in ["color", "vector", "output vector"]:
                         vector = line.split("[")[-1].split("]")[0]
                         vector = vector.strip()
                         currentElement['default'] = map(float, vector.split(" "))
@@ -125,14 +139,14 @@ def analyzeContent(content):
                     currentElement['mayaId'] = int(line.split("=")[-1])
             if line.startswith("\""): # found a parameter
                 currentElement = {}
-                currentElement['name'] = line.split(" ")[0].replace("\"", "")
+                elementName = line.split(" ")[0].replace("\"", "")
+                currentElement['name'] = reverseValidate(elementName)
                 currentElement['type'] = " ".join(line.split(" ")[1:]).replace("\"", "")
+                
                 if "output" in line:
                     d['outputs'].append(currentElement)
                     currentElement = d['outputs'][-1]
-                else:
-                    # In maya we have some nodes using inputs which are called like a reserved word in osl.
-                    # For example maya lambert has an attribute called "color". 
+                else:                    
                     d['inputs'].append(currentElement)
                     currentElement = d['inputs'][-1]
     return d

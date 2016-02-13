@@ -59,7 +59,173 @@ namespace
         plug.name().split('.', sa);
         return sa[sa.length() - 1];
     }
+
+    MString validateParameter(const MString name)
+    {
+        if (name == "min")
+            return "inMin";
+        if (name == "max")
+            return "inMax";
+        if (name == "vector")
+            return "inVector";
+        if (name == "matrix")
+            return "inMatrix";
+        if (name == "color")
+            return "inColor";
+        if (name == "output")
+            return "outOutput";
+        return name;
+    }
 }
+
+OSLParameter::OSLParameter(const MString& pname, float pvalue)
+{
+    name = pname;
+    value = pvalue;
+    type = OSL::TypeDesc::TypeFloat;
+}
+
+OSLParameter::OSLParameter(const MString& pname, int pvalue)
+{
+    name = pname;
+    value = pvalue;
+    type = OSL::TypeDesc::TypeInt;
+}
+
+OSLParameter::OSLParameter(const MString& pname, const MString& pvalue)
+{
+    name = pname;
+    value = pvalue.asChar();
+    type = OSL::TypeDesc::TypeString;
+}
+
+OSLParameter::OSLParameter(const MString& pname, const MVector& pvalue)
+{
+    name = validateParameter(pname);
+    SimpleVector s;
+    s.f[0] = pvalue.x;
+    s.f[1] = pvalue.y;
+    s.f[2] = pvalue.z;
+    value = s;
+    type = OSL::TypeDesc::TypeVector;
+}
+
+OSLParameter::OSLParameter(const MString& pname, const MMatrix& pvalue)
+{
+    name = validateParameter(pname);
+    SimpleMatrix m;
+    pvalue.get(m.f);
+    value = m;
+    type = OSL::TypeDesc::TypeMatrix;
+}
+
+OSLParameter::OSLParameter(const MString& pname, const MColor& pvalue)
+{
+    name = validateParameter(pname);
+    SimpleVector s;
+    s.f[0] = pvalue.r;
+    s.f[1] = pvalue.g;
+    s.f[2] = pvalue.b;
+    value = s;
+    type = OSL::TypeDesc::TypeVector;
+}
+
+OSLParameter::OSLParameter(const MString& pname, bool pvalue)
+{
+    name = pname;
+    value = (int)pvalue;
+    type = OSL::TypeDesc::TypeInt;
+}
+
+OSLParameter::OSLParameter(const char *pname, float pvalue)
+{
+    name = pname;
+    value = pvalue;
+    type = OSL::TypeDesc::TypeFloat;
+}
+
+OSLParameter::OSLParameter(const char *pname, int pvalue)
+{
+    name = pname;
+    value = pvalue;
+    type = OSL::TypeDesc::TypeInt;
+}
+
+OSLParameter::OSLParameter(const char *pname, const MString& pvalue)
+{
+    name = pname;
+    value = pvalue.asChar();
+    type = OSL::TypeDesc::TypeString;
+}
+
+OSLParameter::OSLParameter(const char *pname, const std::string& pvalue)
+{
+    name = pname;
+    value = pvalue.c_str();
+    type = OSL::TypeDesc::TypeString;
+}
+
+OSLParameter::OSLParameter(const char *pname, const MVector& pvalue)
+{
+    name = validateParameter(pname);
+    SimpleVector s;
+    s.f[0] = pvalue.x;
+    s.f[1] = pvalue.y;
+    s.f[2] = pvalue.z;
+    value = s;
+    type = OSL::TypeDesc::TypeVector;
+    mvector = pvalue;
+}
+
+OSLParameter::OSLParameter(const char *pname, const MMatrix& pvalue)
+{
+    name = validateParameter(pname);
+    SimpleMatrix m;
+    pvalue.get(m.f);
+    value = m;
+    type = OSL::TypeDesc::TypeMatrix;
+}
+
+OSLParameter::OSLParameter(const char *pname, const MColor& pvalue)
+{
+    name = validateParameter(pname);
+    SimpleVector s;
+    s.f[0] = pvalue.r;
+    s.f[1] = pvalue.g;
+    s.f[2] = pvalue.b;
+    value = s;
+    type = OSL::TypeDesc::TypeVector;
+}
+
+OSLParameter::OSLParameter(const char *pname, bool pvalue)
+{
+    name = pname;
+    value = (int)pvalue;
+    type = OSL::TypeDesc::TypeInt;
+}
+
+Connection::Connection()
+{
+}
+
+Connection::Connection(MString sn, MString sa, MString dn, MString da)
+{
+    sourceNode = validateParameter(sn);
+    sourceAttribute = validateParameter(sa);
+    destNode = validateParameter(dn);
+    destAttribute = validateParameter(da);
+}
+
+bool Connection::operator == (const Connection& otherOne)
+{
+    if (sourceNode == otherOne.sourceNode)
+        if (destNode == otherOne.destNode)
+            if (sourceAttribute == otherOne.sourceAttribute)
+                if (destAttribute == otherOne.destAttribute)
+                    return true;
+    return false;
+}
+
 
 OSLUtilClass::OSLUtilClass()
 {
@@ -1005,13 +1171,10 @@ void OSLUtilClass::connectOSLShaders(ConnectionArray& ca)
         const char *srcLayer = cIt->sourceNode.asChar();
         const char *srcAttr = cIt->sourceAttribute.asChar();
         const char *destLayer = cIt->destNode.asChar();
-        MString destAttr = cIt->destAttribute;
-        if (destAttr == "color")
-            destAttr = "inColor";
-        Logging::debug(MString("connectOSLShaders ") + srcLayer + "." + srcAttr + " -> " + destLayer + "." + destAttr);
+        const char *destAttr = cIt->destAttribute.asChar();
         OSL::ShaderGroup *g = group;
         renderer::ShaderGroup *ag = (renderer::ShaderGroup *)g;
-        ag->add_connection(srcLayer, srcAttr, destLayer, destAttr.asChar());
+        ag->add_connection(srcLayer, srcAttr, destLayer, destAttr);
     }
 }
 
