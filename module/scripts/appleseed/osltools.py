@@ -131,6 +131,8 @@ def analyzeContent(content):
                     d['outputs'].append(currentElement)
                     currentElement = d['outputs'][-1]
                 else:
+                    # In maya we have some nodes using inputs which are called like a reserved word in osl.
+                    # For example maya lambert has an attribute called "color". 
                     d['inputs'].append(currentElement)
                     currentElement = d['inputs'][-1]
     return d
@@ -138,9 +140,11 @@ def analyzeContent(content):
 def readShadersXMLDescription():
     xmlFile = path.path(__file__).parent.parent.parent / "resources/shaderdefinitions.xml"
     if not xmlFile.exists():
-        log.error("Shader definition file could not be found: {0}".format(xmlFile))
         return
-    tree = ET.parse(xmlFile)
+    try:
+        tree = ET.parse(xmlFile)
+    except:
+        return
     shaders = tree.getroot()
     shaderDict = {}
     for shader in shaders:
@@ -213,9 +217,6 @@ def writeXMLShaderDescription(shaderDict=None):
     if shaderDict is None:
         shaderDict = SHADER_DICT
     xmlFile = path.path(__file__).parent.parent.parent / "resources/shaderdefinitions.xml"
-    if not xmlFile.exists():
-        log.error("Shader definition file could not be found: {0}".format(xmlFile))
-        return
     root = ET.Element('shaders')
     for shaderKey in shaderDict.keys():
         shader = shaderDict[shaderKey]

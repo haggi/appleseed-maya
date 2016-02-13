@@ -31,7 +31,6 @@ import appleseedmenu as appleseedmenu
 import logging
 import optimizetextures
 import os
-import osltools as osltools
 import path
 import pymel.core as pm
 import renderer as renderer
@@ -551,7 +550,6 @@ class AppleseedRenderer(renderer.MayaToRenderer):
                 self.renderGlobalsNode.optimizedTexturePath.set(str(optimizedPath))
 
             optimizetextures.preRenderOptimizeTextures(optimizedFilePath=self.renderGlobalsNode.optimizedTexturePath.get())
-        osltools.compileAllShaders()
 
     def postRenderProcedure(self):
         optimizetextures.postRenderOptimizeTextures()
@@ -611,7 +609,6 @@ def loadPlugins():
     python_plugins = ["loadshadersplugin"]
     currentPath = path.path(__file__).dirname()
     
-    osltools.compileAllShaders() # compile shaders and update shaders xml file
     for plugin in python_plugins:
         try:
             pluginPath = "{0}/{1}.py".format(currentPath, plugin) 
