@@ -90,6 +90,8 @@ def reverseValidate(pname):
         return "vector";
     if pname == "inMatrix":
         return "matrix";
+    if pname == "inDiffuse":
+        return "diffuse";
     if pname == "inColor":
         return "color";
     if pname == "outOutput":

@@ -64,6 +64,8 @@ namespace
     {
         if (name == "min")
             return "inMin";
+        if (name == "diffuse")
+            return "inDiffuse";
         if (name == "max")
             return "inMax";
         if (name == "vector")
@@ -103,9 +105,9 @@ OSLParameter::OSLParameter(const MString& pname, const MVector& pvalue)
 {
     name = validateParameter(pname);
     SimpleVector s;
-    s.f[0] = pvalue.x;
-    s.f[1] = pvalue.y;
-    s.f[2] = pvalue.z;
+    s.f[0] = (float)pvalue.x;
+    s.f[1] = (float)pvalue.y;
+    s.f[2] = (float)pvalue.z;
     value = s;
     type = OSL::TypeDesc::TypeVector;
 }
@@ -169,9 +171,9 @@ OSLParameter::OSLParameter(const char *pname, const MVector& pvalue)
 {
     name = validateParameter(pname);
     SimpleVector s;
-    s.f[0] = pvalue.x;
-    s.f[1] = pvalue.y;
-    s.f[2] = pvalue.z;
+    s.f[0] = (float)pvalue.x;
+    s.f[1] = (float)pvalue.y;
+    s.f[2] = (float)pvalue.z;
     value = s;
     type = OSL::TypeDesc::TypeVector;
     mvector = pvalue;
@@ -465,13 +467,7 @@ void OSLUtilClass::defineOSLParameter(ShaderAttribute& sa, MFnDependencyNode& de
     }
     if (sa.type == "color")
     {
-        // next to color attributes we can have color multipliers which are really useful sometimes
-        MString multiplierName = MString("") + sa.name.c_str() + "Multiplier";
-        MPlug multiplierPlug = depFn.findPlug(multiplierName, &stat);
-        float multiplier = 1.0f;
-        if (stat)
-            multiplier = multiplierPlug.asFloat();
-        paramArray.push_back(OSLParameter(sa.name.c_str(), getColorAttr(sa.name.c_str(), depFn) * multiplier));
+        paramArray.push_back(OSLParameter(sa.name.c_str(), getColorAttr(sa.name.c_str(), depFn)));
     }
     if (sa.type == "int")
     {
@@ -488,12 +484,6 @@ void OSLUtilClass::defineOSLParameter(ShaderAttribute& sa, MFnDependencyNode& de
     }
     if (sa.type == "vector")
     {
-        // next to vector attributes we can have vector (vectors can be colors) multipliers which are really useful sometimes
-        MString multiplierName = MString("") + sa.name.c_str() + "Multiplier";
-        MPlug multiplierPlug = depFn.findPlug(multiplierName, &stat);
-        float multiplier = 1.0f;
-        if (stat)
-            multiplier = multiplierPlug.asFloat();
         MVector v;
         if (sa.hint == "useAsColor")
         {
@@ -502,7 +492,7 @@ void OSLUtilClass::defineOSLParameter(ShaderAttribute& sa, MFnDependencyNode& de
         }
         else
             v = getVectorAttr(sa.name.c_str(), depFn);
-        paramArray.push_back(OSLParameter(sa.name.c_str(), v * multiplier));
+        paramArray.push_back(OSLParameter(sa.name.c_str(), v));
     }
     if (sa.type == "enumint")
     {
