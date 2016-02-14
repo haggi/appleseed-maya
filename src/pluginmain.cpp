@@ -171,7 +171,7 @@ APPLESEEDMAYA_DLL_EXPORT MStatus initializePlugin(MObject obj)
         MSwatchRenderRegister::registerSwatchRender(swatchName, NewSwatchRenderer::creator);
 
 #if MAYA_API_VERSION >= 201600
-    status = plugin.registerRenderer("appleseed", HypershadeRenderer::creator);
+    status = plugin.registerRenderer("Appleseed", HypershadeRenderer::creator);
     CHECK_MSTATUS_AND_RETURN_IT(status);
 #endif
 
@@ -186,7 +186,7 @@ APPLESEEDMAYA_DLL_EXPORT MStatus uninitializePlugin(MObject obj)
     MStatus status;
 
 #if MAYA_API_VERSION >= 201600
-    status = plugin.deregisterRenderer("appleseed");
+    status = plugin.deregisterRenderer("Appleseed");
     CHECK_MSTATUS_AND_RETURN_IT(status);
 #endif
 
