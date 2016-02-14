@@ -305,7 +305,6 @@ void OSLUtilClass::listProjectionHistory(const MObject& mobject)
         if (projectionNodeArray.size() > 0)
         {
             ProjectionUtil& util = projectionNodeArray.back();
-            Logging::debug(MString("node ") + depFn.name() + " has no incoming connections this is my leaf node.");
             util.leafNodes.append(depFn.object());
         }
         return;
@@ -316,7 +315,6 @@ void OSLUtilClass::listProjectionHistory(const MObject& mobject)
     for (uint i = 0; i < inputNodes.length(); i++)
     {
         MString nodeName = getObjectName(inputNodes[i]);
-        Logging::debug(MString("Checking node ") + nodeName);
         listProjectionHistory(inputNodes[i]);
     }
 }
@@ -344,7 +342,6 @@ void OSLUtilClass::defineOSLParameter(ShaderAttribute& sa, MFnDependencyNode& de
 
             if (p.isCompound() && (getAttributeNameFromPlug(plug) == "colorEntryList"))
             {
-                // yes I know, hardcoded names are bad, bad. But if it works, I can
                 MVector vec;
                 // colorEntryList has child0 == position, child1 = color
                 float position = p.child(0).asFloat();
@@ -439,9 +436,6 @@ void OSLUtilClass::defineOSLParameter(ShaderAttribute& sa, MFnDependencyNode& de
                     else
                     {
                         ext = fileName.substr(pos + 1);
-                        Logging::debug(MString("Extension for file texture: ") + fileName.c_str() + " is " + ext.c_str());
-                        //if (ext == "exr")
-                        //{
                         std::string txFileName = fileName + ".exr.tx";
                         boost::filesystem::path p(txFileName);
                         if (boost::filesystem::exists(p))
@@ -451,7 +445,6 @@ void OSLUtilClass::defineOSLParameter(ShaderAttribute& sa, MFnDependencyNode& de
                             if (uvTilingMode == 0)
                                 stringParameter = txFileName.c_str();
                         }
-                        //}
                         paramArray.push_back(OSLParameter("ext", ext));
                     }
 
@@ -633,13 +626,11 @@ bool OSLUtilClass::handleSpecialPlugs(MString attributeName, MFnDependencyNode& 
                 MObject inNode = getConnectedInNode(depFn.object(), "bumpDepth");
                 if (inNode != MObject::kNullObj)
                 {
-                    Logging::debug(MString("Found connection to bump Node: ") + getObjectName(inNode) + " trying to find a color output");
                     MFnDependencyNode inDepFn(inNode);
                     MStatus stat;
                     MPlug outColor = inDepFn.findPlug("outColor", true, &stat);
                     if (!outColor.isNull())
                     {
-                        Logging::debug(MString("Found outColor plug: ") + outColor.name());
                         sourcePlugs.append(outColor);
                         destPlugs.append(normalMap);
                         return true;
