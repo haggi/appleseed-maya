@@ -99,11 +99,13 @@ namespace
             if (renderingStarted && getWorldPtr()->getRenderState() != World::RSTATERENDERING)
                 break;
 
+#ifdef _WIN32
             if (GetAsyncKeyState(VK_ESCAPE) && getWorldPtr()->getRenderState() == World::RSTATERENDERING)
             {
                 getWorldPtr()->mRenderer->abortRendering();
                 break;
             }
+#endif
 
             foundation::sleep(100);
         }
