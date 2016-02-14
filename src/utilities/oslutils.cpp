@@ -552,10 +552,8 @@ void OSLUtilClass::createOSLProjectionNodes(const MObject& surfaceShaderNode)
         ca.push_back(Connection(pn.fullName, "worldInverseMatrix", sn.fullName, "placementMatrix"));
         connectOSLShaders(ca);
 
-        Logging::debug(MString("Found projection node: ") + projectionNodeName);
         for (uint lId = 0; lId < util.leafNodes.length(); lId++)
         {
-            Logging::debug(projectionNodeName + " has to be connected to " + getObjectName(util.leafNodes[lId]));
             projectionNodes.push_back(util.projectionNode);
             projectionConnectNodes.push_back(util.projectionNode);
         }
@@ -713,7 +711,6 @@ void OSLUtilClass::checkPlugsValidity(MPlugArray& sourcePlugs, MPlugArray& destP
     MPlugArray validSourcePlugs, validDestPlugs;
     for (uint pId = 0; pId < sourcePlugs.length(); pId++)
     {
-        Logging::debug(MString("checking plug connection ") + sourcePlugs[pId].name() + "-->" + destPlugs[pId].name());
         MPlug sourcePlug = sourcePlugs[pId];
         // in the ShadingNetwork only the main attribute names are saved, so we need to find the parent first.
         while (sourcePlug.isChild())
@@ -996,16 +993,10 @@ void OSLUtilClass::createAndConnectShaderNodes()
     for (it = nodesList.begin(); it != nodesList.end(); it++)
     {
         OSLNodeStruct node = *it;
-        Logging::debug(MString("NEW: Creating shading node: ") + node.nodeName + " type: " + node.typeName);
         createOSLShader(node.typeName, node.nodeName, node.paramArray);
     }
-
     std::vector<Connection>::iterator cit;
     std::vector<Connection> conns = connectionList;
-    for (cit = conns.begin(); cit != conns.end(); cit++)
-    {
-        Logging::debug(MString("NEW: Creating connection from: ") + cit->sourceNode + "." + cit->sourceAttribute + " --> " + cit->destNode + "." + cit->destAttribute);
-    }
     connectOSLShaders(connectionList);
 }
 
@@ -1087,7 +1078,6 @@ void OSLUtilClass::connectProjectionNodes(MObject& projNode)
     {
         if (projNode == projectionConnectNodes[i])
         {
-            Logging::debug(MString("Place3dNode for projection input defined ") + pn.name());
             MString sourceNode = (getObjectName(projectionNodes[i]) + "_ProjUtil");
             MString sourceAttr = "outUVCoord";
             MString destNode = pn.name();
@@ -1161,7 +1151,6 @@ void OSLUtilClass::connectOSLShaders(ConnectionArray& ca)
 
 void OSLUtilClass::createOSLShader(MString& shaderNodeType, MString& shaderName, OSLParamArray& paramArray)
 {
-    Logging::debug(MString("createOSLShader ") + shaderName);
     renderer::ParamArray asParamArray;
     std::vector<OSLParameter>::iterator pIt;
     for (pIt = paramArray.begin(); pIt != paramArray.end(); pIt++)
@@ -1172,10 +1161,8 @@ void OSLUtilClass::createOSLShader(MString& shaderNodeType, MString& shaderName,
 
         MString paramString = oslTypeToMString(*pIt);
         asParamArray.insert(pname.asChar(), paramString);
-        Logging::debug(MString("\tParam ") + pIt->name + " " + paramString);
     }
 
-    Logging::debug(MString("createOSLShader creating shader node "));
     OSL::ShaderGroup *g = group;
     renderer::ShaderGroup *ag = (renderer::ShaderGroup *)g;
     ag->add_shader("shader", shaderNodeType.asChar(), shaderName.asChar(), asParamArray);
