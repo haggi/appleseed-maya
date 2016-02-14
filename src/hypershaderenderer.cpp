@@ -290,6 +290,27 @@ MStatus HypershadeRenderer::beginSceneUpdate()
     return MStatus::kSuccess;
 }
 
+MStatus HypershadeRenderer::endSceneUpdate()
+{
+    controller.set_status(renderer::IRendererController::ContinueRendering);
+    ProgressParams progressParams;
+    progressParams.progress = 0.0;
+    progress(progressParams);
+
+    if (asyncStarted)
+    {
+        renderThread = boost::thread(startRenderThread, this);
+    }
+    else
+    {
+        ProgressParams progressParams;
+        progressParams.progress = 2.0f;
+        progress(progressParams);
+    }
+
+    return MStatus::kSuccess;
+}
+
 MStatus HypershadeRenderer::translateMesh(const MUuid& id, const MObject& node)
 {
     MObject mobject = node;
@@ -791,27 +812,6 @@ MStatus HypershadeRenderer::setResolution(unsigned int w, unsigned int h)
             .insert("color_space", "linear_rgb")));
 
     project->get_frame()->get_parameters().insert("pixel_format", "float");
-
-    return MStatus::kSuccess;
-}
-
-MStatus HypershadeRenderer::endSceneUpdate()
-{
-    controller.set_status(renderer::IRendererController::ContinueRendering);
-    ProgressParams progressParams;
-    progressParams.progress = 0.0;
-    progress(progressParams);
-
-    if (asyncStarted)
-    {
-        renderThread = boost::thread(startRenderThread, this);
-    }
-    else
-    {
-        ProgressParams progressParams;
-        progressParams.progress = 2.0f;
-        progress(progressParams);
-    }
 
     return MStatus::kSuccess;
 }
