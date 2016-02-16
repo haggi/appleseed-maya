@@ -946,14 +946,13 @@ void HypershadeTileCallback::pre_render(const size_t x, const size_t y, const si
 {
 }
 
-HypershadeTileCallbackFactory::HypershadeTileCallbackFactory(HypershadeRenderer* renderer)
+HypershadeTileCallbackFactory::HypershadeTileCallbackFactory(HypershadeRenderer* renderer) : mRenderer(renderer)
 {
-    mTileCallback.reset(new HypershadeTileCallback(renderer));
 }
 
 renderer::ITileCallback* HypershadeTileCallbackFactory::create()
 {
-    return mTileCallback.get();
+    return new HypershadeTileCallback(mRenderer);
 }
 
 void HypershadeTileCallbackFactory::release()

@@ -85,7 +85,8 @@ class HypershadeTileCallbackFactory
     virtual renderer::ITileCallback* create() APPLESEED_OVERRIDE;
 
   private:
-    std::auto_ptr<HypershadeTileCallback> mTileCallback;
+      HypershadeRenderer* mRenderer;
+      std::auto_ptr<HypershadeTileCallback> mTileCallback;
 };
 
 struct IdNameStruct
