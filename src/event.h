@@ -34,6 +34,10 @@
 
 // Maya headers.
 #include <maya/MDagPath.h>
+#include <maya/MRenderView.h>
+
+//boost
+#include "boost/shared_ptr.hpp"
 
 class Event
 {
@@ -60,6 +64,11 @@ class Event
     bool useRenderRegion;
     MDagPath cameraDagPath;
     World::RenderType renderType;
+    int xMin;
+    int xMax;
+    int yMin;
+    int yMax;
+    boost::shared_ptr<RV_PIXEL> pixels;
 };
 
 #endif  // !EVENT_H

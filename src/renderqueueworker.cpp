@@ -76,6 +76,44 @@ concurrent_queue<Event>* gEventQueue()
 
 namespace
 {
+    void updateRenderView(
+        const unsigned int  xMin,
+        const unsigned int  xMax,
+        const unsigned int  yMin,
+        const unsigned int  yMax,
+        RV_PIXEL*           pixels)
+    {
+        if (!MRenderView::doesRenderEditorExist())
+            return;
+
+        // We have cases where the render view has changed but the framebuffer callback may have still the old settings.
+        // Here we make sure we do not exceed the render view area.
+        // todo: is this still relevant?
+        if (getWorldPtr()->mRenderGlobals->getUseRenderRegion())
+        {
+            const int width = getWorldPtr()->mRenderGlobals->getWidth();
+            const int height = getWorldPtr()->mRenderGlobals->getHeight();
+
+            if (xMin != 0 ||
+                yMin != 0 ||
+                xMax != width - 1 ||
+                yMax != height - 1)
+            {
+                unsigned int left, right, bottom, top;
+                MRenderView::getRenderRegion(left, right, bottom, top);
+
+                if (left != xMin ||
+                    right != xMax ||
+                    bottom != yMin ||
+                    top != yMax)
+                    return;
+            }
+        }
+
+        MRenderView::updatePixels(xMin, xMax, yMin, yMax, pixels);
+        MRenderView::refresh(xMin, xMax, yMin, yMax);
+    }
+
     MString getElapsedTimeString()
     {
         int hours;
@@ -706,6 +744,10 @@ void RenderQueueWorker::startRenderQueueWorker()
 
           case Event::ADDIPRCALLBACKS:
             addIPRCallbacks();
+            break;
+
+          case Event::UPDATEUI:
+            updateRenderView(e.xMin, e.xMax, e.yMin, e.yMax, e.pixels.get());
             break;
         }
 

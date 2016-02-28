@@ -192,4 +192,5 @@ set_target_properties (appleseed-maya PROPERTIES PREFIX "")
 
 if (${CMAKE_SYSTEM_NAME} MATCHES "Windows")
     set_target_properties (appleseed-maya PROPERTIES SUFFIX ".mll")
+    set_target_properties (appleseed-maya PROPERTIES OUTPUT_NAME "appleseedmaya")
 endif ()
