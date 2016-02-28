@@ -99,7 +99,7 @@ class GlobalsNode
         MObject sunLightConnection;
         MObject useSunLightConnection;
 
-        MObject exportSceneFile;
+        MObject exportMode;
         MObject exportSceneFileName;
         MObject sceneScale;
         MObject imageFormat;

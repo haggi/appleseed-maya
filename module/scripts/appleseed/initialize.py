@@ -413,36 +413,42 @@ class AppleseedRenderer(renderer.MayaToRenderer):
                 self.addRenderGlobalsUIElement(attName='sppmAlpha', uiType='float', displayName='Alpha', anno='Evolution rate of photon gathering radius', uiDict=uiDict)
 
 
-    def xmlFileBrowse(self, args=None):
+    def outputFileBrowse(self, args=None):
         filename = pm.fileDialog2(fileMode=0, caption="XML Export File Name")
         if len(filename) > 0:
-            self.rendererTabUiDict['xml']['xmlFile'].setText(filename[0])
+            self.rendererTabUiDict['translator']['fileNameField'].setText(filename[0])
 
     def dirBrowse(self, args=None):
         dirname = pm.fileDialog2(fileMode=3, caption="Select dir")
         if len(dirname) > 0:
             self.rendererTabUiDict['opti']['optiField'].setText(dirname[0])
-
+        
     def AppleseedTranslatorCreateTab(self):
         self.createGlobalsNode()
         parentForm = pm.setParent(query=True)
         pm.setUITemplate("attributeEditorTemplate", pushTemplate=True)
         scLo = self.rendererName + "TrScrollLayout"
+        uiDict = {}
+        self.rendererTabUiDict['translator'] = uiDict
 
         with pm.scrollLayout(scLo, horizontalScrollBarThickness=0):
             with pm.columnLayout(self.rendererName + "TrColumnLayout", adjustableColumn=True, width=400):
                 with pm.frameLayout(label="Translator", collapsable=True, collapse=False):
-                    attr = pm.Attribute(self.renderGlobalsNodeName + ".translatorVerbosity")
-                    ui = pm.attrEnumOptionMenuGrp(label="Translator Verbosity", at=self.renderGlobalsNodeName + ".translatorVerbosity", ei=self.getEnumList(attr))
-
-                with pm.frameLayout(label="{0} export".format(self.rendererName), collapsable=True, collapse=False):
-                    ui = pm.checkBoxGrp(label="Export {0} Scene file:".format(self.rendererName), value1=False)
-                    pm.connectControl(ui, self.renderGlobalsNodeName + ".exportSceneFile", index=2)
-
+                    with pm.columnLayout(adjustableColumn=True, width=400):
+                        self.addRenderGlobalsUIElement(attName='translatorVerbosity', uiType='enum', displayName='Verbosity', default='0', uiDict=uiDict)
+                with pm.frameLayout(label="{0} Output".format(self.rendererName), collapsable=True, collapse=False):
+                    with pm.columnLayout(adjustableColumn=True, width=400):
+                        self.addRenderGlobalsUIElement(attName='exportMode', uiType='enum', displayName='Output Mode', default='0', uiDict=uiDict, callback=self.AppleseedTranslatorUpdateTab)
+                    with pm.rowLayout(nc=3) as uiDict['outputFilenameLayout']:
+                        pm.text(label="Output Filename:")
+                        uiDict['fileNameField'] = pm.textField(text=self.renderGlobalsNode.exportSceneFileName.get())
+                        pm.symbolButton(image="navButtonBrowse.png", c=self.outputFileBrowse)
+                        pm.connectControl(uiDict['fileNameField'], self.renderGlobalsNodeName + ".exportSceneFileName", index=2)
                 with pm.frameLayout(label="Optimize Textures", collapsable=True, collapse=False):
-                    optiDict = {}
-                    ui = pm.checkBoxGrp(label="Use Optimized Textures:", value1=False)
-                    pm.connectControl(ui, self.renderGlobalsNodeName + ".useOptimizedTextures", index=2)
+                    with pm.columnLayout(adjustableColumn=True, width=400):
+                        optiDict = {}
+                        ui = pm.checkBoxGrp(label="Use Optimized Textures:", value1=False)
+                        pm.connectControl(ui, self.renderGlobalsNodeName + ".useOptimizedTextures", index=2)
                     with pm.rowLayout(nc=3):
                         self.rendererTabUiDict['opti'] = optiDict
                         pm.text(label="OptimizedTex Dir:")
@@ -456,10 +462,24 @@ class AppleseedRenderer(renderer.MayaToRenderer):
 
         pm.setUITemplate("attributeEditorTemplate", popTemplate=True)
         pm.formLayout(parentForm, edit=True, attachForm=[ (scLo, "top", 0), (scLo, "bottom", 0), (scLo, "left", 0), (scLo, "right", 0) ])
+        self.AppleseedTranslatorUpdateTab()
 
     def AppleseedTranslatorUpdateTab(self):
-        pass
-    
+        uiDict = self.rendererTabUiDict['translator']
+        outputMode = self.renderGlobalsNode.exportMode.get()
+        if outputMode == 0: #render only
+            uiDict['outputFilenameLayout'].setEnable(False)
+        if outputMode == 1: #output only
+            uiDict['outputFilenameLayout'].setEnable(True)
+        if outputMode == 2: #render and output
+            uiDict['outputFilenameLayout'].setEnable(True)
+        if outputMode > 0:
+            textField = uiDict['fileNameField']
+            outputFieldtext = pm.textField(textField, query=True, text=True)
+            if len(outputFieldtext) == 0:
+                self.renderGlobalsNode.exportSceneFileName.set(pm.workspace.path + "/renderData/" + pm.sceneName().basename())
+                pm.textField(textField, edit=True, text=self.renderGlobalsNode.exportSceneFileName.get())
+                
     def uiCallback(self, **args):
         if args['tab'] == "environment":
             self.updateEnvironment()
@@ -534,11 +554,11 @@ class AppleseedRenderer(renderer.MayaToRenderer):
         if self.renderGlobalsNode.threads.get() == 0:
             # TODO this is windows only, search for another solution...
             numThreads = int(os.environ['NUMBER_OF_PROCESSORS'])
-            self.renderGlobalsNode.threads.set(numThreads)
             # Let's reduce the number of threads to stay as interactive as possible.
             if self.ipr_isrunning:
                 if numThreads > 4:
                     numThreads = numThreads - 1
+                self.renderGlobalsNode.threads.set(numThreads)
 
         if self.renderGlobalsNode.useOptimizedTextures.get():
             if not self.renderGlobalsNode.optimizedTexturePath.get() or len(self.renderGlobalsNode.optimizedTexturePath.get()) == 0:

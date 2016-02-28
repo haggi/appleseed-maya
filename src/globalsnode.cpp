@@ -71,8 +71,11 @@ MStatus GlobalsNode::initialize()
     attr.useSunLightConnection = nAttr.create("useSunLightConnection", "useSunLightConnection",  MFnNumericData::kBoolean, false);
     CHECK_MSTATUS(addAttribute(attr.useSunLightConnection));
 
-    attr.exportSceneFile = nAttr.create("exportSceneFile", "exportSceneFile",  MFnNumericData::kBoolean, false);
-    CHECK_MSTATUS(addAttribute(attr.exportSceneFile));
+    attr.exportMode = eAttr.create("exportMode", "exportMode", 0, &stat);
+    stat = eAttr.addField("Render Only", 0);
+    stat = eAttr.addField("Export Only", 1);
+    stat = eAttr.addField("Render And Export", 2);
+    CHECK_MSTATUS(addAttribute(attr.exportMode));
 
     attr.exportSceneFileName = tAttr.create("exportSceneFileName", "exportSceneFileName",  MFnNumericData::kString);
     tAttr.setUsedAsFilename(true);
