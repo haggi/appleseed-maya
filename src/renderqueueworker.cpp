@@ -67,46 +67,6 @@ namespace
 
     boost::thread sceneThread;
     concurrent_queue<Event> RenderEventQueue;
-
-    bool escPressed;
-    bool checkDone;
-    boost::thread checkThread;
-
-    void checkInterrupt()
-    {
-        while (!checkDone)
-        {
-    #ifdef _WIN32
-            if (GetAsyncKeyState(VK_ESCAPE))
-            {
-                escPressed = true;
-                break;
-            }
-    #endif
-            foundation::sleep(100);
-        }
-    }
-
-    void beginComputation()
-    {
-        escPressed = false;
-        checkDone = false;
-        checkThread = boost::thread(checkInterrupt);
-
-        if (MRenderView::doesRenderEditorExist())
-            MGlobal::executePythonCommand("import pymel.core as pm;pm.waitCursor(state=True);");
-    }
-
-    void endComputation()
-    {
-        checkDone = true;
-
-        if (checkThread.joinable())
-            checkThread.join();
-
-        if (MRenderView::doesRenderEditorExist())
-            MGlobal::executePythonCommand("import pymel.core as pm; pm.waitCursor(state=False); pm.refresh()");
-    }
 }
 
 concurrent_queue<Event>* gEventQueue()
@@ -116,6 +76,44 @@ concurrent_queue<Event>* gEventQueue()
 
 namespace
 {
+    void updateRenderView(
+        const unsigned int  xMin,
+        const unsigned int  xMax,
+        const unsigned int  yMin,
+        const unsigned int  yMax,
+        RV_PIXEL*           pixels)
+    {
+        if (!MRenderView::doesRenderEditorExist())
+            return;
+
+        // We have cases where the render view has changed but the framebuffer callback may have still the old settings.
+        // Here we make sure we do not exceed the render view area.
+        // todo: is this still relevant?
+        if (getWorldPtr()->mRenderGlobals->getUseRenderRegion())
+        {
+            const int width = getWorldPtr()->mRenderGlobals->getWidth();
+            const int height = getWorldPtr()->mRenderGlobals->getHeight();
+
+            if (xMin != 0 ||
+                yMin != 0 ||
+                xMax != width - 1 ||
+                yMax != height - 1)
+            {
+                unsigned int left, right, bottom, top;
+                MRenderView::getRenderRegion(left, right, bottom, top);
+
+                if (left != xMin ||
+                    right != xMax ||
+                    bottom != yMin ||
+                    top != yMax)
+                    return;
+            }
+        }
+
+        MRenderView::updatePixels(xMin, xMax, yMin, yMax, pixels);
+        MRenderView::refresh(xMin, xMax, yMin, yMax);
+    }
+
     MString getElapsedTimeString()
     {
         int hours;
@@ -470,13 +468,15 @@ namespace
             if (renderingStarted && getWorldPtr()->getRenderState() != World::RSTATERENDERING)
                 break;
 
-            if (escPressed && (getWorldPtr()->getRenderState() == World::RSTATERENDERING))
+#ifdef _WIN32
+            if (GetAsyncKeyState(VK_ESCAPE) && getWorldPtr()->getRenderState() == World::RSTATERENDERING)
             {
                 Event e;
                 e.mType = Event::INTERRUPT;
                 gEventQueue()->push(e);
                 break;
             }
+#endif
 
             foundation::sleep(100);
         }
@@ -641,14 +641,15 @@ void RenderQueueWorker::startRenderQueueWorker()
                 getWorldPtr()->mScene->uiCamera = e.cameraDagPath;
                 getWorldPtr()->mRenderer->initializeRenderer(); // init renderer with all type, image size etc.
 
-                const int width = getWorldPtr()->mRenderGlobals->getWidth();
-                const int height = getWorldPtr()->mRenderGlobals->getHeight();
-
                 if (MRenderView::doesRenderEditorExist())
                 {
                     MRenderView::endRender();
-                    MRenderView::startRender(width, height, true, true);
+
+                    const int width = getWorldPtr()->mRenderGlobals->getWidth();
+                    const int height = getWorldPtr()->mRenderGlobals->getHeight();
+                    MRenderView::startRender(width, height, false, true);
                 }
+
                 getWorldPtr()->setRenderState(World::RSTATETRANSLATING);
                 boost::shared_ptr<MayaScene> mayaScene = getWorldPtr()->mScene;
 
@@ -656,7 +657,10 @@ void RenderQueueWorker::startRenderQueueWorker()
                 {
                     // we only need renderComputation (means esc-able rendering) if we render in UI (==NORMAL)
                     if (getWorldPtr()->getRenderType() == World::UIRENDER)
-                        beginComputation();
+                    {
+                        if (MRenderView::doesRenderEditorExist())
+                            MGlobal::executePythonCommand("import pymel.core as pm; pm.waitCursor(state=True);");
+                    }
                 }
 
                 e.mType = Event::FRAMERENDER;
@@ -703,7 +707,10 @@ void RenderQueueWorker::startRenderQueueWorker()
           case Event::RENDERDONE:
             {
                 if (MGlobal::mayaState() != MGlobal::kBatch)
-                    endComputation();
+                {
+                    if (MRenderView::doesRenderEditorExist())
+                        MGlobal::executePythonCommand("import pymel.core as pm; pm.waitCursor(state=False); pm.refresh()");
+                }
 
                 if (getWorldPtr()->getRenderType() == World::IPRRENDER)
                     removeCallbacks();
@@ -737,6 +744,10 @@ void RenderQueueWorker::startRenderQueueWorker()
 
           case Event::ADDIPRCALLBACKS:
             addIPRCallbacks();
+            break;
+
+          case Event::UPDATEUI:
+            updateRenderView(e.xMin, e.xMax, e.yMin, e.yMax, e.pixels.get());
             break;
         }
 

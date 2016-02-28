@@ -30,7 +30,9 @@
 #include "tilecallback.h"
 
 // appleseed-maya headers.
+#include "event.h"
 #include "renderglobals.h"
+#include "renderqueueworker.h"
 #include "world.h"
 
 // appleseed.renderer headers.
@@ -42,9 +44,6 @@
 #include "foundation/image/pixel.h"
 #include "foundation/image/tile.h"
 #include "foundation/math/scalar.h"
-
-// Maya headers.
-#include <maya/MRenderView.h>
 
 // Standard headers.
 #include <cassert>
@@ -62,53 +61,12 @@ void TileCallback::pre_render(
 {
 }
 
-namespace
-{
-    void updateRenderView(
-        const unsigned int  xMin,
-        const unsigned int  xMax,
-        const unsigned int  yMin,
-        const unsigned int  yMax,
-        RV_PIXEL*           pixels)
-    {
-        if (!MRenderView::doesRenderEditorExist())
-            return;
-
-        // We have cases where the render view has changed but the framebuffer callback may have still the old settings.
-        // Here we make sure we do not exceed the render view area.
-        // todo: is this still relevant?
-        if (getWorldPtr()->mRenderGlobals->getUseRenderRegion())
-        {
-            const int width = getWorldPtr()->mRenderGlobals->getWidth();
-            const int height = getWorldPtr()->mRenderGlobals->getHeight();
-
-            if (xMin != 0 ||
-                yMin != 0 ||
-                xMax != width - 1 ||
-                yMax != height - 1)
-            {
-                unsigned int left, right, bottom, top;
-                MRenderView::getRenderRegion(left, right, bottom, top);
-
-                if (left != xMin ||
-                    right != xMax ||
-                    bottom != yMin ||
-                    top != yMax)
-                    return;
-            }
-        }
-
-        MRenderView::updatePixels(xMin, xMax, yMin, yMax, pixels);
-        MRenderView::refresh(xMin, xMax, yMin, yMax);
-    }
-}
-
 void TileCallback::post_render(const renderer::Frame* frame)
 {
     const foundation::CanvasProperties& frameProps = frame->image().properties();
-
-    boost::shared_ptr<RV_PIXEL> pixels(new RV_PIXEL[frameProps.m_pixel_count]);
-    RV_PIXEL* pixelsPtr = pixels.get();
+    Event e;
+    e.pixels = boost::shared_ptr<RV_PIXEL>(new RV_PIXEL[frameProps.m_pixel_count]);
+    RV_PIXEL* pixelsPtr = e.pixels.get();
 
     for (size_t i = 0; i < frameProps.m_pixel_count; i++)
     {
@@ -159,12 +117,12 @@ void TileCallback::post_render(const renderer::Frame* frame)
         }
     }
 
-    updateRenderView(
-        0,
-        0,
-        static_cast<unsigned int>(frameProps.m_canvas_width - 1),
-        static_cast<unsigned int>(frameProps.m_canvas_height - 1),
-        pixelsPtr);
+    e.xMin = 0;
+    e.xMax = static_cast<unsigned int>(frameProps.m_canvas_width - 1);
+    e.yMin = 0;
+    e.yMax = static_cast<unsigned int>(frameProps.m_canvas_height - 1);
+    e.mType = Event::UPDATEUI;
+    gEventQueue()->push(e);
 }
 
 void TileCallback::post_render_tile(
@@ -177,13 +135,12 @@ void TileCallback::post_render_tile(
     const foundation::Tile& tile = image.tile(tile_x, tile_y);
     const size_t tileWidth = tile.get_width();
     const size_t tileHeight = tile.get_height();
-
+    Event e;
     // Tile with the right pixel format in the right color space.
     foundation::Tile finalTile(tile, foundation::PixelFormatFloat);
     frame->transform_to_output_color_space(finalTile);
-
-    boost::shared_ptr<RV_PIXEL> pixels(new RV_PIXEL[tileWidth * tileHeight]);
-    RV_PIXEL* pixelsPtr = pixels.get();
+    e.pixels = boost::shared_ptr<RV_PIXEL>(new RV_PIXEL[tileWidth * tileHeight]);
+    RV_PIXEL* pixelsPtr = e.pixels.get();
 
     for (size_t y = 0; y < tileHeight; y++)
     {
@@ -201,12 +158,12 @@ void TileCallback::post_render_tile(
     const size_t x = tile_x * frameProps.m_tile_width;
     const size_t y = tile_y * frameProps.m_tile_height;
 
-    updateRenderView(
-        static_cast<unsigned int>(x),
-        static_cast<unsigned int>(x + tileWidth - 1),
-        static_cast<unsigned int>(frameProps.m_canvas_height - y - tileHeight),
-        static_cast<unsigned int>(frameProps.m_canvas_height - y - 1),
-        pixelsPtr);
+    e.xMin = static_cast<unsigned int>(x);
+    e.xMax = static_cast<unsigned int>(x + tileWidth - 1);
+    e.yMin = static_cast<unsigned int>(frameProps.m_canvas_height - y - tileHeight);
+    e.yMax = static_cast<unsigned int>(frameProps.m_canvas_height - y - 1);
+    e.mType = Event::UPDATEUI;
+    gEventQueue()->push(e);
 }
 
 void TileCallbackFactory::release()
