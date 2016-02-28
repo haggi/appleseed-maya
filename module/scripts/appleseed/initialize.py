@@ -414,14 +414,17 @@ class AppleseedRenderer(renderer.MayaToRenderer):
 
 
     def outputFileBrowse(self, args=None):
-        filename = pm.fileDialog2(fileMode=0, caption="XML Export File Name")
-        if len(filename) > 0:
-            self.rendererTabUiDict['translator']['fileNameField'].setText(filename[0])
+        startingDir = path.path(self.renderGlobalsNode.exportSceneFileName.get()).dirname()
+        filename = pm.fileDialog2(fileMode=0, caption="Output File Name", startingDirectory=startingDir)
+        if filename:
+            if len(filename) > 0:
+                self.rendererTabUiDict['translator']['fileNameField'].setText(filename[0])
 
     def dirBrowse(self, args=None):
-        dirname = pm.fileDialog2(fileMode=3, caption="Select dir")
-        if len(dirname) > 0:
-            self.rendererTabUiDict['opti']['optiField'].setText(dirname[0])
+        dirname = pm.fileDialog2(fileMode=3, caption="Select Optimize Files Dir")
+        if dirname:
+            if len(dirname) > 0:
+                self.rendererTabUiDict['opti']['optiField'].setText(dirname[0])
         
     def AppleseedTranslatorCreateTab(self):
         self.createGlobalsNode()
@@ -477,8 +480,9 @@ class AppleseedRenderer(renderer.MayaToRenderer):
             textField = uiDict['fileNameField']
             outputFieldtext = pm.textField(textField, query=True, text=True)
             if len(outputFieldtext) == 0:
-                self.renderGlobalsNode.exportSceneFileName.set(pm.workspace.path + "/renderData/" + pm.sceneName().basename())
-                pm.textField(textField, edit=True, text=self.renderGlobalsNode.exportSceneFileName.get())
+                exportFileName = pm.workspace.path + "/renderData/" + pm.sceneName().basename().split(".")[0] + ".appleseed"
+                self.renderGlobalsNode.exportSceneFileName.set(exportFileName)
+                pm.textField(textField, edit=True, text=exportFileName)
                 
     def uiCallback(self, **args):
         if args['tab'] == "environment":

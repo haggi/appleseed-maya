@@ -316,9 +316,9 @@ global proc updateMayaImageFormatControl()
         pm.renderer(self.rendererName, edit=True, renderRegionProcedure="mayaRenderRegion")
         scriptDir = path.path(__file__).dirname().parent
         
-        pm.mel.source('global string $gImageFormatData; $gImageFormatData = {};')
-        pm.mel.source('global string $gPLEImageFormatData; $gPLEImageFormatData = {};')
-        pm.mel.source('global string $gPLEImageFormatData_Mental; $gPLEImageFormatData_Mental = {};')
+        pm.mel.eval('global string $gImageFormatData[]; $gImageFormatData = {};')
+        pm.mel.eval('global string $gPLEImageFormatData[]; $gPLEImageFormatData = {};')
+        pm.mel.eval('global string $gPLEImageFormatData_Mental[]; $gPLEImageFormatData_Mental = {};')
         pm.mel.source('createMayaSoftwareCommonGlobalsTab')
         pm.mel.source("unifiedRenderGlobalsWindow")
         self.defineCommonMelProcedures()
