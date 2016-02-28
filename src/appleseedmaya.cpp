@@ -110,6 +110,14 @@ MStatus AppleseedMaya::doIt(const MArgList& args)
         return MS::kSuccess;
     }
 
+    if (argData.isFlagSet("-pauseIpr", &stat))
+    {
+        Event e;
+        e.mType = Event::IPRPAUSE;
+        gEventQueue()->push(e);
+        return MS::kSuccess;
+    }
+
     // I have to request useRenderRegion here because as soon the command is finished,
     // what happens immediately after the command is put into the queue, the value is
     // set back to false.
@@ -142,7 +150,7 @@ MStatus AppleseedMaya::doIt(const MArgList& args)
         e.cameraDagPath.extendToShape();
     }
 
-    initRender(e);
+    gEventQueue()->push(e);
 
     if (MGlobal::mayaState() == MGlobal::kBatch)
         RenderQueueWorker::startRenderQueueWorker();

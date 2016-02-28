@@ -40,10 +40,17 @@ class Event
   public:
     enum Type
     {
+        INTERRUPT = 0,
         FRAMEDONE = 2,
         RENDERDONE = 3,
+        IPRSTART = 6,
         IPRSTOP = 7,
+        IPRPAUSE = 8,
+        IPRREMOVE = 9,
+        IPRFRAMEDONE = 11,
+        UPDATEUI = 17,
         INITRENDER = 19,
+        ADDIPRCALLBACKS = 21,
         FRAMERENDER = 22
     };
 

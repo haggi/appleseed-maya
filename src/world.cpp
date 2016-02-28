@@ -91,8 +91,9 @@ void World::initializeRenderEnvironment()
     worldPointer->mRenderer.reset(new AppleseedRenderer());
 }
 
-void World::destroyMayaScene()
+void World::cleanUpAfterRender()
 {
+    // After a normal rendering we do not need the Maya scene data any more. Remove it to save memory.
     worldPointer->mScene.reset();
 }
 

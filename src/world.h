@@ -63,12 +63,14 @@ class World
     MStringArray shaderSearchPath;
 
     void initializeRenderEnvironment();
-    void destroyMayaScene();
+    void cleanUpAfterRender();
 
     enum RenderType
     {
         RTYPENONE = 0,
+        SWATCHRENDER,
         UIRENDER,
+        BATCHRENDER,
         IPRRENDER
     };
 
@@ -79,7 +81,9 @@ class World
     {
         RSTATENONE = 0,
         RSTATERENDERING,
+        RSTATESWATCHRENDERING,
         RSTATESTOPPED,
+        RSTATEERROR,
         RSTATEDONE,
         RSTATETRANSLATING
     };

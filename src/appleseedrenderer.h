@@ -67,12 +67,10 @@
 #include <maya/MFnDagNode.h>
 #include <maya/MDagPath.h>
 #include <maya/MFnMeshData.h>
-#include <maya/MMessage.h>
 
 // Standard headers.
 #include <cstddef>
 #include <cstdio>
-#include <map>
 #include <memory>
 #include <string>
 #include <vector>
@@ -95,13 +93,6 @@ class mtap_MayaScene;
 class mtap_RenderGlobals;
 class ShadingNode;
 
-extern std::vector<InteractiveElement *> modifiedElementList;
-extern std::map<MCallbackId, MObject> objIdMap;
-extern MCallbackId idleCallbackId;
-extern MCallbackId nodeAddedCallbackId;
-extern MCallbackId nodeRemovedCallbackId;
-extern std::vector<MCallbackId> nodeCallbacks;
-
 class AppleseedRenderer
 {
   public:
@@ -120,8 +111,13 @@ class AppleseedRenderer
     void defineLight(boost::shared_ptr<MayaObject> obj);
     void render();
 
-    void createProject();
-    void destroyProject();
+    // This method is called before rendering starts.
+    // It should prepare all data which can/should be reused during
+    // IPR/frame/sequence rendering.
+    void initializeRenderer();
+
+    // This method is called at the end of rendering.
+    void unInitializeRenderer();
 
     // This method is called during scene updating. If a renderer can update motionblur steps on the fly,
     // the geometry is defined at the very first step and later this definition will be updated for every motion step.
@@ -147,6 +143,7 @@ class AppleseedRenderer
     renderer::Project *getProjectPtr(){ return this->project.get(); }
     foundation::StringArray defineMaterial(boost::shared_ptr<MayaObject> obj);
     void updateMaterial(MObject sufaceShader);
+    void preFrame();
     void postFrame();
 
   private:
