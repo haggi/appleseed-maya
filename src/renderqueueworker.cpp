@@ -113,11 +113,7 @@ namespace
         MRenderView::updatePixels(xMin, xMax, yMin, yMax, pixels);
         MRenderView::refresh(xMin, xMax, yMin, yMax);
     }
-}
 
-
-namespace
-{
     MString getElapsedTimeString()
     {
         int hours;
@@ -651,7 +647,7 @@ void RenderQueueWorker::startRenderQueueWorker()
 
                     const int width = getWorldPtr()->mRenderGlobals->getWidth();
                     const int height = getWorldPtr()->mRenderGlobals->getHeight();
-                    MRenderView::startRender(width, height, true, true);
+                    MRenderView::startRender(width, height, false, true);
                 }
 
                 getWorldPtr()->setRenderState(World::RSTATETRANSLATING);
@@ -751,8 +747,8 @@ void RenderQueueWorker::startRenderQueueWorker()
             break;
 
           case Event::UPDATEUI:
-              updateRenderView(e.xMin, e.xMax, e.yMin, e.yMax, e.pixels.get());
-              break;
+            updateRenderView(e.xMin, e.xMax, e.yMin, e.yMax, e.pixels.get());
+            break;
         }
 
         if (MGlobal::mayaState() != MGlobal::kBatch)
