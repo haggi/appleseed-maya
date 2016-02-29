@@ -57,6 +57,7 @@ class AppleseedRenderer(renderer.MayaToRenderer):
         self.rendererTabUiDict = {}
         self.aovShaders = ["mtap_aoShader", "mtap_aoVoxelShader", "mtap_diagnosticShader", "mtap_fastSSSShader", "appleseedSurfaceShader"]
         self.rendererMenu = None
+        self.gMainProgressBar = None
 
     def createRendererMenu(self):
         self.rendererMenu = appleseedmenu.AppleseedMenu()
@@ -551,8 +552,17 @@ class AppleseedRenderer(renderer.MayaToRenderer):
 
             optimizetextures.preRenderOptimizeTextures(optimizedFilePath=self.renderGlobalsNode.optimizedTexturePath.get())
 
+        self.gMainProgressBar = pm.mel.eval('$tmp = $gMainProgressBar');
+        pm.progressBar( self.gMainProgressBar,
+                                edit=True,
+                                beginProgress=True,
+                                isInterruptable=True,
+                                status='"Render progress:',
+                                maxValue=100)
+
     def postRenderProcedure(self):
-        optimizetextures.postRenderOptimizeTextures()
+        optimizetextures.postRenderOptimizeTextures()        
+        pm.progressBar(self.gMainProgressBar, edit=True, endProgress=True)
 
     def afterGlobalsNodeReplacement(self):
         self.rendererTabUiDict = {}

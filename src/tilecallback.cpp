@@ -37,6 +37,7 @@
 
 // appleseed.renderer headers.
 #include "renderer/api/frame.h"
+#include "renderer/api/log.h"
 
 // appleseed.foundation headers.
 #include "foundation/image/canvasproperties.h"

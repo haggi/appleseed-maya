@@ -41,6 +41,8 @@ class RenderQueueWorker
     static void renderQueueWorkerTimerCallback(float time, float lastTime, void *userPtr);
     static void IPRUpdateCallbacks();
     static bool iprCallbacksDone();
+    static size_t numPixelsDone;
+    static size_t numPixelsTotal;
 };
 
 #endif  // !RENDERQUEUEWORKER_H

@@ -600,6 +600,12 @@ namespace
         if (MGlobal::mayaState() != MGlobal::kBatch)
             MGlobal::viewFrame(currentFrame);
     }
+
+    void logOutput(const int pixelsDone, const int pixelsTotal)
+    {
+        Logging::info(MString("") + (float)pixelsDone / pixelsTotal + "% done.");
+
+    }
 }
 
 void RenderQueueWorker::startRenderQueueWorker()
@@ -663,6 +669,8 @@ void RenderQueueWorker::startRenderQueueWorker()
                     }
                 }
 
+                RenderQueueWorker::numPixelsDone = 0;
+                RenderQueueWorker::numPixelsTotal = e.width * e.height;
                 e.mType = Event::FRAMERENDER;
                 gEventQueue()->push(e);
 
@@ -748,6 +756,8 @@ void RenderQueueWorker::startRenderQueueWorker()
 
           case Event::UPDATEUI:
             updateRenderView(e.xMin, e.xMax, e.yMin, e.yMax, e.pixels.get());
+            RenderQueueWorker::numPixelsDone += (e.xMax - e.xMin) * (e.yMax - e.yMin);
+            logOutput(RenderQueueWorker::numPixelsDone, RenderQueueWorker::numPixelsTotal);
             break;
         }
 
