@@ -157,10 +157,7 @@ class MayaToRenderer(object):
     def renderTabMelProcedure(self, tabName):
         createTabCmd = "{0}{1}CreateTab".format(self.rendererName, tabName)
         updateTabCmd = "{0}{1}UpdateTab".format(self.rendererName, tabName)
-        if self.useRendererTabPrefix:
-            tabLabel = "{0}{1}".format(self.rendererName, tabName)
-        else:
-            tabLabel = "{0}".format(tabName)
+        tabLabel = "{0}".format(tabName)
         createPyCmd = "python(\"{0}{1}()\");".format(self.baseRenderMelCommand, createTabCmd)
         updatePyCmd = "python(\"{0}{1}()\");".format(self.baseRenderMelCommand, updateTabCmd)
         melCreateCmd = "global proc {0}()\n{{\t{1}\n}}\n".format(createTabCmd, createPyCmd)
@@ -186,7 +183,6 @@ class MayaToRenderer(object):
             # TODO this is windows only, search for another solution...
             numThreads = int(os.environ['NUMBER_OF_PROCESSORS'])
             self.renderGlobalsNode.threads.set(numThreads)
-
 
     def postRenderProcedure(self):
         drg = pm.PyNode("defaultRenderGlobals")
@@ -319,6 +315,10 @@ global proc updateMayaImageFormatControl()
         pm.renderer(self.rendererName, edit=True, textureBakingProcedure=self.renderCallback("textureBakingProcedure"))
         pm.renderer(self.rendererName, edit=True, renderRegionProcedure="mayaRenderRegion")
         scriptDir = path.path(__file__).dirname().parent
+        
+        pm.mel.eval('global string $gImageFormatData[]; $gImageFormatData = {};')
+        pm.mel.eval('global string $gPLEImageFormatData[]; $gPLEImageFormatData = {};')
+        pm.mel.eval('global string $gPLEImageFormatData_Mental[]; $gPLEImageFormatData_Mental = {};')
         pm.mel.source('createMayaSoftwareCommonGlobalsTab')
         pm.mel.source("unifiedRenderGlobalsWindow")
         self.defineCommonMelProcedures()
