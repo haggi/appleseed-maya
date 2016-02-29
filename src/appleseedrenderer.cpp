@@ -178,6 +178,16 @@ void AppleseedRenderer::render()
                     tileCallbackFac.get()));
         }
 
+        const MFnDependencyNode renderGlobalsFn(getRenderGlobalsNode());
+        const int exportMode = getEnumInt("exportMode", renderGlobalsFn);
+        if (exportMode > 0)
+        {
+            const MString outputFile = getStringAttr("exportSceneFileName", renderGlobalsFn, "");
+            renderer::ProjectFileWriter::write(project.ref(), outputFile.asChar());
+            if (exportMode == 1) // export only, no rendering
+                return;
+        }
+
         if (getWorldPtr()->getRenderType() == World::IPRRENDER)
         {
             Event e;
@@ -192,7 +202,6 @@ void AppleseedRenderer::render()
     }
 
     getWorldPtr()->setRenderState(World::RSTATERENDERING);
-
     mRendererController.set_status(renderer::IRendererController::ContinueRendering);
     masterRenderer->render();
 }
