@@ -178,11 +178,11 @@ void AppleseedRenderer::render()
                     tileCallbackFac.get()));
         }
 
-        MFnDependencyNode renderGlobalsFn(getRenderGlobalsNode());
-        int exportMode = getEnumInt("exportMode", renderGlobalsFn);
+        const MFnDependencyNode renderGlobalsFn(getRenderGlobalsNode());
+        const int exportMode = getEnumInt("exportMode", renderGlobalsFn);
         if (exportMode > 0)
         {
-            MString outputFile = getStringAttr("exportSceneFileName", renderGlobalsFn, "");
+            const MString outputFile = getStringAttr("exportSceneFileName", renderGlobalsFn, "");
             renderer::ProjectFileWriter::write(project.ref(), outputFile.asChar());
             if (exportMode == 1) // export only, no rendering
                 return;
