@@ -532,7 +532,6 @@ class AppleseedRenderer(renderer.MayaToRenderer):
         self.createGlobalsNode()
         self.preRenderProcedure()
         self.setImageName()
-
         if pm.about(batch=True):
             pm.appleseedMaya()
         else:
@@ -544,12 +543,15 @@ class AppleseedRenderer(renderer.MayaToRenderer):
         self.preRenderProcedure()
         self.setImageName()
         pm.appleseedMaya(width=resolutionX, height=resolutionY, camera=camera, startIpr=True)
-        self.postRenderProcedure()
 
     def stopIprRenderProcedure(self):
-        self.ipr_isrunning = False
         pm.appleseedMaya(stopIpr=True)
-        self.postRenderProcedure()
+        self.ipr_isrunning = False
+
+    def updateProgressBar(self, percent):
+        if not self.ipr_isrunning:
+            progressValue = percent * 100
+            pm.progressBar( self.gMainProgressBar, edit=True, progress=progressValue)
 
     def preRenderProcedure(self):
         self.createGlobalsNode()
@@ -574,17 +576,19 @@ class AppleseedRenderer(renderer.MayaToRenderer):
 
             optimizetextures.preRenderOptimizeTextures(optimizedFilePath=self.renderGlobalsNode.optimizedTexturePath.get())
 
-        self.gMainProgressBar = pm.mel.eval('$tmp = $gMainProgressBar');
-        pm.progressBar( self.gMainProgressBar,
-                                edit=True,
-                                beginProgress=True,
-                                isInterruptable=True,
-                                status='"Render progress:',
-                                maxValue=100)
+        if not self.ipr_isrunning:
+            self.gMainProgressBar = pm.mel.eval('$tmp = $gMainProgressBar');
+            pm.progressBar( self.gMainProgressBar,
+                                    edit=True,
+                                    beginProgress=True,
+                                    isInterruptable=True,
+                                    status='"Render progress:',
+                                    maxValue=100)
 
     def postRenderProcedure(self):
         optimizetextures.postRenderOptimizeTextures()        
-        pm.progressBar(self.gMainProgressBar, edit=True, endProgress=True)
+        if not self.ipr_isrunning:
+            pm.progressBar(self.gMainProgressBar, edit=True, endProgress=True)
 
     def afterGlobalsNodeReplacement(self):
         self.rendererTabUiDict = {}
