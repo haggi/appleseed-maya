@@ -610,7 +610,9 @@ namespace
         {
             char perc[16];
             sprintf(perc, "%3.2f", percent * 100.0f);
-            Logging::info(MString("") + perc + "% done.");
+            MString progressStr;
+            progressStr.format("^1s% done.", MString(perc));
+            Logging::info(progressStr);
             MString cmd = MString("import appleseed.initialize; appleseed.initialize.theRenderer().updateProgressBar(") + perc + ")";
             MGlobal::executePythonCommand(cmd);
         }
