@@ -139,35 +139,35 @@ OSLParameter::OSLParameter(const MString& pname, bool pvalue)
     type = OSL::TypeDesc::TypeInt;
 }
 
-OSLParameter::OSLParameter(const char *pname, float pvalue)
+OSLParameter::OSLParameter(const char* pname, float pvalue)
 {
     name = pname;
     value = pvalue;
     type = OSL::TypeDesc::TypeFloat;
 }
 
-OSLParameter::OSLParameter(const char *pname, int pvalue)
+OSLParameter::OSLParameter(const char* pname, int pvalue)
 {
     name = pname;
     value = pvalue;
     type = OSL::TypeDesc::TypeInt;
 }
 
-OSLParameter::OSLParameter(const char *pname, const MString& pvalue)
+OSLParameter::OSLParameter(const char* pname, const MString& pvalue)
 {
     name = pname;
     value = pvalue.asChar();
     type = OSL::TypeDesc::TypeString;
 }
 
-OSLParameter::OSLParameter(const char *pname, const std::string& pvalue)
+OSLParameter::OSLParameter(const char* pname, const std::string& pvalue)
 {
     name = pname;
     value = pvalue.c_str();
     type = OSL::TypeDesc::TypeString;
 }
 
-OSLParameter::OSLParameter(const char *pname, const MVector& pvalue)
+OSLParameter::OSLParameter(const char* pname, const MVector& pvalue)
 {
     name = validateParameter(pname);
     SimpleVector s;
@@ -179,7 +179,7 @@ OSLParameter::OSLParameter(const char *pname, const MVector& pvalue)
     mvector = pvalue;
 }
 
-OSLParameter::OSLParameter(const char *pname, const MMatrix& pvalue)
+OSLParameter::OSLParameter(const char* pname, const MMatrix& pvalue)
 {
     name = validateParameter(pname);
     SimpleMatrix m;
@@ -188,7 +188,7 @@ OSLParameter::OSLParameter(const char *pname, const MMatrix& pvalue)
     type = OSL::TypeDesc::TypeMatrix;
 }
 
-OSLParameter::OSLParameter(const char *pname, const MColor& pvalue)
+OSLParameter::OSLParameter(const char* pname, const MColor& pvalue)
 {
     name = validateParameter(pname);
     SimpleVector s;
@@ -199,7 +199,7 @@ OSLParameter::OSLParameter(const char *pname, const MColor& pvalue)
     type = OSL::TypeDesc::TypeVector;
 }
 
-OSLParameter::OSLParameter(const char *pname, bool pvalue)
+OSLParameter::OSLParameter(const char* pname, bool pvalue)
 {
     name = pname;
     value = (int)pvalue;
@@ -807,7 +807,7 @@ MString OSLUtilClass::getCleanParamName(MPlug plug)
 
 void OSLUtilClass::fillVectorParam(OSLParamArray& paramArray, MPlug vectorPlug)
 {
-    const char *inAttributes[] = { "inX", "inY", "inZ" };
+    const char* inAttributes[] = { "inX", "inY", "inZ" };
     if (vectorPlug.numChildren() != 3)
     {
         Logging::error(MString("Cannot fill osl vector parameter from non vector plug: ") + vectorPlug.name());
@@ -819,8 +819,8 @@ void OSLUtilClass::fillVectorParam(OSLParamArray& paramArray, MPlug vectorPlug)
 
 void OSLUtilClass::createHelperNode(MPlug sourcePlug, MPlug destPlug, ConnectionType type, std::vector<OSLNodeStruct>& oslNodes, ConnectionArray& connectionArray)
 {
-    const char *inAttributes[] = { "inX", "inY", "inZ" };
-    const char *outAttributes[] = { "outX", "outY", "outZ" };
+    const char* inAttributes[] = { "inX", "inY", "inZ" };
+    const char* outAttributes[] = { "outX", "outY", "outZ" };
     OSLParamArray paramArray;
 
     switch (type)
@@ -1004,8 +1004,8 @@ void OSLUtilClass::createOSLShadingNode(ShadingNode& snode)
 {
     MFnDependencyNode depFn(snode.mobject);
 
-    const char *inAttributes[] = { "inX", "inY", "inZ" };
-    const char *outAttributes[] = { "outX", "outY", "outZ" };
+    const char* inAttributes[] = { "inX", "inY", "inZ" };
+    const char* outAttributes[] = { "outX", "outY", "outZ" };
 
     // we create all necessary nodes for input and output connections
     // the problem is that we have to create the nodes in the correct order,
@@ -1093,7 +1093,7 @@ namespace
     MString oslTypeToMString(OSLParameter param)
     {
         MString result;
-        void *val = 0;
+        void* val = 0;
         if (param.type == OSL::TypeDesc::TypeFloat)
         {
             result = "float ";
@@ -1139,12 +1139,12 @@ void OSLUtilClass::connectOSLShaders(ConnectionArray& ca)
     std::vector<Connection>::iterator cIt;
     for (cIt = ca.begin(); cIt != ca.end(); cIt++)
     {
-        const char *srcLayer = cIt->sourceNode.asChar();
-        const char *srcAttr = cIt->sourceAttribute.asChar();
-        const char *destLayer = cIt->destNode.asChar();
-        const char *destAttr = cIt->destAttribute.asChar();
-        OSL::ShaderGroup *g = group;
-        renderer::ShaderGroup *ag = (renderer::ShaderGroup *)g;
+        const char* srcLayer = cIt->sourceNode.asChar();
+        const char* srcAttr = cIt->sourceAttribute.asChar();
+        const char* destLayer = cIt->destNode.asChar();
+        const char* destAttr = cIt->destAttribute.asChar();
+        OSL::ShaderGroup* g = group;
+        renderer::ShaderGroup* ag = (renderer::ShaderGroup *)g;
         ag->add_connection(srcLayer, srcAttr, destLayer, destAttr);
     }
 }
@@ -1163,7 +1163,7 @@ void OSLUtilClass::createOSLShader(MString& shaderNodeType, MString& shaderName,
         asParamArray.insert(pname.asChar(), paramString);
     }
 
-    OSL::ShaderGroup *g = group;
-    renderer::ShaderGroup *ag = (renderer::ShaderGroup *)g;
+    OSL::ShaderGroup* g = group;
+    renderer::ShaderGroup* ag = (renderer::ShaderGroup *)g;
     ag->add_shader("shader", shaderNodeType.asChar(), shaderName.asChar(), asParamArray);
 }

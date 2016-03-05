@@ -45,7 +45,7 @@ def getShaderInfo(shaderPath):
     osoFiles = getOSOFiles(shaderPath)
     return osoFiles
 
-def getOSODirs(renderer = "appleseed"):
+def getOSODirs(renderer="appleseed"):
     try:
         shaderDir = os.environ['{0}_OSL_SHADERS_LOCATION'.format(renderer.upper())]
     except KeyError:
@@ -57,7 +57,7 @@ def getOSODirs(renderer = "appleseed"):
                 osoDirs.add(root.replace("\\", "/"))
     return list(osoDirs)
 
-def getOSOFiles(renderer = "appleseed"):
+def getOSOFiles(renderer="appleseed"):
     try:
         shaderDir = os.environ['{0}_OSL_SHADERS_LOCATION'.format(renderer.upper())]
     except KeyError:
@@ -69,7 +69,7 @@ def getOSOFiles(renderer = "appleseed"):
                 osoFiles.add(os.path.join(root, filename).replace("\\", "/"))
     return list(osoFiles)
 
-def getOSLFiles(renderer = "appleseed"):
+def getOSLFiles(renderer="appleseed"):
     try:
         shaderDir = os.environ['{0}_OSL_SHADERS_LOCATION'.format(renderer.upper())]
     except KeyError:
@@ -139,7 +139,7 @@ def analyzeContent(content):
                     currentElement['mayaClassification'] = " ".join(line.split("=")[1:]).replace("\"", "").strip()
                 if "mayaId = " in line:
                     currentElement['mayaId'] = int(line.split("=")[-1])
-            if line.startswith("\""): # found a parameter
+            if line.startswith("\""):  # found a parameter
                 currentElement = {}
                 elementName = line.split(" ")[0].replace("\"", "")
                 currentElement['name'] = reverseValidate(elementName)
@@ -148,7 +148,7 @@ def analyzeContent(content):
                 if "output" in line:
                     d['outputs'].append(currentElement)
                     currentElement = d['outputs'][-1]
-                else:                    
+                else:
                     d['inputs'].append(currentElement)
                     currentElement = d['inputs'][-1]
     return d
@@ -221,11 +221,11 @@ def readShadersXMLDescription():
     SHADER_DICT = shaderDict
     return shaderDict
 
-def addSubElementList(listEntry, parentElement, subName = "input"):
+def addSubElementList(listEntry, parentElement, subName="input"):
     for element in listEntry:
-        inElement = ET.SubElement(parentElement,subName)
+        inElement = ET.SubElement(parentElement, subName)
         for ikey, ivalue in element.iteritems():
-            subElement = ET.SubElement(inElement,ikey)
+            subElement = ET.SubElement(inElement, ikey)
             subElement.text = str(ivalue)
 
 def writeXMLShaderDescription(shaderDict=None):
@@ -236,16 +236,16 @@ def writeXMLShaderDescription(shaderDict=None):
     root = ET.Element('shaders')
     for shaderKey in shaderDict.keys():
         shader = shaderDict[shaderKey]
-        sh = ET.SubElement(root,"shader")
+        sh = ET.SubElement(root, "shader")
         for key, value in shader.iteritems():
             if key == "inputs":
-                ins = ET.SubElement(sh,"inputs")
+                ins = ET.SubElement(sh, "inputs")
                 addSubElementList(value, ins, subName="input")
             elif key == "outputs":
-                ins = ET.SubElement(sh,"outputs")
+                ins = ET.SubElement(sh, "outputs")
                 addSubElementList(value, ins, subName="output")
             else:
-                subElement = ET.SubElement(sh,key)
+                subElement = ET.SubElement(sh, key)
                 subElement.text = str(value)
     tree = ET.ElementTree(root)
     tree.write(xmlFile)
@@ -278,12 +278,12 @@ def updateOSLShaderInfo(force=False, osoFiles=[]):
             if not line: break
         infoDict[shaderName] = analyzeContent(content)
         SHADER_DICT[shaderName] = infoDict[shaderName]
-        #pp.pprint(infoDict)
+        # pp.pprint(infoDict)
     writeXMLShaderDescription()
     return infoDict
 
 
-def compileAllShaders(renderer = "appleseed"):
+def compileAllShaders(renderer="appleseed"):
     try:
         shaderDir = os.environ['{0}_OSL_SHADERS_LOCATION'.format(renderer.upper())]
     except KeyError:
@@ -300,7 +300,7 @@ def compileAllShaders(renderer = "appleseed"):
     for root, dirname, files in os.walk(shaderDir):
         for filename in files:
             if filename.endswith(".osl"):
-                oslPath =  os.path.join(root, filename)
+                oslPath = os.path.join(root, filename)
                 dest_dir = root.replace("\\", "/").replace("shaders/src", "shaders") + "/"
                 if not os.path.exists(dest_dir):
                     os.makedirs(dest_dir)
@@ -316,7 +316,7 @@ def compileAllShaders(renderer = "appleseed"):
                         
                 saved_wd = os.getcwd()
                 os.chdir(root)
-                compileCmd = oslc_cmd + " -v -I" + include_dir + ' -o '+ osoOutputPath + ' ' + oslInputFile
+                compileCmd = oslc_cmd + " -v -I" + include_dir + ' -o ' + osoOutputPath + ' ' + oslInputFile
                 IDLE_PRIORITY_CLASS = 64
                 process = subprocess.Popen(compileCmd, bufsize=1, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, creationflags=IDLE_PRIORITY_CLASS)
                 progress = []

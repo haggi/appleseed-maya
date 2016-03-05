@@ -48,20 +48,22 @@
 */
 
 #include "../shadingtools/shadingnode.h"
-#include "../utilities/tools.h"
+#include "tools.h"
 #include "OSL/oslexec.h"
 
+#include <maya/MColor.h>
+#include <maya/MFloatVector.h>
+#include <maya/MFnDependencyNode.h>
+#include <maya/MMatrix.h>
 #include <maya/MObject.h>
 #include <maya/MObjectArray.h>
 #include <maya/MPlug.h>
 #include <maya/MString.h>
 #include <maya/MVector.h>
-#include <maya/MColor.h>
-#include <maya/MMatrix.h>
-#include <maya/MFloatVector.h>
-#include <maya/MFnDependencyNode.h>
-#include <math.h>
+
+#include <cmath>
 #include <vector>
+
 #include "boost/variant.hpp"
 
 #define ARRAY_MAX_ENTRIES 10
@@ -75,7 +77,7 @@ class Connection
 {
   public:
     Connection();
-    Connection(MString sn, MString sa, MString dn, MString da);
+    Connection(const MString sn, const MString sa, const MString dn, const MString da);
     bool operator==(const Connection& otherOne);
     MString sourceNode;
     MString sourceAttribute;
@@ -100,7 +102,7 @@ class OSLParameter
     OIIO::TypeDesc type;
     MVector mvector;
     boost::variant<int, float, SimpleVector, SimpleMatrix, std::string> value;
-  public:
+
     OSLParameter(const MString& pname, float pvalue);
     OSLParameter(const MString& pname, int pvalue);
     OSLParameter(const MString& pname, const MString& pvalue);
@@ -108,14 +110,14 @@ class OSLParameter
     OSLParameter(const MString& pname, const MMatrix& pvalue);
     OSLParameter(const MString& pname, const MColor& pvalue);
     OSLParameter(const MString& pname, bool pvalue);
-    OSLParameter(const char *pname, float pvalue);
-    OSLParameter(const char *pname, int pvalue);
-    OSLParameter(const char *pname, const MString& pvalue);
-    OSLParameter(const char *pname, const std::string& pvalue);
-    OSLParameter(const char *pname, const MVector& pvalue);
-    OSLParameter(const char *pname, const MMatrix& pvalue);
-    OSLParameter(const char *pname, const MColor& pvalue);
-    OSLParameter(const char *pname, bool pvalue);
+    OSLParameter(const char* pname, float pvalue);
+    OSLParameter(const char* pname, int pvalue);
+    OSLParameter(const char* pname, const MString& pvalue);
+    OSLParameter(const char* pname, const std::string& pvalue);
+    OSLParameter(const char* pname, const MVector& pvalue);
+    OSLParameter(const char* pname, const MMatrix& pvalue);
+    OSLParameter(const char* pname, const MColor& pvalue);
+    OSLParameter(const char* pname, bool pvalue);
 };
 
 struct ProjectionUtil
@@ -149,8 +151,8 @@ class OSLUtilClass
   public:
     OSLUtilClass();
 
-    OSLShadingNetworkRenderer *oslRenderer;
-    OSL::ShaderGroup *group;
+    OSLShadingNetworkRenderer* oslRenderer;
+    OSL::ShaderGroup* group;
     ProjectionNodeArray projectionNodeArray;
     std::vector<MObject> projectionNodes;
     std::vector<MObject> projectionConnectNodes;

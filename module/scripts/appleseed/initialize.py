@@ -468,11 +468,11 @@ class AppleseedRenderer(renderer.MayaToRenderer):
     def AppleseedTranslatorUpdateTab(self):
         uiDict = self.rendererTabUiDict['translator']
         outputMode = self.renderGlobalsNode.exportMode.get()
-        if outputMode == 0: #render only
+        if outputMode == 0:  # render only
             uiDict['outputFilenameLayout'].setEnable(False)
-        if outputMode == 1: #output only
+        if outputMode == 1:  # output only
             uiDict['outputFilenameLayout'].setEnable(True)
-        if outputMode == 2: #render and output
+        if outputMode == 2:  # render and output
             uiDict['outputFilenameLayout'].setEnable(True)
         if outputMode > 0:
             textField = uiDict['fileNameField']
@@ -551,7 +551,7 @@ class AppleseedRenderer(renderer.MayaToRenderer):
     def updateProgressBar(self, percent):
         if not self.ipr_isrunning:
             progressValue = percent * 100
-            pm.progressBar( self.gMainProgressBar, edit=True, progress=progressValue)
+            pm.progressBar(self.gMainProgressBar, edit=True, progress=progressValue)
 
     def preRenderProcedure(self):
         self.createGlobalsNode()
@@ -578,7 +578,7 @@ class AppleseedRenderer(renderer.MayaToRenderer):
 
         if not self.ipr_isrunning:
             self.gMainProgressBar = pm.mel.eval('$tmp = $gMainProgressBar');
-            pm.progressBar( self.gMainProgressBar,
+            pm.progressBar(self.gMainProgressBar,
                                     edit=True,
                                     beginProgress=True,
                                     isInterruptable=True,
@@ -605,7 +605,7 @@ class AppleseedRenderer(renderer.MayaToRenderer):
         nodeClass = None
         rendererName = self.rendererName.lower()
         for cl in pm.getClassification(nodeType):
-            if (rendererName+"/material") in cl.lower():
+            if (rendererName + "/material") in cl.lower():
                 nodeClass = "shader"
             if (rendererName + "/texture") in cl.lower():
                 nodeClass = "texture"

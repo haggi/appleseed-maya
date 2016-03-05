@@ -72,7 +72,7 @@ class HypershadeTileCallback
     virtual void post_render(const renderer::Frame* frame) APPLESEED_OVERRIDE;
 
   private:
-    HypershadeRenderer *mRenderer;
+    HypershadeRenderer* mRenderer;
 };
 
 class HypershadeTileCallbackFactory
@@ -85,8 +85,8 @@ class HypershadeTileCallbackFactory
     virtual renderer::ITileCallback* create() APPLESEED_OVERRIDE;
 
   private:
-      HypershadeRenderer* mRenderer;
-      std::auto_ptr<HypershadeTileCallback> mTileCallback;
+    HypershadeRenderer* mRenderer;
+    std::auto_ptr<HypershadeTileCallback> mTileCallback;
 };
 
 struct IdNameStruct
