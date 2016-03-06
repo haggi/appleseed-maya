@@ -77,7 +77,7 @@ class Connection
 {
   public:
     Connection();
-    Connection(const MString sn, const MString sa, const MString dn, const MString da);
+    Connection(const MString& sn, const MString& sa, const MString& dn, const MString& da);
     bool operator==(const Connection& otherOne);
     MString sourceNode;
     MString sourceAttribute;

@@ -210,7 +210,7 @@ Connection::Connection()
 {
 }
 
-Connection::Connection(MString sn, MString sa, MString dn, MString da)
+Connection::Connection(const MString& sn, const MString& sa, const MString& dn, const MString& da)
 {
     sourceNode = validateParameter(sn);
     sourceAttribute = validateParameter(sa);

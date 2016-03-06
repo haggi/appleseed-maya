@@ -45,9 +45,9 @@ def getShaderInfo(shaderPath):
     osoFiles = getOSOFiles(shaderPath)
     return osoFiles
 
-def getOSODirs(renderer="appleseed"):
+def getOSODirs():
     try:
-        shaderDir = os.environ['{0}_OSL_SHADERS_LOCATION'.format(renderer.upper())]
+        shaderDir = os.environ['APPLESEED_OSL_SHADERS_LOCATION']
     except KeyError:
         shaderDir = path.path(__file__).parent.parent.parent + "/shaders"
     osoDirs = set()
@@ -57,9 +57,9 @@ def getOSODirs(renderer="appleseed"):
                 osoDirs.add(root.replace("\\", "/"))
     return list(osoDirs)
 
-def getOSOFiles(renderer="appleseed"):
+def getOSOFiles():
     try:
-        shaderDir = os.environ['{0}_OSL_SHADERS_LOCATION'.format(renderer.upper())]
+        shaderDir = os.environ['APPLESEED_OSL_SHADERS_LOCATION']
     except KeyError:
         shaderDir = path.path(__file__).parent.parent.parent + "/shaders"
     osoFiles = set()
@@ -69,9 +69,9 @@ def getOSOFiles(renderer="appleseed"):
                 osoFiles.add(os.path.join(root, filename).replace("\\", "/"))
     return list(osoFiles)
 
-def getOSLFiles(renderer="appleseed"):
+def getOSLFiles():
     try:
-        shaderDir = os.environ['{0}_OSL_SHADERS_LOCATION'.format(renderer.upper())]
+        shaderDir = os.environ['APPLESEED_OSL_SHADERS_LOCATION']
     except KeyError:
         shaderDir = path.path(__file__).parent.parent.parent + "/shaders"
     osoFiles = set()
@@ -283,9 +283,9 @@ def updateOSLShaderInfo(force=False, osoFiles=[]):
     return infoDict
 
 
-def compileAllShaders(renderer="appleseed"):
+def compileAllShaders():
     try:
-        shaderDir = os.environ['{0}_OSL_SHADERS_LOCATION'.format(renderer.upper())]
+        shaderDir = os.environ['APPLESEED_OSL_SHADERS_LOCATION']
     except KeyError:
         # we expect this file in module/scripts so we can try to find the shaders in ../shaders
         log.error("Could not get path from APPLESEED_OSL_SHADERS_LOCATION. Trying to find the shaders dir relative to current file: {0}".format(__file__))
