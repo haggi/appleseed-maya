@@ -577,13 +577,8 @@ class AppleseedRenderer(renderer.MayaToRenderer):
             optimizetextures.preRenderOptimizeTextures(optimizedFilePath=self.renderGlobalsNode.optimizedTexturePath.get())
 
         if not self.ipr_isrunning:
-            self.gMainProgressBar = pm.mel.eval('$tmp = $gMainProgressBar');
-            pm.progressBar(self.gMainProgressBar,
-                                    edit=True,
-                                    beginProgress=True,
-                                    isInterruptable=True,
-                                    status='"Render progress:',
-                                    maxValue=100)
+            self.gMainProgressBar = pm.mel.eval('$tmp = $gMainProgressBar')
+            pm.progressBar(self.gMainProgressBar, edit=True, beginProgress=True, isInterruptable=True, status='"Render progress:', maxValue=100)
 
     def postRenderProcedure(self):
         optimizetextures.postRenderOptimizeTextures()        
