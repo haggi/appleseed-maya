@@ -456,9 +456,19 @@ MColor getColorAttr(const char *plugName, const MFnDependencyNode& dn)
 
 MVector getVectorAttr(const char *plugName, const MFnDependencyNode& dn)
 {
-    MVector c(0, 0, 0);
-    getVector(MString(plugName), dn, c);
-    return c;
+    MVector v(0, 0, 0);
+    MDGContext ctx = MDGContext::fsNormal;
+    MStatus stat = MS::kSuccess;
+    bool result = false;
+    MPlug plug = dn.findPlug(plugName, &stat);
+    if (!stat)
+        return v;
+    if (plug.numChildren() < 3)
+        return v;
+    v.x = plug.child(0).asDouble(ctx, &stat);
+    v.y = plug.child(1).asDouble(ctx, &stat);
+    v.z = plug.child(2).asDouble(ctx, &stat);
+    return v;
 }
 
 MVector getVectorAttr(MPlug plug)
