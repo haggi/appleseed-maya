@@ -477,14 +477,7 @@ void OSLUtilClass::defineOSLParameter(ShaderAttribute& sa, MFnDependencyNode& de
     }
     if (sa.type == "vector")
     {
-        MVector v;
-        if (sa.hint == "useAsColor")
-        {
-            MColor c = getColorAttr(sa.name.c_str(), depFn);
-            v = MVector(c.r, c.g, c.b);
-        }
-        else
-            v = getVectorAttr(sa.name.c_str(), depFn);
+        MVector v = getVectorAttr(sa.name.c_str(), depFn);
         paramArray.push_back(OSLParameter(sa.name.c_str(), v));
     }
     if (sa.type == "enumint")
