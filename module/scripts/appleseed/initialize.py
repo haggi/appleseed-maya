@@ -31,7 +31,6 @@ import appleseedmenu as appleseedmenu
 import logging
 import optimizetextures
 import os
-import osltools as osltools
 import path
 import pymel.core as pm
 import renderer as renderer
@@ -58,6 +57,7 @@ class AppleseedRenderer(renderer.MayaToRenderer):
         self.rendererTabUiDict = {}
         self.aovShaders = ["mtap_aoShader", "mtap_aoVoxelShader", "mtap_diagnosticShader", "mtap_fastSSSShader", "appleseedSurfaceShader"]
         self.rendererMenu = None
+        self.gMainProgressBar = None
 
     def createRendererMenu(self):
         self.rendererMenu = appleseedmenu.AppleseedMenu()
@@ -468,11 +468,11 @@ class AppleseedRenderer(renderer.MayaToRenderer):
     def AppleseedTranslatorUpdateTab(self):
         uiDict = self.rendererTabUiDict['translator']
         outputMode = self.renderGlobalsNode.exportMode.get()
-        if outputMode == 0: #render only
+        if outputMode == 0:  # render only
             uiDict['outputFilenameLayout'].setEnable(False)
-        if outputMode == 1: #output only
+        if outputMode == 1:  # output only
             uiDict['outputFilenameLayout'].setEnable(True)
-        if outputMode == 2: #render and output
+        if outputMode == 2:  # render and output
             uiDict['outputFilenameLayout'].setEnable(True)
         if outputMode > 0:
             textField = uiDict['fileNameField']
@@ -532,7 +532,6 @@ class AppleseedRenderer(renderer.MayaToRenderer):
         self.createGlobalsNode()
         self.preRenderProcedure()
         self.setImageName()
-
         if pm.about(batch=True):
             pm.appleseedMaya()
         else:
@@ -544,12 +543,15 @@ class AppleseedRenderer(renderer.MayaToRenderer):
         self.preRenderProcedure()
         self.setImageName()
         pm.appleseedMaya(width=resolutionX, height=resolutionY, camera=camera, startIpr=True)
-        self.postRenderProcedure()
 
     def stopIprRenderProcedure(self):
-        self.ipr_isrunning = False
         pm.appleseedMaya(stopIpr=True)
-        self.postRenderProcedure()
+        self.ipr_isrunning = False
+
+    def updateProgressBar(self, percent):
+        if not self.ipr_isrunning:
+            progressValue = percent * 100
+            pm.progressBar(self.gMainProgressBar, edit=True, progress=progressValue)
 
     def preRenderProcedure(self):
         self.createGlobalsNode()
@@ -573,10 +575,20 @@ class AppleseedRenderer(renderer.MayaToRenderer):
                 self.renderGlobalsNode.optimizedTexturePath.set(str(optimizedPath))
 
             optimizetextures.preRenderOptimizeTextures(optimizedFilePath=self.renderGlobalsNode.optimizedTexturePath.get())
-        osltools.compileAllShaders()
+
+        if not self.ipr_isrunning:
+            self.gMainProgressBar = pm.mel.eval('$tmp = $gMainProgressBar');
+            pm.progressBar(self.gMainProgressBar,
+                                    edit=True,
+                                    beginProgress=True,
+                                    isInterruptable=True,
+                                    status='"Render progress:',
+                                    maxValue=100)
 
     def postRenderProcedure(self):
-        optimizetextures.postRenderOptimizeTextures()
+        optimizetextures.postRenderOptimizeTextures()        
+        if not self.ipr_isrunning:
+            pm.progressBar(self.gMainProgressBar, edit=True, endProgress=True)
 
     def afterGlobalsNodeReplacement(self):
         self.rendererTabUiDict = {}
@@ -593,7 +605,7 @@ class AppleseedRenderer(renderer.MayaToRenderer):
         nodeClass = None
         rendererName = self.rendererName.lower()
         for cl in pm.getClassification(nodeType):
-            if (rendererName+"/material") in cl.lower():
+            if (rendererName + "/material") in cl.lower():
                 nodeClass = "shader"
             if (rendererName + "/texture") in cl.lower():
                 nodeClass = "texture"
@@ -633,7 +645,6 @@ def loadPlugins():
     python_plugins = ["loadshadersplugin"]
     currentPath = path.path(__file__).dirname()
     
-    osltools.compileAllShaders() # compile shaders and update shaders xml file
     for plugin in python_plugins:
         try:
             pluginPath = "{0}/{1}.py".format(currentPath, plugin) 

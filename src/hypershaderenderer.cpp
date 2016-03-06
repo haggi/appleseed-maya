@@ -290,6 +290,27 @@ MStatus HypershadeRenderer::beginSceneUpdate()
     return MStatus::kSuccess;
 }
 
+MStatus HypershadeRenderer::endSceneUpdate()
+{
+    controller.set_status(renderer::IRendererController::ContinueRendering);
+    ProgressParams progressParams;
+    progressParams.progress = 0.0;
+    progress(progressParams);
+
+    if (asyncStarted)
+    {
+        renderThread = boost::thread(startRenderThread, this);
+    }
+    else
+    {
+        ProgressParams progressParams;
+        progressParams.progress = 2.0f;
+        progress(progressParams);
+    }
+
+    return MStatus::kSuccess;
+}
+
 MStatus HypershadeRenderer::translateMesh(const MUuid& id, const MObject& node)
 {
     MObject mobject = node;
@@ -795,27 +816,6 @@ MStatus HypershadeRenderer::setResolution(unsigned int w, unsigned int h)
     return MStatus::kSuccess;
 }
 
-MStatus HypershadeRenderer::endSceneUpdate()
-{
-    controller.set_status(renderer::IRendererController::ContinueRendering);
-    ProgressParams progressParams;
-    progressParams.progress = 0.0;
-    progress(progressParams);
-
-    if (asyncStarted)
-    {
-        renderThread = boost::thread(startRenderThread, this);
-    }
-    else
-    {
-        ProgressParams progressParams;
-        progressParams.progress = 2.0f;
-        progress(progressParams);
-    }
-
-    return MStatus::kSuccess;
-}
-
 MStatus HypershadeRenderer::destroyScene()
 {
     controller.set_status(renderer::IRendererController::AbortRendering);
@@ -947,13 +947,13 @@ void HypershadeTileCallback::pre_render(const size_t x, const size_t y, const si
 }
 
 HypershadeTileCallbackFactory::HypershadeTileCallbackFactory(HypershadeRenderer* renderer)
+  : mRenderer(renderer)
 {
-    mTileCallback.reset(new HypershadeTileCallback(renderer));
 }
 
 renderer::ITileCallback* HypershadeTileCallbackFactory::create()
 {
-    return mTileCallback.get();
+    return new HypershadeTileCallback(mRenderer);
 }
 
 void HypershadeTileCallbackFactory::release()

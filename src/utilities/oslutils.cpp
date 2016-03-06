@@ -59,7 +59,175 @@ namespace
         plug.name().split('.', sa);
         return sa[sa.length() - 1];
     }
+
+    MString validateParameter(const MString name)
+    {
+        if (name == "min")
+            return "inMin";
+        if (name == "diffuse")
+            return "inDiffuse";
+        if (name == "max")
+            return "inMax";
+        if (name == "vector")
+            return "inVector";
+        if (name == "matrix")
+            return "inMatrix";
+        if (name == "color")
+            return "inColor";
+        if (name == "output")
+            return "outOutput";
+        return name;
+    }
 }
+
+OSLParameter::OSLParameter(const MString& pname, float pvalue)
+{
+    name = pname;
+    value = pvalue;
+    type = OSL::TypeDesc::TypeFloat;
+}
+
+OSLParameter::OSLParameter(const MString& pname, int pvalue)
+{
+    name = pname;
+    value = pvalue;
+    type = OSL::TypeDesc::TypeInt;
+}
+
+OSLParameter::OSLParameter(const MString& pname, const MString& pvalue)
+{
+    name = pname;
+    value = pvalue.asChar();
+    type = OSL::TypeDesc::TypeString;
+}
+
+OSLParameter::OSLParameter(const MString& pname, const MVector& pvalue)
+{
+    name = validateParameter(pname);
+    SimpleVector s;
+    s.f[0] = (float)pvalue.x;
+    s.f[1] = (float)pvalue.y;
+    s.f[2] = (float)pvalue.z;
+    value = s;
+    type = OSL::TypeDesc::TypeVector;
+}
+
+OSLParameter::OSLParameter(const MString& pname, const MMatrix& pvalue)
+{
+    name = validateParameter(pname);
+    SimpleMatrix m;
+    pvalue.get(m.f);
+    value = m;
+    type = OSL::TypeDesc::TypeMatrix;
+}
+
+OSLParameter::OSLParameter(const MString& pname, const MColor& pvalue)
+{
+    name = validateParameter(pname);
+    SimpleVector s;
+    s.f[0] = pvalue.r;
+    s.f[1] = pvalue.g;
+    s.f[2] = pvalue.b;
+    value = s;
+    type = OSL::TypeDesc::TypeVector;
+}
+
+OSLParameter::OSLParameter(const MString& pname, bool pvalue)
+{
+    name = pname;
+    value = (int)pvalue;
+    type = OSL::TypeDesc::TypeInt;
+}
+
+OSLParameter::OSLParameter(const char* pname, float pvalue)
+{
+    name = pname;
+    value = pvalue;
+    type = OSL::TypeDesc::TypeFloat;
+}
+
+OSLParameter::OSLParameter(const char* pname, int pvalue)
+{
+    name = pname;
+    value = pvalue;
+    type = OSL::TypeDesc::TypeInt;
+}
+
+OSLParameter::OSLParameter(const char* pname, const MString& pvalue)
+{
+    name = pname;
+    value = pvalue.asChar();
+    type = OSL::TypeDesc::TypeString;
+}
+
+OSLParameter::OSLParameter(const char* pname, const std::string& pvalue)
+{
+    name = pname;
+    value = pvalue.c_str();
+    type = OSL::TypeDesc::TypeString;
+}
+
+OSLParameter::OSLParameter(const char* pname, const MVector& pvalue)
+{
+    name = validateParameter(pname);
+    SimpleVector s;
+    s.f[0] = (float)pvalue.x;
+    s.f[1] = (float)pvalue.y;
+    s.f[2] = (float)pvalue.z;
+    value = s;
+    type = OSL::TypeDesc::TypeVector;
+    mvector = pvalue;
+}
+
+OSLParameter::OSLParameter(const char* pname, const MMatrix& pvalue)
+{
+    name = validateParameter(pname);
+    SimpleMatrix m;
+    pvalue.get(m.f);
+    value = m;
+    type = OSL::TypeDesc::TypeMatrix;
+}
+
+OSLParameter::OSLParameter(const char* pname, const MColor& pvalue)
+{
+    name = validateParameter(pname);
+    SimpleVector s;
+    s.f[0] = pvalue.r;
+    s.f[1] = pvalue.g;
+    s.f[2] = pvalue.b;
+    value = s;
+    type = OSL::TypeDesc::TypeVector;
+}
+
+OSLParameter::OSLParameter(const char* pname, bool pvalue)
+{
+    name = pname;
+    value = (int)pvalue;
+    type = OSL::TypeDesc::TypeInt;
+}
+
+Connection::Connection()
+{
+}
+
+Connection::Connection(MString sn, MString sa, MString dn, MString da)
+{
+    sourceNode = validateParameter(sn);
+    sourceAttribute = validateParameter(sa);
+    destNode = validateParameter(dn);
+    destAttribute = validateParameter(da);
+}
+
+bool Connection::operator == (const Connection& otherOne)
+{
+    if (sourceNode == otherOne.sourceNode)
+        if (destNode == otherOne.destNode)
+            if (sourceAttribute == otherOne.sourceAttribute)
+                if (destAttribute == otherOne.destAttribute)
+                    return true;
+    return false;
+}
+
 
 OSLUtilClass::OSLUtilClass()
 {
@@ -137,7 +305,6 @@ void OSLUtilClass::listProjectionHistory(const MObject& mobject)
         if (projectionNodeArray.size() > 0)
         {
             ProjectionUtil& util = projectionNodeArray.back();
-            Logging::debug(MString("node ") + depFn.name() + " has no incoming connections this is my leaf node.");
             util.leafNodes.append(depFn.object());
         }
         return;
@@ -148,7 +315,6 @@ void OSLUtilClass::listProjectionHistory(const MObject& mobject)
     for (uint i = 0; i < inputNodes.length(); i++)
     {
         MString nodeName = getObjectName(inputNodes[i]);
-        Logging::debug(MString("Checking node ") + nodeName);
         listProjectionHistory(inputNodes[i]);
     }
 }
@@ -176,7 +342,6 @@ void OSLUtilClass::defineOSLParameter(ShaderAttribute& sa, MFnDependencyNode& de
 
             if (p.isCompound() && (getAttributeNameFromPlug(plug) == "colorEntryList"))
             {
-                // yes I know, hardcoded names are bad, bad. But if it works, I can
                 MVector vec;
                 // colorEntryList has child0 == position, child1 = color
                 float position = p.child(0).asFloat();
@@ -271,9 +436,6 @@ void OSLUtilClass::defineOSLParameter(ShaderAttribute& sa, MFnDependencyNode& de
                     else
                     {
                         ext = fileName.substr(pos + 1);
-                        Logging::debug(MString("Extension for file texture: ") + fileName.c_str() + " is " + ext.c_str());
-                        //if (ext == "exr")
-                        //{
                         std::string txFileName = fileName + ".exr.tx";
                         boost::filesystem::path p(txFileName);
                         if (boost::filesystem::exists(p))
@@ -283,7 +445,6 @@ void OSLUtilClass::defineOSLParameter(ShaderAttribute& sa, MFnDependencyNode& de
                             if (uvTilingMode == 0)
                                 stringParameter = txFileName.c_str();
                         }
-                        //}
                         paramArray.push_back(OSLParameter("ext", ext));
                     }
 
@@ -299,13 +460,7 @@ void OSLUtilClass::defineOSLParameter(ShaderAttribute& sa, MFnDependencyNode& de
     }
     if (sa.type == "color")
     {
-        // next to color attributes we can have color multipliers which are really useful sometimes
-        MString multiplierName = MString("") + sa.name.c_str() + "Multiplier";
-        MPlug multiplierPlug = depFn.findPlug(multiplierName, &stat);
-        float multiplier = 1.0f;
-        if (stat)
-            multiplier = multiplierPlug.asFloat();
-        paramArray.push_back(OSLParameter(sa.name.c_str(), getColorAttr(sa.name.c_str(), depFn) * multiplier));
+        paramArray.push_back(OSLParameter(sa.name.c_str(), getColorAttr(sa.name.c_str(), depFn)));
     }
     if (sa.type == "int")
     {
@@ -322,12 +477,6 @@ void OSLUtilClass::defineOSLParameter(ShaderAttribute& sa, MFnDependencyNode& de
     }
     if (sa.type == "vector")
     {
-        // next to vector attributes we can have vector (vectors can be colors) multipliers which are really useful sometimes
-        MString multiplierName = MString("") + sa.name.c_str() + "Multiplier";
-        MPlug multiplierPlug = depFn.findPlug(multiplierName, &stat);
-        float multiplier = 1.0f;
-        if (stat)
-            multiplier = multiplierPlug.asFloat();
         MVector v;
         if (sa.hint == "useAsColor")
         {
@@ -336,7 +485,7 @@ void OSLUtilClass::defineOSLParameter(ShaderAttribute& sa, MFnDependencyNode& de
         }
         else
             v = getVectorAttr(sa.name.c_str(), depFn);
-        paramArray.push_back(OSLParameter(sa.name.c_str(), v * multiplier));
+        paramArray.push_back(OSLParameter(sa.name.c_str(), v));
     }
     if (sa.type == "enumint")
     {
@@ -403,10 +552,8 @@ void OSLUtilClass::createOSLProjectionNodes(const MObject& surfaceShaderNode)
         ca.push_back(Connection(pn.fullName, "worldInverseMatrix", sn.fullName, "placementMatrix"));
         connectOSLShaders(ca);
 
-        Logging::debug(MString("Found projection node: ") + projectionNodeName);
         for (uint lId = 0; lId < util.leafNodes.length(); lId++)
         {
-            Logging::debug(projectionNodeName + " has to be connected to " + getObjectName(util.leafNodes[lId]));
             projectionNodes.push_back(util.projectionNode);
             projectionConnectNodes.push_back(util.projectionNode);
         }
@@ -477,13 +624,11 @@ bool OSLUtilClass::handleSpecialPlugs(MString attributeName, MFnDependencyNode& 
                 MObject inNode = getConnectedInNode(depFn.object(), "bumpDepth");
                 if (inNode != MObject::kNullObj)
                 {
-                    Logging::debug(MString("Found connection to bump Node: ") + getObjectName(inNode) + " trying to find a color output");
                     MFnDependencyNode inDepFn(inNode);
                     MStatus stat;
                     MPlug outColor = inDepFn.findPlug("outColor", true, &stat);
                     if (!outColor.isNull())
                     {
-                        Logging::debug(MString("Found outColor plug: ") + outColor.name());
                         sourcePlugs.append(outColor);
                         destPlugs.append(normalMap);
                         return true;
@@ -566,7 +711,6 @@ void OSLUtilClass::checkPlugsValidity(MPlugArray& sourcePlugs, MPlugArray& destP
     MPlugArray validSourcePlugs, validDestPlugs;
     for (uint pId = 0; pId < sourcePlugs.length(); pId++)
     {
-        Logging::debug(MString("checking plug connection ") + sourcePlugs[pId].name() + "-->" + destPlugs[pId].name());
         MPlug sourcePlug = sourcePlugs[pId];
         // in the ShadingNetwork only the main attribute names are saved, so we need to find the parent first.
         while (sourcePlug.isChild())
@@ -663,7 +807,7 @@ MString OSLUtilClass::getCleanParamName(MPlug plug)
 
 void OSLUtilClass::fillVectorParam(OSLParamArray& paramArray, MPlug vectorPlug)
 {
-    const char *inAttributes[] = { "inX", "inY", "inZ" };
+    const char* inAttributes[] = { "inX", "inY", "inZ" };
     if (vectorPlug.numChildren() != 3)
     {
         Logging::error(MString("Cannot fill osl vector parameter from non vector plug: ") + vectorPlug.name());
@@ -675,8 +819,8 @@ void OSLUtilClass::fillVectorParam(OSLParamArray& paramArray, MPlug vectorPlug)
 
 void OSLUtilClass::createHelperNode(MPlug sourcePlug, MPlug destPlug, ConnectionType type, std::vector<OSLNodeStruct>& oslNodes, ConnectionArray& connectionArray)
 {
-    const char *inAttributes[] = { "inX", "inY", "inZ" };
-    const char *outAttributes[] = { "outX", "outY", "outZ" };
+    const char* inAttributes[] = { "inX", "inY", "inZ" };
+    const char* outAttributes[] = { "outX", "outY", "outZ" };
     OSLParamArray paramArray;
 
     switch (type)
@@ -849,16 +993,10 @@ void OSLUtilClass::createAndConnectShaderNodes()
     for (it = nodesList.begin(); it != nodesList.end(); it++)
     {
         OSLNodeStruct node = *it;
-        Logging::debug(MString("NEW: Creating shading node: ") + node.nodeName + " type: " + node.typeName);
         createOSLShader(node.typeName, node.nodeName, node.paramArray);
     }
-
     std::vector<Connection>::iterator cit;
     std::vector<Connection> conns = connectionList;
-    for (cit = conns.begin(); cit != conns.end(); cit++)
-    {
-        Logging::debug(MString("NEW: Creating connection from: ") + cit->sourceNode + "." + cit->sourceAttribute + " --> " + cit->destNode + "." + cit->destAttribute);
-    }
     connectOSLShaders(connectionList);
 }
 
@@ -866,8 +1004,8 @@ void OSLUtilClass::createOSLShadingNode(ShadingNode& snode)
 {
     MFnDependencyNode depFn(snode.mobject);
 
-    const char *inAttributes[] = { "inX", "inY", "inZ" };
-    const char *outAttributes[] = { "outX", "outY", "outZ" };
+    const char* inAttributes[] = { "inX", "inY", "inZ" };
+    const char* outAttributes[] = { "outX", "outY", "outZ" };
 
     // we create all necessary nodes for input and output connections
     // the problem is that we have to create the nodes in the correct order,
@@ -940,7 +1078,6 @@ void OSLUtilClass::connectProjectionNodes(MObject& projNode)
     {
         if (projNode == projectionConnectNodes[i])
         {
-            Logging::debug(MString("Place3dNode for projection input defined ") + pn.name());
             MString sourceNode = (getObjectName(projectionNodes[i]) + "_ProjUtil");
             MString sourceAttr = "outUVCoord";
             MString destNode = pn.name();
@@ -956,7 +1093,7 @@ namespace
     MString oslTypeToMString(OSLParameter param)
     {
         MString result;
-        void *val = 0;
+        void* val = 0;
         if (param.type == OSL::TypeDesc::TypeFloat)
         {
             result = "float ";
@@ -1002,22 +1139,18 @@ void OSLUtilClass::connectOSLShaders(ConnectionArray& ca)
     std::vector<Connection>::iterator cIt;
     for (cIt = ca.begin(); cIt != ca.end(); cIt++)
     {
-        const char *srcLayer = cIt->sourceNode.asChar();
-        const char *srcAttr = cIt->sourceAttribute.asChar();
-        const char *destLayer = cIt->destNode.asChar();
-        MString destAttr = cIt->destAttribute;
-        if (destAttr == "color")
-            destAttr = "inColor";
-        Logging::debug(MString("connectOSLShaders ") + srcLayer + "." + srcAttr + " -> " + destLayer + "." + destAttr);
-        OSL::ShaderGroup *g = group;
-        renderer::ShaderGroup *ag = (renderer::ShaderGroup *)g;
-        ag->add_connection(srcLayer, srcAttr, destLayer, destAttr.asChar());
+        const char* srcLayer = cIt->sourceNode.asChar();
+        const char* srcAttr = cIt->sourceAttribute.asChar();
+        const char* destLayer = cIt->destNode.asChar();
+        const char* destAttr = cIt->destAttribute.asChar();
+        OSL::ShaderGroup* g = group;
+        renderer::ShaderGroup* ag = (renderer::ShaderGroup *)g;
+        ag->add_connection(srcLayer, srcAttr, destLayer, destAttr);
     }
 }
 
 void OSLUtilClass::createOSLShader(MString& shaderNodeType, MString& shaderName, OSLParamArray& paramArray)
 {
-    Logging::debug(MString("createOSLShader ") + shaderName);
     renderer::ParamArray asParamArray;
     std::vector<OSLParameter>::iterator pIt;
     for (pIt = paramArray.begin(); pIt != paramArray.end(); pIt++)
@@ -1028,11 +1161,9 @@ void OSLUtilClass::createOSLShader(MString& shaderNodeType, MString& shaderName,
 
         MString paramString = oslTypeToMString(*pIt);
         asParamArray.insert(pname.asChar(), paramString);
-        Logging::debug(MString("\tParam ") + pIt->name + " " + paramString);
     }
 
-    Logging::debug(MString("createOSLShader creating shader node "));
-    OSL::ShaderGroup *g = group;
-    renderer::ShaderGroup *ag = (renderer::ShaderGroup *)g;
+    OSL::ShaderGroup* g = group;
+    renderer::ShaderGroup* ag = (renderer::ShaderGroup *)g;
     ag->add_shader("shader", shaderNodeType.asChar(), shaderName.asChar(), asParamArray);
 }

@@ -64,6 +64,8 @@ namespace
     bool IprCallbacksDone = false;
     std::map<MCallbackId, MObject> objIdMap;
     std::map<MCallbackId, InteractiveElement *> idInteractiveMap;
+    size_t numPixelsDone;
+    size_t numPixelsTotal;
 
     boost::thread sceneThread;
     concurrent_queue<Event> RenderEventQueue;
@@ -600,6 +602,21 @@ namespace
         if (MGlobal::mayaState() != MGlobal::kBatch)
             MGlobal::viewFrame(currentFrame);
     }
+
+    void logOutput(const int pixelsDone, const int pixelsTotal)
+    {
+        const float percent = (float)pixelsDone / pixelsTotal;
+        if (((int)(percent * 100) % 5) == 0)
+        {
+            char perc[16];
+            sprintf(perc, "%3.2f", percent * 100.0f);
+            MString progressStr;
+            progressStr.format("^1s% done.", MString(perc));
+            Logging::info(progressStr);
+            MString cmd = MString("import appleseed.initialize; appleseed.initialize.theRenderer().updateProgressBar(") + perc + ")";
+            MGlobal::executePythonCommand(cmd);
+        }
+    }
 }
 
 void RenderQueueWorker::startRenderQueueWorker()
@@ -663,6 +680,8 @@ void RenderQueueWorker::startRenderQueueWorker()
                     }
                 }
 
+                numPixelsDone = 0;
+                numPixelsTotal = e.width * e.height;
                 e.mType = Event::FRAMERENDER;
                 gEventQueue()->push(e);
 
@@ -730,6 +749,7 @@ void RenderQueueWorker::startRenderQueueWorker()
                 getWorldPtr()->cleanUpAfterRender();
                 getWorldPtr()->mRenderer->unInitializeRenderer();
                 getWorldPtr()->setRenderState(World::RSTATENONE);
+                MGlobal::executePythonCommand("import appleseed.initialize; appleseed.initialize.theRenderer().postRenderProcedure()");
             }
             return;     // note: terminate the loop
 
@@ -748,6 +768,8 @@ void RenderQueueWorker::startRenderQueueWorker()
 
           case Event::UPDATEUI:
             updateRenderView(e.xMin, e.xMax, e.yMin, e.yMax, e.pixels.get());
+            numPixelsDone += (e.xMax - e.xMin) * (e.yMax - e.yMin);
+            logOutput(numPixelsDone, numPixelsTotal);
             break;
         }
 
