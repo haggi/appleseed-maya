@@ -217,6 +217,7 @@ void AppleseedRenderer::addRenderParams(renderer::ParamArray& paramArray)
     static const char* bucketOrders[] = { "linear", "spiral", "hilbert", "random" };
     static const char* photonTypes[] = { "mono", "poly" };
     static const char* dlTypes[] = { "rt", "sppm", "off" };
+    static const char* samplingModes[] = { "qmc", "rng" };
 
     MFnDependencyNode renderGlobalsFn(getRenderGlobalsNode());
     MString lightingEngine = lightingEngines[getEnumInt("lightingEngine", renderGlobalsFn)];
@@ -227,7 +228,7 @@ void AppleseedRenderer::addRenderParams(renderer::ParamArray& paramArray)
 
     paramArray.insert_path("texture_store.max_size", getIntAttr("texCacheSize", renderGlobalsFn, 128) * 1024 * 1024); // at least 128 MB
 
-    paramArray.insert("sampling_mode", getEnumString("sampling_mode", renderGlobalsFn));
+    paramArray.insert("sampling_mode", samplingModes[getEnumInt("sampling_mode", renderGlobalsFn)]);
     paramArray.insert("pixel_renderer", "uniform");
     paramArray.insert_path("uniform_pixel_renderer.decorrelate_pixels", true);
     paramArray.insert_path("uniform_pixel_renderer.force_antialiasing", false);
@@ -429,6 +430,7 @@ void AppleseedRenderer::defineOutput()
 {
     if (project->get_frame() == 0)
     {
+        static const char* colorSpaces[] = { "linear_rgb", "srgb", "ciexyz" };
         MFnDependencyNode depFn(getRenderGlobalsNode());
         boost::shared_ptr<RenderGlobals> renderGlobals = getWorldPtr()->mRenderGlobals;
 
@@ -442,7 +444,7 @@ void AppleseedRenderer::defineOutput()
                     .insert("camera", project->get_scene()->get_camera()->get_name())
                     .insert("resolution", MString("") + width + " " + height)
                     .insert("tile_size", MString("") + renderGlobals->tilesize + " " + renderGlobals->tilesize)
-                    .insert("color_space", getEnumString("colorSpace", depFn))));
+                    .insert("color_space", colorSpaces[getEnumInt("colorSpace", depFn)])));
     }
 }
 
