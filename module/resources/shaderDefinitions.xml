@@ -2,284 +2,448 @@
 	<shader>
 		<inputs>
 			<input>
-				<default>[0.0, 0.0, 0.0]</default>
-				<type>vector</type>
 				<name>min</name>
+				<min>0</min>
+				<default>[0.0, 0.0, 0.0]</default>
+				<max>1</max>
+				<hint>None</hint>
+				<type>vector</type>
+				<help>None</help>
 			</input>
 			<input>
-				<default>[0.0, 0.0, 0.0]</default>
-				<type>vector</type>
 				<name>max</name>
+				<min>0</min>
+				<default>[0.0, 0.0, 0.0]</default>
+				<max>1</max>
+				<hint>None</hint>
+				<type>vector</type>
+				<help>None</help>
 			</input>
 			<input>
-				<default>[0.0, 0.0, 0.0]</default>
-				<type>vector</type>
 				<name>input</name>
+				<min>0</min>
+				<default>[0.0, 0.0, 0.0]</default>
+				<max>1</max>
+				<hint>None</hint>
+				<type>vector</type>
+				<help>None</help>
 			</input>
 		</inputs>
 		<name>clamp</name>
 		<outputs>
 			<output>
-				<default>[0.0, 0.0, 0.0]</default>
 				<type>output vector</type>
 				<name>output</name>
+				<help />
 			</output>
 		</outputs>
 		<mayaId>0</mayaId>
-		<mayaClassification />
-		<help />
+		<mayaClassification>None</mayaClassification>
+		<help>None</help>
 	</shader>
 	<shader>
 		<inputs>
 			<input>
-				<default>]</default>
-				<type>matrix</type>
 				<name>placementMatrix</name>
+				<min>0</min>
+				<default>]</default>
+				<max>1</max>
+				<hint>None</hint>
+				<type>matrix</type>
+				<help>None</help>
 			</input>
 			<input>
-				<default>0</default>
-				<type>float</type>
 				<name>exposure</name>
+				<min>0</min>
+				<default>0</default>
+				<max>1</max>
+				<hint>None</hint>
+				<type>float</type>
+				<help>None</help>
 			</input>
 			<input>
-				<default>[0.5, 0.5, 0.5]</default>
-				<type>vector</type>
 				<name>defaultColor</name>
+				<min>0</min>
+				<default>[0.5, 0.5, 0.5]</default>
+				<max>1</max>
+				<hint>None</hint>
+				<type>vector</type>
+				<help>None</help>
 			</input>
 			<input>
-				<default>[1.0, 1.0, 1.0]</default>
-				<type>vector</type>
 				<name>colorGain</name>
-			</input>
-			<input>
-				<default>[0.0, 0.0, 0.0]</default>
+				<min>0</min>
+				<default>[1.0, 1.0, 1.0]</default>
+				<max>1</max>
+				<hint>None</hint>
 				<type>vector</type>
+				<help>None</help>
+			</input>
+			<input>
 				<name>colorOffset</name>
+				<min>0</min>
+				<default>[0.0, 0.0, 0.0]</default>
+				<max>1</max>
+				<hint>None</hint>
+				<type>vector</type>
+				<help>None</help>
 			</input>
 			<input>
-				<default>1</default>
-				<type>float</type>
 				<name>alphaGain</name>
-			</input>
-			<input>
-				<default>0</default>
-				<type>float</type>
-				<name>alphaOffset</name>
-			</input>
-			<input>
+				<min>0</min>
 				<default>1</default>
-				<type>int</type>
-				<name>alphaIsLuminance</name>
+				<max>1</max>
+				<hint>None</hint>
+				<type>float</type>
+				<help>None</help>
 			</input>
 			<input>
+				<name>alphaOffset</name>
+				<min>0</min>
 				<default>0</default>
+				<max>1</max>
+				<hint>None</hint>
+				<type>float</type>
+				<help>None</help>
+			</input>
+			<input>
+				<name>alphaIsLuminance</name>
+				<min>0</min>
+				<default>1</default>
+				<max>1</max>
+				<hint>None</hint>
 				<type>int</type>
+				<help>None</help>
+			</input>
+			<input>
 				<name>invert</name>
+				<min>0</min>
+				<default>0</default>
+				<max>1</max>
+				<hint>None</hint>
+				<type>int</type>
+				<help>None</help>
 			</input>
 		</inputs>
 		<name>solidFractal</name>
 		<outputs>
 			<output>
-				<default>[0.0, 0.0, 0.0]</default>
 				<type>output vector</type>
 				<name>outColor</name>
+				<help />
 			</output>
 			<output>
-				<default>0</default>
 				<type>output float</type>
 				<name>outAlpha</name>
+				<help />
 			</output>
 		</outputs>
 		<mayaId>0</mayaId>
-		<mayaClassification />
-		<help />
+		<mayaClassification>None</mayaClassification>
+		<help>None</help>
 	</shader>
 	<shader>
 		<inputs>
 			<input>
-				<default>[0.0, 0.0, 0.0]</default>
-				<type>vector</type>
 				<name>value</name>
+				<min>0</min>
+				<default>[0.0, 0.0, 0.0]</default>
+				<max>1</max>
+				<hint>None</hint>
+				<type>vector</type>
+				<help>None</help>
 			</input>
 		</inputs>
 		<name>luminance</name>
 		<outputs>
 			<output>
-				<default>0</default>
 				<type>output float</type>
 				<name>outValue</name>
+				<help />
 			</output>
 		</outputs>
 		<mayaId>0</mayaId>
-		<mayaClassification />
-		<help />
+		<mayaClassification>None</mayaClassification>
+		<help>None</help>
 	</shader>
 	<shader>
 		<inputs>
 			<input>
-				<default>0</default>
-				<type>int</type>
 				<name>projType</name>
+				<min>0</min>
+				<default>0</default>
+				<max>1</max>
+				<hint>None</hint>
+				<type>int</type>
+				<help>None</help>
 			</input>
 			<input>
-				<default>[0.0, 0.0, 0.0]</default>
-				<type>vector</type>
 				<name>transparency</name>
+				<min>0</min>
+				<default>[0.0, 0.0, 0.0]</default>
+				<max>1</max>
+				<hint>None</hint>
+				<type>vector</type>
+				<help>None</help>
 			</input>
 			<input>
-				<default>0</default>
-				<type>float</type>
 				<name>uAngle</name>
+				<min>0</min>
+				<default>0</default>
+				<max>1</max>
+				<hint>None</hint>
+				<type>float</type>
+				<help>None</help>
 			</input>
 			<input>
-				<default>0</default>
-				<type>float</type>
 				<name>vAngle</name>
+				<min>0</min>
+				<default>0</default>
+				<max>1</max>
+				<hint>None</hint>
+				<type>float</type>
+				<help>None</help>
 			</input>
 			<input>
-				<default>[1.0, 0.0, 0.0]</default>
-				<type>vector</type>
 				<name>image</name>
+				<min>0</min>
+				<default>[1.0, 0.0, 0.0]</default>
+				<max>1</max>
+				<hint>None</hint>
+				<type>vector</type>
+				<help>None</help>
 			</input>
 			<input>
-				<default>[0.0, 0.0, 0.0]</default>
-				<type>vector</type>
 				<name>uvCoord</name>
-			</input>
-			<input>
-				<default>]</default>
-				<type>matrix</type>
-				<name>placementMatrix</name>
-			</input>
-			<input>
-				<default>0</default>
-				<type>float</type>
-				<name>exposure</name>
-			</input>
-			<input>
-				<default>[0.5, 0.5, 0.5]</default>
-				<type>vector</type>
-				<name>defaultColor</name>
-			</input>
-			<input>
-				<default>[1.0, 1.0, 1.0]</default>
-				<type>vector</type>
-				<name>colorGain</name>
-			</input>
-			<input>
+				<min>0</min>
 				<default>[0.0, 0.0, 0.0]</default>
+				<max>1</max>
+				<hint>None</hint>
 				<type>vector</type>
+				<help>None</help>
+			</input>
+			<input>
+				<name>placementMatrix</name>
+				<min>0</min>
+				<default>]</default>
+				<max>1</max>
+				<hint>None</hint>
+				<type>matrix</type>
+				<help>None</help>
+			</input>
+			<input>
+				<name>exposure</name>
+				<min>0</min>
+				<default>0</default>
+				<max>1</max>
+				<hint>None</hint>
+				<type>float</type>
+				<help>None</help>
+			</input>
+			<input>
+				<name>defaultColor</name>
+				<min>0</min>
+				<default>[0.5, 0.5, 0.5]</default>
+				<max>1</max>
+				<hint>None</hint>
+				<type>vector</type>
+				<help>None</help>
+			</input>
+			<input>
+				<name>colorGain</name>
+				<min>0</min>
+				<default>[1.0, 1.0, 1.0]</default>
+				<max>1</max>
+				<hint>None</hint>
+				<type>vector</type>
+				<help>None</help>
+			</input>
+			<input>
 				<name>colorOffset</name>
+				<min>0</min>
+				<default>[0.0, 0.0, 0.0]</default>
+				<max>1</max>
+				<hint>None</hint>
+				<type>vector</type>
+				<help>None</help>
 			</input>
 			<input>
-				<default>1</default>
-				<type>float</type>
 				<name>alphaGain</name>
-			</input>
-			<input>
-				<default>0</default>
-				<type>float</type>
-				<name>alphaOffset</name>
-			</input>
-			<input>
+				<min>0</min>
 				<default>1</default>
-				<type>int</type>
-				<name>alphaIsLuminance</name>
+				<max>1</max>
+				<hint>None</hint>
+				<type>float</type>
+				<help>None</help>
 			</input>
 			<input>
+				<name>alphaOffset</name>
+				<min>0</min>
 				<default>0</default>
+				<max>1</max>
+				<hint>None</hint>
+				<type>float</type>
+				<help>None</help>
+			</input>
+			<input>
+				<name>alphaIsLuminance</name>
+				<min>0</min>
+				<default>1</default>
+				<max>1</max>
+				<hint>None</hint>
 				<type>int</type>
+				<help>None</help>
+			</input>
+			<input>
 				<name>invert</name>
+				<min>0</min>
+				<default>0</default>
+				<max>1</max>
+				<hint>None</hint>
+				<type>int</type>
+				<help>None</help>
 			</input>
 		</inputs>
 		<name>projection</name>
 		<outputs>
 			<output>
-				<default>[0.0, 0.0, 0.0]</default>
 				<type>output vector</type>
 				<name>outUVCoord</name>
+				<help />
 			</output>
 			<output>
-				<default>[0.0, 0.0, 0.0]</default>
 				<type>output vector</type>
 				<name>outColor</name>
+				<help />
 			</output>
 			<output>
-				<default>0</default>
 				<type>output float</type>
 				<name>outAlpha</name>
+				<help />
 			</output>
 		</outputs>
 		<mayaId>0</mayaId>
-		<mayaClassification />
-		<help />
+		<mayaClassification>None</mayaClassification>
+		<help>None</help>
 	</shader>
 	<shader>
 		<inputs>
 			<input>
-				<default>[ 0.0, 0.0, 0.0 ]</default>
-				<type>vector</type>
 				<name>Normal</name>
-			</input>
-			<input>
+				<min>0</min>
 				<default>[ 0.0, 0.0, 0.0 ]</default>
+				<max>1</max>
+				<hint>None</hint>
 				<type>vector</type>
+				<help>None</help>
+			</input>
+			<input>
 				<name>Tangent</name>
-			</input>
-			<input>
-				<default>[0.5, 0.5, 0.5]</default>
+				<min>0</min>
+				<default>[ 0.0, 0.0, 0.0 ]</default>
+				<max>1</max>
+				<hint>None</hint>
 				<type>vector</type>
+				<help>None</help>
+			</input>
+			<input>
 				<name>BaseColor</name>
+				<min>0</min>
+				<default>[0.5, 0.5, 0.5]</default>
+				<max>1</max>
+				<hint>None</hint>
+				<type>vector</type>
+				<help>None</help>
 			</input>
 			<input>
-				<default>0</default>
-				<type>float</type>
 				<name>Subsurface</name>
+				<min>0</min>
+				<default>0</default>
+				<max>1</max>
+				<hint>None</hint>
+				<type>float</type>
+				<help>None</help>
 			</input>
 			<input>
-				<default>0</default>
-				<type>float</type>
 				<name>Metallic</name>
+				<min>0</min>
+				<default>0</default>
+				<max>1</max>
+				<hint>None</hint>
+				<type>float</type>
+				<help>None</help>
 			</input>
 			<input>
-				<default>0.5</default>
-				<type>float</type>
 				<name>Specular</name>
+				<min>0</min>
+				<default>0.5</default>
+				<max>1</max>
+				<hint>None</hint>
+				<type>float</type>
+				<help>None</help>
 			</input>
 			<input>
-				<default>0</default>
-				<type>float</type>
 				<name>SpecularTint</name>
+				<min>0</min>
+				<default>0</default>
+				<max>1</max>
+				<hint>None</hint>
+				<type>float</type>
+				<help>None</help>
 			</input>
 			<input>
-				<default>0</default>
-				<type>float</type>
 				<name>Anisotropic</name>
+				<min>0</min>
+				<default>0</default>
+				<max>1</max>
+				<hint>None</hint>
+				<type>float</type>
+				<help>None</help>
 			</input>
 			<input>
-				<default>0.5</default>
-				<type>float</type>
 				<name>Roughness</name>
-			</input>
-			<input>
-				<default>0</default>
-				<type>float</type>
-				<name>Sheen</name>
-			</input>
-			<input>
+				<min>0</min>
 				<default>0.5</default>
+				<max>1</max>
+				<hint>None</hint>
 				<type>float</type>
-				<name>SheenTint</name>
+				<help>None</help>
 			</input>
 			<input>
+				<name>Sheen</name>
+				<min>0</min>
 				<default>0</default>
+				<max>1</max>
+				<hint>None</hint>
 				<type>float</type>
-				<name>Clearcoat</name>
+				<help>None</help>
 			</input>
 			<input>
-				<default>1</default>
+				<name>SheenTint</name>
+				<min>0</min>
+				<default>0.5</default>
+				<max>1</max>
+				<hint>None</hint>
 				<type>float</type>
+				<help>None</help>
+			</input>
+			<input>
+				<name>Clearcoat</name>
+				<min>0</min>
+				<default>0</default>
+				<max>1</max>
+				<hint>None</hint>
+				<type>float</type>
+				<help>None</help>
+			</input>
+			<input>
 				<name>ClearcoatGloss</name>
+				<min>0</min>
+				<default>1</default>
+				<max>1</max>
+				<hint>None</hint>
+				<type>float</type>
+				<help>None</help>
 			</input>
 		</inputs>
 		<name>asDisneyMaterial</name>
@@ -287,602 +451,933 @@
 			<output>
 				<type>output pointer</type>
 				<name>outColor</name>
+				<help />
 			</output>
 		</outputs>
 		<mayaId>0</mayaId>
-		<mayaClassification />
+		<mayaClassification>None</mayaClassification>
 		<help>Material based on the Disney BRDF</help>
 	</shader>
 	<shader>
 		<inputs>
 			<input>
-				<default>1</default>
-				<type>float</type>
 				<name>repeatU</name>
-			</input>
-			<input>
+				<min>0</min>
 				<default>1</default>
+				<max>1</max>
+				<hint>None</hint>
 				<type>float</type>
+				<help>None</help>
+			</input>
+			<input>
 				<name>repeatV</name>
+				<min>0</min>
+				<default>1</default>
+				<max>1</max>
+				<hint>None</hint>
+				<type>float</type>
+				<help>None</help>
 			</input>
 			<input>
-				<default>0</default>
-				<type>float</type>
 				<name>offsetU</name>
+				<min>0</min>
+				<default>0</default>
+				<max>1</max>
+				<hint>None</hint>
+				<type>float</type>
+				<help>None</help>
 			</input>
 			<input>
-				<default>0</default>
-				<type>float</type>
 				<name>offsetV</name>
-			</input>
-			<input>
+				<min>0</min>
 				<default>0</default>
+				<max>1</max>
+				<hint>None</hint>
 				<type>float</type>
-				<name>rotateUV</name>
+				<help>None</help>
 			</input>
 			<input>
-				<default>[0.0, 0.0, 0.0]</default>
-				<type>vector</type>
+				<name>rotateUV</name>
+				<min>0</min>
+				<default>0</default>
+				<max>1</max>
+				<hint>None</hint>
+				<type>float</type>
+				<help>None</help>
+			</input>
+			<input>
 				<name>uvCoord</name>
+				<min>0</min>
+				<default>[0.0, 0.0, 0.0]</default>
+				<max>1</max>
+				<hint>None</hint>
+				<type>vector</type>
+				<help>None</help>
 			</input>
 		</inputs>
 		<name>place2dTexture</name>
 		<outputs>
 			<output>
-				<default>[0.0, 0.0, 0.0]</default>
 				<type>output vector</type>
 				<name>outUV</name>
+				<help />
 			</output>
 		</outputs>
 		<mayaId>0</mayaId>
-		<mayaClassification />
-		<help />
+		<mayaClassification>None</mayaClassification>
+		<help>None</help>
 	</shader>
 	<shader>
 		<inputs>
 			<input>
-				<default>]</default>
-				<type>matrix</type>
 				<name>matrix</name>
+				<min>0</min>
+				<default>]</default>
+				<max>1</max>
+				<hint>None</hint>
+				<type>matrix</type>
+				<help>None</help>
 			</input>
 		</inputs>
 		<name>place3dTexture</name>
 		<outputs>
 			<output>
-				<default>]</default>
 				<type>output matrix</type>
 				<name>worldInverseMatrix</name>
+				<help />
 			</output>
 		</outputs>
 		<mayaId>0</mayaId>
-		<mayaClassification />
-		<help />
+		<mayaClassification>None</mayaClassification>
+		<help>None</help>
 	</shader>
 	<shader>
 		<inputs>
 			<input>
-				<default>[1.0, 1.0, 1.0]</default>
-				<type>vector</type>
 				<name>vector</name>
+				<min>0</min>
+				<default>[1.0, 1.0, 1.0]</default>
+				<max>1</max>
+				<hint>None</hint>
+				<type>vector</type>
+				<help>None</help>
 			</input>
 		</inputs>
 		<name>vectorToFloat</name>
 		<outputs>
 			<output>
-				<default>0</default>
 				<type>output float</type>
 				<name>outX</name>
+				<help />
 			</output>
 			<output>
-				<default>0</default>
 				<type>output float</type>
 				<name>outY</name>
+				<help />
 			</output>
 			<output>
-				<default>0</default>
 				<type>output float</type>
 				<name>outZ</name>
+				<help />
 			</output>
 		</outputs>
 		<mayaId>0</mayaId>
-		<mayaClassification />
-		<help />
+		<mayaClassification>None</mayaClassification>
+		<help>None</help>
 	</shader>
 	<shader>
 		<inputs>
 			<input>
-				<default>[0.0, 0.0, 0.0]</default>
-				<type>vector</type>
 				<name>uvCoord</name>
-			</input>
-			<input>
-				<default />
-				<type>string</type>
-				<name>fileTextureName</name>
-			</input>
-			<input>
-				<default />
-				<type>string</type>
-				<name>baseName</name>
-			</input>
-			<input>
-				<default />
-				<type>string</type>
-				<name>ext</name>
-			</input>
-			<input>
-				<default>2</default>
-				<type>int</type>
-				<name>uvTilingMode</name>
-			</input>
-			<input>
-				<default>0</default>
-				<type>int</type>
-				<name>fromSRGB</name>
-			</input>
-			<input>
-				<default>0</default>
-				<type>int</type>
-				<name>toSRGB</name>
-			</input>
-			<input>
-				<default>0</default>
-				<type>int</type>
-				<name>textureFilter</name>
-			</input>
-			<input>
-				<default>1</default>
-				<type>float</type>
-				<name>textureFilterWidth</name>
-			</input>
-			<input>
-				<default>0</default>
-				<type>float</type>
-				<name>textureBlur</name>
-			</input>
-			<input>
-				<default>0</default>
-				<type>float</type>
-				<name>exposure</name>
-			</input>
-			<input>
-				<default>[0.5, 0.5, 0.5]</default>
-				<type>vector</type>
-				<name>defaultColor</name>
-			</input>
-			<input>
-				<default>[1.0, 1.0, 1.0]</default>
-				<type>vector</type>
-				<name>colorGain</name>
-			</input>
-			<input>
+				<min>0</min>
 				<default>[0.0, 0.0, 0.0]</default>
+				<max>1</max>
+				<hint>None</hint>
 				<type>vector</type>
+				<help>None</help>
+			</input>
+			<input>
+				<name>fileTextureName</name>
+				<min>0</min>
+				<default>None</default>
+				<max>1</max>
+				<hint>None</hint>
+				<type>string</type>
+				<help>None</help>
+			</input>
+			<input>
+				<name>baseName</name>
+				<min>0</min>
+				<default>None</default>
+				<max>1</max>
+				<hint>None</hint>
+				<type>string</type>
+				<help>None</help>
+			</input>
+			<input>
+				<name>ext</name>
+				<min>0</min>
+				<default>None</default>
+				<max>1</max>
+				<hint>None</hint>
+				<type>string</type>
+				<help>None</help>
+			</input>
+			<input>
+				<name>uvTilingMode</name>
+				<min>0</min>
+				<default>2</default>
+				<max>1</max>
+				<hint>None</hint>
+				<type>int</type>
+				<help>None</help>
+			</input>
+			<input>
+				<name>fromSRGB</name>
+				<min>0</min>
+				<default>0</default>
+				<max>1</max>
+				<hint>None</hint>
+				<type>int</type>
+				<help>None</help>
+			</input>
+			<input>
+				<name>toSRGB</name>
+				<min>0</min>
+				<default>0</default>
+				<max>1</max>
+				<hint>None</hint>
+				<type>int</type>
+				<help>None</help>
+			</input>
+			<input>
+				<name>textureFilter</name>
+				<min>0</min>
+				<default>0</default>
+				<max>1</max>
+				<hint>None</hint>
+				<type>int</type>
+				<help>None</help>
+			</input>
+			<input>
+				<name>textureFilterWidth</name>
+				<min>0</min>
+				<default>1</default>
+				<max>1</max>
+				<hint>None</hint>
+				<type>float</type>
+				<help>None</help>
+			</input>
+			<input>
+				<name>textureBlur</name>
+				<min>0</min>
+				<default>0</default>
+				<max>1</max>
+				<hint>None</hint>
+				<type>float</type>
+				<help>None</help>
+			</input>
+			<input>
+				<name>exposure</name>
+				<min>0</min>
+				<default>0</default>
+				<max>1</max>
+				<hint>None</hint>
+				<type>float</type>
+				<help>None</help>
+			</input>
+			<input>
+				<name>defaultColor</name>
+				<min>0</min>
+				<default>[0.5, 0.5, 0.5]</default>
+				<max>1</max>
+				<hint>None</hint>
+				<type>vector</type>
+				<help>None</help>
+			</input>
+			<input>
+				<name>colorGain</name>
+				<min>0</min>
+				<default>[1.0, 1.0, 1.0]</default>
+				<max>1</max>
+				<hint>None</hint>
+				<type>vector</type>
+				<help>None</help>
+			</input>
+			<input>
 				<name>colorOffset</name>
+				<min>0</min>
+				<default>[0.0, 0.0, 0.0]</default>
+				<max>1</max>
+				<hint>None</hint>
+				<type>vector</type>
+				<help>None</help>
 			</input>
 			<input>
-				<default>1</default>
-				<type>float</type>
 				<name>alphaGain</name>
-			</input>
-			<input>
-				<default>0</default>
-				<type>float</type>
-				<name>alphaOffset</name>
-			</input>
-			<input>
+				<min>0</min>
 				<default>1</default>
-				<type>int</type>
-				<name>alphaIsLuminance</name>
+				<max>1</max>
+				<hint>None</hint>
+				<type>float</type>
+				<help>None</help>
 			</input>
 			<input>
+				<name>alphaOffset</name>
+				<min>0</min>
 				<default>0</default>
+				<max>1</max>
+				<hint>None</hint>
+				<type>float</type>
+				<help>None</help>
+			</input>
+			<input>
+				<name>alphaIsLuminance</name>
+				<min>0</min>
+				<default>1</default>
+				<max>1</max>
+				<hint>None</hint>
 				<type>int</type>
+				<help>None</help>
+			</input>
+			<input>
 				<name>invert</name>
+				<min>0</min>
+				<default>0</default>
+				<max>1</max>
+				<hint>None</hint>
+				<type>int</type>
+				<help>None</help>
 			</input>
 		</inputs>
 		<name>file</name>
 		<outputs>
 			<output>
-				<default>[0.0, 0.0, 0.0]</default>
 				<type>output vector</type>
 				<name>outColor</name>
+				<help />
 			</output>
 			<output>
-				<default>0</default>
 				<type>output float</type>
 				<name>outAlpha</name>
+				<help />
 			</output>
 		</outputs>
 		<mayaId>0</mayaId>
-		<mayaClassification />
-		<help />
+		<mayaClassification>None</mayaClassification>
+		<help>None</help>
 	</shader>
 	<shader>
 		<inputs>
 			<input>
-				<default>[0.0, 0.0, 0.0]</default>
-				<type>vector</type>
 				<name>input1</name>
-			</input>
-			<input>
+				<min>0</min>
 				<default>[0.0, 0.0, 0.0]</default>
+				<max>1</max>
+				<hint>None</hint>
 				<type>vector</type>
-				<name>input2</name>
+				<help>None</help>
 			</input>
 			<input>
-				<default>0</default>
-				<type>int</type>
+				<name>input2</name>
+				<min>0</min>
+				<default>[0.0, 0.0, 0.0]</default>
+				<max>1</max>
+				<hint>None</hint>
+				<type>vector</type>
+				<help>None</help>
+			</input>
+			<input>
 				<name>operation</name>
+				<min>0</min>
+				<default>0</default>
+				<max>1</max>
+				<hint>None</hint>
+				<type>int</type>
+				<help>None</help>
 			</input>
 		</inputs>
 		<name>multiplyDivide</name>
 		<outputs>
 			<output>
-				<default>[0.0, 0.0, 0.0]</default>
 				<type>output vector</type>
 				<name>output</name>
+				<help />
 			</output>
 		</outputs>
 		<mayaId>0</mayaId>
-		<mayaClassification />
-		<help />
+		<mayaClassification>None</mayaClassification>
+		<help>None</help>
 	</shader>
 	<shader>
 		<inputs>
 			<input>
-				<default>0</default>
-				<type>float</type>
 				<name>bumpValue</name>
-			</input>
-			<input>
-				<default>1</default>
-				<type>float</type>
-				<name>bumpDepth</name>
-			</input>
-			<input>
+				<min>0</min>
 				<default>0</default>
-				<type>int</type>
+				<max>1</max>
+				<hint>None</hint>
+				<type>float</type>
+				<help>None</help>
+			</input>
+			<input>
+				<name>bumpDepth</name>
+				<min>0</min>
+				<default>1</default>
+				<max>1</max>
+				<hint>None</hint>
+				<type>float</type>
+				<help>None</help>
+			</input>
+			<input>
 				<name>bumpInterp</name>
+				<min>0</min>
+				<default>0</default>
+				<max>1</max>
+				<hint>None</hint>
+				<type>int</type>
+				<help>None</help>
 			</input>
 			<input>
-				<default>[ 0.0, 0.0, 0.0 ]</default>
-				<type>vector</type>
 				<name>normalCamera</name>
+				<min>0</min>
+				<default>[ 0.0, 0.0, 0.0 ]</default>
+				<max>1</max>
+				<hint>None</hint>
+				<type>vector</type>
+				<help>None</help>
 			</input>
 			<input>
-				<default>[0.0, 0.0, 0.0]</default>
-				<type>vector</type>
 				<name>normalMap</name>
+				<min>0</min>
+				<default>[0.0, 0.0, 0.0]</default>
+				<max>1</max>
+				<hint>None</hint>
+				<type>vector</type>
+				<help>None</help>
 			</input>
 		</inputs>
 		<name>bump2d</name>
 		<outputs>
 			<output>
-				<default>[1.0, 1.0, 1.0]</default>
 				<type>output vector</type>
 				<name>outNormal</name>
+				<help />
 			</output>
 		</outputs>
 		<mayaId>0</mayaId>
-		<mayaClassification />
-		<help />
+		<mayaClassification>None</mayaClassification>
+		<help>None</help>
+	</shader>
+	<shader>
+		<inputs />
+		<name>testBG</name>
+		<outputs />
+		<mayaId>0</mayaId>
+		<mayaClassification>None</mayaClassification>
+		<help>None</help>
 	</shader>
 	<shader>
 		<inputs>
 			<input>
-				<default>[0.0, 0.0, 0.0]</default>
-				<type>vector</type>
-				<name>value</name>
-			</input>
-			<input>
-				<default>[0.0, 0.0, 0.0]</default>
-				<type>vector</type>
-				<name>gamma</name>
-			</input>
-		</inputs>
-		<name>gammaCorrect</name>
-		<outputs>
-			<output>
-				<default>[0.0, 0.0, 0.0]</default>
-				<type>output vector</type>
-				<name>outValue</name>
-			</output>
-		</outputs>
-		<mayaId>0</mayaId>
-		<mayaClassification />
-		<help />
-	</shader>
-	<shader>
-		<inputs>
-			<input>
-				<default>[0.0, 0.0, 0.0]</default>
-				<type>vector</type>
 				<name>uvCoord</name>
+				<min>0</min>
+				<default>[0.0, 0.0, 0.0]</default>
+				<max>1</max>
+				<hint>None</hint>
+				<type>vector</type>
+				<help>None</help>
 			</input>
 			<input>
-				<default>[1.0, 1.0, 1.0]</default>
-				<type>vector</type>
 				<name>color1</name>
-			</input>
-			<input>
-				<default>[0.0, 0.0, 0.0]</default>
-				<type>vector</type>
-				<name>color2</name>
-			</input>
-			<input>
-				<default>1</default>
-				<type>float</type>
-				<name>contrast</name>
-			</input>
-			<input>
-				<default>0</default>
-				<type>float</type>
-				<name>exposure</name>
-			</input>
-			<input>
-				<default>[0.5, 0.5, 0.5]</default>
-				<type>vector</type>
-				<name>defaultColor</name>
-			</input>
-			<input>
+				<min>0</min>
 				<default>[1.0, 1.0, 1.0]</default>
+				<max>1</max>
+				<hint>None</hint>
 				<type>vector</type>
-				<name>colorGain</name>
+				<help>None</help>
 			</input>
 			<input>
+				<name>color2</name>
+				<min>0</min>
 				<default>[0.0, 0.0, 0.0]</default>
+				<max>1</max>
+				<hint>None</hint>
 				<type>vector</type>
+				<help>None</help>
+			</input>
+			<input>
+				<name>contrast</name>
+				<min>0</min>
+				<default>1</default>
+				<max>1</max>
+				<hint>None</hint>
+				<type>float</type>
+				<help>None</help>
+			</input>
+			<input>
+				<name>exposure</name>
+				<min>0</min>
+				<default>0</default>
+				<max>1</max>
+				<hint>None</hint>
+				<type>float</type>
+				<help>None</help>
+			</input>
+			<input>
+				<name>defaultColor</name>
+				<min>0</min>
+				<default>[0.5, 0.5, 0.5]</default>
+				<max>1</max>
+				<hint>None</hint>
+				<type>vector</type>
+				<help>None</help>
+			</input>
+			<input>
+				<name>colorGain</name>
+				<min>0</min>
+				<default>[1.0, 1.0, 1.0]</default>
+				<max>1</max>
+				<hint>None</hint>
+				<type>vector</type>
+				<help>None</help>
+			</input>
+			<input>
 				<name>colorOffset</name>
+				<min>0</min>
+				<default>[0.0, 0.0, 0.0]</default>
+				<max>1</max>
+				<hint>None</hint>
+				<type>vector</type>
+				<help>None</help>
 			</input>
 			<input>
-				<default>1</default>
-				<type>float</type>
 				<name>alphaGain</name>
-			</input>
-			<input>
-				<default>0</default>
-				<type>float</type>
-				<name>alphaOffset</name>
-			</input>
-			<input>
+				<min>0</min>
 				<default>1</default>
-				<type>int</type>
-				<name>alphaIsLuminance</name>
+				<max>1</max>
+				<hint>None</hint>
+				<type>float</type>
+				<help>None</help>
 			</input>
 			<input>
+				<name>alphaOffset</name>
+				<min>0</min>
 				<default>0</default>
+				<max>1</max>
+				<hint>None</hint>
+				<type>float</type>
+				<help>None</help>
+			</input>
+			<input>
+				<name>alphaIsLuminance</name>
+				<min>0</min>
+				<default>1</default>
+				<max>1</max>
+				<hint>None</hint>
 				<type>int</type>
+				<help>None</help>
+			</input>
+			<input>
 				<name>invert</name>
+				<min>0</min>
+				<default>0</default>
+				<max>1</max>
+				<hint>None</hint>
+				<type>int</type>
+				<help>None</help>
 			</input>
 		</inputs>
 		<name>checker</name>
 		<outputs>
 			<output>
-				<default>[0.0, 0.0, 0.0]</default>
 				<type>output vector</type>
 				<name>outColor</name>
+				<help />
 			</output>
 			<output>
-				<default>0</default>
 				<type>output float</type>
 				<name>outAlpha</name>
+				<help />
 			</output>
 		</outputs>
 		<mayaId>0</mayaId>
-		<mayaClassification />
-		<help />
+		<mayaClassification>None</mayaClassification>
+		<help>None</help>
 	</shader>
 	<shader>
 		<inputs>
 			<input>
-				<default>0</default>
-				<type>float</type>
 				<name>inX</name>
+				<min>0</min>
+				<default>0</default>
+				<max>1</max>
+				<hint>None</hint>
+				<type>float</type>
+				<help>None</help>
 			</input>
 			<input>
-				<default>0</default>
-				<type>float</type>
 				<name>inY</name>
+				<min>0</min>
+				<default>0</default>
+				<max>1</max>
+				<hint>None</hint>
+				<type>float</type>
+				<help>None</help>
 			</input>
 			<input>
-				<default>0</default>
-				<type>float</type>
 				<name>inZ</name>
+				<min>0</min>
+				<default>0</default>
+				<max>1</max>
+				<hint>None</hint>
+				<type>float</type>
+				<help>None</help>
 			</input>
 		</inputs>
 		<name>floatToColor</name>
 		<outputs>
 			<output>
-				<default>[0.0, 0.0, 0.0]</default>
 				<type>output vector</type>
 				<name>outValue</name>
+				<help />
 			</output>
 		</outputs>
 		<mayaId>0</mayaId>
-		<mayaClassification />
-		<help />
+		<mayaClassification>None</mayaClassification>
+		<help>None</help>
 	</shader>
 	<shader>
 		<inputs>
 			<input>
-				<default>[0.0, 0.0, 0.0]</default>
-				<type>vector</type>
 				<name>value</name>
+				<min>0</min>
+				<default>[0.0, 0.0, 0.0]</default>
+				<max>1</max>
+				<hint>None</hint>
+				<type>vector</type>
+				<help>None</help>
 			</input>
 			<input>
-				<default>[0.0, 0.0, 0.0]</default>
-				<type>vector</type>
 				<name>contrast</name>
+				<min>0</min>
+				<default>[0.0, 0.0, 0.0]</default>
+				<max>1</max>
+				<hint>None</hint>
+				<type>vector</type>
+				<help>None</help>
 			</input>
 			<input>
-				<default>[0.0, 0.0, 0.0]</default>
-				<type>vector</type>
 				<name>bias</name>
+				<min>0</min>
+				<default>[0.0, 0.0, 0.0]</default>
+				<max>1</max>
+				<hint>None</hint>
+				<type>vector</type>
+				<help>None</help>
 			</input>
 		</inputs>
 		<name>contrast</name>
 		<outputs>
 			<output>
-				<default>[0.0, 0.0, 0.0]</default>
 				<type>output vector</type>
 				<name>outValue</name>
+				<help />
 			</output>
 		</outputs>
 		<mayaId>0</mayaId>
-		<mayaClassification />
-		<help />
+		<mayaClassification>None</mayaClassification>
+		<help>None</help>
 	</shader>
 	<shader>
 		<inputs>
 			<input>
-				<type>pointer</type>
 				<name>baseMaterial</name>
+				<min>0</min>
+				<default>0</default>
+				<max>1</max>
+				<hint>None</hint>
+				<type>pointer</type>
+				<help>None</help>
 			</input>
 			<input>
-				<type>pointer</type>
 				<name>materialEntryMtl0</name>
+				<min>0</min>
+				<default>0</default>
+				<max>1</max>
+				<hint>None</hint>
+				<type>pointer</type>
+				<help>None</help>
 			</input>
 			<input>
-				<type>pointer</type>
 				<name>materialEntryMtl1</name>
+				<min>0</min>
+				<default>0</default>
+				<max>1</max>
+				<hint>None</hint>
+				<type>pointer</type>
+				<help>None</help>
 			</input>
 			<input>
-				<type>pointer</type>
 				<name>materialEntryMtl2</name>
+				<min>0</min>
+				<default>0</default>
+				<max>1</max>
+				<hint>None</hint>
+				<type>pointer</type>
+				<help>None</help>
 			</input>
 			<input>
-				<type>pointer</type>
 				<name>materialEntryMtl3</name>
+				<min>0</min>
+				<default>0</default>
+				<max>1</max>
+				<hint>None</hint>
+				<type>pointer</type>
+				<help>None</help>
 			</input>
 			<input>
-				<type>pointer</type>
 				<name>materialEntryMtl4</name>
+				<min>0</min>
+				<default>0</default>
+				<max>1</max>
+				<hint>None</hint>
+				<type>pointer</type>
+				<help>None</help>
 			</input>
 			<input>
-				<type>pointer</type>
 				<name>materialEntryMtl5</name>
+				<min>0</min>
+				<default>0</default>
+				<max>1</max>
+				<hint>None</hint>
+				<type>pointer</type>
+				<help>None</help>
 			</input>
 			<input>
-				<type>pointer</type>
 				<name>materialEntryMtl6</name>
+				<min>0</min>
+				<default>0</default>
+				<max>1</max>
+				<hint>None</hint>
+				<type>pointer</type>
+				<help>None</help>
 			</input>
 			<input>
-				<type>pointer</type>
 				<name>materialEntryMtl7</name>
+				<min>0</min>
+				<default>0</default>
+				<max>1</max>
+				<hint>None</hint>
+				<type>pointer</type>
+				<help>None</help>
 			</input>
 			<input>
-				<type>pointer</type>
 				<name>materialEntryMtl8</name>
-			</input>
-			<input>
+				<min>0</min>
+				<default>0</default>
+				<max>1</max>
+				<hint>None</hint>
 				<type>pointer</type>
+				<help>None</help>
+			</input>
+			<input>
 				<name>materialEntryMtl9</name>
+				<min>0</min>
+				<default>0</default>
+				<max>1</max>
+				<hint>None</hint>
+				<type>pointer</type>
+				<help>None</help>
 			</input>
 			<input>
-				<default>0</default>
-				<type>float</type>
 				<name>materialEntryMsk0</name>
+				<min>0</min>
+				<default>0</default>
+				<max>1</max>
+				<hint>None</hint>
+				<type>float</type>
+				<help>None</help>
 			</input>
 			<input>
-				<default>0</default>
-				<type>float</type>
 				<name>materialEntryMsk1</name>
+				<min>0</min>
+				<default>0</default>
+				<max>1</max>
+				<hint>None</hint>
+				<type>float</type>
+				<help>None</help>
 			</input>
 			<input>
-				<default>0</default>
-				<type>float</type>
 				<name>materialEntryMsk2</name>
+				<min>0</min>
+				<default>0</default>
+				<max>1</max>
+				<hint>None</hint>
+				<type>float</type>
+				<help>None</help>
 			</input>
 			<input>
-				<default>0</default>
-				<type>float</type>
 				<name>materialEntryMsk3</name>
+				<min>0</min>
+				<default>0</default>
+				<max>1</max>
+				<hint>None</hint>
+				<type>float</type>
+				<help>None</help>
 			</input>
 			<input>
-				<default>0</default>
-				<type>float</type>
 				<name>materialEntryMsk4</name>
+				<min>0</min>
+				<default>0</default>
+				<max>1</max>
+				<hint>None</hint>
+				<type>float</type>
+				<help>None</help>
 			</input>
 			<input>
-				<default>0</default>
-				<type>float</type>
 				<name>materialEntryMsk5</name>
+				<min>0</min>
+				<default>0</default>
+				<max>1</max>
+				<hint>None</hint>
+				<type>float</type>
+				<help>None</help>
 			</input>
 			<input>
-				<default>0</default>
-				<type>float</type>
 				<name>materialEntryMsk6</name>
+				<min>0</min>
+				<default>0</default>
+				<max>1</max>
+				<hint>None</hint>
+				<type>float</type>
+				<help>None</help>
 			</input>
 			<input>
-				<default>0</default>
-				<type>float</type>
 				<name>materialEntryMsk7</name>
+				<min>0</min>
+				<default>0</default>
+				<max>1</max>
+				<hint>None</hint>
+				<type>float</type>
+				<help>None</help>
 			</input>
 			<input>
-				<default>0</default>
-				<type>float</type>
 				<name>materialEntryMsk8</name>
-			</input>
-			<input>
+				<min>0</min>
 				<default>0</default>
+				<max>1</max>
+				<hint>None</hint>
 				<type>float</type>
+				<help>None</help>
+			</input>
+			<input>
 				<name>materialEntryMsk9</name>
+				<min>0</min>
+				<default>0</default>
+				<max>1</max>
+				<hint>None</hint>
+				<type>float</type>
+				<help>None</help>
 			</input>
 			<input>
-				<default>0</default>
-				<type>int</type>
 				<name>materialEntryMode0</name>
+				<min>0</min>
+				<default>0</default>
+				<max>1</max>
+				<hint>None</hint>
+				<type>int</type>
+				<help>None</help>
 			</input>
 			<input>
-				<default>0</default>
-				<type>int</type>
 				<name>materialEntryMode1</name>
+				<min>0</min>
+				<default>0</default>
+				<max>1</max>
+				<hint>None</hint>
+				<type>int</type>
+				<help>None</help>
 			</input>
 			<input>
-				<default>0</default>
-				<type>int</type>
 				<name>materialEntryMode2</name>
+				<min>0</min>
+				<default>0</default>
+				<max>1</max>
+				<hint>None</hint>
+				<type>int</type>
+				<help>None</help>
 			</input>
 			<input>
-				<default>0</default>
-				<type>int</type>
 				<name>materialEntryMode3</name>
+				<min>0</min>
+				<default>0</default>
+				<max>1</max>
+				<hint>None</hint>
+				<type>int</type>
+				<help>None</help>
 			</input>
 			<input>
-				<default>0</default>
-				<type>int</type>
 				<name>materialEntryMode4</name>
+				<min>0</min>
+				<default>0</default>
+				<max>1</max>
+				<hint>None</hint>
+				<type>int</type>
+				<help>None</help>
 			</input>
 			<input>
-				<default>0</default>
-				<type>int</type>
 				<name>materialEntryMode5</name>
+				<min>0</min>
+				<default>0</default>
+				<max>1</max>
+				<hint>None</hint>
+				<type>int</type>
+				<help>None</help>
 			</input>
 			<input>
-				<default>0</default>
-				<type>int</type>
 				<name>materialEntryMode6</name>
+				<min>0</min>
+				<default>0</default>
+				<max>1</max>
+				<hint>None</hint>
+				<type>int</type>
+				<help>None</help>
 			</input>
 			<input>
-				<default>0</default>
-				<type>int</type>
 				<name>materialEntryMode7</name>
+				<min>0</min>
+				<default>0</default>
+				<max>1</max>
+				<hint>None</hint>
+				<type>int</type>
+				<help>None</help>
 			</input>
 			<input>
-				<default>0</default>
-				<type>int</type>
 				<name>materialEntryMode8</name>
+				<min>0</min>
+				<default>0</default>
+				<max>1</max>
+				<hint>None</hint>
+				<type>int</type>
+				<help>None</help>
 			</input>
 			<input>
-				<default>0</default>
-				<type>int</type>
 				<name>materialEntryMode9</name>
+				<min>0</min>
+				<default>0</default>
+				<max>1</max>
+				<hint>None</hint>
+				<type>int</type>
+				<help>None</help>
 			</input>
 			<input>
-				<default>0</default>
-				<type>int</type>
 				<name>numEntries</name>
+				<min>0</min>
+				<default>0</default>
+				<max>1</max>
+				<hint>None</hint>
+				<type>int</type>
+				<help>None</help>
 			</input>
 		</inputs>
 		<name>asLayeredShader</name>
@@ -890,201 +1385,321 @@
 			<output>
 				<type>output pointer</type>
 				<name>outColor</name>
+				<help />
 			</output>
 		</outputs>
 		<mayaId>0</mayaId>
-		<mayaClassification />
-		<help />
+		<mayaClassification>None</mayaClassification>
+		<help>None</help>
 	</shader>
 	<shader>
 		<inputs>
 			<input>
-				<default>0</default>
-				<type>float</type>
 				<name>threshold</name>
+				<min>0</min>
+				<default>0</default>
+				<max>1</max>
+				<hint>None</hint>
+				<type>float</type>
+				<help>None</help>
 			</input>
 			<input>
-				<default>1</default>
-				<type>float</type>
 				<name>amplitude</name>
+				<min>0</min>
+				<default>1</default>
+				<max>1</max>
+				<hint>None</hint>
+				<type>float</type>
+				<help>None</help>
 			</input>
 			<input>
-				<default>0.707</default>
-				<type>float</type>
 				<name>ratio</name>
+				<min>0</min>
+				<default>0.707</default>
+				<max>1</max>
+				<hint>None</hint>
+				<type>float</type>
+				<help>None</help>
 			</input>
 			<input>
-				<default>2</default>
-				<type>float</type>
 				<name>frequencyRatio</name>
+				<min>0</min>
+				<default>2</default>
+				<max>1</max>
+				<hint>None</hint>
+				<type>float</type>
+				<help>None</help>
 			</input>
 			<input>
-				<default>3</default>
-				<type>int</type>
 				<name>depthMax</name>
+				<min>0</min>
+				<default>3</default>
+				<max>1</max>
+				<hint>None</hint>
+				<type>int</type>
+				<help>None</help>
 			</input>
 			<input>
-				<default>0</default>
-				<type>int</type>
 				<name>inflection</name>
+				<min>0</min>
+				<default>0</default>
+				<max>1</max>
+				<hint>None</hint>
+				<type>int</type>
+				<help>None</help>
 			</input>
 			<input>
-				<default>0</default>
-				<type>float</type>
 				<name>inTime</name>
+				<min>0</min>
+				<default>0</default>
+				<max>1</max>
+				<hint>None</hint>
+				<type>float</type>
+				<help>None</help>
 			</input>
 			<input>
-				<default>8</default>
-				<type>float</type>
 				<name>frequency</name>
+				<min>0</min>
+				<default>8</default>
+				<max>1</max>
+				<hint>None</hint>
+				<type>float</type>
+				<help>None</help>
 			</input>
 			<input>
-				<default>0</default>
-				<type>float</type>
 				<name>implode</name>
+				<min>0</min>
+				<default>0</default>
+				<max>1</max>
+				<hint>None</hint>
+				<type>float</type>
+				<help>None</help>
 			</input>
 			<input>
-				<default>[0.5, 0.5, 0.0]</default>
-				<type>vector</type>
 				<name>implodeCenter</name>
+				<min>0</min>
+				<default>[0.5, 0.5, 0.0]</default>
+				<max>1</max>
+				<hint>None</hint>
+				<type>vector</type>
+				<help>None</help>
 			</input>
 			<input>
-				<default>1</default>
-				<type>int</type>
 				<name>noiseType</name>
+				<min>0</min>
+				<default>1</default>
+				<max>1</max>
+				<hint>None</hint>
+				<type>int</type>
+				<help>None</help>
 			</input>
 			<input>
-				<default>1</default>
-				<type>float</type>
 				<name>density</name>
+				<min>0</min>
+				<default>1</default>
+				<max>1</max>
+				<hint>None</hint>
+				<type>float</type>
+				<help>None</help>
 			</input>
 			<input>
-				<default>0.1</default>
-				<type>float</type>
 				<name>spotynes</name>
+				<min>0</min>
+				<default>0.1</default>
+				<max>1</max>
+				<hint>None</hint>
+				<type>float</type>
+				<help>None</help>
 			</input>
 			<input>
-				<default>0</default>
-				<type>float</type>
 				<name>sizeRand</name>
+				<min>0</min>
+				<default>0</default>
+				<max>1</max>
+				<hint>None</hint>
+				<type>float</type>
+				<help>None</help>
 			</input>
 			<input>
-				<default>1</default>
-				<type>float</type>
 				<name>randomnes</name>
+				<min>0</min>
+				<default>1</default>
+				<max>1</max>
+				<hint>None</hint>
+				<type>float</type>
+				<help>None</help>
 			</input>
 			<input>
-				<default>0</default>
-				<type>int</type>
 				<name>falloff</name>
+				<min>0</min>
+				<default>0</default>
+				<max>1</max>
+				<hint>None</hint>
+				<type>int</type>
+				<help>None</help>
 			</input>
 			<input>
-				<default>6</default>
-				<type>int</type>
 				<name>numWaves</name>
+				<min>0</min>
+				<default>6</default>
+				<max>1</max>
+				<hint>None</hint>
+				<type>int</type>
+				<help>None</help>
 			</input>
 			<input>
-				<default>[0.0, 0.0, 0.0]</default>
-				<type>vector</type>
 				<name>uvCoord</name>
-			</input>
-			<input>
-				<default>0</default>
-				<type>float</type>
-				<name>exposure</name>
-			</input>
-			<input>
-				<default>[0.5, 0.5, 0.5]</default>
-				<type>vector</type>
-				<name>defaultColor</name>
-			</input>
-			<input>
-				<default>[1.0, 1.0, 1.0]</default>
-				<type>vector</type>
-				<name>colorGain</name>
-			</input>
-			<input>
+				<min>0</min>
 				<default>[0.0, 0.0, 0.0]</default>
+				<max>1</max>
+				<hint>None</hint>
 				<type>vector</type>
+				<help>None</help>
+			</input>
+			<input>
+				<name>exposure</name>
+				<min>0</min>
+				<default>0</default>
+				<max>1</max>
+				<hint>None</hint>
+				<type>float</type>
+				<help>None</help>
+			</input>
+			<input>
+				<name>defaultColor</name>
+				<min>0</min>
+				<default>[0.5, 0.5, 0.5]</default>
+				<max>1</max>
+				<hint>None</hint>
+				<type>vector</type>
+				<help>None</help>
+			</input>
+			<input>
+				<name>colorGain</name>
+				<min>0</min>
+				<default>[1.0, 1.0, 1.0]</default>
+				<max>1</max>
+				<hint>None</hint>
+				<type>vector</type>
+				<help>None</help>
+			</input>
+			<input>
 				<name>colorOffset</name>
+				<min>0</min>
+				<default>[0.0, 0.0, 0.0]</default>
+				<max>1</max>
+				<hint>None</hint>
+				<type>vector</type>
+				<help>None</help>
 			</input>
 			<input>
-				<default>1</default>
-				<type>float</type>
 				<name>alphaGain</name>
-			</input>
-			<input>
-				<default>0</default>
-				<type>float</type>
-				<name>alphaOffset</name>
-			</input>
-			<input>
+				<min>0</min>
 				<default>1</default>
-				<type>int</type>
-				<name>alphaIsLuminance</name>
+				<max>1</max>
+				<hint>None</hint>
+				<type>float</type>
+				<help>None</help>
 			</input>
 			<input>
+				<name>alphaOffset</name>
+				<min>0</min>
 				<default>0</default>
+				<max>1</max>
+				<hint>None</hint>
+				<type>float</type>
+				<help>None</help>
+			</input>
+			<input>
+				<name>alphaIsLuminance</name>
+				<min>0</min>
+				<default>1</default>
+				<max>1</max>
+				<hint>None</hint>
 				<type>int</type>
+				<help>None</help>
+			</input>
+			<input>
 				<name>invert</name>
+				<min>0</min>
+				<default>0</default>
+				<max>1</max>
+				<hint>None</hint>
+				<type>int</type>
+				<help>None</help>
 			</input>
 		</inputs>
 		<name>noise</name>
 		<outputs>
 			<output>
-				<default>[0.0, 0.0, 0.0]</default>
 				<type>output vector</type>
 				<name>outColor</name>
+				<help />
 			</output>
 			<output>
-				<default>0</default>
 				<type>output float</type>
 				<name>outAlpha</name>
+				<help />
 			</output>
 		</outputs>
 		<mayaId>0</mayaId>
-		<mayaClassification />
-		<help />
+		<mayaClassification>None</mayaClassification>
+		<help>None</help>
 	</shader>
 	<shader>
 		<inputs>
 			<input>
+				<name>matte</name>
+				<min>0</min>
 				<default>0</default>
+				<max>1</max>
 				<hint>useAsBool</hint>
 				<type>int</type>
-				<name>matte</name>
 				<help>Use matte</help>
 			</input>
 			<input>
-				<default>[ 0.0, 0.0, 0.0 ]</default>
-				<type>vector</type>
 				<name>normalCamera</name>
+				<min>0</min>
+				<default>[ 0.0, 0.0, 0.0 ]</default>
+				<max>1</max>
+				<hint />
+				<type>vector</type>
+				<help />
 			</input>
 			<input>
 				<name>diffuseValue</name>
 				<min>0</min>
 				<default>0.8</default>
 				<max>1</max>
+				<hint />
 				<type>float</type>
 				<help>Diffuse reflectivity multiplier</help>
 			</input>
 			<input>
+				<name>diffuseColor</name>
+				<min>0</min>
 				<default>[1.0, 1.0, 1.0]</default>
+				<max>1</max>
 				<hint>useAsColor</hint>
 				<type>vector</type>
-				<name>diffuseColor</name>
 				<help>Color</help>
 			</input>
 			<input>
-				<default>0</default>
-				<type>float</type>
 				<name>roughness</name>
+				<min>0</min>
+				<default>0</default>
+				<max>1</max>
+				<hint />
+				<type>float</type>
 				<help>Surface roughness. Mix between lambert and orenNayar.</help>
 			</input>
 			<input>
-				<default>0</default>
-				<type>float</type>
 				<name>backlighting</name>
+				<min>0</min>
+				<default>0</default>
+				<max>1</max>
+				<hint />
+				<type>float</type>
 				<help>Backlighting, show light though a surface (poor mans translucency).</help>
 			</input>
 			<input>
@@ -1092,14 +1707,17 @@
 				<min>0</min>
 				<default>0</default>
 				<max>1</max>
+				<hint />
 				<type>float</type>
 				<help>Translucency.</help>
 			</input>
 			<input>
+				<name>translucencyColor</name>
+				<min>0</min>
 				<default>[0.0, 0.0, 0.0]</default>
+				<max>1</max>
 				<hint>useAsColor</hint>
 				<type>vector</type>
-				<name>translucencyColor</name>
 				<help>Translucency color</help>
 			</input>
 			<input>
@@ -1107,6 +1725,7 @@
 				<min>0</min>
 				<default>0.5</default>
 				<max>1</max>
+				<hint />
 				<type>float</type>
 				<help>Specularity 1 value</help>
 			</input>
@@ -1120,10 +1739,12 @@
 				<help>Specularity 1 index of reflection</help>
 			</input>
 			<input>
+				<name>specularUseFresnel1</name>
+				<min>0</min>
 				<default>1</default>
+				<max>1</max>
 				<hint>useAsBool</hint>
 				<type>int</type>
-				<name>specularUseFresnel1</name>
 				<help>Specularity 1 use fresnel</help>
 			</input>
 			<input>
@@ -1131,6 +1752,7 @@
 				<min>0</min>
 				<default>0</default>
 				<max>1</max>
+				<hint />
 				<type>float</type>
 				<help>Reflectivity at 0 Degree</help>
 			</input>
@@ -1139,14 +1761,17 @@
 				<min>0.001</min>
 				<default>0.1</default>
 				<max>1</max>
+				<hint />
 				<type>float</type>
 				<help>Roughness</help>
 			</input>
 			<input>
+				<name>specularColor1</name>
+				<min>0</min>
 				<default>[0.0, 0.0, 0.0]</default>
+				<max>1</max>
 				<hint>useAsColor</hint>
 				<type>vector</type>
-				<name>specularColor1</name>
 				<help>Specular color 1</help>
 			</input>
 			<input>
@@ -1154,14 +1779,18 @@
 				<min>-1</min>
 				<default>0</default>
 				<max>1</max>
+				<hint />
 				<type>float</type>
 				<help>Anisotropy</help>
 			</input>
 			<input>
-				<default>ggx</default>
-				<options>['sharp', 'beckmann', 'ggx']</options>
-				<type>string</type>
 				<name>reflectionMdf</name>
+				<min>0</min>
+				<default>ggx</default>
+				<max>1</max>
+				<hint />
+				<type>string</type>
+				<options>['sharp', 'beckmann', 'ggx']</options>
 				<help>Microfacet distribution to use: Specular, Beckmann or GGX.</help>
 			</input>
 			<input>
@@ -1174,10 +1803,12 @@
 				<help>Refraction Index</help>
 			</input>
 			<input>
+				<name>refractionColor</name>
+				<min>0</min>
 				<default>[1.0, 1.0, 1.0]</default>
+				<max>1</max>
 				<hint>useAsColor</hint>
 				<type>vector</type>
-				<name>refractionColor</name>
 				<help>Refraction color</help>
 			</input>
 			<input>
@@ -1190,10 +1821,12 @@
 				<help>Absorption cross section</help>
 			</input>
 			<input>
+				<name>absorptionColor</name>
+				<min>0</min>
 				<default>[0.0, 0.0, 0.0]</default>
+				<max>1</max>
 				<hint>useAsColor</hint>
 				<type>vector</type>
-				<name>absorptionColor</name>
 				<help>Absorption color</help>
 			</input>
 			<input>
@@ -1201,6 +1834,7 @@
 				<min>0</min>
 				<default>0</default>
 				<max>1</max>
+				<hint />
 				<type>float</type>
 				<help>Refractivity</help>
 			</input>
@@ -1209,28 +1843,36 @@
 				<min>0.001</min>
 				<default>0</default>
 				<max>1</max>
+				<hint />
 				<type>float</type>
 				<help>Roughness</help>
 			</input>
 			<input>
-				<default>ggx</default>
-				<options>['sharp', 'beckmann', 'ggx']</options>
-				<type>string</type>
 				<name>refractionMdf</name>
+				<min>0</min>
+				<default>ggx</default>
+				<max>1</max>
+				<hint />
+				<type>string</type>
+				<options>['sharp', 'beckmann', 'ggx']</options>
 				<help>Microfacet distribution to use: Specular, Beckmann or GGX.</help>
 			</input>
 			<input>
+				<name>SSS1</name>
+				<min>0</min>
 				<default>0</default>
+				<max>1</max>
 				<hint>useAsBool</hint>
 				<type>int</type>
-				<name>SSS1</name>
 				<help>Use SSS 1</help>
 			</input>
 			<input>
+				<name>SSS1Color</name>
+				<min>0</min>
 				<default>[0.0, 0.0, 0.0]</default>
+				<max>1</max>
 				<hint>useAsColor</hint>
 				<type>vector</type>
-				<name>SSS1Color</name>
 				<help>Subsurface color</help>
 			</input>
 			<input>
@@ -1238,14 +1880,17 @@
 				<min>0</min>
 				<default>0</default>
 				<max>1</max>
+				<hint />
 				<type>float</type>
 				<help>Subsurface color Multiplier</help>
 			</input>
 			<input>
+				<name>SSS1Radius</name>
+				<min>0</min>
 				<default>[0.0, 0.0, 0.0]</default>
+				<max>1</max>
 				<hint>useAsColor</hint>
 				<type>vector</type>
-				<name>SSS1Radius</name>
 				<help>Radius per Color</help>
 			</input>
 			<input>
@@ -1258,10 +1903,12 @@
 				<help>Subsurface color Multiplier</help>
 			</input>
 			<input>
+				<name>emissionColor</name>
+				<min>0</min>
 				<default>[0.0, 0.0, 0.0]</default>
+				<max>1</max>
 				<hint>useAsColor</hint>
 				<type>vector</type>
-				<name>emissionColor</name>
 				<help>Emission Color</help>
 			</input>
 			<input>
@@ -1279,6 +1926,7 @@
 			<output>
 				<type>output pointer</type>
 				<name>outColor</name>
+				<help />
 			</output>
 		</outputs>
 		<mayaId>0</mayaId>
@@ -1288,34 +1936,48 @@
 	<shader>
 		<inputs>
 			<input>
-				<default>[ 0.0, 0.0, 0.0 ]</default>
-				<type>vector</type>
 				<name>Normal</name>
+				<min>0</min>
+				<default>[ 0.0, 0.0, 0.0 ]</default>
+				<max>1</max>
+				<hint>None</hint>
+				<type>vector</type>
+				<help>None</help>
 			</input>
 			<input>
-				<default>0.8</default>
-				<type>float</type>
 				<name>diffuse</name>
+				<min>0</min>
+				<default>0.8</default>
+				<max>1</max>
+				<hint>None</hint>
+				<type>float</type>
+				<help>None</help>
 			</input>
 			<input>
+				<name>color</name>
+				<min>0</min>
 				<default>[1.0, 1.0, 1.0]</default>
+				<max>1</max>
 				<hint>useAsColor</hint>
 				<type>vector</type>
-				<name>color</name>
 				<help>Color</help>
 			</input>
 			<input>
+				<name>incandescence</name>
+				<min>0</min>
 				<default>[0.0, 0.0, 0.0]</default>
+				<max>1</max>
 				<hint>useAsColor</hint>
 				<type>vector</type>
-				<name>incandescence</name>
 				<help>Incandescence</help>
 			</input>
 			<input>
+				<name>transparency</name>
+				<min>0</min>
 				<default>[0.0, 0.0, 0.0]</default>
+				<max>1</max>
 				<hint>useAsColor</hint>
 				<type>vector</type>
-				<name>transparency</name>
 				<help>Transparency</help>
 			</input>
 		</inputs>
@@ -1324,389 +1986,607 @@
 			<output>
 				<type>output pointer</type>
 				<name>outColor</name>
+				<help />
 			</output>
 		</outputs>
 		<mayaId>0</mayaId>
-		<mayaClassification />
-		<help />
+		<mayaClassification>None</mayaClassification>
+		<help>None</help>
 	</shader>
 	<shader>
 		<inputs>
 			<input>
-				<default>1</default>
-				<type>float</type>
 				<name>multiplier</name>
+				<min>0</min>
+				<default>1</default>
+				<max>1</max>
+				<hint>None</hint>
+				<type>float</type>
+				<help>None</help>
 			</input>
 			<input>
-				<default>0</default>
-				<type>float</type>
 				<name>offset</name>
-			</input>
-			<input>
-				<default>[1.0, 1.0, 1.0]</default>
-				<type>vector</type>
-				<name>color</name>
-			</input>
-			<input>
+				<min>0</min>
 				<default>0</default>
+				<max>1</max>
+				<hint>None</hint>
 				<type>float</type>
-				<name>inFloat</name>
+				<help>None</help>
 			</input>
 			<input>
-				<default>0</default>
-				<type>int</type>
-				<name>inInt</name>
-			</input>
-			<input>
-				<default>[0.0, 0.0, 0.0]</default>
+				<name>color</name>
+				<min>0</min>
+				<default>[1.0, 1.0, 1.0]</default>
+				<max>1</max>
+				<hint>None</hint>
 				<type>vector</type>
+				<help>None</help>
+			</input>
+			<input>
+				<name>inFloat</name>
+				<min>0</min>
+				<default>0</default>
+				<max>1</max>
+				<hint>None</hint>
+				<type>float</type>
+				<help>None</help>
+			</input>
+			<input>
+				<name>inInt</name>
+				<min>0</min>
+				<default>0</default>
+				<max>1</max>
+				<hint>None</hint>
+				<type>int</type>
+				<help>None</help>
+			</input>
+			<input>
 				<name>vector</name>
+				<min>0</min>
+				<default>[0.0, 0.0, 0.0]</default>
+				<max>1</max>
+				<hint>None</hint>
+				<type>vector</type>
+				<help>None</help>
 			</input>
 		</inputs>
 		<name>OSLInterface</name>
 		<outputs>
 			<output>
-				<default>]</default>
 				<type>output color</type>
 				<name>Cout</name>
+				<help />
 			</output>
 		</outputs>
 		<mayaId>0</mayaId>
-		<mayaClassification />
-		<help />
+		<mayaClassification>None</mayaClassification>
+		<help>None</help>
 	</shader>
 	<shader>
 		<inputs>
 			<input>
-				<default>[1.0, 0.0, 0.0]</default>
-				<type>vector</type>
 				<name>color1</name>
-			</input>
-			<input>
-				<default>[0.0, 0.0, 1.0]</default>
+				<min>0</min>
+				<default>[1.0, 0.0, 0.0]</default>
+				<max>1</max>
+				<hint>None</hint>
 				<type>vector</type>
-				<name>color2</name>
+				<help>None</help>
 			</input>
 			<input>
-				<default>0</default>
-				<type>float</type>
+				<name>color2</name>
+				<min>0</min>
+				<default>[0.0, 0.0, 1.0]</default>
+				<max>1</max>
+				<hint>None</hint>
+				<type>vector</type>
+				<help>None</help>
+			</input>
+			<input>
 				<name>blender</name>
+				<min>0</min>
+				<default>0</default>
+				<max>1</max>
+				<hint>None</hint>
+				<type>float</type>
+				<help>None</help>
 			</input>
 		</inputs>
 		<name>blendColors</name>
 		<outputs>
 			<output>
-				<default>[0.0, 0.0, 0.0]</default>
 				<type>output vector</type>
 				<name>output</name>
+				<help />
 			</output>
 		</outputs>
 		<mayaId>0</mayaId>
-		<mayaClassification />
-		<help />
-	</shader>
-	<shader>
-		<inputs />
-		<name>testBG</name>
-		<outputs />
-		<mayaId>0</mayaId>
-		<mayaClassification />
-		<help />
+		<mayaClassification>None</mayaClassification>
+		<help>None</help>
 	</shader>
 	<shader>
 		<inputs>
 			<input>
-				<default>[1.0, 1.0, 1.0]</default>
+				<name>value</name>
+				<min>0</min>
+				<default>[0.0, 0.0, 0.0]</default>
+				<max>1</max>
+				<hint>None</hint>
 				<type>vector</type>
+				<help>None</help>
+			</input>
+			<input>
+				<name>gamma</name>
+				<min>0</min>
+				<default>[0.0, 0.0, 0.0]</default>
+				<max>1</max>
+				<hint>None</hint>
+				<type>vector</type>
+				<help>None</help>
+			</input>
+		</inputs>
+		<name>gammaCorrect</name>
+		<outputs>
+			<output>
+				<type>output vector</type>
+				<name>outValue</name>
+				<help />
+			</output>
+		</outputs>
+		<mayaId>0</mayaId>
+		<mayaClassification>None</mayaClassification>
+		<help>None</help>
+	</shader>
+	<shader>
+		<inputs>
+			<input>
 				<name>lineColor</name>
-			</input>
-			<input>
-				<default>[0.0, 0.0, 0.0]</default>
-				<type>vector</type>
-				<name>fillerColor</name>
-			</input>
-			<input>
-				<default>0.1</default>
-				<type>float</type>
-				<name>uWidth</name>
-			</input>
-			<input>
-				<default>0.1</default>
-				<type>float</type>
-				<name>vWidth</name>
-			</input>
-			<input>
-				<default>[0.0, 0.0, 0.0]</default>
-				<type>vector</type>
-				<name>uvCoord</name>
-			</input>
-			<input>
-				<default>0.5</default>
-				<type>float</type>
-				<name>contrast</name>
-			</input>
-			<input>
-				<default>0</default>
-				<type>float</type>
-				<name>exposure</name>
-			</input>
-			<input>
-				<default>[0.5, 0.5, 0.5]</default>
-				<type>vector</type>
-				<name>defaultColor</name>
-			</input>
-			<input>
+				<min>0</min>
 				<default>[1.0, 1.0, 1.0]</default>
+				<max>1</max>
+				<hint>None</hint>
 				<type>vector</type>
-				<name>colorGain</name>
+				<help>None</help>
 			</input>
 			<input>
+				<name>fillerColor</name>
+				<min>0</min>
 				<default>[0.0, 0.0, 0.0]</default>
+				<max>1</max>
+				<hint>None</hint>
 				<type>vector</type>
+				<help>None</help>
+			</input>
+			<input>
+				<name>uWidth</name>
+				<min>0</min>
+				<default>0.1</default>
+				<max>1</max>
+				<hint>None</hint>
+				<type>float</type>
+				<help>None</help>
+			</input>
+			<input>
+				<name>vWidth</name>
+				<min>0</min>
+				<default>0.1</default>
+				<max>1</max>
+				<hint>None</hint>
+				<type>float</type>
+				<help>None</help>
+			</input>
+			<input>
+				<name>uvCoord</name>
+				<min>0</min>
+				<default>[0.0, 0.0, 0.0]</default>
+				<max>1</max>
+				<hint>None</hint>
+				<type>vector</type>
+				<help>None</help>
+			</input>
+			<input>
+				<name>contrast</name>
+				<min>0</min>
+				<default>0.5</default>
+				<max>1</max>
+				<hint>None</hint>
+				<type>float</type>
+				<help>None</help>
+			</input>
+			<input>
+				<name>exposure</name>
+				<min>0</min>
+				<default>0</default>
+				<max>1</max>
+				<hint>None</hint>
+				<type>float</type>
+				<help>None</help>
+			</input>
+			<input>
+				<name>defaultColor</name>
+				<min>0</min>
+				<default>[0.5, 0.5, 0.5]</default>
+				<max>1</max>
+				<hint>None</hint>
+				<type>vector</type>
+				<help>None</help>
+			</input>
+			<input>
+				<name>colorGain</name>
+				<min>0</min>
+				<default>[1.0, 1.0, 1.0]</default>
+				<max>1</max>
+				<hint>None</hint>
+				<type>vector</type>
+				<help>None</help>
+			</input>
+			<input>
 				<name>colorOffset</name>
+				<min>0</min>
+				<default>[0.0, 0.0, 0.0]</default>
+				<max>1</max>
+				<hint>None</hint>
+				<type>vector</type>
+				<help>None</help>
 			</input>
 			<input>
-				<default>1</default>
-				<type>float</type>
 				<name>alphaGain</name>
-			</input>
-			<input>
-				<default>0</default>
-				<type>float</type>
-				<name>alphaOffset</name>
-			</input>
-			<input>
+				<min>0</min>
 				<default>1</default>
-				<type>int</type>
-				<name>alphaIsLuminance</name>
+				<max>1</max>
+				<hint>None</hint>
+				<type>float</type>
+				<help>None</help>
 			</input>
 			<input>
+				<name>alphaOffset</name>
+				<min>0</min>
 				<default>0</default>
+				<max>1</max>
+				<hint>None</hint>
+				<type>float</type>
+				<help>None</help>
+			</input>
+			<input>
+				<name>alphaIsLuminance</name>
+				<min>0</min>
+				<default>1</default>
+				<max>1</max>
+				<hint>None</hint>
 				<type>int</type>
+				<help>None</help>
+			</input>
+			<input>
 				<name>invert</name>
+				<min>0</min>
+				<default>0</default>
+				<max>1</max>
+				<hint>None</hint>
+				<type>int</type>
+				<help>None</help>
 			</input>
 		</inputs>
 		<name>grid</name>
 		<outputs>
 			<output>
-				<default>[0.0, 0.0, 0.0]</default>
 				<type>output vector</type>
 				<name>outColor</name>
+				<help />
 			</output>
 			<output>
-				<default>0</default>
 				<type>output float</type>
 				<name>outAlpha</name>
+				<help />
 			</output>
 		</outputs>
 		<mayaId>0</mayaId>
-		<mayaClassification />
-		<help />
+		<mayaClassification>None</mayaClassification>
+		<help>None</help>
 	</shader>
 	<shader>
 		<inputs>
 			<input>
-				<default>0</default>
-				<type>float</type>
 				<name>firstTerm</name>
-			</input>
-			<input>
+				<min>0</min>
 				<default>0</default>
+				<max>1</max>
+				<hint>None</hint>
 				<type>float</type>
+				<help>None</help>
+			</input>
+			<input>
 				<name>secondTerm</name>
-			</input>
-			<input>
+				<min>0</min>
 				<default>0</default>
-				<type>int</type>
+				<max>1</max>
+				<hint>None</hint>
+				<type>float</type>
+				<help>None</help>
+			</input>
+			<input>
 				<name>operation</name>
+				<min>0</min>
+				<default>0</default>
+				<max>1</max>
+				<hint>None</hint>
+				<type>int</type>
+				<help>None</help>
 			</input>
 			<input>
-				<default>[0.0, 0.0, 0.0]</default>
-				<type>vector</type>
 				<name>colorIfTrue</name>
+				<min>0</min>
+				<default>[0.0, 0.0, 0.0]</default>
+				<max>1</max>
+				<hint>None</hint>
+				<type>vector</type>
+				<help>None</help>
 			</input>
 			<input>
-				<default>[0.0, 0.0, 0.0]</default>
-				<type>vector</type>
 				<name>colorIfFalse</name>
+				<min>0</min>
+				<default>[0.0, 0.0, 0.0]</default>
+				<max>1</max>
+				<hint>None</hint>
+				<type>vector</type>
+				<help>None</help>
 			</input>
 		</inputs>
 		<name>condition</name>
 		<outputs>
 			<output>
-				<default>[0.0, 0.0, 0.0]</default>
 				<type>output vector</type>
 				<name>outColor</name>
+				<help />
 			</output>
 		</outputs>
 		<mayaId>0</mayaId>
-		<mayaClassification />
-		<help />
+		<mayaClassification>None</mayaClassification>
+		<help>None</help>
 	</shader>
 	<shader>
 		<inputs>
 			<input>
-				<default>[0.0, 0.0, 0.0]</default>
-				<type>vector</type>
 				<name>value</name>
+				<min>0</min>
+				<default>[0.0, 0.0, 0.0]</default>
+				<max>1</max>
+				<hint>None</hint>
+				<type>vector</type>
+				<help>None</help>
 			</input>
 			<input>
-				<default>[0.0, 0.0, 0.0]</default>
-				<type>vector</type>
 				<name>min</name>
-			</input>
-			<input>
-				<default>[1.0, 1.0, 1.0]</default>
-				<type>vector</type>
-				<name>max</name>
-			</input>
-			<input>
+				<min>0</min>
 				<default>[0.0, 0.0, 0.0]</default>
+				<max>1</max>
+				<hint>None</hint>
 				<type>vector</type>
-				<name>oldMin</name>
+				<help>None</help>
 			</input>
 			<input>
+				<name>max</name>
+				<min>0</min>
 				<default>[1.0, 1.0, 1.0]</default>
+				<max>1</max>
+				<hint>None</hint>
 				<type>vector</type>
+				<help>None</help>
+			</input>
+			<input>
+				<name>oldMin</name>
+				<min>0</min>
+				<default>[0.0, 0.0, 0.0]</default>
+				<max>1</max>
+				<hint>None</hint>
+				<type>vector</type>
+				<help>None</help>
+			</input>
+			<input>
 				<name>oldMax</name>
+				<min>0</min>
+				<default>[1.0, 1.0, 1.0]</default>
+				<max>1</max>
+				<hint>None</hint>
+				<type>vector</type>
+				<help>None</help>
 			</input>
 		</inputs>
 		<name>setRange</name>
 		<outputs>
 			<output>
-				<default>[0.0, 0.0, 0.0]</default>
 				<type>output vector</type>
 				<name>outValue</name>
+				<help />
 			</output>
 		</outputs>
 		<mayaId>0</mayaId>
-		<mayaClassification />
-		<help />
+		<mayaClassification>None</mayaClassification>
+		<help>None</help>
 	</shader>
 	<shader>
 		<inputs>
 			<input>
-				<default>[0.0, 0.0, 0.0]</default>
-				<type>vector</type>
 				<name>input</name>
+				<min>0</min>
+				<default>[0.0, 0.0, 0.0]</default>
+				<max>1</max>
+				<hint>None</hint>
+				<type>vector</type>
+				<help>None</help>
 			</input>
 		</inputs>
 		<name>reverse</name>
 		<outputs>
 			<output>
-				<default>[0.0, 0.0, 0.0]</default>
 				<type>output vector</type>
 				<name>output</name>
+				<help />
 			</output>
 		</outputs>
 		<mayaId>0</mayaId>
-		<mayaClassification />
-		<help />
+		<mayaClassification>None</mayaClassification>
+		<help>None</help>
 	</shader>
 	<shader>
 		<inputs>
 			<input>
-				<default>0</default>
-				<type>float</type>
 				<name>uWidth</name>
+				<min>0</min>
+				<default>0</default>
+				<max>1</max>
+				<hint>None</hint>
+				<type>float</type>
+				<help>None</help>
 			</input>
 			<input>
-				<default>0</default>
-				<type>float</type>
 				<name>vWidth</name>
+				<min>0</min>
+				<default>0</default>
+				<max>1</max>
+				<hint>None</hint>
+				<type>float</type>
+				<help>None</help>
 			</input>
 			<input>
-				<default>[0.0, 0.0, 0.0]</default>
-				<type>vector</type>
 				<name>uvCoord</name>
-			</input>
-			<input>
-				<default>0</default>
-				<type>float</type>
-				<name>exposure</name>
-			</input>
-			<input>
-				<default>[0.5, 0.5, 0.5]</default>
-				<type>vector</type>
-				<name>defaultColor</name>
-			</input>
-			<input>
-				<default>[1.0, 1.0, 1.0]</default>
-				<type>vector</type>
-				<name>colorGain</name>
-			</input>
-			<input>
+				<min>0</min>
 				<default>[0.0, 0.0, 0.0]</default>
+				<max>1</max>
+				<hint>None</hint>
 				<type>vector</type>
+				<help>None</help>
+			</input>
+			<input>
+				<name>exposure</name>
+				<min>0</min>
+				<default>0</default>
+				<max>1</max>
+				<hint>None</hint>
+				<type>float</type>
+				<help>None</help>
+			</input>
+			<input>
+				<name>defaultColor</name>
+				<min>0</min>
+				<default>[0.5, 0.5, 0.5]</default>
+				<max>1</max>
+				<hint>None</hint>
+				<type>vector</type>
+				<help>None</help>
+			</input>
+			<input>
+				<name>colorGain</name>
+				<min>0</min>
+				<default>[1.0, 1.0, 1.0]</default>
+				<max>1</max>
+				<hint>None</hint>
+				<type>vector</type>
+				<help>None</help>
+			</input>
+			<input>
 				<name>colorOffset</name>
+				<min>0</min>
+				<default>[0.0, 0.0, 0.0]</default>
+				<max>1</max>
+				<hint>None</hint>
+				<type>vector</type>
+				<help>None</help>
 			</input>
 			<input>
-				<default>1</default>
-				<type>float</type>
 				<name>alphaGain</name>
-			</input>
-			<input>
-				<default>0</default>
-				<type>float</type>
-				<name>alphaOffset</name>
-			</input>
-			<input>
+				<min>0</min>
 				<default>1</default>
-				<type>int</type>
-				<name>alphaIsLuminance</name>
+				<max>1</max>
+				<hint>None</hint>
+				<type>float</type>
+				<help>None</help>
 			</input>
 			<input>
+				<name>alphaOffset</name>
+				<min>0</min>
 				<default>0</default>
+				<max>1</max>
+				<hint>None</hint>
+				<type>float</type>
+				<help>None</help>
+			</input>
+			<input>
+				<name>alphaIsLuminance</name>
+				<min>0</min>
+				<default>1</default>
+				<max>1</max>
+				<hint>None</hint>
 				<type>int</type>
+				<help>None</help>
+			</input>
+			<input>
 				<name>invert</name>
+				<min>0</min>
+				<default>0</default>
+				<max>1</max>
+				<hint>None</hint>
+				<type>int</type>
+				<help>None</help>
 			</input>
 		</inputs>
 		<name>bulge</name>
 		<outputs>
 			<output>
-				<default>[0.0, 0.0, 0.0]</default>
 				<type>output vector</type>
 				<name>outColor</name>
+				<help />
 			</output>
 			<output>
-				<default>0</default>
 				<type>output float</type>
 				<name>outAlpha</name>
+				<help />
 			</output>
 		</outputs>
 		<mayaId>0</mayaId>
-		<mayaClassification />
-		<help />
+		<mayaClassification>None</mayaClassification>
+		<help>None</help>
 	</shader>
 	<shader>
 		<inputs>
 			<input>
-				<default>0</default>
-				<type>float</type>
 				<name>inX</name>
+				<min>0</min>
+				<default>0</default>
+				<max>1</max>
+				<hint>None</hint>
+				<type>float</type>
+				<help>None</help>
 			</input>
 			<input>
-				<default>0</default>
-				<type>float</type>
 				<name>inY</name>
+				<min>0</min>
+				<default>0</default>
+				<max>1</max>
+				<hint>None</hint>
+				<type>float</type>
+				<help>None</help>
 			</input>
 			<input>
-				<default>0</default>
-				<type>float</type>
 				<name>inZ</name>
+				<min>0</min>
+				<default>0</default>
+				<max>1</max>
+				<hint>None</hint>
+				<type>float</type>
+				<help>None</help>
 			</input>
 		</inputs>
 		<name>floatToVector</name>
 		<outputs>
 			<output>
-				<default>[0.0, 0.0, 0.0]</default>
 				<type>output vector</type>
 				<name>outVector</name>
+				<help />
 			</output>
 		</outputs>
 		<mayaId>0</mayaId>
-		<mayaClassification />
-		<help />
+		<mayaClassification>None</mayaClassification>
+		<help>None</help>
 	</shader>
 	<shader>
 		<inputs>
@@ -1714,96 +2594,115 @@
 				<default>[0.0, 0.0, 0.0]</default>
 				<type>vector</type>
 				<name>color0</name>
+				<hint>compAttrArrayPath=colorEntryList.color</hint>
 			</input>
 			<input>
 				<default>[0.0, 0.0, 0.0]</default>
 				<type>vector</type>
 				<name>color1</name>
+				<hint>compAttrArrayPath=colorEntryList.color</hint>
 			</input>
 			<input>
 				<default>[0.0, 0.0, 0.0]</default>
 				<type>vector</type>
 				<name>color2</name>
+				<hint>compAttrArrayPath=colorEntryList.color</hint>
 			</input>
 			<input>
 				<default>[0.0, 0.0, 0.0]</default>
 				<type>vector</type>
 				<name>color3</name>
+				<hint>compAttrArrayPath=colorEntryList.color</hint>
 			</input>
 			<input>
 				<default>[0.0, 0.0, 0.0]</default>
 				<type>vector</type>
 				<name>color4</name>
+				<hint>compAttrArrayPath=colorEntryList.color</hint>
 			</input>
 			<input>
 				<default>[0.0, 0.0, 0.0]</default>
 				<type>vector</type>
 				<name>color5</name>
+				<hint>compAttrArrayPath=colorEntryList.color</hint>
 			</input>
 			<input>
 				<default>[0.0, 0.0, 0.0]</default>
 				<type>vector</type>
 				<name>color6</name>
+				<hint>compAttrArrayPath=colorEntryList.color</hint>
 			</input>
 			<input>
 				<default>[0.0, 0.0, 0.0]</default>
 				<type>vector</type>
 				<name>color7</name>
+				<hint>compAttrArrayPath=colorEntryList.color</hint>
 			</input>
 			<input>
 				<default>[0.0, 0.0, 0.0]</default>
 				<type>vector</type>
 				<name>color8</name>
+				<hint>compAttrArrayPath=colorEntryList.color</hint>
 			</input>
 			<input>
 				<default>[0.0, 0.0, 0.0]</default>
 				<type>vector</type>
 				<name>color9</name>
+				<hint>compAttrArrayPath=colorEntryList.color</hint>
 			</input>
 			<input>
 				<default>-1</default>
 				<type>float</type>
 				<name>position0</name>
+				<hint>compAttrArrayPath=colorEntryList.position</hint>
 			</input>
 			<input>
 				<default>-1</default>
 				<type>float</type>
 				<name>position1</name>
+				<hint>compAttrArrayPath=colorEntryList.position</hint>
 			</input>
 			<input>
 				<default>-1</default>
 				<type>float</type>
 				<name>position2</name>
+				<hint>compAttrArrayPath=colorEntryList.position</hint>
 			</input>
 			<input>
 				<default>-1</default>
 				<type>float</type>
 				<name>position3</name>
+				<hint>compAttrArrayPath=colorEntryList.position</hint>
 			</input>
 			<input>
 				<default>-1</default>
 				<type>float</type>
 				<name>position4</name>
+				<hint>compAttrArrayPath=colorEntryList.position</hint>
 			</input>
 			<input>
 				<default>-1</default>
 				<type>float</type>
 				<name>position5</name>
+				<hint>compAttrArrayPath=colorEntryList.position</hint>
 			</input>
 			<input>
 				<default>-1</default>
 				<type>float</type>
 				<name>position6</name>
+				<hint>compAttrArrayPath=colorEntryList.position</hint>
 			</input>
 			<input>
 				<default>-1</default>
 				<type>float</type>
 				<name>position7</name>
+				<hint>compAttrArrayPath=colorEntryList.position</hint>
 			</input>
 			<input>
 				<default>-1</default>
 				<type>float</type>
 				<name>position8</name>
+				<hint>compAttrArrayPath=colorEntryList.position</hint>
 			</input>
 			<input>
 				<default>-1</default>
@@ -1901,128 +2800,145 @@
 	<shader>
 		<inputs>
 			<input>
-				<default>[0.0, 0.0, 0.0]</default>
-				<type>vector</type>
 				<name>inHsv</name>
+				<min>0</min>
+				<default>[0.0, 0.0, 0.0]</default>
+				<max>1</max>
+				<hint>None</hint>
+				<type>vector</type>
+				<help>None</help>
 			</input>
 		</inputs>
 		<name>hsvToRgb</name>
 		<outputs>
 			<output>
-				<default>[0.0, 0.0, 0.0]</default>
 				<type>output vector</type>
 				<name>outRgb</name>
+				<help />
 			</output>
 		</outputs>
 		<mayaId>0</mayaId>
-		<mayaClassification />
-		<help />
+		<mayaClassification>None</mayaClassification>
+		<help>None</help>
 	</shader>
 	<shader>
 		<inputs>
 			<input>
-				<type>pointer</type>
 				<name>color</name>
+				<min>0</min>
+				<default>0</default>
+				<max>1</max>
+				<hint>None</hint>
+				<type>pointer</type>
+				<help>None</help>
 			</input>
 		</inputs>
 		<name>surfaceShaderInterface</name>
 		<outputs />
 		<mayaId>0</mayaId>
-		<mayaClassification />
-		<help />
+		<mayaClassification>None</mayaClassification>
+		<help>None</help>
 	</shader>
 	<shader>
 		<inputs>
 			<input>
-				<default>[1.0, 1.0, 1.0]</default>
-				<type>vector</type>
 				<name>color</name>
+				<min>0</min>
+				<default>[1.0, 1.0, 1.0]</default>
+				<max>1</max>
+				<hint>None</hint>
+				<type>vector</type>
+				<help>None</help>
 			</input>
 		</inputs>
 		<name>colorToFloat</name>
 		<outputs>
 			<output>
-				<default>0</default>
 				<type>output float</type>
 				<name>outX</name>
+				<help />
 			</output>
 			<output>
-				<default>0</default>
 				<type>output float</type>
 				<name>outY</name>
+				<help />
 			</output>
 			<output>
-				<default>0</default>
 				<type>output float</type>
 				<name>outZ</name>
+				<help />
 			</output>
 		</outputs>
 		<mayaId>0</mayaId>
-		<mayaClassification />
-		<help />
+		<mayaClassification>None</mayaClassification>
+		<help>None</help>
 	</shader>
 	<shader>
 		<inputs>
 			<input>
-				<default>[0.0, 0.0, 0.0]</default>
-				<type>vector</type>
 				<name>inRgb</name>
+				<min>0</min>
+				<default>[0.0, 0.0, 0.0]</default>
+				<max>1</max>
+				<hint>None</hint>
+				<type>vector</type>
+				<help>None</help>
 			</input>
 		</inputs>
 		<name>rgbToHsv</name>
 		<outputs>
 			<output>
-				<default>[0.0, 0.0, 0.0]</default>
 				<type>output vector</type>
 				<name>outHsv</name>
+				<help />
 			</output>
 		</outputs>
 		<mayaId>0</mayaId>
-		<mayaClassification />
-		<help />
+		<mayaClassification>None</mayaClassification>
+		<help>None</help>
 	</shader>
 	<shader>
 		<inputs />
 		<name>samplerInfo</name>
 		<outputs>
 			<output>
-				<default>[0.0, 0.0, 0.0]</default>
 				<type>output vector</type>
 				<name>pointWorld</name>
+				<help />
 			</output>
 			<output>
-				<default>[0.0, 0.0, 0.0]</default>
 				<type>output vector</type>
 				<name>normalCamera</name>
+				<help />
 			</output>
 			<output>
-				<default>[0.0, 0.0, 0.0]</default>
 				<type>output vector</type>
 				<name>normalWorld</name>
+				<help />
 			</output>
 			<output>
-				<default>[0.0, 0.0, 0.0]</default>
 				<type>output vector</type>
 				<name>uvCoord</name>
+				<help />
 			</output>
 			<output>
-				<default>[0.0, 0.0, 0.0]</default>
 				<type>output vector</type>
 				<name>outDPdu</name>
+				<help />
 			</output>
 			<output>
-				<default>[0.0, 0.0, 0.0]</default>
 				<type>output vector</type>
 				<name>outDPdv</name>
+				<help />
 			</output>
 			<output>
-				<default>0</default>
 				<type>output float</type>
 				<name>facingRatio</name>
+				<help />
 			</output>
 		</outputs>
 		<mayaId>0</mayaId>
-		<mayaClassification />
-		<help />
+		<mayaClassification>None</mayaClassification>
+		<help>None</help>
 	</shader>
 </shaders>

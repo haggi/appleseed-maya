@@ -58,6 +58,7 @@ struct ShaderAttribute
     std::string name;
     std::string type;
     std::string hint;
+    std::string compAttrArrayPath;
     bool optionMenu;
     AttributeType atype;
 };

@@ -319,14 +319,76 @@ void OSLUtilClass::listProjectionHistory(const MObject& mobject)
     }
 }
 
+int getArrayIndex(const std::string& value)
+{
+    char intval[12];
+    intval[0] = '\0';
+    int counter = 0;
+    for (size_t i = 0; i < value.size(); i++)
+    {
+        if ((value[i] >= '0') && (value[i] <= '9'))
+            intval[counter++] = value[i];
+    }
+    intval[counter] = '\0';
+    return MString(intval).asInt();
+}
+
 void OSLUtilClass::defineOSLParameter(ShaderAttribute& sa, MFnDependencyNode& depFn, OSLParamArray& paramArray)
 {
     MStatus stat;
-    // if we have an array plug we have do deal with several plugs.
-    // OSL is not able to connect nodes to array indices so we always have a list of parameters, e.g.
-    // for a color array we have in a osl shader color0 color1 color2 ... at the moment we are limited to
-    // several entries this way. I set it to ARRAY_MAX_ENTRIES.
-    MPlug plug = depFn.findPlug(sa.name.c_str());
+
+    /*
+        Arrays in OSL cannot be connected per element. e.g. a connection nodeA.outColor -> nodeB.colorList[3] is invalid.
+        Our workaround is simply to use a limited number of entries (e.g. color0, color1, color2...) and map the maya array 
+        element to the OSL entry, e.g. nodeA.outColor -> nodeB.color3.
+        Unfortunatly there is no direct relationship from the OSL attribute name with the plug name. e.g. an attribute called color1
+        can be an element of an array or an attribute which is really called color1 (like a color in the checker node).
+        Only the one who creates the OSL/Maya shader knows the real relationship so we add a hint in the OSL metadata code.
+        For an array element:
+            hint: arrayPlug
+        For an compoundAttributeArray like the one for a ramp or spline attribute:
+            hint: compAttrArrayPath=compoundAttributeArrayName.attributeName
+    */
+    MString attributeName(sa.name.c_str());
+    MPlug plug;
+
+    if (sa.compAttrArrayPath.size() > 0)
+    {
+        int index = getArrayIndex(sa.name);
+        std::vector<std::string> pathElements;
+        pystring::split(sa.compAttrArrayPath, pathElements, ".");
+        MPlug compoundPlug = depFn.findPlug(pathElements[0].c_str());
+        if (!compoundPlug.isNull())
+        {
+            if (compoundPlug.isArray())
+            {
+                unsigned int numElements = compoundPlug.numElements();
+                if (index < numElements)
+                {
+                    MPlug arrayPlug = compoundPlug[index];
+                    for (unsigned int childId = 0; childId < arrayPlug.numChildren(); childId++)
+                    {
+                        MString childName = arrayPlug.child(childId).name();
+                        MStringArray nameArray;
+                        childName.split('.', nameArray);
+                        MString indexString = MString("") + index;
+                        MString attrString = MString(sa.name.c_str());
+                        attrString.substitute(indexString, "");
+                        if (nameArray[nameArray.length() - 1] == attrString)
+                        {
+                            plug = arrayPlug.child(childId);
+                        }
+                    }
+                }
+                if (index == (numElements - 1))
+                {
+                    paramArray.push_back(OSLParameter("numEntries", (int)numElements));
+                }
+            }
+        }
+    }
+
+    //MPlug plug = depFn.findPlug(sa.name.c_str());
     if (plug.isArray())
     {
         int numEntries = plug.numElements();

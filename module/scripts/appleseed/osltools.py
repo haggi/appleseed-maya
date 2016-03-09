@@ -195,6 +195,8 @@ def readShadersXMLDescription():
             findElement = inp.find('hint')
             if findElement is not None:
                 inpp['hint'] = inp.find('hint').text
+                if inpp['hint'] and 'compAttrArrayPath' in inpp['hint']:
+                    inpp['compAttrArrayPath']=inpp['hint'].split("compAttrArrayPath=")[1].split(" ")[0]
             findElement = inp.find('min')
             if findElement is not None:
                 inpp['min'] = inp.find('min').text
