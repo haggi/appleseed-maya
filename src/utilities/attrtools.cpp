@@ -291,6 +291,23 @@ int getEnumInt(MPlug plug)
     return value;
 }
 
+MString getEnumString(const MPlug& plug)
+{
+    MDGContext ctx = MDGContext::fsNormal;
+    MStatus stat = MS::kSuccess;
+    bool result = false;
+    int id = plug.asShort(ctx, &stat);
+    if (!stat)
+        return "";
+    MFnEnumAttribute eAttr(plug.attribute(&stat));
+    if (!stat)
+        return "";
+    MString value = eAttr.fieldName(id, &stat);
+    if (!stat)
+        return "";
+    return value;
+}
+
 MString getEnumString(MString plugName, const MFnDependencyNode& dn)
 {
     MDGContext ctx = MDGContext::fsNormal;
@@ -585,6 +602,19 @@ MMatrix getMatrix(const char *plugName, const MFnDependencyNode& dn)
         MMatrix mat = fnMat.matrix();
         m = mat;
     }
+    return m;
+}
+
+MMatrix getMatrix(const MPlug& plug)
+{
+    MMatrix m;
+    m.setToIdentity();
+    MStatus stat;
+    MObject matrixObject;
+    plug.getValue(matrixObject);
+    MFnMatrixData fnMat(matrixObject);
+    MMatrix mat = fnMat.matrix();
+    m = mat;
     return m;
 }
 

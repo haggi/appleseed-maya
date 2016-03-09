@@ -319,7 +319,7 @@ void OSLUtilClass::listProjectionHistory(const MObject& mobject)
     }
 }
 
-int getArrayIndex(const std::string& value)
+unsigned int getArrayIndex(const std::string& value)
 {
     char intval[12];
     intval[0] = '\0';
@@ -330,7 +330,15 @@ int getArrayIndex(const std::string& value)
             intval[counter++] = value[i];
     }
     intval[counter] = '\0';
-    return MString(intval).asInt();
+    return MString(intval).asUnsigned();
+}
+
+MString removeIndexFromName(const MString& value, const int& index)
+{
+    MString indexString = MString("") + index;
+    MString attrString = value;
+    attrString.substitute(indexString, "");
+    return attrString;
 }
 
 void OSLUtilClass::defineOSLParameter(ShaderAttribute& sa, MFnDependencyNode& depFn, OSLParamArray& paramArray)
@@ -354,7 +362,7 @@ void OSLUtilClass::defineOSLParameter(ShaderAttribute& sa, MFnDependencyNode& de
 
     if (sa.compAttrArrayPath.size() > 0)
     {
-        int index = getArrayIndex(sa.name);
+        unsigned int index = getArrayIndex(sa.name);
         std::vector<std::string> pathElements;
         pystring::split(sa.compAttrArrayPath, pathElements, ".");
         MPlug compoundPlug = depFn.findPlug(pathElements[0].c_str());
@@ -369,17 +377,18 @@ void OSLUtilClass::defineOSLParameter(ShaderAttribute& sa, MFnDependencyNode& de
                     for (unsigned int childId = 0; childId < arrayPlug.numChildren(); childId++)
                     {
                         MString childName = arrayPlug.child(childId).name();
+                        MString attrString = removeIndexFromName(MString(sa.name.c_str()), index);
                         MStringArray nameArray;
                         childName.split('.', nameArray);
-                        MString indexString = MString("") + index;
-                        MString attrString = MString(sa.name.c_str());
-                        attrString.substitute(indexString, "");
                         if (nameArray[nameArray.length() - 1] == attrString)
                         {
                             plug = arrayPlug.child(childId);
                         }
                     }
                 }
+                else
+                    return;
+
                 if (index == (numElements - 1))
                 {
                     paramArray.push_back(OSLParameter("numEntries", (int)numElements));
@@ -388,80 +397,41 @@ void OSLUtilClass::defineOSLParameter(ShaderAttribute& sa, MFnDependencyNode& de
         }
     }
 
-    //MPlug plug = depFn.findPlug(sa.name.c_str());
-    if (plug.isArray())
+    if (sa.isArrayPlug)
     {
-        int numEntries = plug.numElements();
-        if (numEntries > ARRAY_MAX_ENTRIES)
+        unsigned int index = getArrayIndex(sa.name);
+        MString attrString = removeIndexFromName(MString(sa.name.c_str()), index);
+        MPlug arrayPlug = depFn.findPlug(attrString);
+        if (arrayPlug.isArray())
         {
-            Logging::warning(MString("Plug ") + plug.name() + " has more than 10 entries: " + numEntries + ", limiting to " + ARRAY_MAX_ENTRIES);
-            numEntries = ARRAY_MAX_ENTRIES;
-        }
-        for (int i = 0; i < numEntries; i++)
-        {
-            MPlug p = plug[i];
-            MString attrName = getCorrectOSLParameterName(p);
-
-            if (p.isCompound() && (getAttributeNameFromPlug(plug) == "colorEntryList"))
+            unsigned int numElements = arrayPlug.numElements();
+            if (index < numElements)
             {
-                MVector vec;
-                // colorEntryList has child0 == position, child1 = color
-                float position = p.child(0).asFloat();
-                vec.x = p.child(1).child(0).asFloat(); // colorR
-                vec.y = p.child(1).child(1).asFloat(); // colorG
-                vec.z = p.child(1).child(2).asFloat(); // colorB
-
-                MString posName = MString("position") + i;
-                MString colName = MString("color") + i;
-                paramArray.push_back(OSLParameter(colName, vec));
-                paramArray.push_back(OSLParameter(posName, position));
+                plug = arrayPlug[index];
             }
             else
-            {
-                // array index becomes nr, e.g. layeredShader.materialEntry[3] becomes materialEntry3
-                // color closures cannot be set with color value
-                int found = pystring::find(sa.type, "Closure");
-                if (found == -1)
-                {
-                    if (sa.type == "color")
-                    {
-                        paramArray.push_back(OSLParameter(attrName.asChar(), getColorAttr(p)));
-                    }
-                    if (sa.type == "vector")
-                    {
-                        paramArray.push_back(OSLParameter(attrName.asChar(), getVectorAttr(p)));
-                    }
-                    if (sa.type == "float")
-                    {
-                        paramArray.push_back(OSLParameter(attrName.asChar(), p.asFloat()));
-                    }
-                    if (sa.type == "enumint")
-                    {
-                        paramArray.push_back(OSLParameter(attrName.asChar(), getEnumInt(p)));
-                    }
-                    if (sa.type == "string")
-                    {
-                        paramArray.push_back(OSLParameter(attrName.asChar(), p.asString()));
-                    }
-                }
-            }
+                return;
         }
-        // all array using shader nodes will have an element with name numEntries
-        paramArray.push_back(OSLParameter("numEntries", numEntries));
-        return;
+    }
+
+    if (plug.isNull())
+    {
+        plug = depFn.findPlug(sa.name.c_str());
+        if (plug.isNull())
+            return;
     }
 
     if (sa.type == "string")
     {
-        // in OSL we don't have option menus, they are defined in our definition by string metadatas
+        // in OSL we don't have option menus, they are defined by string metadatas
         if (sa.optionMenu)
         {
-            MString v = getEnumString(sa.name.c_str(), depFn);
+            MString v = getEnumString(plug);
             paramArray.push_back(OSLParameter(sa.name.c_str(), v));
         }
         else
         {
-            MString stringParameter = getString(sa.name.c_str(), depFn);
+            MString stringParameter = plug.asString();;
             if (sa.name == "fileTextureName")
             {
                 // to support udim textures we check if we have a file texture node here.
@@ -518,33 +488,33 @@ void OSLUtilClass::defineOSLParameter(ShaderAttribute& sa, MFnDependencyNode& de
     }
     if (sa.type == "float")
     {
-        paramArray.push_back(OSLParameter(sa.name.c_str(), getFloatAttr(sa.name.c_str(), depFn, 0.0f)));
+        paramArray.push_back(OSLParameter(sa.name.c_str(), plug.asFloat()));
     }
     if (sa.type == "color")
     {
-        paramArray.push_back(OSLParameter(sa.name.c_str(), getColorAttr(sa.name.c_str(), depFn)));
+        paramArray.push_back(OSLParameter(sa.name.c_str(), getColorAttr(plug)));
     }
     if (sa.type == "int")
     {
-        paramArray.push_back(OSLParameter(sa.name.c_str(), getIntAttr(sa.name.c_str(), depFn, 0)));
+        paramArray.push_back(OSLParameter(sa.name.c_str(), plug.asInt()));
     }
     if (sa.type == "bool")
     {
-        paramArray.push_back(OSLParameter(sa.name.c_str(), getBoolAttr(sa.name.c_str(), depFn, false)));
+        paramArray.push_back(OSLParameter(sa.name.c_str(), plug.asBool()));
     }
     if (sa.type == "matrix")
     {
-        MMatrix value = getMatrix(sa.name.c_str(), depFn);
+        MMatrix value = getMatrix(plug);
         paramArray.push_back(OSLParameter(sa.name.c_str(), value));
     }
     if (sa.type == "vector")
     {
-        MVector v = getVectorAttr(sa.name.c_str(), depFn);
+        MVector v = getVectorAttr(plug);
         paramArray.push_back(OSLParameter(sa.name.c_str(), v));
     }
     if (sa.type == "enumint")
     {
-        int v = getEnumInt(sa.name.c_str(), depFn);
+        int v = getEnumInt(plug);
         paramArray.push_back(OSLParameter(sa.name.c_str(), v));
     }
 }

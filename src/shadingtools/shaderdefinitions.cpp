@@ -98,6 +98,10 @@ void ShaderDefinitions::readShaderDefinitions()
                         att.compAttrArrayPath = hintElements[1];
                     }
                 }
+                if (pystring::find(att.hint, "isArrayPlug") > -1)
+                {
+                     att.isArrayPlug = true;
+                }
             }
             const size_t options = input.second.count("options");
             if (options > 0)

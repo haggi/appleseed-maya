@@ -41,6 +41,7 @@ struct ShaderAttribute
     ShaderAttribute()
     {
         optionMenu = false;
+        isArrayPlug = false;
     }
 
     enum AttributeType
@@ -60,6 +61,7 @@ struct ShaderAttribute
     std::string hint;
     std::string compAttrArrayPath;
     bool optionMenu;
+    bool isArrayPlug;
     AttributeType atype;
 };
 

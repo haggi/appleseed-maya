@@ -91,6 +91,8 @@ bool getEnum(const char *plugName, const MFnDependencyNode& dn, int& id, MString
 
 MString getEnumString(MString plugName, const MFnDependencyNode& dn);
 
+MString getEnumString(const MPlug& plug);
+
 int getEnumInt(MString plugName, const MFnDependencyNode& dn);
 
 int getEnumInt(MPlug plug);
@@ -126,6 +128,8 @@ bool getPoint(const MString& plugName, const MFnDependencyNode& dn, MVector& val
 bool getMsgObj(const char *plugName, const MFnDependencyNode& dn, MObject& value);
 
 MMatrix getMatrix(const char *plugName, const MFnDependencyNode& dn);
+
+MMatrix getMatrix(const MPlug& plug);
 
 ATTR_TYPE getPlugAttrType(const char *plugName, const MFnDependencyNode& dn);
 
