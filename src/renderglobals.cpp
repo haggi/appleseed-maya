@@ -50,6 +50,7 @@
 
 RenderGlobals::RenderGlobals()
 {
+    static const char* imageFormats[] = { "png", "exr" };
     currentRenderPass = 0;
     currentRenderPassElementId = 0;
     maxTraceDepth = 4;
@@ -71,7 +72,7 @@ RenderGlobals::RenderGlobals()
     exportSceneFileName = "";
     useSunLightConnection = false;
     imagePath = "";
-    imageFormatString = getEnumString("imageFormat", MFnDependencyNode(getRenderGlobalsNode()));
+    imageFormatString = imageFormats[getEnumInt("imageFormat", MFnDependencyNode(getRenderGlobalsNode()))];
     currentFrameIndex = 0;
     sceneScale = 1.0f;
     filterSize = 3.0f;
