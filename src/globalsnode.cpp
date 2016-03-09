@@ -100,8 +100,8 @@ MStatus GlobalsNode::initialize()
 
     attr.motionBlurType = eAttr.create("motionBlurType", "motionBlurType", 0, &stat);
     stat = eAttr.addField("Center", 0);
-    stat = eAttr.addField("FrameStart", 1);
-    stat = eAttr.addField("FrameEnd", 2);
+    stat = eAttr.addField("Frame Start", 1);
+    stat = eAttr.addField("Frame End", 2);
     CHECK_MSTATUS(addAttribute(attr.motionBlurType));
 
     attr.doDof = nAttr.create("doDof", "doDof", MFnNumericData::kBoolean, false);
@@ -172,39 +172,39 @@ MStatus GlobalsNode::initialize()
     CHECK_MSTATUS(addAttribute(attr.exrMergeChannels));
 
     attr.sampling_mode = eAttr.create("sampling_mode", "sampling_mode", 0, &stat);
-    stat = eAttr.addField("qmc", 0);
-    stat = eAttr.addField("rng", 1);
+    stat = eAttr.addField("QMC", 0);
+    stat = eAttr.addField("RNG", 1);
     CHECK_MSTATUS(addAttribute(attr.sampling_mode));
 
     attr.tile_ordering = eAttr.create("tile_ordering", "tile_ordering", 2, &stat);
-    stat = eAttr.addField("linear", 0);
-    stat = eAttr.addField("spiral", 1);
-    stat = eAttr.addField("hilbert", 2);
-    stat = eAttr.addField("random", 3);
+    stat = eAttr.addField("Linear", 0);
+    stat = eAttr.addField("Spiral", 1);
+    stat = eAttr.addField("Hilbert", 2);
+    stat = eAttr.addField("Random", 3);
     CHECK_MSTATUS(addAttribute(attr.tile_ordering));
 
     attr.bitdepth = eAttr.create("bitdepth", "bitdepth", 3, &stat);
-    stat = eAttr.addField("8bit  Integer", 0);
-    stat = eAttr.addField("16bit Integer", 1);
-    stat = eAttr.addField("32bit Integer", 2);
-    stat = eAttr.addField("16bit Float(Half)", 3);
-    stat = eAttr.addField("32bit Float", 4);
-    stat = eAttr.addField("64bit Double", 5);
+    stat = eAttr.addField("8-bit Integer", 0);
+    stat = eAttr.addField("16-bit Integer", 1);
+    stat = eAttr.addField("32-bit Integer", 2);
+    stat = eAttr.addField("16-bit Floating Point (Half)", 3);
+    stat = eAttr.addField("32-bit Floating Point", 4);
+    stat = eAttr.addField("64-bit Floating Point", 5);
     CHECK_MSTATUS(addAttribute(attr.bitdepth));
 
     attr.pixel_renderer = eAttr.create("pixel_renderer", "pixel_renderer", 0, &stat);
-    stat = eAttr.addField("adaptive", 0);
-    stat = eAttr.addField("uniform", 1);
+    stat = eAttr.addField("Adaptive", 0);
+    stat = eAttr.addField("Uniform", 1);
     CHECK_MSTATUS(addAttribute(attr.pixel_renderer));
 
     attr.colorSpace = eAttr.create("colorSpace", "colorSpace", 0, &stat);
-    stat = eAttr.addField("linear_rgb", 0);
-    stat = eAttr.addField("srgb", 1);
-    stat = eAttr.addField("ciexyz", 2);
+    stat = eAttr.addField("Linear RGB", 0);
+    stat = eAttr.addField("sRGB", 1);
+    stat = eAttr.addField("CIE XYZ", 2);
     CHECK_MSTATUS(addAttribute(attr.colorSpace));
 
     attr.lightingEngine = eAttr.create("lightingEngine", "lightingEngine", 0, &stat);
-    stat = eAttr.addField("Unidirectional Path tracing", 0);
+    stat = eAttr.addField("Unidirectional Path Tracing", 0);
     stat = eAttr.addField("Stochastic Progressive Photon Mapping", 1);
     CHECK_MSTATUS(addAttribute(attr.lightingEngine));
 
@@ -408,8 +408,8 @@ void GlobalsNode::postConstructor()
 
     MPlug imgFormatPlug(thisObj, attr.imageFormat);
     MFnEnumAttribute imgFormatAttribute(imgFormatPlug.attribute());
-    imgFormatAttribute.addField("Png", 0);
-    imgFormatAttribute.addField("Exr", 1);
+    imgFormatAttribute.addField("PNG", 0);
+    imgFormatAttribute.addField("EXR", 1);
 
     MPlug filtertypePlug(thisObj, attr.filtertype);
     MFnEnumAttribute filtertypeAttribute(filtertypePlug.attribute());
