@@ -73,52 +73,50 @@ class AppleseedRenderer(renderer.MayaToRenderer):
     def updateTest(self, dummy=None):
         pass
     
+    def addUserTabs(self):
+        pm.renderer(self.rendererName, edit=True, addGlobalsTab=self.renderTabMelProcedure("AOVs"))
+        pm.renderer(self.rendererName, edit=True, addGlobalsTab=self.renderTabMelProcedure("Environment"))
+
     def updateEnvironment(self):
         envDict = self.rendererTabUiDict['environment']
         envType = self.renderGlobalsNode.environmentType.get()
 
-        if envType < 5:
-            envDict['pysSkyFrame'].setManage(False)
-            envDict['commonEnvFrame'].setManage(True)
-            envDict['oslFrame'].setManage(False)
-            
-            envDict['environmentColor'].setManage(False)
-            envDict['gradientHorizon'].setManage(False)
-            envDict['gradientZenit'].setManage(False)
-            envDict['environmentMap'].setManage(False)
-            envDict['latlongVeShift'].setManage(False)
-            envDict['latlongHoShift'].setManage(False)
-            
-            if envType == 0:
-                envDict['environmentColor'].setManage(True)
-            # Gradient
-            if envType == 1:
-                envDict['gradientHorizon'].setManage(True)
-                envDict['gradientZenit'].setManage(True)
-            # Map
-            if envType == 2:
-                envDict['environmentMap'].setManage(True)
-                envDict['latlongVeShift'].setManage(True)
-                envDict['latlongHoShift'].setManage(True)    
-            # SphericalMap
-            if envType == 3:
-                envDict['environmentMap'].setManage(True)
-                envDict['latlongVeShift'].setManage(True)
-                envDict['latlongHoShift'].setManage(True)    
-            # MirrorBall
-            if envType == 4:
-                envDict['environmentMap'].setManage(True)
-                envDict['latlongVeShift'].setManage(True)
-                envDict['latlongHoShift'].setManage(True)
-        else:
-            envDict['commonEnvFrame'].setManage(False)
-            
+        # Simply turn all off
+        for key in envDict.keys():
+            envDict[key].setEnable(False)
+        envDict['environmentType'].setEnable(True)
+
+        # Constant
+        if envType == 0:
+            envDict['environmentColor'].setEnable(True)
+        # Gradient
+        if envType == 1:
+            envDict['gradientHorizon'].setEnable(True)
+            envDict['gradientZenit'].setEnable(True)
+        # Map
+        if envType == 2:
+            envDict['environmentMap'].setEnable(True)
+            envDict['latlongVeShift'].setEnable(True)
+            envDict['latlongHoShift'].setEnable(True)
+
+        # SphericalMap
+        if envType == 3:
+            envDict['environmentMap'].setEnable(True)
+            envDict['latlongVeShift'].setEnable(True)
+            envDict['latlongHoShift'].setEnable(True)
+
+        # MirrorBall
+        if envType == 4:
+            envDict['environmentMap'].setEnable(True)
+            envDict['latlongVeShift'].setEnable(True)
+            envDict['latlongHoShift'].setEnable(True)
+
         # Pyhsical Sky
         if envType == 5:
-            envDict['pysSkyFrame'].setManage(True)
-            envDict['commonEnvFrame'].setManage(False)
-            envDict['oslFrame'].setManage(False)
-            
+            envDict['pskModel'].setEnable(True)
+            envDict['pskUsePhySun'].setEnable(True)
+            envDict['pskSunExitMulti'].setEnable(True)
+
             if self.renderGlobalsNode.physicalSun.get():
                 try:
                     sunConnection = self.renderGlobalsNode.physicalSunConnection.listConnections()[0]
@@ -135,22 +133,20 @@ class AppleseedRenderer(renderer.MayaToRenderer):
 
             skyModel = self.renderGlobalsNode.skyModel.get()
             if skyModel == 1:  # hosek
-                envDict['pskGrAlbedo'].setManage(True)
-            else:
-                envDict['pskGrAlbedo'].setManage(False)
-                
-#             if self.renderGlobalsNode.physicalSun.get():
-#                 envDict['pskSunAzi'].setManage(False)
-#                 envDict['pskSunEle'].setManage(False)
-#             else:
-#                 envDict['pskSunAzi'].setManage(True)
-#                 envDict['pskSunEle'].setManage(True)
+                envDict['pskGrAlbedo'].setEnable(True)
+            envDict['pskGrHShit'].setEnable(True)
+            envDict['pskLumMulti'].setEnable(True)
+            envDict['pskSatMulti'].setEnable(True)
+            if not self.renderGlobalsNode.physicalSun.get():
+                envDict['pskSunAzi'].setEnable(True)
+                envDict['pskSunEle'].setEnable(True)
+            envDict['pskTurb'].setEnable(True)
+            envDict['pskTurbMax'].setEnable(True)
+            envDict['pskTurbMin'].setEnable(True)
 
         # OSL
         if envType == 6:
-            envDict['pysSkyFrame'].setManage(False)
-            envDict['commonEnvFrame'].setManage(False)
-            envDict['oslFrame'].setManage(True)
+            pass
 
     def AppleseedEnvironmentCreateTab(self):
         self.createGlobalsNode()
@@ -167,25 +163,27 @@ class AppleseedRenderer(renderer.MayaToRenderer):
                         attr = pm.Attribute(self.renderGlobalsNodeName + ".environmentType")
                         envDict['environmentType'] = pm.attrEnumOptionMenuGrp(label="Environemnt Type", at=self.renderGlobalsNodeName + ".environmentType", ei=self.getEnumList(attr))
 
-                with pm.frameLayout(label="Environment Colors", collapsable=False) as envDict['commonEnvFrame']:
+                with pm.frameLayout(label="Environment Colors", collapsable=False):
                     with pm.columnLayout(self.rendererName + "ColumnLayout", adjustableColumn=True, width=400):
-                        ui = pm.floatFieldGrp(label="Environemnt Intensity:", value1=1.0, numberOfFields=1)
+                        ui = pm.floatFieldGrp(label="Environment Intensity:", value1=1.0, numberOfFields=1)
                         pm.connectControl(ui, self.renderGlobalsNodeName + ".environmentIntensity", index=2)
-                        envDict['environmentColor'] = pm.attrColorSliderGrp(label="Environment Color", at=self.renderGlobalsNodeName + ".environmentColor")
-                        envDict['gradientHorizon'] = pm.attrColorSliderGrp(label="Gradient Horizon", at=self.renderGlobalsNodeName + ".gradientHorizon")
-                        envDict['gradientZenit'] = pm.attrColorSliderGrp(label="Gradient Zenit", at=self.renderGlobalsNodeName + ".gradientZenit")
-                        envDict['environmentMap'] = pm.attrColorSliderGrp(label="Environment Map", at=self.renderGlobalsNodeName + ".environmentMap")
-                        self.addRenderGlobalsUIElement(attName='latlongHoShift', uiType='float', displayName='LatLong Horiz Shift:', uiDict=uiDict)
-                        self.addRenderGlobalsUIElement(attName='latlongVeShift', uiType='float', displayName='LatLong Vertical Shift:', uiDict=uiDict)
+                        envDict['environmentColor'] = pm.attrColorSliderGrp(label="Environment Color:", at=self.renderGlobalsNodeName + ".environmentColor")
+                        envDict['gradientHorizon'] = pm.attrColorSliderGrp(label="Gradient Horizon Color:", at=self.renderGlobalsNodeName + ".gradientHorizon")
+                        envDict['gradientZenit'] = pm.attrColorSliderGrp(label="Gradient Zenith Color:", at=self.renderGlobalsNodeName + ".gradientZenit")
+                        envDict['environmentMap'] = pm.attrColorSliderGrp(label="Environment Map:", at=self.renderGlobalsNodeName + ".environmentMap")
+                        self.addRenderGlobalsUIElement(attName='latlongHoShift', uiType='float', displayName='Lat-Long Horizontal Shift:', uiDict=uiDict)
+                        self.addRenderGlobalsUIElement(attName='latlongVeShift', uiType='float', displayName='Lat-Long Vertical Shift:', uiDict=uiDict)
 
-                with pm.frameLayout(label="Physical Sky", collapsable=False) as envDict['pysSkyFrame']:
+                with pm.frameLayout(label="Physical Sky", collapsable=False):
                     with pm.columnLayout(self.rendererName + "ColumnLayout", adjustableColumn=True, width=400):
                         attr = pm.Attribute(self.renderGlobalsNodeName + ".skyModel")
-                        envDict['pskModel'] = pm.attrEnumOptionMenuGrp(label="Sky Model", at=self.renderGlobalsNodeName + ".skyModel", ei=self.getEnumList(attr))
+                        envDict['pskModel'] = pm.attrEnumOptionMenuGrp(label="Sky Model:", at=self.renderGlobalsNodeName + ".skyModel", ei=self.getEnumList(attr))
                         pm.separator()
                         envDict['pskUsePhySun'] = pm.checkBoxGrp(label="Use Physical Sun:", value1=False, cc=pm.Callback(self.uiCallback, tab="environment"))
                         pm.connectControl(envDict['pskUsePhySun'], self.renderGlobalsNodeName + ".physicalSun", index=2)
-                        envDict['pskPhySun'] = pm.textFieldGrp(label="Sunobject:", text="", editable=False)
+                        envDict['pskPhySun'] = pm.textFieldGrp(label="Sun Object:", text="", editable=False)
+                        envDict['pskSunExitMulti'] = pm.floatFieldGrp(label="Sun Exitance Multiplier:", value1=1.0, numberOfFields=1)
+                        pm.connectControl(envDict['pskSunExitMulti'], self.renderGlobalsNodeName + ".sunExitanceMultiplier", index=2)
                         pm.separator()
                         envDict['pskGrAlbedo'] = pm.floatFieldGrp(label="Ground Albedo:", value1=1.0, numberOfFields=1)
                         pm.connectControl(envDict['pskGrAlbedo'], self.renderGlobalsNodeName + ".ground_albedo", index=2)
@@ -197,15 +195,10 @@ class AppleseedRenderer(renderer.MayaToRenderer):
                         pm.connectControl(envDict['pskSatMulti'], self.renderGlobalsNodeName + ".saturation_multiplier", index=2)
                         envDict['pskTurb'] = pm.floatFieldGrp(label="Turbidity:", value1=1.0, numberOfFields=1)
                         pm.connectControl(envDict['pskTurb'], self.renderGlobalsNodeName + ".turbidity", index=2)
-                        envDict['pskTurbMax'] = pm.floatFieldGrp(label="Turbidity Max:", value1=1.0, numberOfFields=1)
-                        pm.connectControl(envDict['pskTurbMax'], self.renderGlobalsNodeName + ".turbidity_max", index=2)
                         envDict['pskTurbMin'] = pm.floatFieldGrp(label="Turbidity Min:", value1=1.0, numberOfFields=1)
                         pm.connectControl(envDict['pskTurbMin'], self.renderGlobalsNodeName + ".turbidity_min", index=2)
-                        
-                with pm.frameLayout(label="OSL", collapsable=False) as envDict['oslFrame']:
-                    with pm.columnLayout(self.rendererName + "ColumnLayout", adjustableColumn=True, width=400):
-                        envDict['environmentColor'] = pm.attrColorSliderGrp(label="OSL Background", at=self.renderGlobalsNodeName + ".environmentColor")
-                        
+                        envDict['pskTurbMax'] = pm.floatFieldGrp(label="Turbidity Max:", value1=1.0, numberOfFields=1)
+                        pm.connectControl(envDict['pskTurbMax'], self.renderGlobalsNodeName + ".turbidity_max", index=2)
 
         pm.setUITemplate("attributeEditorTemplate", popTemplate=True)
         pm.formLayout(parentForm, edit=True, attachForm=[ (scLo, "top", 0), (scLo, "bottom", 0), (scLo, "left", 0), (scLo, "right", 0) ])
@@ -316,37 +309,37 @@ class AppleseedRenderer(renderer.MayaToRenderer):
             with pm.columnLayout(self.rendererName + "ColumnLayout", adjustableColumn=True, width=400):
                 with pm.frameLayout(label="Pixel Sampler", collapsable=True, collapse=False):
                     with pm.columnLayout(self.rendererName + "ColumnLayout", adjustableColumn=True, width=400):
-                        self.addRenderGlobalsUIElement(attName='pixel_renderer', uiType='enum', displayName='Pixel Sampler', default='0', uiDict=uiDict, callback=self.AppleseedRendererUpdateTab)
-                        self.addRenderGlobalsUIElement(attName='minSamples', uiType='int', displayName='Min Samples', default=False, uiDict=uiDict)
-                        self.addRenderGlobalsUIElement(attName='maxSamples', uiType='int', displayName='Max Samples', default=False, uiDict=uiDict)
-                        self.addRenderGlobalsUIElement(attName='maxError', uiType='float', displayName='Max Error', default=False, uiDict=uiDict)
-                        self.addRenderGlobalsUIElement(attName='enable_diagnostics', uiType='bool', displayName="Diagnostic AOV's", default=False, uiDict=uiDict)
+                        self.addRenderGlobalsUIElement(attName='pixel_renderer', uiType='enum', displayName='Pixel Sampler:', default='0', uiDict=uiDict, callback=self.AppleseedRendererUpdateTab)
+                        self.addRenderGlobalsUIElement(attName='minSamples', uiType='int', displayName='Min Samples:', default=False, uiDict=uiDict)
+                        self.addRenderGlobalsUIElement(attName='maxSamples', uiType='int', displayName='Max Samples:', default=False, uiDict=uiDict)
+                        self.addRenderGlobalsUIElement(attName='maxError', uiType='float', displayName='Max Error:', default=False, uiDict=uiDict)
+                        self.addRenderGlobalsUIElement(attName='enable_diagnostics', uiType='bool', displayName="Diagnostic AOVs:", default=False, uiDict=uiDict)
                         pm.separator()
-                        self.addRenderGlobalsUIElement(attName='frameRendererPasses', uiType='int', displayName='Passes', uiDict=uiDict)
+                        self.addRenderGlobalsUIElement(attName='frameRendererPasses', uiType='int', displayName='Passes:', uiDict=uiDict)
 
                 with pm.frameLayout(label="Filtering", collapsable=True, collapse=False):
                     with pm.columnLayout(self.rendererName + "ColumnLayout", adjustableColumn=True, width=400):
                         attr = pm.Attribute(self.renderGlobalsNodeName + ".filtertype")
-                        ui = pm.attrEnumOptionMenuGrp(label="Filter Type", at=self.renderGlobalsNodeName + ".filtertype", ei=self.getEnumList(attr))
-                        self.addRenderGlobalsUIElement(attName='filtersize', uiType='int', displayName='Filter Size', default=False, uiDict=uiDict)
+                        ui = pm.attrEnumOptionMenuGrp(label="Filter Type:", at=self.renderGlobalsNodeName + ".filtertype", ei=self.getEnumList(attr))
+                        self.addRenderGlobalsUIElement(attName='filtersize', uiType='int', displayName='Filter Size:', default=False, uiDict=uiDict)
 
                 with pm.frameLayout(label="Features", collapsable=True, collapse=False):
                     with pm.columnLayout(self.rendererName + "ColumnLayout", adjustableColumn=True, width=400):
-                        self.addRenderGlobalsUIElement(attName='doMotionBlur', uiType='bool', displayName='Motion Blur', default=False, uiDict=uiDict)
-                        self.addRenderGlobalsUIElement(attName='doDof', uiType='bool', displayName='Depth Of Field', default=False, uiDict=uiDict)
+                        self.addRenderGlobalsUIElement(attName='doMotionBlur', uiType='bool', displayName='Motion Blur:', default=False, uiDict=uiDict)
+                        self.addRenderGlobalsUIElement(attName='doDof', uiType='bool', displayName='Depth Of Field:', default=False, uiDict=uiDict)
 
                 with pm.frameLayout(label="Output", collapsable=True, collapse=False):
                     with pm.columnLayout(self.rendererName + "ColumnLayout", adjustableColumn=True, width=400):
                         attr = pm.Attribute(self.renderGlobalsNodeName + ".bitdepth")
-                        ui = pm.attrEnumOptionMenuGrp(label="Bit Depth", at=self.renderGlobalsNodeName + ".bitdepth", ei=self.getEnumList(attr))
+                        ui = pm.attrEnumOptionMenuGrp(label="Pixel Format:", at=self.renderGlobalsNodeName + ".bitdepth", ei=self.getEnumList(attr))
                         attr = pm.Attribute(self.renderGlobalsNodeName + ".colorSpace")
-                        ui = pm.attrEnumOptionMenuGrp(label="Color Space", at=self.renderGlobalsNodeName + ".colorSpace", ei=self.getEnumList(attr))
+                        ui = pm.attrEnumOptionMenuGrp(label="Color Space:", at=self.renderGlobalsNodeName + ".colorSpace", ei=self.getEnumList(attr))
                         ui = pm.checkBoxGrp(label="Clamping:", value1=False)
                         pm.connectControl(ui, self.renderGlobalsNodeName + ".clamping", index=2)
 
                 with pm.frameLayout(label="Lighting Engine", collapsable=True, collapse=False):
                     with pm.columnLayout(self.rendererName + "ColumnLayout", adjustableColumn=True, width=400):
-                        self.addRenderGlobalsUIElement(attName='lightingEngine', uiType='enum', displayName='Lighting Engine', default='0', uiDict=uiDict, callback=self.AppleseedRendererUpdateTab)
+                        self.addRenderGlobalsUIElement(attName='lightingEngine', uiType='enum', displayName='Lighting Engine:', default='0', uiDict=uiDict, callback=self.AppleseedRendererUpdateTab)
                         with pm.frameLayout(label="Lighting Engine Settings", collapsable=True, collapse=False) as uiDict['LE_framelayout']:
                             with pm.columnLayout(self.rendererName + "LEColumnLayout", adjustableColumn=True, width=400) as uiDict['LE_layout']:
                                 pass
@@ -356,8 +349,8 @@ class AppleseedRenderer(renderer.MayaToRenderer):
                         self.addRenderGlobalsUIElement(attName='threads', uiType='int', displayName='Threads:', uiDict=uiDict)
                         self.addRenderGlobalsUIElement(attName='rendererVerbosity', uiType='int', displayName='Verbosity:', uiDict=uiDict)
                         self.addRenderGlobalsUIElement(attName='tilesize', uiType='int', displayName='Tile Size:', uiDict=uiDict)
-                        self.addRenderGlobalsUIElement(attName='texCacheSize', uiType='int', displayName='Tex Cache Size (kb):', uiDict=uiDict)
-                        self.addRenderGlobalsUIElement(attName='assemblySBVH', uiType='bool', displayName='Use SBVH Acc. for mb:', uiDict=uiDict)
+                        self.addRenderGlobalsUIElement(attName='texCacheSize', uiType='int', displayName='Tex Cache Size (KB):', uiDict=uiDict)
+                        self.addRenderGlobalsUIElement(attName='assemblySBVH', uiType='bool', displayName='Use SBVH Acc. for MB:', uiDict=uiDict)
 
         pm.setUITemplate("renderGlobalsTemplate", popTemplate=True)
         pm.setUITemplate("attributeEditorTemplate", popTemplate=True)
@@ -372,7 +365,7 @@ class AppleseedRenderer(renderer.MayaToRenderer):
         uiDict = self.rendererTabUiDict['common']
 
         if self.renderGlobalsNode.pixel_renderer.get() == 0:
-            uiDict['maxSamples'].setLabel("Max Samples")
+            uiDict['maxSamples'].setLabel("Max Samples:")
             uiDict['maxSamples'].setEnable(True)
             uiDict['minSamples'].setManage(True)
             uiDict['maxError'].setManage(True)
@@ -380,19 +373,19 @@ class AppleseedRenderer(renderer.MayaToRenderer):
         if self.renderGlobalsNode.pixel_renderer.get() == 1:
             uiDict['minSamples'].setManage(False)
             uiDict['maxError'].setManage(False)
-            uiDict['maxSamples'].setLabel("Samples")
+            uiDict['maxSamples'].setLabel("Samples:")
 
         pm.deleteUI(uiDict['LE_layout'])
         with pm.columnLayout(self.rendererName + "LEColumnLayout", adjustableColumn=True, width=400, parent=uiDict['LE_framelayout']) as uiDict['LE_layout']:
             if self.renderGlobalsNode.lightingEngine.get() == 0:  # path tracer
-                self.addRenderGlobalsUIElement(attName='enable_ibl', uiType='bool', displayName='Enable IBL', default=False, uiDict=uiDict, callback=self.AppleseedRendererUpdateTab)
-                self.addRenderGlobalsUIElement(attName='enable_caustics', uiType='bool', displayName='Enable Caustics', default=False, uiDict=uiDict)
-                self.addRenderGlobalsUIElement(attName='enable_dl', uiType='bool', displayName='Enable Direct Light', default=False, uiDict=uiDict, callback=self.AppleseedRendererUpdateTab)
+                self.addRenderGlobalsUIElement(attName='enable_ibl', uiType='bool', displayName='Enable IBL:', default=False, uiDict=uiDict, callback=self.AppleseedRendererUpdateTab)
+                self.addRenderGlobalsUIElement(attName='enable_caustics', uiType='bool', displayName='Enable Caustics:', default=False, uiDict=uiDict)
+                self.addRenderGlobalsUIElement(attName='enable_dl', uiType='bool', displayName='Enable Direct Light:', default=False, uiDict=uiDict, callback=self.AppleseedRendererUpdateTab)
                 pm.separator()
-                self.addRenderGlobalsUIElement(attName='environmentSamples', uiType='int', displayName='Environment Samples', uiDict=uiDict)
-                self.addRenderGlobalsUIElement(attName='directLightSamples', uiType='int', displayName='Direct Light Samples', uiDict=uiDict)
-                self.addRenderGlobalsUIElement(attName='max_ray_intensity', uiType='float', displayName='Max Ray Intensity', anno='Clamp intensity of rays (after the first bounce) to this value to reduce fireflies', uiDict=uiDict)
-                self.addRenderGlobalsUIElement(attName='max_path_length', uiType='float', displayName='Max Bounces', uiDict=uiDict)
+                self.addRenderGlobalsUIElement(attName='environmentSamples', uiType='int', displayName='Environment Samples:', uiDict=uiDict)
+                self.addRenderGlobalsUIElement(attName='directLightSamples', uiType='int', displayName='Direct Light Samples:', uiDict=uiDict)
+                self.addRenderGlobalsUIElement(attName='max_ray_intensity', uiType='float', displayName='Max Ray Intensity:', anno='Clamp intensity of rays (after the first bounce) to this value to reduce fireflies', uiDict=uiDict)
+                self.addRenderGlobalsUIElement(attName='max_path_length', uiType='float', displayName='Max Bounces:', uiDict=uiDict)
                 if not self.renderGlobalsNode.enable_ibl.get():
                     uiDict['environmentSamples'].setEnable(False)
                 else:
@@ -443,10 +436,10 @@ class AppleseedRenderer(renderer.MayaToRenderer):
             with pm.columnLayout(self.rendererName + "TrColumnLayout", adjustableColumn=True, width=400):
                 with pm.frameLayout(label="Translator", collapsable=True, collapse=False):
                     with pm.columnLayout(adjustableColumn=True, width=400):
-                        self.addRenderGlobalsUIElement(attName='translatorVerbosity', uiType='enum', displayName='Verbosity', default='0', uiDict=uiDict)
-                with pm.frameLayout(label="{0} Output".format(self.rendererName), collapsable=True, collapse=False):
+                        self.addRenderGlobalsUIElement(attName='translatorVerbosity', uiType='enum', displayName='Verbosity:', default='0', uiDict=uiDict)
+                with pm.frameLayout(label="appleseed Output", collapsable=True, collapse=False):
                     with pm.columnLayout(adjustableColumn=True, width=400):
-                        self.addRenderGlobalsUIElement(attName='exportMode', uiType='enum', displayName='Output Mode', default='0', uiDict=uiDict, callback=self.AppleseedTranslatorUpdateTab)
+                        self.addRenderGlobalsUIElement(attName='exportMode', uiType='enum', displayName='Output Mode:', default='0', uiDict=uiDict, callback=self.AppleseedTranslatorUpdateTab)
                     with pm.rowLayout(nc=3) as uiDict['outputFilenameLayout']:
                         pm.text(label="Output Filename:")
                         uiDict['fileNameField'] = pm.textField(text=self.renderGlobalsNode.exportSceneFileName.get())
@@ -459,13 +452,13 @@ class AppleseedRenderer(renderer.MayaToRenderer):
                         pm.connectControl(ui, self.renderGlobalsNodeName + ".useOptimizedTextures", index=2)
                     with pm.rowLayout(nc=3):
                         self.rendererTabUiDict['opti'] = optiDict
-                        pm.text(label="OptimizedTex Dir:")
+                        pm.text(label="Optimized Textures Dir:")
                         optiDict['optiField'] = pm.textField(text=self.renderGlobalsNode.optimizedTexturePath.get())
                         pm.symbolButton(image="navButtonBrowse.png", c=self.dirBrowse)
                         pm.connectControl(optiDict['optiField'], self.renderGlobalsNodeName + ".optimizedTexturePath", index=2)
 
                 with pm.frameLayout(label="Additional Settings", collapsable=True, collapse=False):
-                    ui = pm.floatFieldGrp(label="Scene scale:", value1=1.0, numberOfFields=1)
+                    ui = pm.floatFieldGrp(label="Scene Scale:", value1=1.0, numberOfFields=1)
                     pm.connectControl(ui, self.renderGlobalsNodeName + ".sceneScale", index=2)
 
         pm.setUITemplate("attributeEditorTemplate", popTemplate=True)
