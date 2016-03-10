@@ -294,6 +294,11 @@ MStatus GlobalsNode::initialize()
     nAttr.setConnectable(false);
     CHECK_MSTATUS(addAttribute(attr.environmentColor));
 
+    attr.environmentOSL = nAttr.createColor("environmentOSL", "environmentOSL");
+    nAttr.setDefault(0.6f, 0.7f, 0.9f);
+    nAttr.setConnectable(false);
+    CHECK_MSTATUS(addAttribute(attr.environmentOSL));
+
     attr.gradientHorizon = nAttr.createColor("gradientHorizon", "gradientHorizon");
     nAttr.setDefault(0.8f, 0.8f, 0.9f);
     nAttr.setConnectable(false);

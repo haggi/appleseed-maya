@@ -167,6 +167,8 @@ class GlobalsNode
         MObject sunExitanceMultiplier;
         MObject AOVs;
 
+        MObject environmentOSL;
+
         // SPPM.
         MObject sppmAlpha;
         MObject dl_mode;

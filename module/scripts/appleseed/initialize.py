@@ -74,42 +74,48 @@ class AppleseedRenderer(renderer.MayaToRenderer):
         envDict = self.rendererTabUiDict['environment']
         envType = self.renderGlobalsNode.environmentType.get()
 
-        # Simply turn all off
-        for key in envDict.keys():
-            envDict[key].setEnable(False)
-        envDict['environmentType'].setEnable(True)
-
-        # Constant
-        if envType == 0:
-            envDict['environmentColor'].setEnable(True)
-        # Gradient
-        if envType == 1:
-            envDict['gradientHorizon'].setEnable(True)
-            envDict['gradientZenit'].setEnable(True)
-        # Map
-        if envType == 2:
-            envDict['environmentMap'].setEnable(True)
-            envDict['latlongVeShift'].setEnable(True)
-            envDict['latlongHoShift'].setEnable(True)
-
-        # SphericalMap
-        if envType == 3:
-            envDict['environmentMap'].setEnable(True)
-            envDict['latlongVeShift'].setEnable(True)
-            envDict['latlongHoShift'].setEnable(True)
-
-        # MirrorBall
-        if envType == 4:
-            envDict['environmentMap'].setEnable(True)
-            envDict['latlongVeShift'].setEnable(True)
-            envDict['latlongHoShift'].setEnable(True)
-
+        if envType < 5:
+            envDict['pysSkyFrame'].setManage(False)
+            envDict['commonEnvFrame'].setManage(True)
+            envDict['oslFrame'].setManage(False)
+            
+            envDict['environmentColor'].setManage(False)
+            envDict['gradientHorizon'].setManage(False)
+            envDict['gradientZenit'].setManage(False)
+            envDict['environmentMap'].setManage(False)
+            envDict['latlongVeShift'].setManage(False)
+            envDict['latlongHoShift'].setManage(False)
+            
+            if envType == 0:
+                envDict['environmentColor'].setManage(True)
+            # Gradient
+            if envType == 1:
+                envDict['gradientHorizon'].setManage(True)
+                envDict['gradientZenit'].setManage(True)
+            # Map
+            if envType == 2:
+                envDict['environmentMap'].setManage(True)
+                envDict['latlongVeShift'].setManage(True)
+                envDict['latlongHoShift'].setManage(True)    
+            # SphericalMap
+            if envType == 3:
+                envDict['environmentMap'].setManage(True)
+                envDict['latlongVeShift'].setManage(True)
+                envDict['latlongHoShift'].setManage(True)    
+            # MirrorBall
+            if envType == 4:
+                envDict['environmentMap'].setManage(True)
+                envDict['latlongVeShift'].setManage(True)
+                envDict['latlongHoShift'].setManage(True)
+        else:
+            envDict['commonEnvFrame'].setManage(False)
+            
         # Pyhsical Sky
         if envType == 5:
-            envDict['pskModel'].setEnable(True)
-            envDict['pskUsePhySun'].setEnable(True)
-            envDict['pskSunExitMulti'].setEnable(True)
-
+            envDict['pysSkyFrame'].setManage(True)
+            envDict['commonEnvFrame'].setManage(False)
+            envDict['oslFrame'].setManage(False)
+            
             if self.renderGlobalsNode.physicalSun.get():
                 try:
                     sunConnection = self.renderGlobalsNode.physicalSunConnection.listConnections()[0]
@@ -126,20 +132,15 @@ class AppleseedRenderer(renderer.MayaToRenderer):
 
             skyModel = self.renderGlobalsNode.skyModel.get()
             if skyModel == 1:  # hosek
-                envDict['pskGrAlbedo'].setEnable(True)
-            envDict['pskGrHShit'].setEnable(True)
-            envDict['pskLumMulti'].setEnable(True)
-            envDict['pskSatMulti'].setEnable(True)
-            if not self.renderGlobalsNode.physicalSun.get():
-                envDict['pskSunAzi'].setEnable(True)
-                envDict['pskSunEle'].setEnable(True)
-            envDict['pskTurb'].setEnable(True)
-            envDict['pskTurbMax'].setEnable(True)
-            envDict['pskTurbMin'].setEnable(True)
+                envDict['pskGrAlbedo'].setManage(True)
+            else:
+                envDict['pskGrAlbedo'].setManage(False)
 
         # OSL
         if envType == 6:
-            pass
+            envDict['pysSkyFrame'].setManage(False)
+            envDict['commonEnvFrame'].setManage(False)
+            envDict['oslFrame'].setManage(True)
 
     def AppleseedEnvironmentCreateTab(self):
         self.createGlobalsNode()
@@ -156,7 +157,7 @@ class AppleseedRenderer(renderer.MayaToRenderer):
                         attr = pm.Attribute(self.renderGlobalsNodeName + ".environmentType")
                         envDict['environmentType'] = pm.attrEnumOptionMenuGrp(label="Environemnt Type", at=self.renderGlobalsNodeName + ".environmentType", ei=self.getEnumList(attr))
 
-                with pm.frameLayout(label="Environment Colors", collapsable=False):
+                with pm.frameLayout(label="Environment Colors", collapsable=False) as envDict['commonEnvFrame']:
                     with pm.columnLayout(self.rendererName + "ColumnLayout", adjustableColumn=True, width=400):
                         ui = pm.floatFieldGrp(label="Environment Intensity:", value1=1.0, numberOfFields=1)
                         pm.connectControl(ui, self.renderGlobalsNodeName + ".environmentIntensity", index=2)
@@ -167,7 +168,7 @@ class AppleseedRenderer(renderer.MayaToRenderer):
                         self.addRenderGlobalsUIElement(attName='latlongHoShift', uiType='float', displayName='Lat-Long Horizontal Shift:', uiDict=uiDict)
                         self.addRenderGlobalsUIElement(attName='latlongVeShift', uiType='float', displayName='Lat-Long Vertical Shift:', uiDict=uiDict)
 
-                with pm.frameLayout(label="Physical Sky", collapsable=False):
+                with pm.frameLayout(label="Physical Sky", collapsable=False) as envDict['pysSkyFrame']:
                     with pm.columnLayout(self.rendererName + "ColumnLayout", adjustableColumn=True, width=400):
                         attr = pm.Attribute(self.renderGlobalsNodeName + ".skyModel")
                         envDict['pskModel'] = pm.attrEnumOptionMenuGrp(label="Sky Model:", at=self.renderGlobalsNodeName + ".skyModel", ei=self.getEnumList(attr))
@@ -175,8 +176,6 @@ class AppleseedRenderer(renderer.MayaToRenderer):
                         envDict['pskUsePhySun'] = pm.checkBoxGrp(label="Use Physical Sun:", value1=False, cc=pm.Callback(self.uiCallback, tab="environment"))
                         pm.connectControl(envDict['pskUsePhySun'], self.renderGlobalsNodeName + ".physicalSun", index=2)
                         envDict['pskPhySun'] = pm.textFieldGrp(label="Sun Object:", text="", editable=False)
-                        envDict['pskSunExitMulti'] = pm.floatFieldGrp(label="Sun Exitance Multiplier:", value1=1.0, numberOfFields=1)
-                        pm.connectControl(envDict['pskSunExitMulti'], self.renderGlobalsNodeName + ".sunExitanceMultiplier", index=2)
                         pm.separator()
                         envDict['pskGrAlbedo'] = pm.floatFieldGrp(label="Ground Albedo:", value1=1.0, numberOfFields=1)
                         pm.connectControl(envDict['pskGrAlbedo'], self.renderGlobalsNodeName + ".ground_albedo", index=2)
@@ -192,6 +191,10 @@ class AppleseedRenderer(renderer.MayaToRenderer):
                         pm.connectControl(envDict['pskTurbMin'], self.renderGlobalsNodeName + ".turbidity_min", index=2)
                         envDict['pskTurbMax'] = pm.floatFieldGrp(label="Turbidity Max:", value1=1.0, numberOfFields=1)
                         pm.connectControl(envDict['pskTurbMax'], self.renderGlobalsNodeName + ".turbidity_max", index=2)
+                        
+                with pm.frameLayout(label="OSL", collapsable=False) as envDict['oslFrame']:
+                    with pm.columnLayout(self.rendererName + "ColumnLayout", adjustableColumn=True, width=400):
+                        envDict['environmentOSL'] = pm.attrColorSliderGrp(label="OSL Background", at=self.renderGlobalsNodeName + ".environmentOSL")
 
         pm.setUITemplate("attributeEditorTemplate", popTemplate=True)
         pm.formLayout(parentForm, edit=True, attachForm=[ (scLo, "top", 0), (scLo, "bottom", 0), (scLo, "left", 0), (scLo, "right", 0) ])
