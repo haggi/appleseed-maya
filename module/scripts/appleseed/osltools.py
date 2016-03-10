@@ -129,6 +129,10 @@ def analyzeContent(content):
                     currentElement['options'] = line.split(" ")[-1].replace("\"", "").split("|")
                 if "hint = " in line:
                     currentElement['hint'] = line.split(" ")[-1].replace("\"", "")
+                if "compAttrArrayPath = " in line:
+                    currentElement['compAttrArrayPath'] = line.split(" ")[-1].replace("\"", "")
+                if "isArrayPlug = " in line:
+                    currentElement['isArrayPlug'] = line.split(" ")[-1].replace("\"", "")
                 if "min = " in line:
                     currentElement['min'] = line.split(" ")[-1]
                 if "max = " in line:
@@ -186,6 +190,8 @@ def readShadersXMLDescription():
             inpp['type'] = inp.find('type').text
             inpp['help'] = ""
             inpp['hint'] = ""
+            inpp['compAttrArrayPath'] = ""
+            inpp['isArrayPlug'] = ""
             inpp['min'] = 0
             inpp['max'] = 1
             inpp['default'] = 0
@@ -195,8 +201,12 @@ def readShadersXMLDescription():
             findElement = inp.find('hint')
             if findElement is not None:
                 inpp['hint'] = inp.find('hint').text
-                if inpp['hint'] and 'compAttrArrayPath' in inpp['hint']:
-                    inpp['compAttrArrayPath']=inpp['hint'].split("compAttrArrayPath=")[1].split(" ")[0]
+            findElement = inp.find('compAttrArrayPath')
+            if findElement is not None:
+                inpp['compAttrArrayPath'] = inp.find('compAttrArrayPath').text
+            findElement = inp.find('isArrayPlug')
+            if findElement is not None:
+                inpp['isArrayPlug'] = True
             findElement = inp.find('min')
             if findElement is not None:
                 inpp['min'] = inp.find('min').text

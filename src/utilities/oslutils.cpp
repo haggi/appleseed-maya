@@ -319,26 +319,28 @@ void OSLUtilClass::listProjectionHistory(const MObject& mobject)
     }
 }
 
-unsigned int getArrayIndex(const std::string& value)
-{
-    char intval[12];
-    intval[0] = '\0';
-    int counter = 0;
-    for (size_t i = 0; i < value.size(); i++)
+namespace {
+    unsigned int getArrayIndex(const std::string& value)
     {
-        if ((value[i] >= '0') && (value[i] <= '9'))
-            intval[counter++] = value[i];
+        char intval[12];
+        intval[0] = '\0';
+        int counter = 0;
+        for (size_t i = 0; i < value.size(); i++)
+        {
+            if ((value[i] >= '0') && (value[i] <= '9'))
+                intval[counter++] = value[i];
+        }
+        intval[counter] = '\0';
+        return MString(intval).asUnsigned();
     }
-    intval[counter] = '\0';
-    return MString(intval).asUnsigned();
-}
 
-MString removeIndexFromName(const MString& value, const int& index)
-{
-    MString indexString = MString("") + index;
-    MString attrString = value;
-    attrString.substitute(indexString, "");
-    return attrString;
+    MString removeIndexFromName(const MString& value, const int& index)
+    {
+        MString indexString = MString("") + index;
+        MString attrString = value;
+        attrString.substitute(indexString, "");
+        return attrString;
+    }
 }
 
 void OSLUtilClass::defineOSLParameter(ShaderAttribute& sa, MFnDependencyNode& depFn, OSLParamArray& paramArray)
@@ -351,11 +353,11 @@ void OSLUtilClass::defineOSLParameter(ShaderAttribute& sa, MFnDependencyNode& de
         element to the OSL entry, e.g. nodeA.outColor -> nodeB.color3.
         Unfortunatly there is no direct relationship from the OSL attribute name with the plug name. e.g. an attribute called color1
         can be an element of an array or an attribute which is really called color1 (like a color in the checker node).
-        Only the one who creates the OSL/Maya shader knows the real relationship so we add a hint in the OSL metadata code.
+        Only the one who creates the OSL/Maya shader knows the real relationship so we add a additional in the OSL metadata code.
         For an array element:
-            hint: arrayPlug
+            arrayPlug=True
         For an compoundAttributeArray like the one for a ramp or spline attribute:
-            hint: compAttrArrayPath=compoundAttributeArrayName.attributeName
+            compAttrArrayPath=compoundAttributeArrayName.attributeName
     */
     MString attributeName(sa.name.c_str());
     MPlug plug;

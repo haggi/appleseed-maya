@@ -1,26 +1,26 @@
 #include "mayaUtils.h"
 
 #define MAXENTRIES 10
-#define RAMPCOLORIN vector color0=0[[string hint = "compAttrArrayPath=colorEntryList.color"]], \
-                    vector color1=0[[string hint = "compAttrArrayPath=colorEntryList.color"]], \
-                    vector color2=0[[string hint = "compAttrArrayPath=colorEntryList.color"]], \
-                    vector color3=0[[string hint = "compAttrArrayPath=colorEntryList.color"]], \
-                    vector color4=0[[string hint = "compAttrArrayPath=colorEntryList.color"]], \
-                    vector color5=0[[string hint = "compAttrArrayPath=colorEntryList.color"]], \
-                    vector color6=0[[string hint = "compAttrArrayPath=colorEntryList.color"]], \
-                    vector color7=0[[string hint = "compAttrArrayPath=colorEntryList.color"]], \
-                    vector color8=0[[string hint = "compAttrArrayPath=colorEntryList.color"]], \
-                    vector color9=0[[string hint = "compAttrArrayPath=colorEntryList.color"]]
-#define RAMPPOSIN float position0=-1[[string hint = "compAttrArrayPath=colorEntryList.position"]], \
-                  float position1=-1[[string hint = "compAttrArrayPath=colorEntryList.position"]], \
-                  float position2=-1[[string hint = "compAttrArrayPath=colorEntryList.position"]], \
-                  float position3=-1[[string hint = "compAttrArrayPath=colorEntryList.position"]], \
-                  float position4=-1[[string hint = "compAttrArrayPath=colorEntryList.position"]], \
-                  float position5=-1[[string hint = "compAttrArrayPath=colorEntryList.position"]], \
-                  float position6=-1[[string hint = "compAttrArrayPath=colorEntryList.position"]], \
-                  float position7=-1[[string hint = "compAttrArrayPath=colorEntryList.position"]], \
-                  float position8=-1[[string hint = "compAttrArrayPath=colorEntryList.position"]], \
-                  float position9=-1[[string hint = "compAttrArrayPath=colorEntryList.position"]]
+#define RAMPCOLORIN vector color0=0[[string compAttrArrayPath="colorEntryList.color"]], \
+                    vector color1=0[[string compAttrArrayPath="colorEntryList.color"]], \
+                    vector color2=0[[string compAttrArrayPath="colorEntryList.color"]], \
+                    vector color3=0[[string compAttrArrayPath="colorEntryList.color"]], \
+                    vector color4=0[[string compAttrArrayPath="colorEntryList.color"]], \
+                    vector color5=0[[string compAttrArrayPath="colorEntryList.color"]], \
+                    vector color6=0[[string compAttrArrayPath="colorEntryList.color"]], \
+                    vector color7=0[[string compAttrArrayPath="colorEntryList.color"]], \
+                    vector color8=0[[string compAttrArrayPath="colorEntryList.color"]], \
+                    vector color9=0[[string compAttrArrayPath="colorEntryList.color"]]
+#define RAMPPOSIN float position0=-1[[string compAttrArrayPath="colorEntryList.position"]], \
+                  float position1=-1[[string compAttrArrayPath="colorEntryList.position"]], \
+                  float position2=-1[[string compAttrArrayPath="colorEntryList.position"]], \
+                  float position3=-1[[string compAttrArrayPath="colorEntryList.position"]], \
+                  float position4=-1[[string compAttrArrayPath="colorEntryList.position"]], \
+                  float position5=-1[[string compAttrArrayPath="colorEntryList.position"]], \
+                  float position6=-1[[string compAttrArrayPath="colorEntryList.position"]], \
+                  float position7=-1[[string compAttrArrayPath="colorEntryList.position"]], \
+                  float position8=-1[[string compAttrArrayPath="colorEntryList.position"]], \
+                  float position9=-1[[string compAttrArrayPath="colorEntryList.position"]]
 
 color interpolateColors(color firstColor, color secondColor, float first, float second, float value, int interpolation)
 {

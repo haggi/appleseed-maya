@@ -70,13 +70,6 @@ class AppleseedRenderer(renderer.MayaToRenderer):
     def getEnumList(self, attr):
         return [(i, v) for i, v in enumerate(attr.getEnums().keys())]
 
-    def updateTest(self, dummy=None):
-        pass
-    
-    def addUserTabs(self):
-        pm.renderer(self.rendererName, edit=True, addGlobalsTab=self.renderTabMelProcedure("AOVs"))
-        pm.renderer(self.rendererName, edit=True, addGlobalsTab=self.renderTabMelProcedure("Environment"))
-
     def updateEnvironment(self):
         envDict = self.rendererTabUiDict['environment']
         envType = self.renderGlobalsNode.environmentType.get()

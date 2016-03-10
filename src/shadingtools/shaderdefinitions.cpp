@@ -89,19 +89,16 @@ void ShaderDefinitions::readShaderDefinitions()
                 att.hint = input.second.get_child("hint").data();
                 att.hint = pystring::replace(att.hint, "\"", "");
                 att.hint = pystring::replace(att.hint, " ", "");
-                if (pystring::find(att.hint, "compAttrArrayPath") > -1)
-                {
-                    std::vector<std::string> hintElements;
-                    pystring::split(att.hint, hintElements, "=");
-                    if (hintElements.size() > 1)
-                    {
-                        att.compAttrArrayPath = hintElements[1];
-                    }
-                }
-                if (pystring::find(att.hint, "isArrayPlug") > -1)
-                {
-                     att.isArrayPlug = true;
-                }
+            }
+            const size_t compAttr = input.second.count("compAttrArrayPath");
+            if (compAttr > 0)
+            {
+                att.compAttrArrayPath = input.second.get_child("compAttrArrayPath").data();
+            }
+            const size_t arrayPlug = input.second.count("isArrayPlug");
+            if (arrayPlug > 0)
+            {
+                att.isArrayPlug = true;
             }
             const size_t options = input.second.count("options");
             if (options > 0)
