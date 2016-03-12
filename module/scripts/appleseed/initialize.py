@@ -149,6 +149,8 @@ class AppleseedRenderer(renderer.MayaToRenderer):
                     else:
                         if connectedSunShape != selection:
                             pm.PyNode(selection).getParent().message >> self.renderGlobalsNode.physicalSunConnection
+                else:
+                    pm.PyNode(selection).getParent().message >> self.renderGlobalsNode.physicalSunConnection
                     
         menuItems = pm.optionMenu(opMenu, q=True, itemListLong=True)
         if menuItems:
