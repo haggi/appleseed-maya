@@ -116,20 +116,6 @@ class AppleseedRenderer(renderer.MayaToRenderer):
             envDict['commonEnvFrame'].setManage(False)
             envDict['oslFrame'].setManage(False)
             
-            if self.renderGlobalsNode.physicalSun.get():
-                try:
-                    sunConnection = self.renderGlobalsNode.physicalSunConnection.listConnections()[0]
-                except:
-                    try:
-                        sunConnection = pm.ls("asSunLight")[0]
-                        sunConnection.message >> self.renderGlobalsNode.physicalSunConnection
-                    except:
-                        lightShape = pm.createNode("directionalLight")
-                        sunConnection = lightShape.getParent()
-                        sunConnection.rename("asSunLight")
-                        sunConnection.message >> self.renderGlobalsNode.physicalSunConnection
-                envDict['pskPhySun'].setText(str(sunConnection))
-
             skyModel = self.renderGlobalsNode.skyModel.get()
             if skyModel == 1:  # hosek
                 envDict['pskGrAlbedo'].setManage(True)
@@ -141,7 +127,52 @@ class AppleseedRenderer(renderer.MayaToRenderer):
             envDict['pysSkyFrame'].setManage(False)
             envDict['commonEnvFrame'].setManage(False)
             envDict['oslFrame'].setManage(True)
-
+            
+        self.updateSunLightOptionMenu()
+        
+    def updateSunLightOptionMenu(self, selection=None):
+        uiDict = self.rendererTabUiDict['environment']
+        opMenu = uiDict['sunLightOptionMenu'] + "|OptionMenu"
+        
+        if selection:
+            if selection == "Create New Sun Light...":
+                lightShape = pm.createNode("directionalLight")
+                sunConnection = lightShape.getParent()
+                sunConnection.rename("asSunLight")
+                sunConnection.message >> self.renderGlobalsNode.physicalSunConnection
+            else:
+                connections = self.renderGlobalsNode.physicalSunConnection.inputs()
+                if len(connections) > 0:
+                    connectedSunShape = connections[0].getShape()
+                    if selection == "None":
+                        connections[0].message // self.renderGlobalsNode.physicalSunConnection
+                    else:
+                        if connectedSunShape != selection:
+                            pm.PyNode(selection).getParent().message >> self.renderGlobalsNode.physicalSunConnection
+                    
+        menuItems = pm.optionMenu(opMenu, q=True, itemListLong=True)
+        if menuItems:
+            pm.deleteUI(menuItems)
+        
+        directionalLightList = pm.ls(type="directionalLight")
+        if len(directionalLightList) == 0:
+            directionalLightList.append("Create New Sun Light...")
+        else:
+            directionalLightList.append("None")
+        
+        for value in directionalLightList:
+            pm.menuItem(str(value), parent=opMenu)
+        
+        connections = self.renderGlobalsNode.physicalSunConnection.inputs()
+        selectIndex = len(directionalLightList) - 1
+        if len(connections) > 0:
+            sunShape = connections[0].getShape()
+            for index, l in enumerate(directionalLightList):
+                if l == sunShape:
+                    selectIndex = index
+                    
+        pm.optionMenu(opMenu, e=True, select=selectIndex+1)
+        
     def AppleseedEnvironmentCreateTab(self):
         self.createGlobalsNode()
         parentForm = pm.setParent(query=True)
@@ -172,11 +203,7 @@ class AppleseedRenderer(renderer.MayaToRenderer):
                     with pm.columnLayout(self.rendererName + "ColumnLayout", adjustableColumn=True, width=400):
                         attr = pm.Attribute(self.renderGlobalsNodeName + ".skyModel")
                         envDict['pskModel'] = pm.attrEnumOptionMenuGrp(label="Sky Model:", at=self.renderGlobalsNodeName + ".skyModel", ei=self.getEnumList(attr))
-                        pm.separator()
-                        envDict['pskUsePhySun'] = pm.checkBoxGrp(label="Use Physical Sun:", value1=False, cc=pm.Callback(self.uiCallback, tab="environment"))
-                        pm.connectControl(envDict['pskUsePhySun'], self.renderGlobalsNodeName + ".physicalSun", index=2)
-                        envDict['pskPhySun'] = pm.textFieldGrp(label="Sun Object:", text="", editable=False)
-                        pm.separator()
+                        uiDict['sunLightOptionMenu'] = pm.optionMenuGrp(label="Sun Light:", changeCommand=self.updateSunLightOptionMenu)
                         envDict['pskGrAlbedo'] = pm.floatFieldGrp(label="Ground Albedo:", value1=1.0, numberOfFields=1)
                         pm.connectControl(envDict['pskGrAlbedo'], self.renderGlobalsNodeName + ".ground_albedo", index=2)
                         envDict['pskGrHShit'] = pm.floatFieldGrp(label="Horizon Shift:", value1=1.0, numberOfFields=1)
@@ -509,11 +536,13 @@ class AppleseedRenderer(renderer.MayaToRenderer):
         pm.addExtension(nodeType="mesh", longName="mtap_visibleDiffuse", attributeType="bool", defaultValue=True)
 
         pm.addExtension(nodeType="spotLight", longName="mtap_cast_indirect_light", attributeType="bool", defaultValue=True)
-        pm.addExtension(nodeType="spotLight", longName="mtap_importance_multiplier", attributeType="float", defaultValue=1.0)
+        pm.addExtension(nodeType="spotLight", longName="mtap_importance_multiplier", attributeType="float", defaultValue=1.0, minValue=0.0, softMaxValue=1.0)
         pm.addExtension(nodeType="directionalLight", longName="mtap_cast_indirect_light", attributeType="bool", defaultValue=True)
-        pm.addExtension(nodeType="directionalLight", longName="mtap_importance_multiplier", attributeType="float", defaultValue=1.0)
+        pm.addExtension(nodeType="directionalLight", longName="mtap_importance_multiplier", attributeType="float", defaultValue=1.0, minValue=0.0, softMaxValue=1.0)
+        pm.addExtension(nodeType="directionalLight", longName="mtap_useAsSunlight", attributeType="bool", defaultValue=False)
+        pm.addExtension(nodeType="directionalLight", longName="mtap_turbidity", attributeType="float", defaultValue=4.0, minValue=0.0, softMaxValue=8.0)
         pm.addExtension(nodeType="pointLight", longName="mtap_cast_indirect_light", attributeType="bool", defaultValue=True)
-        pm.addExtension(nodeType="pointLight", longName="mtap_importance_multiplier", attributeType="float", defaultValue=1.0)
+        pm.addExtension(nodeType="pointLight", longName="mtap_importance_multiplier", attributeType="float", defaultValue=1.0, minValue=0.0, softMaxValue=1.0)
 
         pm.addExtension(nodeType="areaLight", longName="primaryVisibility", attributeType="bool", defaultValue=True)
         pm.addExtension(nodeType="areaLight", longName="castsShadows", attributeType="bool", defaultValue=False)

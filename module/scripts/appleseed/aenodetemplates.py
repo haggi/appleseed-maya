@@ -52,8 +52,16 @@ class AEappleseedNodeTemplate(BaseTemplate):
 
         if self.thisNode.type() == "mesh":
             self.dimControl(self.thisNode, "mtap_ray_bias_distance", True)
-            if self.thisNode .mtap_ray_bias_method.get() > 0:
+            if self.thisNode.mtap_ray_bias_method.get() > 0:
                 self.dimControl(self.thisNode, "mtap_ray_bias_distance", False)
+        if self.thisNode.type() == "directionalLight":
+            connections = self.thisNode.getParent().outputs(p=True,type="appleseedGlobals")
+            self.dimControl(self.thisNode, "mtap_turbidity", True)
+            if len(connections) > 0:
+                self.dimControl(self.thisNode, "mtap_useAsSunlight", True)
+            else:
+                if self.thisNode.mtap_useAsSunlight.get():
+                    self.dimControl(self.thisNode, "mtap_turbidity", False)
 
 
     def buildAppleSeedTemplates(self, nodeName):
@@ -91,6 +99,10 @@ class AEappleseedNodeTemplate(BaseTemplate):
             self.beginLayout("AppleSeed" ,collapse=1)
             self.addControl("mtap_cast_indirect_light", label="Cast Indirect Light")
             self.addControl("mtap_importance_multiplier", label="Importance Multiplier")
+            self.beginLayout("Sun Light Options" ,collapse=1)
+            self.addControl("mtap_useAsSunlight", label="Use As Sun Light", changeCommand=self.updateUI)
+            self.addControl("mtap_turbidity", label="Turbidity")
+            self.endLayout()
             self.endLayout()
 
         if self.thisNode.type() == "pointLight":

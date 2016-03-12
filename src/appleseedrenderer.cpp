@@ -768,8 +768,7 @@ void AppleseedRenderer::createMesh(boost::shared_ptr<MayaObject> obj)
             objInstanceParamArray,
             meshPtr->get_name(),
             foundation::Transformd::from_local_to_parent(appleMatrix),
-            foundation::StringDictionary()
-                .insert("slot0", "default")));
+            foundation::StringDictionary()));
 }
 
 void AppleseedRenderer::updateGeometry(boost::shared_ptr<MayaObject> mobj)
@@ -1016,6 +1015,7 @@ void AppleseedRenderer::defineLight(boost::shared_ptr<MayaObject> obj)
         MMatrix matrix = obj->transformMatrices[0];
         fillTransformMatrices(obj, light);
     }
+
     if (obj->mobject.hasFn(MFn::kDirectionalLight))
     {
         bool cast_indirect_light = getBoolAttr("mtap_cast_indirect_light", depFn, true);
@@ -1027,10 +1027,11 @@ void AppleseedRenderer::defineLight(boost::shared_ptr<MayaObject> obj)
         float intensity = getFloatAttr("intensity", depFn, 1.0f);
         MString colorAttribute = obj->shortName + "_intensity";
         defineColor(project.get(), colorAttribute.asChar(), col, intensity);
+        bool isSunlight = isSunLight(obj->mobject);
 
-        if (!isSunLight(obj->mobject))
+        if (light == 0)
         {
-            if (light == 0)
+            if (isSunlight)
             {
                 foundation::auto_release_ptr<renderer::Light> lp = renderer::DirectionalLightFactory().create(
                     obj->shortName.asChar(),
@@ -1038,12 +1039,30 @@ void AppleseedRenderer::defineLight(boost::shared_ptr<MayaObject> obj)
                 lightAssembly->lights().insert(lp);
                 light = lightAssembly->lights().get_by_name(obj->shortName.asChar());
             }
-            renderer::ParamArray& params = light->get_parameters();
+            else
+            {
+                foundation::auto_release_ptr<renderer::Light> lp = renderer::SunLightFactory().create(
+                    obj->shortName.asChar(),
+                    renderer::ParamArray());
+                lightAssembly->lights().insert(lp);
+                light = lightAssembly->lights().get_by_name(obj->shortName.asChar());
+            }
+        }
+
+        renderer::ParamArray& params = light->get_parameters();
+        if (isSunlight)
+        {
+            params.insert("radiance_multiplier", intensity);
+            //environment_edf
+        }
+        else
+        {
             params.insert("irradiance", colorAttribute);
             params.insert("irradiance_multiplier", intensity);
-            params.insert("importance_multiplier", importance_multiplier);
-            params.insert("cast_indirect_light", cast_indirect_light);
         }
+        params.insert("importance_multiplier", importance_multiplier);
+        params.insert("cast_indirect_light", cast_indirect_light);
+
         fillTransformMatrices(obj, light);
     }
 
@@ -1267,8 +1286,10 @@ foundation::StringArray AppleseedRenderer::defineMaterial(boost::shared_ptr<Maya
         renderer::Assembly *ass = getCreateObjectAssembly(obj);
         MString shadingGroupName = getObjectName(materialNode);
         renderer::ObjectInstance *objInstance = ass->object_instances().get_by_name(objectInstanceName.asChar());
-        objInstance->get_front_material_mappings().insert("slot0", shadingGroupName.asChar());
-        objInstance->get_back_material_mappings().insert("slot0", shadingGroupName.asChar());
+
+        MString slotName = MString("slot") + sgId;
+        objInstance->get_front_material_mappings().insert(slotName.asChar(), shadingGroupName.asChar());
+        objInstance->get_back_material_mappings().insert(slotName.asChar(), shadingGroupName.asChar());
     }
 
     return materialNames;

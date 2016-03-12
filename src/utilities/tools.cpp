@@ -886,7 +886,15 @@ bool isSunLight(MObject& obj)
 {
     MObjectArray nodeList;
     MStatus stat;
-    getConnectedInNodes(MString("sunLightConnection"), getRenderGlobalsNode(), nodeList);
+    MObject sun = obj;
+
+    if (obj.hasFn(MFn::kDirectionalLight))
+    {
+        MFnDagNode sunDagNode(obj);
+        sun = sunDagNode.parent(0);
+    }
+
+    getConnectedInNodes(MString("physicalSunConnection"), getRenderGlobalsNode(), nodeList);
     if (nodeList.length() > 0)
     {
         MObject sunObj = nodeList[0];
@@ -894,7 +902,7 @@ bool isSunLight(MObject& obj)
         {
             MFnDagNode sunDagNode(sunObj);
             MObject sunDagObj = sunDagNode.child(0, &stat);
-            if (sunDagObj == obj)
+            if (sunDagObj == sun)
                 return true;
         }
     }
