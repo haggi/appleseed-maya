@@ -678,6 +678,7 @@ void AppleseedRenderer::createMesh(boost::shared_ptr<MayaObject> obj)
     MFloatArray uArray, vArray;
     MIntArray triPointIds, triNormalIds, triUvIds, triMatIds;
     Logging::debug("defineMesh pre getMeshData");
+    obj->getShadingGroups();
     obj->getMeshData(points, normals, uArray, vArray, triPointIds, triNormalIds, triUvIds, triMatIds);
 
     Logging::debug(MString("Translating mesh object ") + meshFn.name().asChar());
