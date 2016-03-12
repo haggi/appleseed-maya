@@ -120,7 +120,7 @@ void AppleseedRenderer::defineProject()
     defineOutput(); // output accesses camera so define it after camera
     defineMasterAssembly(project.get());
     defineDefaultMaterial(project.get());
-    defineEnvironment();
+    defineEnvironment(); // define environment before lights because sun lights may use physical sky edf
     defineGeometry();
     defineLights();
 }
@@ -1053,7 +1053,8 @@ void AppleseedRenderer::defineLight(boost::shared_ptr<MayaObject> obj)
         if (isSunlight)
         {
             params.insert("radiance_multiplier", intensity);
-            //environment_edf
+            renderer::EnvironmentEDF *edf = project->get_scene()->environment_edfs().get_by_name("sky_edf");
+            params.insert("environment_edf", "sky_edf");
         }
         else
         {
