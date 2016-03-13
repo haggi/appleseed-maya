@@ -319,91 +319,123 @@ void OSLUtilClass::listProjectionHistory(const MObject& mobject)
     }
 }
 
+namespace 
+{
+    unsigned int getArrayIndex(const std::string& value)
+    {
+        unsigned int result = 0;
+        for (size_t i = 0, e = value.size(); i < e; ++i)
+        {
+            if (value[i] >= '0' && value[i] <= '9')
+                result = result * 10 + value[i] - '0';
+        }
+        return result;
+    }
+
+    MString removeIndexFromName(const MString& value, const int index)
+    {
+        MString indexString = MString("") + index;
+        MString attrString = value;
+        attrString.substitute(indexString, "");
+        return attrString;
+    }
+}
+
 void OSLUtilClass::defineOSLParameter(ShaderAttribute& sa, MFnDependencyNode& depFn, OSLParamArray& paramArray)
 {
     MStatus stat;
-    // if we have an array plug we have do deal with several plugs.
-    // OSL is not able to connect nodes to array indices so we always have a list of parameters, e.g.
-    // for a color array we have in a osl shader color0 color1 color2 ... at the moment we are limited to
-    // several entries this way. I set it to ARRAY_MAX_ENTRIES.
-    MPlug plug = depFn.findPlug(sa.name.c_str());
-    if (plug.isArray())
+
+    /*
+        Arrays in OSL cannot be connected per element. e.g. a connection nodeA.outColor -> nodeB.colorList[3] is invalid.
+        Our workaround is simply to use a limited number of entries (e.g. color0, color1, color2...) and map the Maya array 
+        element to the OSL entry, e.g. nodeA.outColor -> nodeB.color3.
+        Unfortunately there is no direct relationship from the OSL attribute name with the plug name. e.g. an attribute called color1
+        can be an element of an array or an attribute which is really called color1 (like a color in the checker node).
+        Only the one who creates the OSL/Maya shader knows the real relationship so we add a additional info in the OSL metadata code.
+        For an array element:
+            arrayPlug=True
+        For an compoundAttributeArray like the one for a ramp or spline attribute:
+            compAttrArrayPath=compoundAttributeArrayName.attributeName
+    */
+    MString attributeName(sa.name.c_str());
+    MPlug plug;
+
+    if (sa.compAttrArrayPath.size() > 0)
     {
-        int numEntries = plug.numElements();
-        if (numEntries > ARRAY_MAX_ENTRIES)
+        unsigned int index = getArrayIndex(sa.name);
+        std::vector<std::string> pathElements;
+        pystring::split(sa.compAttrArrayPath, pathElements, ".");
+        MPlug compoundPlug = depFn.findPlug(pathElements[0].c_str());
+        if (!compoundPlug.isNull())
         {
-            Logging::warning(MString("Plug ") + plug.name() + " has more than 10 entries: " + numEntries + ", limiting to " + ARRAY_MAX_ENTRIES);
-            numEntries = ARRAY_MAX_ENTRIES;
-        }
-        for (int i = 0; i < numEntries; i++)
-        {
-            MPlug p = plug[i];
-            MString attrName = getCorrectOSLParameterName(p);
-
-            if (p.isCompound() && (getAttributeNameFromPlug(plug) == "colorEntryList"))
+            if (compoundPlug.isArray())
             {
-                MVector vec;
-                // colorEntryList has child0 == position, child1 = color
-                float position = p.child(0).asFloat();
-                vec.x = p.child(1).child(0).asFloat(); // colorR
-                vec.y = p.child(1).child(1).asFloat(); // colorG
-                vec.z = p.child(1).child(2).asFloat(); // colorB
-
-                MString posName = MString("position") + i;
-                MString colName = MString("color") + i;
-                paramArray.push_back(OSLParameter(colName, vec));
-                paramArray.push_back(OSLParameter(posName, position));
-            }
-            else
-            {
-                // array index becomes nr, e.g. layeredShader.materialEntry[3] becomes materialEntry3
-                // color closures cannot be set with color value
-                int found = pystring::find(sa.type, "Closure");
-                if (found == -1)
+                unsigned int numElements = compoundPlug.numElements();
+                if (index < numElements)
                 {
-                    if (sa.type == "color")
+                    MPlug arrayPlug = compoundPlug[index];
+                    for (unsigned int childId = 0; childId < arrayPlug.numChildren(); childId++)
                     {
-                        paramArray.push_back(OSLParameter(attrName.asChar(), getColorAttr(p)));
+                        MString childName = arrayPlug.child(childId).name();
+                        MString attrString = removeIndexFromName(MString(sa.name.c_str()), index);
+                        MStringArray nameArray;
+                        childName.split('.', nameArray);
+                        if (nameArray[nameArray.length() - 1] == attrString)
+                        {
+                            plug = arrayPlug.child(childId);
+                        }
                     }
-                    if (sa.type == "vector")
-                    {
-                        paramArray.push_back(OSLParameter(attrName.asChar(), getVectorAttr(p)));
-                    }
-                    if (sa.type == "float")
-                    {
-                        paramArray.push_back(OSLParameter(attrName.asChar(), p.asFloat()));
-                    }
-                    if (sa.type == "enumint")
-                    {
-                        paramArray.push_back(OSLParameter(attrName.asChar(), getEnumInt(p)));
-                    }
-                    if (sa.type == "string")
-                    {
-                        paramArray.push_back(OSLParameter(attrName.asChar(), p.asString()));
-                    }
+                }
+                else
+                    return;
+
+                if (index == (numElements - 1))
+                {
+                    paramArray.push_back(OSLParameter("numEntries", (int)numElements));
                 }
             }
         }
-        // all array using shader nodes will have an element with name numEntries
-        paramArray.push_back(OSLParameter("numEntries", numEntries));
-        return;
+    }
+
+    if (sa.isArrayPlug)
+    {
+        unsigned int index = getArrayIndex(sa.name);
+        MString attrString = removeIndexFromName(MString(sa.name.c_str()), index);
+        MPlug arrayPlug = depFn.findPlug(attrString);
+        if (arrayPlug.isArray())
+        {
+            unsigned int numElements = arrayPlug.numElements();
+            if (index < numElements)
+            {
+                plug = arrayPlug[index];
+            }
+            else
+                return;
+        }
+    }
+
+    if (plug.isNull())
+    {
+        plug = depFn.findPlug(sa.name.c_str());
+        if (plug.isNull())
+            return;
     }
 
     if (sa.type == "string")
     {
-        // in OSL we don't have option menus, they are defined in our definition by string metadatas
+        // In OSL we don't have option menus, they are defined by string metadata
         if (sa.optionMenu)
         {
-            MString v = getEnumString(sa.name.c_str(), depFn);
+            MString v = getEnumString(plug);
             paramArray.push_back(OSLParameter(sa.name.c_str(), v));
         }
         else
         {
-            MString stringParameter = getString(sa.name.c_str(), depFn);
+            MString stringParameter = plug.asString();;
             if (sa.name == "fileTextureName")
             {
-                // to support udim textures we check if we have a file texture node here.
-                // if so, we take the fileTextureName and seperate base, ext.
+                // To support udim textures we check if we have a file texture node here.
+                // If so, we take the fileTextureName and seperate base, ext.
                 if (depFn.object().hasFn(MFn::kFileTexture))
                 {
                     std::string fileName(getString("fileTextureName", depFn).asChar());
@@ -414,7 +446,7 @@ void OSLUtilClass::defineOSLParameter(ShaderAttribute& sa, MFnDependencyNode& de
                         uvTilingMode = 0;
                     }
 
-                    // we search for the base name. All patterns start with a '<' character, everything before is our base.
+                    // We search for the base name. All patterns start with a '<' character, everything before is our base.
                     std::string fileNameWithTokens(getString("computedFileTextureNamePattern", depFn).asChar());
                     std::string baseFileName = fileName;
                     size_t pos = fileNameWithTokens.find("<");
@@ -456,40 +488,33 @@ void OSLUtilClass::defineOSLParameter(ShaderAttribute& sa, MFnDependencyNode& de
     }
     if (sa.type == "float")
     {
-        paramArray.push_back(OSLParameter(sa.name.c_str(), getFloatAttr(sa.name.c_str(), depFn, 0.0f)));
+        paramArray.push_back(OSLParameter(sa.name.c_str(), plug.asFloat()));
     }
     if (sa.type == "color")
     {
-        paramArray.push_back(OSLParameter(sa.name.c_str(), getColorAttr(sa.name.c_str(), depFn)));
+        paramArray.push_back(OSLParameter(sa.name.c_str(), getColorAttr(plug)));
     }
     if (sa.type == "int")
     {
-        paramArray.push_back(OSLParameter(sa.name.c_str(), getIntAttr(sa.name.c_str(), depFn, 0)));
+        paramArray.push_back(OSLParameter(sa.name.c_str(), plug.asInt()));
     }
     if (sa.type == "bool")
     {
-        paramArray.push_back(OSLParameter(sa.name.c_str(), getBoolAttr(sa.name.c_str(), depFn, false)));
+        paramArray.push_back(OSLParameter(sa.name.c_str(), plug.asBool()));
     }
     if (sa.type == "matrix")
     {
-        MMatrix value = getMatrix(sa.name.c_str(), depFn);
+        MMatrix value = getMatrix(plug);
         paramArray.push_back(OSLParameter(sa.name.c_str(), value));
     }
     if (sa.type == "vector")
     {
-        MVector v;
-        if (sa.hint == "useAsColor")
-        {
-            MColor c = getColorAttr(sa.name.c_str(), depFn);
-            v = MVector(c.r, c.g, c.b);
-        }
-        else
-            v = getVectorAttr(sa.name.c_str(), depFn);
+        MVector v = getVectorAttr(plug);
         paramArray.push_back(OSLParameter(sa.name.c_str(), v));
     }
     if (sa.type == "enumint")
     {
-        int v = getEnumInt(sa.name.c_str(), depFn);
+        int v = getEnumInt(plug);
         paramArray.push_back(OSLParameter(sa.name.c_str(), v));
     }
 }
@@ -609,7 +634,7 @@ bool OSLUtilClass::handleSpecialPlugs(MString attributeName, MFnDependencyNode& 
         return result;
     }
 
-    // mayas bump2d node is terrible. It is no problem if you want to use a default bump.
+    // Mayas bump2d node is terrible. It is no problem if you want to use a default bump.
     // but as soon as you want to use a normalMap, you have to find out the other node and connect it correctly by yourself.
     if (attributeName == "bumpValue")
     {
@@ -640,8 +665,8 @@ bool OSLUtilClass::handleSpecialPlugs(MString attributeName, MFnDependencyNode& 
     return false;
 }
 
-// check if the attribute is okay.
-// check if it is connected and if the source attribute is okay and supported
+// Check if the attribute is okay.
+// Check if it is connected and if the source attribute is okay and supported
 bool OSLUtilClass::getConnectedPlugs(MString attributeName, MFnDependencyNode& depFn, MPlugArray& sourcePlugs, MPlugArray& destPlugs)
 {
     std::vector<MString>  specialPlugs;
@@ -672,7 +697,7 @@ bool OSLUtilClass::getConnectedPlugs(MString attributeName, MFnDependencyNode& d
     if (destPlug.isNull())
         return false;
 
-    // check if the plug is connected. This can be in multiple ways:
+    // Check if the plug is connected. This can be in multiple ways:
     // 1. The plug itself is connected (should be ignored if the plug is an array plug)
     // 2. The plug is an array plug and has connected elements
     // 3. The plug is a compound plug and has connected children
@@ -769,7 +794,7 @@ MString OSLUtilClass::getCorrectOSLParameterName(MPlug plug)
     int found = pystring::find(plugName.asChar(), "colorEntryList");
     if (found > -1)
     {
-        // a color entrylist is a list of compounds: color and position
+        // A color entrylist is a list of compounds: color and position
         // check if we have a color or position entry or if we have a component e.g. colorR
         if (plug.parent().parent().isElement()) // component
         {
@@ -933,14 +958,14 @@ void OSLUtilClass::addConnectionToList(Connection c)
     connectionList.push_back(c);
 }
 
-// we cannot avoid to add some helper nodes in a non correct order.
+// We cannot avoid to add some helper nodes in a non correct order.
 // e.g. if we first connect a float to a component, maybe a outAlpha to a color.r, then automatically a
 // floatToVector node is created. If we then connect a component to a component, a outColor.g to a color.b
 // a vectorToFloat node is created and added to the osl node list. If we now try to connect the output of the
 // vectorToFloat node to the previous created node floatToVector, we get an error.
 // For this reason we prefix the helperNodes with in_ and out_ and sort them in the correct order.
 
-// a helper node always starts with in_ or out_ and with nodeName follwed by a _
+// A helper node always starts with in_ or out_ and with nodeName follwed by a _
 // so for every node we first search for a in_nodename_ node then a out_nodename_
 // this should transform the example above from:
 // nodeA, in_floatToVector, out_vectorToFloat, nodeB  to nodeA, out_vectorToFloat, in_vectorToFloat, nodeB
@@ -1007,7 +1032,7 @@ void OSLUtilClass::createOSLShadingNode(ShadingNode& snode)
     const char* inAttributes[] = { "inX", "inY", "inZ" };
     const char* outAttributes[] = { "outX", "outY", "outZ" };
 
-    // we create all necessary nodes for input and output connections
+    // We create all necessary nodes for input and output connections
     // the problem is that we have to create the nodes in the correct order,
     // e.g. create node A, create node B connect B->A is not valid, only A->B
     for (uint i = 0; i < snode.inputAttributes.size(); i++)
@@ -1017,7 +1042,7 @@ void OSLUtilClass::createOSLShadingNode(ShadingNode& snode)
         if (!getConnectedPlugs(sa.name.c_str(), depFn, sourcePlugs, destPlugs))
             continue;
 
-        // now we have a bunch of source and dest plugs which should be conneced together
+        // Now we have a bunch of source and dest plugs which should be conneced together
         // sourcePlugs[0] -> destPlugs[0]... lets see if they are all valid
         checkPlugsValidity(sourcePlugs, destPlugs);
 
@@ -1043,7 +1068,7 @@ void OSLUtilClass::createOSLShadingNode(ShadingNode& snode)
             else
             {
                 OSLNodeStruct oslNode;
-                // we have component connections and need helper nodes
+                // We have component connections and need helper nodes
                 createHelperNode(sourcePlugs[pId], destPlugs[pId], type, oslNodeArray, connectionList);
             }
         }

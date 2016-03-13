@@ -256,7 +256,7 @@ class OpenMayaCommonGlobals(object):
                         pm.connectControl(uiDict['fileNamePrefixField'], pm.SCENE.defaultRenderGlobals.imageFilePrefix, index = 2)
                         pm.attrEnumOptionMenuGrp("imageMenuMayaSW", label="Image Format:", attribute=self.renderNode.imageFormat)
                         formats = self.renderNode.imageFormat.getEnums().keys()
-                        if "exr" in formats or "Exr"  in formats:
+                        if "EXR" in formats:
                             with pm.columnLayout("exrOptionsLayout", adjustableColumn=True, width=400) as uiDict['exrOptionsLayout']:
                                 self.addRenderGlobalsUIElement(attName='exrDataTypeHalf', uiType='bool', displayName='Half Float', default='false', uiDict={})
                                 self.addRenderGlobalsUIElement(attName='exrMergeChannels', uiType='bool', displayName='Merge passes', default='true', uiDict={})

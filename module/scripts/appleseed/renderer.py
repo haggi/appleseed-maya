@@ -299,10 +299,7 @@ global proc updateMayaImageFormatControl()
         pm.renderer(self.rendererName, edit=True, stopIprRenderProcedure=self.makeMelProcFromPythonCmd(self.stopIprRenderProcedure, []))
         pm.renderer(self.rendererName, edit=True, pauseIprRenderProcedure=self.makeMelProcFromPythonCmd(self.pauseIprRenderProcedure, [('string', 'editor'), ('int', 'pause')]))
         pm.renderer(self.rendererName, edit=True, changeIprRegionProcedure=self.renderCallback("changeIprRegionProcedure"))
-        pm.renderer(self.rendererName, edit=True, iprOptionsProcedure=self.renderCallback("iprOptionsProcedure"))
-        pm.renderer(self.rendererName, edit=True, iprOptionsMenuLabel=self.renderCallback("iprOptionsMenuLabel"))
         pm.renderer(self.rendererName, edit=True, iprRenderProcedure=self.renderCallback("iprRenderProcedure"))
-        pm.renderer(self.rendererName, edit=True, iprRenderSubMenuProcedure=self.renderCallback("iprRenderSubMenuProcedure"))
         pm.renderer(self.rendererName, edit=True, isRunningIprProcedure=self.renderCallback("isRunningIprProcedure"))
         pm.renderer(self.rendererName, edit=True, refreshIprRenderProcedure=self.renderCallback("refreshIprRenderProcedure"))
         pm.renderer(self.rendererName, edit=True, logoImageName=self.rendererName + ".png")
@@ -353,6 +350,7 @@ global proc updateMayaImageFormatControl()
             tabLayoutName = pm.mel.getRendererTabLayout(pm.melGlobals['gMasterLayerRendererName'])
         else:
             tabLayoutName = pm.mel.getRendererTabLayout(renderer)
+    
         # Hide the tabForm while updating.
         tabFormManagedStatus = pm.formLayout('tabForm', q=True, manage=True)
         pm.formLayout('tabForm', edit=True, manage=False)
@@ -384,7 +382,7 @@ global proc updateMayaImageFormatControl()
             pm.setUITemplate('attributeEditorTemplate', pushTemplate=True)
             pm.formLayout(tabName)
             createProcs = ['createMayaSoftwareCommonGlobalsTab', 'createMayaSoftwareGlobalsTab']
-            for renderer in ["Corona", "arnold", "appleseed", "Thea", "Indigo", "Fuji", "Lux"]:
+            for renderer in ["Appleseed"]:
                 try:
                     createProcs.extend(pm.renderer(renderer, q=True, globalsTabCreateProcNames=True))
                 except:
@@ -407,7 +405,7 @@ global proc updateMayaImageFormatControl()
     def addTabs(self):
         pm.renderer(self.rendererName, edit=True, addGlobalsTab=self.renderTabMelProcedure("CommonGlobals"))
         pm.renderer(self.rendererName, edit=True, addGlobalsTab=self.renderTabMelProcedure("Renderer"))
-        self.addUserTabs()
+        pm.renderer(self.rendererName, edit=True, addGlobalsTab=self.renderTabMelProcedure("Environment"))        
         pm.renderer(self.rendererName, edit=True, addGlobalsTab=self.renderTabMelProcedure("Translator"))
 
     def createImageFormatControls(self):
@@ -461,16 +459,17 @@ global proc updateMayaImageFormatControl()
         pass
     
     def iprOptionsProcedure(self):
-        pass
+        print "AppleseediprOptionsProcedure"
     
     def iprOptionsMenuLabel(self):
-        pass
+        print "AppleseedIPROptionsMenuLabel"
+        return "AppleseedIPROptionsMenuLabel"
 
     def iprRenderProcedure(self):
         pass
 
     def iprRenderSubMenuProcedure(self):
-        pass
+        print "iprRenderSubMenuProcedure"
 
     def isRunningIprProcedure(self):
         return self.ipr_isrunning

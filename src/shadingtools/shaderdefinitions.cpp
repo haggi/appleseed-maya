@@ -90,6 +90,16 @@ void ShaderDefinitions::readShaderDefinitions()
                 att.hint = pystring::replace(att.hint, "\"", "");
                 att.hint = pystring::replace(att.hint, " ", "");
             }
+            const size_t compAttr = input.second.count("compAttrArrayPath");
+            if (compAttr > 0)
+            {
+                att.compAttrArrayPath = input.second.get_child("compAttrArrayPath").data();
+            }
+            const size_t arrayPlug = input.second.count("isArrayPlug");
+            if (arrayPlug > 0)
+            {
+                att.isArrayPlug = true;
+            }
             const size_t options = input.second.count("options");
             if (options > 0)
             {
