@@ -116,11 +116,11 @@ void AppleseedRenderer::unInitializeRenderer()
 
 void AppleseedRenderer::defineProject()
 {
-    defineCamera(); // first camera
-    defineOutput(); // output accesses camera so define it after camera
+    defineCamera(); // First camera
+    defineOutput(); // Output accesses camera so define it after camera
     defineMasterAssembly(project.get());
     defineDefaultMaterial(project.get());
-    defineEnvironment(); // define environment before lights because sun lights may use physical sky edf
+    defineEnvironment(); // Define environment before lights because sun lights may use physical sky edf
     defineGeometry();
     defineLights();
 }
