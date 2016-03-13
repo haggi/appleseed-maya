@@ -89,21 +89,21 @@ class AppleseedRenderer(renderer.MayaToRenderer):
             if envType == 0:
                 envDict['environmentColor'].setManage(True)
             # Gradient
-            if envType == 1:
+            elif envType == 1:
                 envDict['gradientHorizon'].setManage(True)
                 envDict['gradientZenit'].setManage(True)
             # Map
-            if envType == 2:
+            elif envType == 2:
                 envDict['environmentMap'].setManage(True)
                 envDict['latlongVeShift'].setManage(True)
                 envDict['latlongHoShift'].setManage(True)    
             # SphericalMap
-            if envType == 3:
+            elif envType == 3:
                 envDict['environmentMap'].setManage(True)
                 envDict['latlongVeShift'].setManage(True)
                 envDict['latlongHoShift'].setManage(True)    
             # MirrorBall
-            if envType == 4:
+            elif envType == 4:
                 envDict['environmentMap'].setManage(True)
                 envDict['latlongVeShift'].setManage(True)
                 envDict['latlongHoShift'].setManage(True)
@@ -123,7 +123,7 @@ class AppleseedRenderer(renderer.MayaToRenderer):
                 envDict['pskGrAlbedo'].setManage(False)
 
         # OSL
-        if envType == 6:
+        elif envType == 6:
             envDict['pysSkyFrame'].setManage(False)
             envDict['commonEnvFrame'].setManage(False)
             envDict['oslFrame'].setManage(True)

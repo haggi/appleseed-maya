@@ -567,8 +567,8 @@ void AppleseedRenderer::defineEnvironment()
                     unitVector.y = sunOrient.y;
                     unitVector.z = sunOrient.z;
                     renderer::unit_vector_to_angles(unitVector, theta, phi);
-                    theta = 90.0f - foundation::rad_to_deg(theta);
-                    theta = theta;
+                    theta = foundation::rad_to_deg(theta);
+                    sun_theta = foundation::rad_to_deg(theta);
                     sun_phi = foundation::rad_to_deg(phi);
                 }
             }
@@ -587,7 +587,7 @@ void AppleseedRenderer::defineEnvironment()
                     .insert("luminance_multiplier", luminance_multiplier)
                     .insert("saturation_multiplier", saturation_multiplier)
                     .insert("sun_phi", sun_phi)
-                    .insert("sun_theta", 90.0f - sun_theta)
+                    .insert("sun_theta", sun_theta)
                     .insert("turbidity", turbidity)
                     .insert("turbidity_max", turbidity_max)
                     .insert("turbidity_min", turbidity_min));
@@ -1052,9 +1052,12 @@ void AppleseedRenderer::defineLight(boost::shared_ptr<MayaObject> obj)
         renderer::ParamArray& params = light->get_parameters();
         if (isSunlight)
         {
+            float turbidity = getFloatAttr("mtap_turbidity", depFn, 4.0f);
+            params.insert("turbidity", turbidity);
             params.insert("radiance_multiplier", intensity);
-            renderer::EnvironmentEDF *edf = project->get_scene()->environment_edfs().get_by_name("sky_edf");
             params.insert("environment_edf", "sky_edf");
+            params.insert("irradiance", colorAttribute);
+            params.insert("irradiance_multiplier", intensity);
         }
         else
         {
@@ -1148,9 +1151,6 @@ void AppleseedRenderer::defineLights()
         boost::shared_ptr<MayaObject> mobj = *oIt;
 
         if (!mobj->visible)
-            continue;
-
-        if (isSunLight(mobj->mobject))
             continue;
 
         defineLight(mobj);

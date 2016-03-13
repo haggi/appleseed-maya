@@ -900,9 +900,7 @@ bool isSunLight(MObject& obj)
         MObject sunObj = nodeList[0];
         if (sunObj.hasFn(MFn::kTransform))
         {
-            MFnDagNode sunDagNode(sunObj);
-            MObject sunDagObj = sunDagNode.child(0, &stat);
-            if (sunDagObj == sun)
+            if (sunObj == sun)
                 return true;
         }
     }
