@@ -601,7 +601,7 @@ void AppleseedRenderer::defineEnvironment()
                         .insert("luminance_multiplier", luminance_multiplier)
                         .insert("saturation_multiplier", saturation_multiplier)
                         .insert("sun_phi", sun_phi)
-                        .insert("sun_theta", 90.0f - sun_theta)
+                        .insert("sun_theta", sun_theta)
                         .insert("turbidity", turbidity)
                         .insert("turbidity_max", turbidity_max)
                         .insert("turbidity_min", turbidity_min));
