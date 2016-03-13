@@ -634,7 +634,7 @@ bool OSLUtilClass::handleSpecialPlugs(MString attributeName, MFnDependencyNode& 
         return result;
     }
 
-    // Mayas bump2d node is terrible. It is no problem if you want to use a default bump.
+    // Maya's bump2d node is terrible. It is no problem if you want to use a default bump.
     // but as soon as you want to use a normalMap, you have to find out the other node and connect it correctly by yourself.
     if (attributeName == "bumpValue")
     {

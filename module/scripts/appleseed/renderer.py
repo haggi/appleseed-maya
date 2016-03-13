@@ -382,11 +382,10 @@ global proc updateMayaImageFormatControl()
             pm.setUITemplate('attributeEditorTemplate', pushTemplate=True)
             pm.formLayout(tabName)
             createProcs = ['createMayaSoftwareCommonGlobalsTab', 'createMayaSoftwareGlobalsTab']
-            for renderer in ["Appleseed"]:
-                try:
-                    createProcs.extend(pm.renderer(renderer, q=True, globalsTabCreateProcNames=True))
-                except:
-                    pass
+            try:
+                createProcs.extend(pm.renderer(renderer, q=True, globalsTabCreateProcNames=True))
+            except:
+                pass
             if createProc in createProcs:
                 pm.mel.eval(createProc)
 
