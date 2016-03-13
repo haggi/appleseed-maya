@@ -40,7 +40,6 @@
 float getDegree(const char* plugName, const MFnDependencyNode& dn)
 {
     MStatus stat = MS::kSuccess;
-    bool result = false;
     MPlug plug = dn.findPlug(plugName, &stat);
     return plug.asMAngle().asDegrees();
 }
@@ -48,7 +47,6 @@ float getDegree(const char* plugName, const MFnDependencyNode& dn)
 float getRadians(const char* plugName, const MFnDependencyNode& dn)
 {
     MStatus stat = MS::kSuccess;
-    bool result = false;
     MPlug plug = dn.findPlug(plugName, &stat);
     return plug.asMAngle().asRadians();
 }
@@ -56,7 +54,6 @@ float getRadians(const char* plugName, const MFnDependencyNode& dn)
 float getFloatAttr(const char* plugName, const MFnDependencyNode& dn, float defaultValue)
 {
     MStatus stat = MS::kSuccess;
-    bool result = false;
     MPlug plug = dn.findPlug(plugName, &stat);
     if (!stat)
         return defaultValue;
@@ -201,6 +198,7 @@ bool getInt(const MString& plugName, const MFnDependencyNode& dn, int& value)
         return true;
     return result;
 }
+
 bool getInt(const char *plugName, const MFnDependencyNode& dn, int& value)
 {
     return getInt(MString(plugName), dn, value);
@@ -295,7 +293,6 @@ MString getEnumString(const MPlug& plug)
 {
     MDGContext ctx = MDGContext::fsNormal;
     MStatus stat = MS::kSuccess;
-    bool result = false;
     int id = plug.asShort(ctx, &stat);
     if (!stat)
         return "";
@@ -312,7 +309,6 @@ MString getEnumString(MString plugName, const MFnDependencyNode& dn)
 {
     MDGContext ctx = MDGContext::fsNormal;
     MStatus stat = MS::kSuccess;
-    bool result = false;
     MPlug plug = dn.findPlug(plugName, &stat);
     if (!stat)
         return "";
@@ -331,7 +327,6 @@ bool getEnum(const MString& plugName, const MFnDependencyNode& dn, int& id, MStr
 {
     MDGContext ctx = MDGContext::fsNormal;
     MStatus stat = MS::kSuccess;
-    bool result = false;
     MPlug plug = dn.findPlug(plugName, &stat);
     if (!stat)
         return false;
@@ -476,7 +471,6 @@ MVector getVectorAttr(const char *plugName, const MFnDependencyNode& dn)
     MVector v(0, 0, 0);
     MDGContext ctx = MDGContext::fsNormal;
     MStatus stat = MS::kSuccess;
-    bool result = false;
     MPlug plug = dn.findPlug(plugName, &stat);
     if (!stat)
         return v;
@@ -607,15 +601,10 @@ MMatrix getMatrix(const char *plugName, const MFnDependencyNode& dn)
 
 MMatrix getMatrix(const MPlug& plug)
 {
-    MMatrix m;
-    m.setToIdentity();
-    MStatus stat;
     MObject matrixObject;
     plug.getValue(matrixObject);
     MFnMatrixData fnMat(matrixObject);
-    MMatrix mat = fnMat.matrix();
-    m = mat;
-    return m;
+    return fnMat.matrix();
 }
 
 ATTR_TYPE getPlugAttrType(MPlug plug)
