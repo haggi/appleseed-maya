@@ -576,7 +576,7 @@ class AppleseedRenderer(renderer.MayaToRenderer):
         self.ipr_isrunning = False
 
     def updateProgressBar(self, percent):
-        if not self.ipr_isrunning:
+        if self.gMainProgressBar is not None:
             progressValue = percent * 100
             pm.progressBar(self.gMainProgressBar, edit=True, progress=progressValue)
 
@@ -609,9 +609,10 @@ class AppleseedRenderer(renderer.MayaToRenderer):
 
     def postRenderProcedure(self):
         optimizetextures.postRenderOptimizeTextures()        
-        if not self.ipr_isrunning:
+        if self.gMainProgressBar is not None:
             pm.progressBar(self.gMainProgressBar, edit=True, endProgress=True)
-
+            self.gMainProgressBar = None
+            
     def afterGlobalsNodeReplacement(self):
         self.rendererTabUiDict = {}
 
