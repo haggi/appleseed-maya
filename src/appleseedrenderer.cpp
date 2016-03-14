@@ -116,11 +116,11 @@ void AppleseedRenderer::unInitializeRenderer()
 
 void AppleseedRenderer::defineProject()
 {
-    defineCamera(); // First camera
-    defineOutput(); // Output accesses camera so define it after camera
+    defineCamera();
+    defineOutput(); // output accesses camera so define it after camera
     defineMasterAssembly(project.get());
     defineDefaultMaterial(project.get());
-    defineEnvironment(); // Define environment before lights because sun lights may use physical sky edf
+    defineEnvironment(); // define environment before lights because sun lights may use physical sky edf
     defineGeometry();
     defineLights();
 }
@@ -132,14 +132,13 @@ void AppleseedRenderer::preFrame()
 
 void AppleseedRenderer::postFrame()
 {
-    // Save the frame to disk.
     boost::shared_ptr<RenderGlobals> renderGlobals = getWorldPtr()->mRenderGlobals;
     renderGlobals->getImageName();
     MString filename = renderGlobals->imageOutputFile.asChar();
     Logging::debug(MString("Saving image as ") + renderGlobals->imageOutputFile);
     project->get_frame()->write_main_image(renderGlobals->imageOutputFile.asChar());
 
-    // if we render the very last frame or if we are in UI where the last frame == first frame, then delete the master renderer before
+    // If we render the very last frame or if we are in UI where the last frame == first frame, then delete the master renderer before
     // the deletion of the assembly because otherwise it will be deleted automatically if the renderer instance is deleted what results in a crash
     // because the masterRenderer still have references to the shading groups which are defined in the world assembly. If the masterRenderer is deleted
     // AFTER the assembly it tries to access non existent shadingGroups.
@@ -343,7 +342,7 @@ void AppleseedRenderer::defineCamera(boost::shared_ptr<MayaObject> cam)
     if (camera != 0)
         Logging::debug("Camera is not null - we already have a camera -> update it.");
 
-    // update the complete camera and place it into the scene
+    // Update the complete camera and place it into the scene.
     Logging::debug(MString("Creating camera shape: ") + cam->shortName);
     float horizontalFilmAperture = 24.892f;
     float verticalFilmAperture = 18.669f;
@@ -372,13 +371,13 @@ void AppleseedRenderer::defineCamera(boost::shared_ptr<MayaObject> cam)
     getInt(MString("mtap_diaphragm_blades"), camFn, mtap_diaphragm_blades);
     getFloat(MString("mtap_diaphragm_tilt_angle"), camFn, mtap_diaphragm_tilt_angle);
 
-    // this is a hack because this camera model does not support NON depth of field
+    // This is a hack because this camera model does not support NON depth of field.
     if (!dof)
         fStop *= 10000.0f;
 
     focusDistance *= renderGlobals->scaleFactor;
 
-    // maya aperture is given in inces so convert to cm and convert to meters
+    // Maya's aperture is given in inces so convert to cm and convert to meters.
     horizontalFilmAperture = horizontalFilmAperture * 2.54f * 0.01f;
     verticalFilmAperture = verticalFilmAperture * 2.54f * 0.01f;
     verticalFilmAperture = horizontalFilmAperture / imageAspect;
@@ -421,7 +420,7 @@ void AppleseedRenderer::defineCamera()
 
         defineCamera(cam);
 
-        // appleseed does not support more than one camera at the moment, so break after the first one.
+        // Appleseed does not support more than one camera at the moment, so break after the first one.
         break;
     }
 }
@@ -543,16 +542,14 @@ void AppleseedRenderer::defineEnvironment()
         }
         case 5: //Physical Sky
         {
-            foundation::Vector3d unitVector(0.0, 0.0, 0.0);
-            float sun_theta = getFloatAttr("sun_theta", appleseedGlobals, 1.0f);
-            float sun_phi = getFloatAttr("sun_phi", appleseedGlobals, 1.0f);
+            float sun_theta = getFloatAttr("sun_theta", appleseedGlobals, 30.0f);
+            float sun_phi = getFloatAttr("sun_phi", appleseedGlobals, 60.0f);
             bool usePhysicalSun = getBoolAttr("physicalSun", appleseedGlobals, true);
             double theta = 90.0f - sun_theta, phi = sun_phi;
 
             if (usePhysicalSun)
             {
-                // get the connected sun light
-                // physicalSunConnection
+                // Get the connected sun light.
                 MObject connectedNode = getConnectedInNode(getRenderGlobalsNode(), "physicalSunConnection");
                 if (connectedNode != MObject::kNullObj)
                 {
@@ -560,7 +557,8 @@ void AppleseedRenderer::defineEnvironment()
                     MMatrix tm = tn.transformationMatrix(&stat);
                     if (stat)
                     {
-                        MVector sunOrient(0,0,1);
+                        foundation::Vector3d unitVector(0.0, 0.0, 0.0);
+                        MVector sunOrient(0, 0, 1);
                         sunOrient *= tm;
                         sunOrient.normalize();
                         unitVector.x = sunOrient.x;
@@ -591,8 +589,8 @@ void AppleseedRenderer::defineEnvironment()
                         .insert("turbidity_max", turbidity_max)
                         .insert("turbidity_min", turbidity_min));
             }
-            else
-            { // hosek
+            else // hosek
+            { 
                 environmentEDF = renderer::HosekEnvironmentEDFFactory().create(
                         "sky_edf",
                         renderer::ParamArray()
@@ -826,7 +824,7 @@ void AppleseedRenderer::defineGeometry()
         updateGeometry(mobj);
     }
 
-    // create assembly instances
+    // Create assembly instances.
     for (oIt = mayaScene->objectList.begin(); oIt != mayaScene->objectList.end(); oIt++)
     {
         boost::shared_ptr<MayaObject> mobj = *oIt;
@@ -894,7 +892,7 @@ void AppleseedRenderer::doInteractiveUpdate()
                 defineLight(iElement->obj);
             }
         }
-        // shading nodes
+        // Shading nodes.
         if (iElement->node.hasFn(MFn::kPluginDependNode) || iElement->node.hasFn(MFn::kLambert))
         {
             MFnDependencyNode depFn(iElement->node);
@@ -970,8 +968,8 @@ void AppleseedRenderer::defineLight(boost::shared_ptr<MayaObject> obj)
                 renderer::PointLightFactory().create(
                 obj->shortName.asChar(),
                 renderer::ParamArray()));
+            light = lp.get();
             lightAssembly->lights().insert(lp);
-            light = lightAssembly->lights().get_by_name(obj->shortName.asChar());
         }
         renderer::ParamArray& params = light->get_parameters();
         params.insert("intensity", colorAttribute);
@@ -982,7 +980,7 @@ void AppleseedRenderer::defineLight(boost::shared_ptr<MayaObject> obj)
     }
     if (obj->mobject.hasFn(MFn::kSpotLight))
     {
-        // redefinition because it is possible that this value is textured
+        // Redefinition because it is possible that this value is textured.
         bool cast_indirect_light = getBoolAttr("mtap_cast_indirect_light", depFn, true);
         float importance_multiplier = getFloatAttr("mtap_importance_multiplier", depFn, 1.0f);
         MColor col = getColorAttr("color", depFn);
@@ -1000,8 +998,8 @@ void AppleseedRenderer::defineLight(boost::shared_ptr<MayaObject> obj)
             foundation::auto_release_ptr<renderer::Light> lp = renderer::SpotLightFactory().create(
                 obj->shortName.asChar(),
                 renderer::ParamArray());
+            light = lp.get();
             lightAssembly->lights().insert(lp);
-            light = lightAssembly->lights().get_by_name(obj->shortName.asChar());
         }
 
         renderer::ParamArray& params = light->get_parameters();
@@ -1035,16 +1033,16 @@ void AppleseedRenderer::defineLight(boost::shared_ptr<MayaObject> obj)
                 foundation::auto_release_ptr<renderer::Light> lp = renderer::DirectionalLightFactory().create(
                     obj->shortName.asChar(),
                     renderer::ParamArray());
+                light = lp.get();
                 lightAssembly->lights().insert(lp);
-                light = lightAssembly->lights().get_by_name(obj->shortName.asChar());
             }
             else
             {
                 foundation::auto_release_ptr<renderer::Light> lp = renderer::SunLightFactory().create(
                     obj->shortName.asChar(),
                     renderer::ParamArray());
+                light = lp.get();
                 lightAssembly->lights().insert(lp);
-                light = lightAssembly->lights().get_by_name(obj->shortName.asChar());
             }
         }
 
@@ -1075,13 +1073,13 @@ void AppleseedRenderer::defineLight(boost::shared_ptr<MayaObject> obj)
         MString areaLightName = obj->fullNiceName;
         foundation::auto_release_ptr<renderer::MeshObject> plane = defineStandardPlane();
         plane->set_name(areaLightName.asChar());
-        MayaObject *assemblyObject = getAssemblyMayaObject(obj.get());
-        renderer::Assembly *ass = getCreateObjectAssembly(obj);
+        MayaObject* assemblyObject = getAssemblyMayaObject(obj.get());
+        renderer::Assembly* ass = getCreateObjectAssembly(obj);
         ass->objects().insert(foundation::auto_release_ptr<renderer::Object>(plane));
-        renderer::MeshObject *meshPtr = (renderer::MeshObject *)ass->objects().get_by_name(areaLightName.asChar());
+        renderer::MeshObject* meshPtr = (renderer::MeshObject *)ass->objects().get_by_name(areaLightName.asChar());
         MString objectInstanceName = getObjectInstanceName(obj.get());
         MMatrix assemblyObjectMatrix = assemblyObject->dagPath.inclusiveMatrix();
-        // rotate the defalt up pointing standard plane by 90 degree to match the area light direction
+        // Rotate the defalt up pointing standard plane by 90 degree to match the area light direction.
         MTransformationMatrix tm;
         double rotate90Deg[3] = { -M_PI_2, 0, 0 };
         tm.setRotation(rotate90Deg, MTransformationMatrix::kXYZ);
@@ -1140,7 +1138,7 @@ void AppleseedRenderer::defineLights()
 {
     MStatus stat;
     MFnDependencyNode rGlNode(getRenderGlobalsNode());
-    // first get the globals node and serach for a directional light connection
+    // First get the globals node and serach for a directional light connection.
     MObject coronaGlobals = getRenderGlobalsNode();
     boost::shared_ptr<RenderGlobals> renderGlobals = getWorldPtr()->mRenderGlobals;
     boost::shared_ptr<MayaScene> mayaScene = getWorldPtr()->mScene;
@@ -1214,7 +1212,7 @@ void AppleseedRenderer::updateMaterial(MObject materialNode)
     }
 
     MString physicalSurfaceName = shadingGroupName + "_physical_surface_shader";
-    // add shaders only if they do not yet exist
+    // Add shaders only if they do not yet exist.
     if (assembly->surface_shaders().get_by_name(physicalSurfaceName.asChar()) == 0)
     {
         assembly->surface_shaders().insert(
@@ -1249,7 +1247,7 @@ foundation::StringArray AppleseedRenderer::defineMaterial(boost::shared_ptr<Maya
         MFnDependencyNode depFn(surfaceShaderNode);
         MString typeName = depFn.typeName();
 
-        // if the connected surface shader is not supported, use a default material because otherwise osl will crash
+        // If the connected surface shader is not supported, use a default material because otherwise osl will crash.
         if (!ShaderDefinitions::shadingNodeSupported(typeName))
         {
             Logging::warning(MString("Surface shader type: ") + typeName + " is not supported, using default material.");
@@ -1262,7 +1260,7 @@ foundation::StringArray AppleseedRenderer::defineMaterial(boost::shared_ptr<Maya
             continue;
         }
 
-        // if we are in IPR mode, save all translated shading nodes to the interactive update list
+        // If we are in IPR mode, save all translated shading nodes to the interactive update list.
         if (getWorldPtr()->getRenderType() == World::IPRRENDER)
         {
             if (mayaScene)
