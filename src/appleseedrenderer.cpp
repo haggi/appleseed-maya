@@ -1030,7 +1030,7 @@ void AppleseedRenderer::defineLight(boost::shared_ptr<MayaObject> obj)
         {
             if (isSunlight)
             {
-                foundation::auto_release_ptr<renderer::Light> lp = renderer::DirectionalLightFactory().create(
+                foundation::auto_release_ptr<renderer::Light> lp = renderer::SunLightFactory().create(
                     obj->shortName.asChar(),
                     renderer::ParamArray());
                 light = lp.get();
@@ -1038,7 +1038,7 @@ void AppleseedRenderer::defineLight(boost::shared_ptr<MayaObject> obj)
             }
             else
             {
-                foundation::auto_release_ptr<renderer::Light> lp = renderer::SunLightFactory().create(
+                foundation::auto_release_ptr<renderer::Light> lp = renderer::DirectionalLightFactory().create(
                     obj->shortName.asChar(),
                     renderer::ParamArray());
                 light = lp.get();
