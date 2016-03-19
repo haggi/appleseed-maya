@@ -88,7 +88,14 @@ namespace
         if (!MRenderView::doesRenderEditorExist())
             return;
 
-        MRenderView::updatePixels(xMin, xMax, yMin, yMax, pixels);
+        // If we do a render region in maya and switch to another format and do a rerender of the region,
+        // Maya has still has the old values in memory what can lead to invalid values here.
+        unsigned int left, right, bottom, top;
+        MRenderView::getRenderRegion(left, right, bottom, top);
+        if ((xMin < left) || (xMax > right) || (yMin < bottom) || (yMax > top))
+            return;
+
+        MRenderView::updatePixels(xMin, xMax, yMin, yMax, pixels, true);
         MRenderView::refresh(xMin, xMax, yMin, yMax);
     }
 
@@ -640,7 +647,7 @@ void RenderQueueWorker::startRenderQueueWorker()
 
                     const int width = getWorldPtr()->mRenderGlobals->getWidth();
                     const int height = getWorldPtr()->mRenderGlobals->getHeight();
-                    MRenderView::startRender(width, height, false, true);
+                    MRenderView::startRender(width, height, true, true);
                 }
 
                 getWorldPtr()->setRenderState(World::RSTATETRANSLATING);
@@ -745,7 +752,7 @@ void RenderQueueWorker::startRenderQueueWorker()
                 MRenderView::getRenderRegion(left, right, bottom, top);
                 foundation::AABB2u crop(foundation::AABB2u::VectorType(left, bottom), foundation::AABB2u::VectorType(right, top));
                 getWorldPtr()->mRenderer->getProjectPtr()->get_frame()->set_crop_window(crop);
-                InteractiveElement *dummyElement = 0;
+                InteractiveElement* dummyElement = 0; // the renderer waits for an modifiedElementList update
                 modifiedElementList.push_back(dummyElement);
             }
             break;

@@ -436,20 +436,15 @@ void AppleseedRenderer::defineOutput()
             const int ytop = imgHeight - top;
             const int ymin = ybot < ytop ? ybot : ytop;
             const int ymax = ybot > ytop ? ybot : ytop;
-            const MString regionString = MString("") + left + " " + ymin + " " + right + " " + ymax;
             foundation::AABB2u crop(foundation::AABB2u::VectorType(left, bottom), foundation::AABB2u::VectorType(right, top));
             getWorldPtr()->mRenderer->getProjectPtr()->get_frame()->set_crop_window(crop);
-            //project->get_frame()->get_parameters().insert("crop_window", regionString);
-            //project->get_frame()->set_crop_window();
         }
-
-
     }
 }
 
 void AppleseedRenderer::defineEnvironment()
 {
-    renderer::Scene *scene = project->get_scene();
+    renderer::Scene* scene = project->get_scene();
 
     MFnDependencyNode appleseedGlobals(getRenderGlobalsNode());
     MString textInstName = "bg_texture_inst";
