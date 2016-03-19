@@ -91,26 +91,19 @@ namespace
         // We have cases where the render view has changed but the framebuffer callback may have still the old settings.
         // Here we make sure we do not exceed the render view area.
         // todo: is this still relevant?
-        if (getWorldPtr()->mRenderGlobals->getUseRenderRegion())
-        {
-            const int width = getWorldPtr()->mRenderGlobals->getWidth();
-            const int height = getWorldPtr()->mRenderGlobals->getHeight();
+        //if (getWorldPtr()->mRenderGlobals->getUseRenderRegion())
+        //{
+        //    const int width = getWorldPtr()->mRenderGlobals->getWidth();
+        //    const int height = getWorldPtr()->mRenderGlobals->getHeight();
 
-            if (xMin != 0 ||
-                yMin != 0 ||
-                xMax != width - 1 ||
-                yMax != height - 1)
-            {
-                unsigned int left, right, bottom, top;
-                MRenderView::getRenderRegion(left, right, bottom, top);
-
-                if (left != xMin ||
-                    right != xMax ||
-                    bottom != yMin ||
-                    top != yMax)
-                    return;
-            }
-        }
+        //    if (xMin != 0 ||
+        //        yMin != 0 ||
+        //        xMax != width - 1 ||
+        //        yMax != height - 1)
+        //    {
+        //        return;
+        //    }
+        //}
 
         MRenderView::updatePixels(xMin, xMax, yMin, yMax, pixels);
         MRenderView::refresh(xMin, xMax, yMin, yMax);

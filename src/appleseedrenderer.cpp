@@ -292,26 +292,6 @@ void AppleseedRenderer::defineConfig()
         .get_by_name("interactive")->get_parameters()
             .insert_path("generic_tile_renderer.sampler", pixel_renderer);
 
-    if (renderGlobals->getUseRenderRegion())
-    {
-        const int imgWidth = renderGlobals->getWidth();
-        const int imgHeight = renderGlobals->getHeight();
-
-        int left, right, bottom, top;
-        renderGlobals->getRenderRegion(left, bottom, right, top);
-
-        const int ybot = imgHeight - bottom;
-        const int ytop = imgHeight - top;
-        const int ymin = ybot < ytop ? ybot : ytop;
-        const int ymax = ybot > ytop ? ybot : ytop;
-
-        const MString regionString = MString("") + left + " " + ymin + " " + right + " " + ymax;
-
-        project->configurations()
-            .get_by_name("final")->get_parameters()
-            .insert_path("generic_tile_renderer.crop_window", regionString);
-    }
-
     project->configurations()
         .get_by_name("interactive")->get_parameters()
             .insert_path("generic_tile_renderer.filter", renderGlobals->filterTypeString.toLowerCase().asChar())
@@ -445,6 +425,22 @@ void AppleseedRenderer::defineOutput()
                     .insert("resolution", MString("") + width + " " + height)
                     .insert("tile_size", MString("") + renderGlobals->tilesize + " " + renderGlobals->tilesize)
                     .insert("color_space", colorSpaces[getEnumInt("colorSpace", depFn)])));
+
+        if (renderGlobals->getUseRenderRegion())
+        {
+            const int imgWidth = renderGlobals->getWidth();
+            const int imgHeight = renderGlobals->getHeight();
+            int left, right, bottom, top;
+            renderGlobals->getRenderRegion(left, bottom, right, top);
+            const int ybot = imgHeight - bottom;
+            const int ytop = imgHeight - top;
+            const int ymin = ybot < ytop ? ybot : ytop;
+            const int ymax = ybot > ytop ? ybot : ytop;
+            const MString regionString = MString("") + left + " " + ymin + " " + right + " " + ymax;
+            project->get_frame()->get_parameters().insert("crop_window", regionString);
+        }
+
+
     }
 }
 
