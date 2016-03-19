@@ -413,18 +413,18 @@ void AppleseedRenderer::defineOutput()
         static const char* colorSpaces[] = { "linear_rgb", "srgb", "ciexyz" };
         MFnDependencyNode depFn(getRenderGlobalsNode());
         boost::shared_ptr<RenderGlobals> renderGlobals = getWorldPtr()->mRenderGlobals;
-
+        const int tilesize = getIntAttr("tilesize", depFn, 64);
         const int width = renderGlobals->getWidth();
         const int height = renderGlobals->getHeight();
 
         project->set_frame(
             renderer::FrameFactory::create(
-                "beauty",
-                renderer::ParamArray()
-                    .insert("camera", project->get_scene()->get_camera()->get_name())
-                    .insert("resolution", MString("") + width + " " + height)
-                    .insert("tile_size", MString("") + renderGlobals->tilesize + " " + renderGlobals->tilesize)
-                    .insert("color_space", colorSpaces[getEnumInt("colorSpace", depFn)])));
+            "beauty",
+            renderer::ParamArray()
+            .insert("camera", project->get_scene()->get_camera()->get_name())
+            .insert("resolution", MString("") + width + " " + height)
+            .insert("tile_size", MString("") + tilesize + " " + tilesize)
+            .insert("color_space", colorSpaces[getEnumInt("colorSpace", depFn)])));
 
         if (renderGlobals->getUseRenderRegion())
         {

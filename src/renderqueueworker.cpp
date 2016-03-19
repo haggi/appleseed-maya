@@ -647,7 +647,7 @@ void RenderQueueWorker::startRenderQueueWorker()
 
                     const int width = getWorldPtr()->mRenderGlobals->getWidth();
                     const int height = getWorldPtr()->mRenderGlobals->getHeight();
-                    MRenderView::startRender(width, height, true, true);
+                    MRenderView::startRender(width, height, false, true);
                 }
 
                 getWorldPtr()->setRenderState(World::RSTATETRANSLATING);
