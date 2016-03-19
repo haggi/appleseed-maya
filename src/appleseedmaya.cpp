@@ -53,6 +53,7 @@ MSyntax AppleseedMaya::syntaxCreator()
     syntax.addFlag("-sar", "-startIpr");
     syntax.addFlag("-str", "-stopIpr");
     syntax.addFlag("-par", "-pauseIpr");
+    syntax.addFlag("-uir", "-updateIprRegion");
     return syntax;
 }
 
@@ -99,6 +100,14 @@ MStatus AppleseedMaya::doIt(const MArgList& args)
             setResult("rstatenone");
         if (getWorldPtr()->getRenderState() == World::RSTATESTOPPED)
             setResult("rstatestopped");
+        return MS::kSuccess;
+    }
+
+    if (argData.isFlagSet("-updateIprRegion", &stat))
+    {
+        Event e;
+        e.mType = Event::IPRUPDATEREGION;
+        gEventQueue()->push(e);
         return MS::kSuccess;
     }
 

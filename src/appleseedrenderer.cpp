@@ -437,7 +437,10 @@ void AppleseedRenderer::defineOutput()
             const int ymin = ybot < ytop ? ybot : ytop;
             const int ymax = ybot > ytop ? ybot : ytop;
             const MString regionString = MString("") + left + " " + ymin + " " + right + " " + ymax;
-            project->get_frame()->get_parameters().insert("crop_window", regionString);
+            foundation::AABB2u crop(foundation::AABB2u::VectorType(left, bottom), foundation::AABB2u::VectorType(right, top));
+            getWorldPtr()->mRenderer->getProjectPtr()->get_frame()->set_crop_window(crop);
+            //project->get_frame()->get_parameters().insert("crop_window", regionString);
+            //project->get_frame()->set_crop_window();
         }
 
 
@@ -868,6 +871,10 @@ void AppleseedRenderer::doInteractiveUpdate()
     for (iaIt = interactiveUpdateList.begin(); iaIt != interactiveUpdateList.end(); iaIt++)
     {
         InteractiveElement *iElement = *iaIt;
+
+        if (iElement == 0) // only trigger a new rendering e.g. if an ipr region update is done
+            continue;
+
         if (iElement->node.hasFn(MFn::kShadingEngine))
         {
             if (iElement->obj)

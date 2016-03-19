@@ -52,6 +52,7 @@ class Event
         IPRPAUSE = 8,
         IPRREMOVE = 9,
         IPRFRAMEDONE = 11,
+        IPRUPDATEREGION = 12,
         UPDATEUI = 17,
         INITRENDER = 19,
         ADDIPRCALLBACKS = 21,
