@@ -669,15 +669,14 @@ def loadAETemplates():
             pm.mel.eval(melCommand)
 
 def loadPlugins():
-    python_plugins = ["loadshadersplugin"]
+    python_plugins = ["loadshadersplugin.py"]
     currentPath = path.path(__file__).dirname()
     
     for plugin in python_plugins:
         try:
-            pluginPath = "{0}/{1}.py".format(currentPath, plugin) 
-            log.debug("Loading additional plugin: {0}".format(pluginPath))
+            log.debug("Loading additional plugin: {0}".format(plugin))
             if not pm.pluginInfo(plugin, query=True, loaded=True):
-                pm.loadPlugin(pluginPath)
+                pm.loadPlugin(plugin)
         except:
             traceback.print_exc(file=sys.__stderr__)
             log.error("Loading of additional plugin: {0} failed.".format(pluginPath))
