@@ -60,6 +60,20 @@ void TileCallback::pre_render(
     const size_t            width,
     const size_t            height)
 {
+    Event e;
+    boost::shared_ptr<RenderGlobals> renderGlobals = getWorldPtr()->mRenderGlobals;
+    const int frameHeight = renderGlobals->getHeight();
+
+    e.pixels = boost::shared_ptr<RV_PIXEL>(new RV_PIXEL[width * height]);
+    RV_PIXEL* pixelsPtr = e.pixels.get();
+    memset(pixelsPtr, 0, width * height * sizeof(RV_PIXEL));    
+    e.xMin = static_cast<unsigned int>(x);
+    e.xMax = static_cast<unsigned int>(x + width - 1);
+    e.yMin = static_cast<unsigned int>(frameHeight - y - height);
+    e.yMax = static_cast<unsigned int>(frameHeight - y - 1);
+    e.mType = Event::PRETILE;
+    gEventQueue()->push(e);
+
 }
 
 void TileCallback::post_render(const renderer::Frame* frame)

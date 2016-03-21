@@ -432,6 +432,15 @@ void AppleseedRenderer::defineOutput()
             const int imgHeight = renderGlobals->getHeight();
             int left, right, bottom, top;
             renderGlobals->getRenderRegion(left, bottom, right, top);
+            if (left >= width)
+                left = width - 1;
+            if (right >= width)
+                right = width - 1;
+            if (bottom >= height)
+                bottom = height - 1;
+            if (top >= height)
+                top = height - 1;
+
             const int ybot = imgHeight - bottom;
             const int ytop = imgHeight - top;
             const int ymin = ybot < ytop ? ybot : ytop;

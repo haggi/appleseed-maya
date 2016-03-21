@@ -87,17 +87,34 @@ namespace
     {
         if (!MRenderView::doesRenderEditorExist())
             return;
-
-        // If we do a render region in maya and switch to another format and do a rerender of the region,
-        // Maya has still has the old values in memory what can lead to invalid values here.
-        unsigned int left, right, bottom, top;
-        MRenderView::getRenderRegion(left, right, bottom, top);
-        if ((xMin < left) || (xMax > right) || (yMin < bottom) || (yMax > top))
-            return;
-
         MRenderView::updatePixels(xMin, xMax, yMin, yMax, pixels, true);
         MRenderView::refresh(xMin, xMax, yMin, yMax);
     }
+
+    void preTileRenderView(
+        const unsigned int  xMin,
+        const unsigned int  xMax,
+        const unsigned int  yMin,
+        const unsigned int  yMax)
+    {
+        if (!MRenderView::doesRenderEditorExist())
+            return;
+        RV_PIXEL hLine[4];
+        for (uint x = 0; x < 4; x++)
+        {
+            hLine[x].r = hLine[x].g = hLine[x].b = hLine[x].a = 1.0f;
+        }
+        MRenderView::updatePixels(xMin, xMin + 3, yMin, yMin, hLine, true);
+        MRenderView::updatePixels(xMax - 3, xMax, yMin, yMin, hLine, true);
+        MRenderView::updatePixels(xMin, xMin + 3, yMax, yMax, hLine, true);
+        MRenderView::updatePixels(xMax - 3, xMax, yMax, yMax, hLine, true);
+        MRenderView::updatePixels(xMin, xMin, yMin, yMin + 3, hLine, true);
+        MRenderView::updatePixels(xMin, xMin, yMax - 3, yMax, hLine, true);
+        MRenderView::updatePixels(xMax, xMax, yMin, yMin + 3, hLine, true);
+        MRenderView::updatePixels(xMax, xMax, yMax - 3, yMax, hLine, true);
+        MRenderView::refresh(xMin, xMax, yMin, yMax);
+    }
+
 
     MString getElapsedTimeString()
     {
@@ -643,11 +660,20 @@ void RenderQueueWorker::startRenderQueueWorker()
 
                 if (MRenderView::doesRenderEditorExist())
                 {
-                    MRenderView::endRender();
-
                     const int width = getWorldPtr()->mRenderGlobals->getWidth();
                     const int height = getWorldPtr()->mRenderGlobals->getHeight();
-                    MRenderView::startRender(width, height, false, true);
+
+                    if (getWorldPtr()->mRenderGlobals->getUseRenderRegion())
+                    {
+                        unsigned int left, right, bottom, top;
+                        MRenderView::getRenderRegion(left, right, bottom, top);
+                        MRenderView::startRegionRender(width, height, left, right, bottom, top, false, true);
+                    } 
+                    else
+                    {
+                        MRenderView::startRender(width, height, true, true);
+                        MRenderView::setDrawTileBoundary(false);
+                    }
                 }
 
                 getWorldPtr()->setRenderState(World::RSTATETRANSLATING);
@@ -711,7 +737,10 @@ void RenderQueueWorker::startRenderQueueWorker()
                 if (MGlobal::mayaState() != MGlobal::kBatch)
                 {
                     if (MRenderView::doesRenderEditorExist())
+                    {
+                        MRenderView::endRender();
                         MGlobal::executePythonCommand("import pymel.core as pm; pm.waitCursor(state=False); pm.refresh()");
+                    }
                 }
 
                 if (getWorldPtr()->getRenderType() == World::IPRRENDER)
@@ -766,6 +795,10 @@ void RenderQueueWorker::startRenderQueueWorker()
             numPixelsDone += (e.xMax - e.xMin) * (e.yMax - e.yMin);
             logOutput(numPixelsDone, numPixelsTotal);
             break;
+
+          case Event::PRETILE:
+              preTileRenderView(e.xMin, e.xMax, e.yMin, e.yMax);
+              break;
         }
 
         if (MGlobal::mayaState() != MGlobal::kBatch)

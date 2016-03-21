@@ -54,6 +54,7 @@ class Event
         IPRFRAMEDONE = 11,
         IPRUPDATEREGION = 12,
         UPDATEUI = 17,
+        PRETILE = 18,
         INITRENDER = 19,
         ADDIPRCALLBACKS = 21,
         FRAMERENDER = 22
