@@ -87,6 +87,15 @@ namespace
     {
         if (!MRenderView::doesRenderEditorExist())
             return;
+
+        if (getWorldPtr()->mRenderGlobals->getUseRenderRegion())
+        {
+            unsigned int left, right, bottom, top;
+            MRenderView::getRenderRegion(left, right, bottom, top);
+            if ((xMax < left) || (xMin > right) || (yMax < bottom) || (yMin > top))
+                return;
+        }
+
         MRenderView::updatePixels(xMin, xMax, yMin, yMax, pixels, true);
         MRenderView::refresh(xMin, xMax, yMin, yMax);
     }
@@ -99,6 +108,13 @@ namespace
     {
         if (!MRenderView::doesRenderEditorExist())
             return;
+        if (getWorldPtr()->mRenderGlobals->getUseRenderRegion())
+        {
+            unsigned int left, right, bottom, top;
+            MRenderView::getRenderRegion(left, right, bottom, top);
+            if ((xMax < left) || (xMin > right) || (yMax < bottom) || (yMin > top))
+                return;
+        }
         RV_PIXEL hLine[4];
         for (uint x = 0; x < 4; x++)
         {
@@ -114,7 +130,6 @@ namespace
         MRenderView::updatePixels(xMax, xMax, yMax - 3, yMax, hLine, true);
         MRenderView::refresh(xMin, xMax, yMin, yMax);
     }
-
 
     MString getElapsedTimeString()
     {
