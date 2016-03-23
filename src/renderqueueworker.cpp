@@ -90,10 +90,38 @@ namespace
 
         if (getWorldPtr()->mRenderGlobals->getUseRenderRegion())
         {
+            unsigned int xmin = xMin, ymin = yMin, xmax = xMax, ymax = yMax;
             unsigned int left, right, bottom, top;
             MRenderView::getRenderRegion(left, right, bottom, top);
             if ((xMax < left) || (xMin > right) || (yMax < bottom) || (yMin > top))
                 return;
+            if ((xmin < left) || (ymin < bottom) || (xmax > right) || (ymax > top))
+            {
+                xmin = xmin < left ? left : xmin;
+                xmax = xmax > right ? right : xmax;
+                ymin = ymin < bottom ? bottom : ymin;
+                ymax = ymax > top ? top : ymax;
+                const unsigned int origWidth = xMax - xMin + 1;
+                const unsigned int origHeight = yMax - yMin + 1;
+                const unsigned int width = xmax - xmin + 1;
+                const unsigned int height = ymax - ymin + 1;
+                const unsigned int xStart = xmin - xMin;
+                const unsigned int yStart = ymin - yMin;
+                std::auto_ptr<RV_PIXEL> p = std::auto_ptr<RV_PIXEL>(new RV_PIXEL[width * height]);
+                for (unsigned int x = 0; x < width; x++)
+                {
+                    for (unsigned int y = 0; y < height; y++)
+                    {
+                        const unsigned int sourceIndex = (yStart + y) * origWidth + xStart + x;
+                        const unsigned int destIndex = y * width + x;
+                        p.get()[destIndex] = pixels[sourceIndex];
+                    }
+                }
+                MRenderView::updatePixels(xmin, xmax, ymin, ymax, p.get(), true);
+                MRenderView::refresh(xmin, xmax, ymin, ymax);
+                return;
+            }
+
         }
 
         MRenderView::updatePixels(xMin, xMax, yMin, yMax, pixels, true);
@@ -108,27 +136,36 @@ namespace
     {
         if (!MRenderView::doesRenderEditorExist())
             return;
+        unsigned int xmin = xMin, ymin = yMin, xmax = xMax, ymax = yMax;
         if (getWorldPtr()->mRenderGlobals->getUseRenderRegion())
         {
             unsigned int left, right, bottom, top;
             MRenderView::getRenderRegion(left, right, bottom, top);
             if ((xMax < left) || (xMin > right) || (yMax < bottom) || (yMin > top))
                 return;
+            if (xmin < left)
+                xmin = left;
+            if (ymin < bottom)
+                ymin = bottom;
+            if (xmax > right)
+                xmax = right;
+            if (ymax > top)
+                ymax = top;
         }
         RV_PIXEL hLine[4];
         for (uint x = 0; x < 4; x++)
         {
             hLine[x].r = hLine[x].g = hLine[x].b = hLine[x].a = 1.0f;
         }
-        MRenderView::updatePixels(xMin, xMin + 3, yMin, yMin, hLine, true);
-        MRenderView::updatePixels(xMax - 3, xMax, yMin, yMin, hLine, true);
-        MRenderView::updatePixels(xMin, xMin + 3, yMax, yMax, hLine, true);
-        MRenderView::updatePixels(xMax - 3, xMax, yMax, yMax, hLine, true);
-        MRenderView::updatePixels(xMin, xMin, yMin, yMin + 3, hLine, true);
-        MRenderView::updatePixels(xMin, xMin, yMax - 3, yMax, hLine, true);
-        MRenderView::updatePixels(xMax, xMax, yMin, yMin + 3, hLine, true);
-        MRenderView::updatePixels(xMax, xMax, yMax - 3, yMax, hLine, true);
-        MRenderView::refresh(xMin, xMax, yMin, yMax);
+        MRenderView::updatePixels(xmin, xmin + 3, ymin, ymin, hLine, true);
+        MRenderView::updatePixels(xmax - 3, xmax, ymin, ymin, hLine, true);
+        MRenderView::updatePixels(xmin, xmin + 3, ymax, ymax, hLine, true);
+        MRenderView::updatePixels(xmax - 3, xmax, ymax, ymax, hLine, true);
+        MRenderView::updatePixels(xmin, xmin, ymin, ymin + 3, hLine, true);
+        MRenderView::updatePixels(xmin, xmin, ymax - 3, ymax, hLine, true);
+        MRenderView::updatePixels(xmax, xmax, ymin, ymin + 3, hLine, true);
+        MRenderView::updatePixels(xmax, xmax, ymax - 3, ymax, hLine, true);
+        MRenderView::refresh(xmin, xmax, ymin, ymax);
     }
 
     MString getElapsedTimeString()
