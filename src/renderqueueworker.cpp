@@ -97,10 +97,10 @@ namespace
                 return;
             if ((xmin < left) || (ymin < bottom) || (xmax > right) || (ymax > top))
             {
-                xmin = xmin < left ? left : xmin;
-                xmax = xmax > right ? right : xmax;
-                ymin = ymin < bottom ? bottom : ymin;
-                ymax = ymax > top ? top : ymax;
+                xmin = std::max(xmin, left);
+                xmax = std::min(xmax, right);
+                ymin = std::max(ymin, bottom);
+                ymax = std::min(ymax, top);
                 const unsigned int origWidth = xMax - xMin + 1;
                 const unsigned int origHeight = yMax - yMin + 1;
                 const unsigned int width = xmax - xmin + 1;
@@ -143,14 +143,10 @@ namespace
             MRenderView::getRenderRegion(left, right, bottom, top);
             if ((xMax < left) || (xMin > right) || (yMax < bottom) || (yMin > top))
                 return;
-            if (xmin < left)
-                xmin = left;
-            if (ymin < bottom)
-                ymin = bottom;
-            if (xmax > right)
-                xmax = right;
-            if (ymax > top)
-                ymax = top;
+            xmin = std::max(xmin, left);
+            xmax = std::min(xmax, right);
+            ymin = std::max(ymin, bottom);
+            ymax = std::min(ymax, top);
         }
         RV_PIXEL hLine[4];
         for (uint x = 0; x < 4; x++)
