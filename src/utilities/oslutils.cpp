@@ -1150,9 +1150,9 @@ namespace
         if (param.type == OSL::TypeDesc::TypeMatrix)
         {
             SimpleMatrix &v = boost::get<SimpleMatrix>(param.value);
-            result = MString("matrix ") + v.f[0][0] + " " + v.f[0][1] + " " + v.f[0][2] + " " + v.f[0][3] +
-                v.f[1][0] + " " + v.f[1][1] + " " + v.f[1][2] + " " + v.f[1][3] +
-                v.f[2][0] + " " + v.f[2][1] + " " + v.f[2][2] + " " + v.f[2][3] +
+            result = MString("matrix ") + v.f[0][0] + " " + v.f[0][1] + " " + v.f[0][2] + " " + v.f[0][3] +" " +
+                v.f[1][0] + " " + v.f[1][1] + " " + v.f[1][2] + " " + v.f[1][3] + " " +
+                v.f[2][0] + " " + v.f[2][1] + " " + v.f[2][2] + " " + v.f[2][3] + " " +
                 v.f[3][0] + " " + v.f[3][1] + " " + v.f[3][2] + " " + v.f[3][3];
         }
         return result;
