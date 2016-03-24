@@ -427,23 +427,8 @@ void AppleseedRenderer::defineOutput()
 
         if (renderGlobals->getUseRenderRegion())
         {
-            const int imgWidth = renderGlobals->getWidth();
-            const int imgHeight = renderGlobals->getHeight();
             int left, right, bottom, top;
             renderGlobals->getRenderRegion(left, bottom, right, top);
-            if (left >= width)
-                left = width - 1;
-            if (right >= width)
-                right = width - 1;
-            if (bottom >= height)
-                bottom = height - 1;
-            if (top >= height)
-                top = height - 1;
-
-            const int ybot = imgHeight - bottom;
-            const int ytop = imgHeight - top;
-            const int ymin = ybot < ytop ? ybot : ytop;
-            const int ymax = ybot > ytop ? ybot : ytop;
             foundation::AABB2u crop(foundation::AABB2u::VectorType(left, bottom), foundation::AABB2u::VectorType(right, top));
             getWorldPtr()->mRenderer->getProjectPtr()->get_frame()->set_crop_window(crop);
         }
