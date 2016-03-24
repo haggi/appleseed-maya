@@ -543,7 +543,7 @@ void AppleseedRenderer::defineEnvironment()
         case 5: //Physical Sky
         {
             float sun_theta = getFloatAttr("sun_theta", appleseedGlobals, 30.0f);
-            double sun_phi = getFloatAttr("sun_phi", appleseedGlobals, 60.0f);
+            float sun_phi = getFloatAttr("sun_phi", appleseedGlobals, 60.0f);
             bool usePhysicalSun = getBoolAttr("physicalSun", appleseedGlobals, true);
 
             if (usePhysicalSun)
@@ -559,10 +559,9 @@ void AppleseedRenderer::defineEnvironment()
                         MVector sunOrient(0, 0, 1);
                         sunOrient *= tm;
                         sunOrient.normalize();
-                        foundation::Vector3d unitVector(sunOrient.x, sunOrient.y, sunOrient.z);
-                        double theta = 90.0f - sun_theta;
-                        renderer::unit_vector_to_angles(unitVector, theta, sun_phi);
-                        sun_theta = foundation::rad_to_deg(theta);
+                        foundation::Vector3f unitVector(sunOrient.x, sunOrient.y, sunOrient.z);
+                        renderer::unit_vector_to_angles(unitVector, sun_theta, sun_phi);
+                        sun_theta = foundation::rad_to_deg(sun_theta);
                         sun_phi = foundation::rad_to_deg(sun_phi);
                     }
                 }
