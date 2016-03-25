@@ -361,15 +361,13 @@ void AppleseedRenderer::defineCamera(boost::shared_ptr<MayaObject> cam)
     horizontalFilmAperture = horizontalFilmAperture * 2.54f * 0.01f;
     verticalFilmAperture = verticalFilmAperture * 2.54f * 0.01f;
     verticalFilmAperture = horizontalFilmAperture / imageAspect;
-    MString filmBack = MString("") + horizontalFilmAperture + " " + verticalFilmAperture;
-    MString focalLen = MString("") + focalLength * 0.001f;
 
-    camParams.insert("film_dimensions", filmBack.asChar());
-    camParams.insert("focal_length", focalLen.asChar());
-    camParams.insert("focal_distance", (MString("") + focusDistance).asChar());
-    camParams.insert("f_stop", (MString("") + fStop).asChar());
-    camParams.insert("diaphragm_blades", (MString("") + mtap_diaphragm_blades).asChar());
-    camParams.insert("diaphragm_tilt_angle", (MString("") + mtap_diaphragm_tilt_angle).asChar());
+    camParams.insert("film_dimensions", format("^1s ^2s", horizontalFilmAperture, verticalFilmAperture).asChar());
+    camParams.insert("focal_length", focalLength * 0.001f);
+    camParams.insert("focal_distance", focusDistance);
+    camParams.insert("f_stop", fStop);
+    camParams.insert("diaphragm_blades", mtap_diaphragm_blades);
+    camParams.insert("diaphragm_tilt_angle", mtap_diaphragm_tilt_angle);
 
     if (!camera)
     {
@@ -420,16 +418,18 @@ void AppleseedRenderer::defineOutput()
             renderer::FrameFactory::create(
             "beauty",
             renderer::ParamArray()
-            .insert("camera", project->get_scene()->get_camera()->get_name())
-            .insert("resolution", MString("") + width + " " + height)
-            .insert("tile_size", MString("") + tilesize + " " + tilesize)
-            .insert("color_space", colorSpaces[getEnumInt("colorSpace", depFn)])));
+                .insert("camera", project->get_scene()->get_camera()->get_name())
+                .insert("resolution", format("^1s ^2s", width, height).asChar())
+                .insert("tile_size", format("^1s ^2s", tilesize, tilesize).asChar())
+                .insert("color_space", colorSpaces[getEnumInt("colorSpace", depFn)])));
 
         if (renderGlobals->getUseRenderRegion())
         {
             int left, right, bottom, top;
             renderGlobals->getRenderRegion(left, bottom, right, top);
-            foundation::AABB2u crop(foundation::AABB2u::VectorType(left, bottom), foundation::AABB2u::VectorType(right, top));
+            const int b = std::min(height - bottom, height - (top + 1));
+            const int t = std::max(height - bottom, height - (top + 1));
+            const foundation::AABB2u crop(foundation::Vector2u(left, b), foundation::Vector2u(right, t));
             getWorldPtr()->mRenderer->getProjectPtr()->get_frame()->set_crop_window(crop);
         }
     }

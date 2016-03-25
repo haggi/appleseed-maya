@@ -36,6 +36,7 @@
 #include <maya/MAngle.h>
 
 #include "attrtools.h"
+#include "tools.h"
 
 float getDegree(const char* plugName, const MFnDependencyNode& dn)
 {
@@ -428,7 +429,7 @@ bool getColor(const MString& plugName, const MFnDependencyNode& dn, MString& val
     plug = dn.findPlug(plugName + "B", &stat);
     if (!stat) return false;
     b = plug.asFloat(ctx, &stat);
-    value = MString("") + r + " " + g + " " + b;
+    value = format("^1s ^2s ^3s", r, g, b);
     result = true;
     return result;
 }

@@ -37,6 +37,8 @@
 #include <maya/MMatrix.h>
 #include <maya/MPlug.h>
 #include <maya/MObjectArray.h>
+
+#include <assert.h>
 #include <fstream>
 #include <math.h>
 #include <memory>
@@ -138,5 +140,62 @@ MString getAttributeNameFromPlug(const MPlug& plug);
 void uniqueMObjectArray(MObjectArray& cleanMe);
 
 bool isSunLight(MObject& obj);
+
+template <typename T>
+MString to_mstring(const T& val)
+{
+    MString result;
+    result += val;
+    return result;
+}
+
+template <typename T1>
+MString format(const MString& fmt, const T1& arg1)
+{
+    MString result;
+#ifndef NDEBUG
+    const MStatus status =
+#endif
+        result.format(fmt, to_mstring(arg1));
+    assert(status == MS::kSuccess);
+    return result;
+}
+
+template <typename T1>
+MString format(const MString& fmt, const T1& arg1, const T1& arg2)
+{
+    MString result;
+#ifndef NDEBUG
+    const MStatus status =
+#endif
+        result.format(fmt, to_mstring(arg1), to_mstring(arg2));
+    assert(status == MS::kSuccess);
+    return result;
+}
+
+template <typename T1>
+MString format(const MString& fmt, const T1& arg1, const T1& arg2, const T1& arg3)
+{
+    MString result;
+#ifndef NDEBUG
+    const MStatus status =
+#endif
+        result.format(fmt, to_mstring(arg1), to_mstring(arg2), to_mstring(arg3));
+    assert(status == MS::kSuccess);
+    return result;
+}
+
+template <typename T1>
+MString format(const MString& fmt, const T1& arg1, const T1& arg2, const T1& arg3, const T1& arg4)
+{
+    MString result;
+#ifndef NDEBUG
+    const MStatus status =
+#endif
+        result.format(fmt, to_mstring(arg1), to_mstring(arg2), to_mstring(arg3), to_mstring(arg4));
+    assert(status == MS::kSuccess);
+    return result;
+}
+
 
 #endif  // !MATATOCOMMON_UTILITIES_TOOLS

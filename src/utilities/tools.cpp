@@ -594,7 +594,7 @@ MString lightColorAsString(MFnDependencyNode& depFn)
     MColor color(0,0,1);
     getFloat(MString("intensity"), depFn, intensity);
     getColor(MString("color"), depFn, color);
-    MString colorString = MString("") + color.r * intensity + " " + color.g * intensity + " " + color.b * intensity + " ";
+    MString colorString = format("^1s ^2s ^3s ", color.r * intensity, color.g * intensity, color.b * intensity);
     return colorString;
 }
 

@@ -64,7 +64,6 @@ class TileCallback
         const renderer::Frame*  frame,
         const size_t            tile_x,
         const size_t            tile_y) APPLESEED_OVERRIDE;
-
 };
 
 class TileCallbackFactory

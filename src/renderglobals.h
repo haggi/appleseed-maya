@@ -187,7 +187,7 @@ class RenderGlobals
     void setUseRenderRegion(bool useRegion)
     {
         useRenderRegion = useRegion;
-        // It is possible that Maya keep old render region values if the image size changes.
+        // It is possible that Maya keeps old render region values if the image size changes.
         // If the region is outside the frame we disable region rendering.
         if (regionLeft > imgWidth ||
             regionRight > imgWidth ||

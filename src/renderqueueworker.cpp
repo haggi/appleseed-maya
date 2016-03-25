@@ -48,6 +48,7 @@
 #include <maya/MTimerMessage.h>
 
 // Standard headers.
+#include <algorithm>
 #include <ctime>
 #include <map>
 #include <vector>
@@ -148,19 +149,19 @@ namespace
             ymin = std::max(ymin, bottom);
             ymax = std::min(ymax, top);
         }
-        RV_PIXEL hLine[4];
+        RV_PIXEL line[4];
         for (uint x = 0; x < 4; x++)
         {
-            hLine[x].r = hLine[x].g = hLine[x].b = hLine[x].a = 1.0f;
+            line[x].r = line[x].g = line[x].b = line[x].a = 1.0f;
         }
-        MRenderView::updatePixels(xmin, xmin + 3, ymin, ymin, hLine, true);
-        MRenderView::updatePixels(xmax - 3, xmax, ymin, ymin, hLine, true);
-        MRenderView::updatePixels(xmin, xmin + 3, ymax, ymax, hLine, true);
-        MRenderView::updatePixels(xmax - 3, xmax, ymax, ymax, hLine, true);
-        MRenderView::updatePixels(xmin, xmin, ymin, ymin + 3, hLine, true);
-        MRenderView::updatePixels(xmin, xmin, ymax - 3, ymax, hLine, true);
-        MRenderView::updatePixels(xmax, xmax, ymin, ymin + 3, hLine, true);
-        MRenderView::updatePixels(xmax, xmax, ymax - 3, ymax, hLine, true);
+        MRenderView::updatePixels(xmin, xmin + 3, ymin, ymin, line, true);
+        MRenderView::updatePixels(xmax - 3, xmax, ymin, ymin, line, true);
+        MRenderView::updatePixels(xmin, xmin + 3, ymax, ymax, line, true);
+        MRenderView::updatePixels(xmax - 3, xmax, ymax, ymax, line, true);
+        MRenderView::updatePixels(xmin, xmin, ymin, ymin + 3, line, true);
+        MRenderView::updatePixels(xmin, xmin, ymax - 3, ymax, line, true);
+        MRenderView::updatePixels(xmax, xmax, ymin, ymin + 3, line, true);
+        MRenderView::updatePixels(xmax, xmax, ymax - 3, ymax, line, true);
         MRenderView::refresh(xmin, xmax, ymin, ymax);
     }
 
@@ -183,8 +184,8 @@ namespace
         sprintf(minStr, "%02d", minutes);
         sprintf(secStr, "%02.1f", sec);
 
-        MString timeString = MString("") + hourStr + ":" + minStr + ":" + secStr;
-        return (MString("Render Time: ") + timeString);
+        MString timeString = format("^1s:^2s:^3s", hourStr, minStr,secStr);
+        return format("Render Time: ^1s", timeString);
     }
 
     MString getCaptionString()
@@ -845,8 +846,8 @@ void RenderQueueWorker::startRenderQueueWorker()
             break;
 
           case Event::PRETILE:
-              preTileRenderView(e.xMin, e.xMax, e.yMin, e.yMax);
-              break;
+            preTileRenderView(e.xMin, e.xMax, e.yMin, e.yMax);
+            break;
         }
 
         if (MGlobal::mayaState() != MGlobal::kBatch)
