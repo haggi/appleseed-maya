@@ -334,7 +334,7 @@ namespace
 
     MString removeIndexFromName(const MString& value, const int index)
     {
-        MString indexString = format("^1s", index);
+        MString indexString = toMString(index);
         MString attrString = value;
         attrString.substitute(indexString, "");
         return attrString;

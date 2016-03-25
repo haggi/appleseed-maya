@@ -140,7 +140,7 @@ void uniqueMObjectArray(MObjectArray& cleanMe);
 bool isSunLight(MObject& obj);
 
 template <typename T>
-MString to_mstring(const T& val)
+MString toMString(const T& val)
 {
     MString result;
     result += val;
@@ -154,7 +154,7 @@ MString format(const MString& fmt, const T1& arg1)
 #ifndef NDEBUG
     const MStatus status =
 #endif
-        result.format(fmt, to_mstring(arg1));
+        result.format(fmt, toMString(arg1));
     assert(status == MS::kSuccess);
     return result;
 }
@@ -166,7 +166,7 @@ MString format(const MString& fmt, const T1& arg1, const T1& arg2)
 #ifndef NDEBUG
     const MStatus status =
 #endif
-        result.format(fmt, to_mstring(arg1), to_mstring(arg2));
+        result.format(fmt, toMString(arg1), toMString(arg2));
     assert(status == MS::kSuccess);
     return result;
 }
@@ -178,7 +178,7 @@ MString format(const MString& fmt, const T1& arg1, const T1& arg2, const T1& arg
 #ifndef NDEBUG
     const MStatus status =
 #endif
-        result.format(fmt, to_mstring(arg1), to_mstring(arg2), to_mstring(arg3));
+        result.format(fmt, toMString(arg1), toMString(arg2), toMString(arg3));
     assert(status == MS::kSuccess);
     return result;
 }
@@ -190,7 +190,7 @@ MString format(const MString& fmt, const T1& arg1, const T1& arg2, const T1& arg
 #ifndef NDEBUG
     const MStatus status =
 #endif
-        result.format(fmt, to_mstring(arg1), to_mstring(arg2), to_mstring(arg3), to_mstring(arg4));
+        result.format(fmt, toMString(arg1), toMString(arg2), toMString(arg3), toMString(arg4));
     assert(status == MS::kSuccess);
     return result;
 }
