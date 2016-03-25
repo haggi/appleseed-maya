@@ -418,7 +418,6 @@ bool getColor(const MString& plugName, const MFnDependencyNode& dn, MString& val
 {
     MDGContext ctx = MDGContext::fsNormal;
     MStatus stat = MS::kSuccess;
-    bool result = false;
     float r, g, b;
     MPlug plug = dn.findPlug(plugName + "R", &stat);
     if (!stat) return false;

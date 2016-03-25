@@ -39,8 +39,8 @@
 #include <maya/MObjectArray.h>
 
 #include <cassert>
-#include <fstream>
 #include <cmath>
+#include <fstream>
 #include <memory>
 #include <vector>
 
