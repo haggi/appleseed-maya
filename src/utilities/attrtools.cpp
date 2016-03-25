@@ -430,8 +430,7 @@ bool getColor(const MString& plugName, const MFnDependencyNode& dn, MString& val
     if (!stat) return false;
     b = plug.asFloat(ctx, &stat);
     value = format("^1s ^2s ^3s", r, g, b);
-    result = true;
-    return result;
+    return true;
 }
 
 bool getColor(const char *plugName, const MFnDependencyNode& dn, float *value)

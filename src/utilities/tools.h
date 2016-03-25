@@ -38,9 +38,9 @@
 #include <maya/MPlug.h>
 #include <maya/MObjectArray.h>
 
-#include <assert.h>
+#include <cassert>
 #include <fstream>
-#include <math.h>
+#include <cmath>
 #include <memory>
 #include <vector>
 
@@ -107,8 +107,6 @@ void getConnectedInNodes(const MString& attribute, const MObject& thisObject, MO
 MString getObjectName(const MObject& mobject);
 
 MString getDepNodeTypeName(const MObject& mobject);
-
-MString lightColorAsString(MFnDependencyNode& depFn);
 
 MObject objectFromName(MString name);
 
@@ -196,6 +194,5 @@ MString format(const MString& fmt, const T1& arg1, const T1& arg2, const T1& arg
     assert(status == MS::kSuccess);
     return result;
 }
-
 
 #endif  // !MATATOCOMMON_UTILITIES_TOOLS
