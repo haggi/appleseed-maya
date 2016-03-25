@@ -1110,7 +1110,6 @@ void AppleseedRenderer::defineLight(boost::shared_ptr<MayaObject> obj)
         MString areaLightColorName = areaLightName + "_color";
         MString edfName = areaLightName + "_edf";
         renderer::ParamArray edfParams;
-        MString lightColor = lightColorAsString(depFn);
         MColor color = getColorAttr("color", depFn);
         defineColor(project.get(), areaLightColorName.asChar(), color, getFloatAttr("intensity", depFn, 1.0f));
         edfParams.insert("radiance", areaLightColorName.asChar());
