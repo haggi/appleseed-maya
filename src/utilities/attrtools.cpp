@@ -36,6 +36,7 @@
 #include <maya/MAngle.h>
 
 #include "attrtools.h"
+#include "tools.h"
 
 double getDegrees(const char* plugName, const MFnDependencyNode& dn)
 {
@@ -422,7 +423,6 @@ bool getColor(const MString& plugName, const MFnDependencyNode& dn, MString& val
 {
     MDGContext ctx = MDGContext::fsNormal;
     MStatus stat = MS::kSuccess;
-    bool result = false;
     float r, g, b;
     MPlug plug = dn.findPlug(plugName + "R", &stat);
     if (!stat) return false;
@@ -433,9 +433,8 @@ bool getColor(const MString& plugName, const MFnDependencyNode& dn, MString& val
     plug = dn.findPlug(plugName + "B", &stat);
     if (!stat) return false;
     b = plug.asFloat(ctx, &stat);
-    value = MString("") + r + " " + g + " " + b;
-    result = true;
-    return result;
+    value = format("^1s ^2s ^3s", r, g, b);
+    return true;
 }
 
 bool getColor(const char *plugName, const MFnDependencyNode& dn, float *value)

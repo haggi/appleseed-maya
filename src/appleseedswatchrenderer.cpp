@@ -106,7 +106,7 @@ void AppleseedSwatchRenderer::renderSwatch(NewSwatchRenderer *sr)
 {
     const int res = sr->resolution();
 
-    const MString resString = MString("") + res + " " + res;
+    const MString resString = format("^1s ^2s", res, res);
     renderer::ParamArray frameParams = mProject->get_frame()->get_parameters();
     frameParams.insert("resolution", resString);
     frameParams.insert("tile_size", resString);

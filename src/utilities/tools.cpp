@@ -588,16 +588,6 @@ MString getDepNodeTypeName(const MObject& mobject)
     return depFn.typeName();
 }
 
-MString lightColorAsString(MFnDependencyNode& depFn)
-{
-    float intensity = 1.0;
-    MColor color(0,0,1);
-    getFloat(MString("intensity"), depFn, intensity);
-    getColor(MString("color"), depFn, color);
-    MString colorString = MString("") + color.r * intensity + " " + color.g * intensity + " " + color.b * intensity + " ";
-    return colorString;
-}
-
 MObject objectFromName(MString name)
 {
     MObject obj;

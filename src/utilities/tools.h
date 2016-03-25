@@ -37,8 +37,10 @@
 #include <maya/MMatrix.h>
 #include <maya/MPlug.h>
 #include <maya/MObjectArray.h>
+
+#include <cassert>
+#include <cmath>
 #include <fstream>
-#include <math.h>
 #include <memory>
 #include <vector>
 
@@ -106,8 +108,6 @@ MString getObjectName(const MObject& mobject);
 
 MString getDepNodeTypeName(const MObject& mobject);
 
-MString lightColorAsString(MFnDependencyNode& depFn);
-
 MObject objectFromName(MString name);
 
 void posRotSclFromMatrix(MMatrix& matrix, MPoint& pos, MVector& rot, MVector& scl);
@@ -138,5 +138,61 @@ MString getAttributeNameFromPlug(const MPlug& plug);
 void uniqueMObjectArray(MObjectArray& cleanMe);
 
 bool isSunLight(MObject& obj);
+
+template <typename T>
+MString toMString(const T& val)
+{
+    MString result;
+    result += val;
+    return result;
+}
+
+template <typename T1>
+MString format(const MString& fmt, const T1& arg1)
+{
+    MString result;
+#ifndef NDEBUG
+    const MStatus status =
+#endif
+        result.format(fmt, toMString(arg1));
+    assert(status == MS::kSuccess);
+    return result;
+}
+
+template <typename T1>
+MString format(const MString& fmt, const T1& arg1, const T1& arg2)
+{
+    MString result;
+#ifndef NDEBUG
+    const MStatus status =
+#endif
+        result.format(fmt, toMString(arg1), toMString(arg2));
+    assert(status == MS::kSuccess);
+    return result;
+}
+
+template <typename T1>
+MString format(const MString& fmt, const T1& arg1, const T1& arg2, const T1& arg3)
+{
+    MString result;
+#ifndef NDEBUG
+    const MStatus status =
+#endif
+        result.format(fmt, toMString(arg1), toMString(arg2), toMString(arg3));
+    assert(status == MS::kSuccess);
+    return result;
+}
+
+template <typename T1>
+MString format(const MString& fmt, const T1& arg1, const T1& arg2, const T1& arg3, const T1& arg4)
+{
+    MString result;
+#ifndef NDEBUG
+    const MStatus status =
+#endif
+        result.format(fmt, toMString(arg1), toMString(arg2), toMString(arg3), toMString(arg4));
+    assert(status == MS::kSuccess);
+    return result;
+}
 
 #endif  // !MATATOCOMMON_UTILITIES_TOOLS
