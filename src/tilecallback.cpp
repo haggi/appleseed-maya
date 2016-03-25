@@ -60,6 +60,18 @@ void TileCallback::pre_render(
     const size_t            width,
     const size_t            height)
 {
+    Event e;
+    boost::shared_ptr<RenderGlobals> renderGlobals = getWorldPtr()->mRenderGlobals;
+    const int frameHeight = renderGlobals->getHeight();
+    e.pixels = boost::shared_ptr<RV_PIXEL>(new RV_PIXEL[width * height]);
+    RV_PIXEL* pixelsPtr = e.pixels.get();
+    memset(pixelsPtr, 0, width * height * sizeof(RV_PIXEL));    
+    e.xMin = static_cast<unsigned int>(x);
+    e.xMax = static_cast<unsigned int>(x + width - 1);
+    e.yMin = static_cast<unsigned int>(frameHeight - y - height);
+    e.yMax = static_cast<unsigned int>(frameHeight - y - 1);
+    e.mType = Event::PRETILE;
+    gEventQueue()->push(e);
 }
 
 void TileCallback::post_render(const renderer::Frame* frame)
@@ -71,7 +83,7 @@ void TileCallback::post_render(const renderer::Frame* frame)
 
     for (size_t i = 0; i < frameProps.m_pixel_count; i++)
     {
-        pixelsPtr[i].r = 255.0f;
+        pixelsPtr[i].r = 0.0f;
         pixelsPtr[i].g = 0.0f;
         pixelsPtr[i].b = 0.0f;
         pixelsPtr[i].a = 0.0f;
@@ -109,10 +121,10 @@ void TileCallback::post_render(const renderer::Frame* frame)
                     assert(pixelIndex < frameProps.m_pixel_count);
 
                     const float* source = reinterpret_cast<const float*>(finalTile.pixel(x, y));
-                    pixelsPtr[pixelIndex].r = foundation::saturate(source[0]) * 255.0f;
-                    pixelsPtr[pixelIndex].g = foundation::saturate(source[1]) * 255.0f;
-                    pixelsPtr[pixelIndex].b = foundation::saturate(source[2]) * 255.0f;
-                    pixelsPtr[pixelIndex].a = foundation::saturate(source[3]) * 255.0f;
+                    pixelsPtr[pixelIndex].r = foundation::saturate(source[0]);
+                    pixelsPtr[pixelIndex].g = foundation::saturate(source[1]);
+                    pixelsPtr[pixelIndex].b = foundation::saturate(source[2]);
+                    pixelsPtr[pixelIndex].a = foundation::saturate(source[3]);
                 }
             }
         }
@@ -149,10 +161,10 @@ void TileCallback::post_render_tile(
         {
             const float* source = reinterpret_cast<const float*>(finalTile.pixel(x, tileHeight - y - 1));
             const size_t pixelIndex = y * tileWidth + x;
-            pixelsPtr[pixelIndex].r = foundation::saturate(source[0]) * 255.0f;
-            pixelsPtr[pixelIndex].g = foundation::saturate(source[1]) * 255.0f;
-            pixelsPtr[pixelIndex].b = foundation::saturate(source[2]) * 255.0f;
-            pixelsPtr[pixelIndex].a = foundation::saturate(source[3]) * 255.0f;
+            pixelsPtr[pixelIndex].r = foundation::saturate(source[0]);
+            pixelsPtr[pixelIndex].g = foundation::saturate(source[1]);
+            pixelsPtr[pixelIndex].b = foundation::saturate(source[2]);
+            pixelsPtr[pixelIndex].a = foundation::saturate(source[3]);
         }
     }
 

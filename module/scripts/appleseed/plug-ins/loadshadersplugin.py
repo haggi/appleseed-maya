@@ -27,7 +27,7 @@
 #
 
 import maya.OpenMayaMPx as OpenMayaMPx
-import shadingnodes as shadingNodes
+import appleseed.shadingnodes as shadingNodes
 
 def initializePlugin(mobject):
     mplugin = OpenMayaMPx.MFnPlugin(mobject)

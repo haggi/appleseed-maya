@@ -205,9 +205,9 @@ void HypershadeRenderer::initProject()
     initEnv();
 
     width = height = initialSize;
-    MString res = MString("") + width + " " + height;
+    MString res = format("^1s ^2s", width, height);
     tileSize = 64;
-    MString tileString = MString("") + tileSize + " " + tileSize;
+    MString tileString = format("^1s ^2s", tileSize, tileSize);
 
     project->set_frame(
         renderer::FrameFactory::create(
@@ -422,13 +422,12 @@ MStatus HypershadeRenderer::translateCamera(const MUuid& id, const MObject& node
     horizontalFilmAperture = horizontalFilmAperture * 2.54f * 0.01f;
     verticalFilmAperture = verticalFilmAperture * 2.54f * 0.01f;
     verticalFilmAperture = horizontalFilmAperture / imageAspect;
-    MString filmBack = MString("") + horizontalFilmAperture + " " + verticalFilmAperture;
-    MString focalLen = MString("") + focalLength * 0.001f;
+    MString filmBack = format("^1s ^2s", horizontalFilmAperture, verticalFilmAperture);
 
     camParams.insert("film_dimensions", filmBack.asChar());
-    camParams.insert("focal_length", focalLen.asChar());
-    camParams.insert("focal_distance", (MString("") + focusDistance).asChar());
-    camParams.insert("f_stop", (MString("") + fStop).asChar());
+    camParams.insert("focal_length", focalLength * 0.001f);
+    camParams.insert("focal_distance", focusDistance);
+    camParams.insert("f_stop", fStop);
 
     foundation::auto_release_ptr<renderer::Camera> appleCam(
         renderer::PinholeCameraFactory().create(
@@ -784,8 +783,8 @@ MStatus HypershadeRenderer::setResolution(unsigned int w, unsigned int h)
         }
     }
 
-    MString res = MString("") + width + " " + height;
-    MString tileString = MString("") + tileSize + " " + tileSize;
+    MString res = format("^1s ^2s", width, height);
+    MString tileString = format("^1s ^2s", tileSize, tileSize);
 
     renderer::Camera *cam = project->get_scene()->get_camera();
     MString camName = "";
@@ -798,7 +797,8 @@ MStatus HypershadeRenderer::setResolution(unsigned int w, unsigned int h)
         dim.split(' ', values);
         const float filmWidth = values[0].asFloat();
         const float filmHeight = filmWidth * h / (float)w;
-        camParams.insert("film_dimensions", (MString("") + filmWidth + " " + filmHeight).asChar());
+        MString dimensions = format("^1s ^2s", filmWidth, filmHeight);
+        camParams.insert("film_dimensions", dimensions.asChar());
     }
 
     project->set_frame(

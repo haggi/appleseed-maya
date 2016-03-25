@@ -48,6 +48,7 @@
 #include <maya/MTimerMessage.h>
 
 // Standard headers.
+#include <algorithm>
 #include <ctime>
 #include <map>
 #include <vector>
@@ -88,32 +89,80 @@ namespace
         if (!MRenderView::doesRenderEditorExist())
             return;
 
-        // We have cases where the render view has changed but the framebuffer callback may have still the old settings.
-        // Here we make sure we do not exceed the render view area.
-        // todo: is this still relevant?
         if (getWorldPtr()->mRenderGlobals->getUseRenderRegion())
         {
-            const int width = getWorldPtr()->mRenderGlobals->getWidth();
-            const int height = getWorldPtr()->mRenderGlobals->getHeight();
-
-            if (xMin != 0 ||
-                yMin != 0 ||
-                xMax != width - 1 ||
-                yMax != height - 1)
+            unsigned int xmin = xMin, ymin = yMin, xmax = xMax, ymax = yMax;
+            unsigned int left, right, bottom, top;
+            MRenderView::getRenderRegion(left, right, bottom, top);
+            if ((xMax < left) || (xMin > right) || (yMax < bottom) || (yMin > top))
+                return;
+            if ((xmin < left) || (ymin < bottom) || (xmax > right) || (ymax > top))
             {
-                unsigned int left, right, bottom, top;
-                MRenderView::getRenderRegion(left, right, bottom, top);
-
-                if (left != xMin ||
-                    right != xMax ||
-                    bottom != yMin ||
-                    top != yMax)
-                    return;
+                xmin = std::max(xmin, left);
+                xmax = std::min(xmax, right);
+                ymin = std::max(ymin, bottom);
+                ymax = std::min(ymax, top);
+                const unsigned int origWidth = xMax - xMin + 1;
+                const unsigned int origHeight = yMax - yMin + 1;
+                const unsigned int width = xmax - xmin + 1;
+                const unsigned int height = ymax - ymin + 1;
+                const unsigned int xStart = xmin - xMin;
+                const unsigned int yStart = ymin - yMin;
+                std::auto_ptr<RV_PIXEL> p = std::auto_ptr<RV_PIXEL>(new RV_PIXEL[width * height]);
+                for (unsigned int x = 0; x < width; x++)
+                {
+                    for (unsigned int y = 0; y < height; y++)
+                    {
+                        const unsigned int sourceIndex = (yStart + y) * origWidth + xStart + x;
+                        const unsigned int destIndex = y * width + x;
+                        p.get()[destIndex] = pixels[sourceIndex];
+                    }
+                }
+                MRenderView::updatePixels(xmin, xmax, ymin, ymax, p.get(), true);
+                MRenderView::refresh(xmin, xmax, ymin, ymax);
+                return;
             }
+
         }
 
-        MRenderView::updatePixels(xMin, xMax, yMin, yMax, pixels);
+        MRenderView::updatePixels(xMin, xMax, yMin, yMax, pixels, true);
         MRenderView::refresh(xMin, xMax, yMin, yMax);
+    }
+
+    void preTileRenderView(
+        const unsigned int  xMin,
+        const unsigned int  xMax,
+        const unsigned int  yMin,
+        const unsigned int  yMax)
+    {
+        if (!MRenderView::doesRenderEditorExist())
+            return;
+        unsigned int xmin = xMin, ymin = yMin, xmax = xMax, ymax = yMax;
+        if (getWorldPtr()->mRenderGlobals->getUseRenderRegion())
+        {
+            unsigned int left, right, bottom, top;
+            MRenderView::getRenderRegion(left, right, bottom, top);
+            if ((xMax < left) || (xMin > right) || (yMax < bottom) || (yMin > top))
+                return;
+            xmin = std::max(xmin, left);
+            xmax = std::min(xmax, right);
+            ymin = std::max(ymin, bottom);
+            ymax = std::min(ymax, top);
+        }
+        RV_PIXEL line[4];
+        for (uint x = 0; x < 4; x++)
+        {
+            line[x].r = line[x].g = line[x].b = line[x].a = 1.0f;
+        }
+        MRenderView::updatePixels(xmin, xmin + 3, ymin, ymin, line, true);
+        MRenderView::updatePixels(xmax - 3, xmax, ymin, ymin, line, true);
+        MRenderView::updatePixels(xmin, xmin + 3, ymax, ymax, line, true);
+        MRenderView::updatePixels(xmax - 3, xmax, ymax, ymax, line, true);
+        MRenderView::updatePixels(xmin, xmin, ymin, ymin + 3, line, true);
+        MRenderView::updatePixels(xmin, xmin, ymax - 3, ymax, line, true);
+        MRenderView::updatePixels(xmax, xmax, ymin, ymin + 3, line, true);
+        MRenderView::updatePixels(xmax, xmax, ymax - 3, ymax, line, true);
+        MRenderView::refresh(xmin, xmax, ymin, ymax);
     }
 
     MString getElapsedTimeString()
@@ -135,8 +184,8 @@ namespace
         sprintf(minStr, "%02d", minutes);
         sprintf(secStr, "%02.1f", sec);
 
-        MString timeString = MString("") + hourStr + ":" + minStr + ":" + secStr;
-        return (MString("Render Time: ") + timeString);
+        MString timeString = format("^1s:^2s:^3s", hourStr, minStr,secStr);
+        return format("Render Time: ^1s", timeString);
     }
 
     MString getCaptionString()
@@ -660,11 +709,20 @@ void RenderQueueWorker::startRenderQueueWorker()
 
                 if (MRenderView::doesRenderEditorExist())
                 {
-                    MRenderView::endRender();
-
                     const int width = getWorldPtr()->mRenderGlobals->getWidth();
                     const int height = getWorldPtr()->mRenderGlobals->getHeight();
-                    MRenderView::startRender(width, height, false, true);
+
+                    if (getWorldPtr()->mRenderGlobals->getUseRenderRegion())
+                    {
+                        unsigned int left, right, bottom, top;
+                        MRenderView::getRenderRegion(left, right, bottom, top);
+                        MRenderView::startRegionRender(width, height, left, right, bottom, top, false, true);
+                    } 
+                    else
+                    {
+                        MRenderView::startRender(width, height, true, true);
+                        MRenderView::setDrawTileBoundary(false);
+                    }
                 }
 
                 getWorldPtr()->setRenderState(World::RSTATETRANSLATING);
@@ -728,7 +786,10 @@ void RenderQueueWorker::startRenderQueueWorker()
                 if (MGlobal::mayaState() != MGlobal::kBatch)
                 {
                     if (MRenderView::doesRenderEditorExist())
+                    {
+                        MRenderView::endRender();
                         MGlobal::executePythonCommand("import pymel.core as pm; pm.waitCursor(state=False); pm.refresh()");
+                    }
                 }
 
                 if (getWorldPtr()->getRenderType() == World::IPRRENDER)
@@ -762,6 +823,18 @@ void RenderQueueWorker::startRenderQueueWorker()
             getWorldPtr()->mRenderer->abortRendering();
             break;
 
+          case Event::IPRUPDATEREGION:
+            {
+                getWorldPtr()->mRenderer->abortRendering();
+                unsigned int left, right, bottom, top;
+                MRenderView::getRenderRegion(left, right, bottom, top);
+                foundation::AABB2u crop(foundation::AABB2u::VectorType(left, bottom), foundation::AABB2u::VectorType(right, top));
+                getWorldPtr()->mRenderer->getProjectPtr()->get_frame()->set_crop_window(crop);
+                InteractiveElement* dummyElement = 0; // the renderer waits for an modifiedElementList update
+                modifiedElementList.push_back(dummyElement);
+            }
+            break;
+
           case Event::ADDIPRCALLBACKS:
             addIPRCallbacks();
             break;
@@ -770,6 +843,10 @@ void RenderQueueWorker::startRenderQueueWorker()
             updateRenderView(e.xMin, e.xMax, e.yMin, e.yMax, e.pixels.get());
             numPixelsDone += (e.xMax - e.xMin) * (e.yMax - e.yMin);
             logOutput(numPixelsDone, numPixelsTotal);
+            break;
+
+          case Event::PRETILE:
+            preTileRenderView(e.xMin, e.xMax, e.yMin, e.yMax);
             break;
         }
 
