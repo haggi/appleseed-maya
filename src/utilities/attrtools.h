@@ -47,11 +47,12 @@ enum ATTR_TYPE
 
 int getChildId(const MPlug& plug);
 
-float getDegree(const char* plugName, const MFnDependencyNode& dn);
+double getDegrees(const char* plugName, const MFnDependencyNode& dn);
 
 float getRadians(const char* plugName, const MFnDependencyNode& dn);
 
 float getFloatAttr(const char* plugName, const MFnDependencyNode& dn, const float defaultValue);
+float getDoubleAttr(const char* plugName, const MFnDependencyNode& dn, const double defaultValue);
 
 bool getFloat(const MString& plugName, const MFnDependencyNode& dn, float& value);
 
