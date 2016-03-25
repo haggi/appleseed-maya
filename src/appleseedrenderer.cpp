@@ -240,9 +240,9 @@ void AppleseedRenderer::addRenderParams(renderer::ParamArray& paramArray)
     paramArray.insert_path("adaptive_pixel_renderer.quality", getFloatAttr("adaptiveQuality", renderGlobalsFn, 3.0f));
 
     paramArray.insert_path("generic_frame_renderer.passes", getIntAttr("frameRendererPasses", renderGlobalsFn, 1));
-    paramArray.insert_path("generic_frame_renderer.tile_ordering", bucketOrder.asChar());
+    paramArray.insert_path("generic_frame_renderer.tile_ordering", bucketOrder);
 
-    paramArray.insert("lighting_engine", lightingEngine.asChar());
+    paramArray.insert("lighting_engine", lightingEngine);
     paramArray.insert_path((lightingEngine + ".enable_ibl").asChar(), getBoolAttr("enable_ibl", renderGlobalsFn, true));
     paramArray.insert_path((lightingEngine + ".enable_dl").asChar(), getBoolAttr("enable_dl", renderGlobalsFn, true));
     paramArray.insert_path((lightingEngine + ".dl_light_samples").asChar(), getIntAttr("directLightSamples", renderGlobalsFn, 0));
@@ -259,7 +259,7 @@ void AppleseedRenderer::addRenderParams(renderer::ParamArray& paramArray)
 
     if (getFloatAttr("max_ray_intensity", renderGlobalsFn, .5f) > 0.0)
         paramArray.insert_path((lightingEngine + ".max_ray_intensity").asChar(), getFloatAttr("max_ray_intensity", renderGlobalsFn, .5f));
-    paramArray.insert_path((lightingEngine + ".photon_type").asChar(), photonType.asChar());
+    paramArray.insert_path((lightingEngine + ".photon_type").asChar(), photonType);
     paramArray.insert_path((lightingEngine + ".max_path_length").asChar(), getFloatAttr("max_path_length", renderGlobalsFn, 8.0f));
     paramArray.insert_path((lightingEngine + ".rr_min_path_length").asChar(), getFloatAttr("rr_min_path_length", renderGlobalsFn, 3.0f));
     paramArray.insert_path((lightingEngine + ".path_tracing_max_path_length").asChar(), getFloatAttr("path_tracing_max_path_length", renderGlobalsFn, 8.0f));
@@ -293,12 +293,12 @@ void AppleseedRenderer::defineConfig()
 
     project->configurations()
         .get_by_name("interactive")->get_parameters()
-            .insert_path("generic_tile_renderer.filter", renderGlobals->filterTypeString.toLowerCase().asChar())
+            .insert_path("generic_tile_renderer.filter", renderGlobals->filterTypeString.toLowerCase())
             .insert_path("generic_tile_renderer.filter_size", renderGlobals->filterSize);
 
     renderer::Configuration *cfg = project->configurations().get_by_name("interactive");
     renderer::ParamArray &params = cfg->get_parameters();
-    params.insert_path("generic_tile_renderer.filter", renderGlobals->filterTypeString.toLowerCase().asChar());
+    params.insert_path("generic_tile_renderer.filter", renderGlobals->filterTypeString.toLowerCase());
     params.insert_path("generic_tile_renderer.filter_size", renderGlobals->filterSize);
     params.insert("sample_renderer", "generic");
     params.insert("sample_generator", "generic");
@@ -352,7 +352,7 @@ void AppleseedRenderer::defineCamera(boost::shared_ptr<MayaObject> cam)
     verticalFilmAperture = verticalFilmAperture * 2.54f * 0.01f;
     verticalFilmAperture = horizontalFilmAperture / imageAspect;
 
-    camParams.insert("film_dimensions", format("^1s ^2s", horizontalFilmAperture, verticalFilmAperture).asChar());
+    camParams.insert("film_dimensions", format("^1s ^2s", horizontalFilmAperture, verticalFilmAperture));
     camParams.insert("focal_length", focalLength * 0.001f);
     camParams.insert("focal_distance", focusDistance);
     camParams.insert("f_stop", fStop);
@@ -409,8 +409,8 @@ void AppleseedRenderer::defineOutput()
             "beauty",
             renderer::ParamArray()
                 .insert("camera", project->get_scene()->get_camera()->get_name())
-                .insert("resolution", format("^1s ^2s", width, height).asChar())
-                .insert("tile_size", format("^1s ^2s", tilesize, tilesize).asChar())
+                .insert("resolution", format("^1s ^2s", width, height))
+                .insert("tile_size", format("^1s ^2s", tilesize, tilesize))
                 .insert("color_space", colorSpaces[getEnumInt("colorSpace", depFn)])));
 
         if (renderGlobals->getUseRenderRegion())
@@ -502,7 +502,7 @@ void AppleseedRenderer::defineEnvironment()
             environmentEDF = renderer::LatLongMapEnvironmentEDFFactory().create(
                     "sky_edf",
                     renderer::ParamArray()
-                    .insert("radiance", envMapAttrName.asChar())
+                    .insert("radiance", envMapAttrName)
                     .insert("radiance_multiplier", environmentIntensity)
                     .insert("horizontal_shift", latlongHoShift)
                     .insert("vertical_shift", latlongVeShift)
@@ -514,7 +514,7 @@ void AppleseedRenderer::defineEnvironment()
             environmentEDF = renderer::MirrorBallMapEnvironmentEDFFactory().create(
                     "sky_edf",
                     renderer::ParamArray()
-                    .insert("radiance", envMapAttrName.asChar())
+                    .insert("radiance", envMapAttrName)
                     .insert("radiance_multiplier", environmentIntensity));
             break;
         }
@@ -652,7 +652,7 @@ void AppleseedRenderer::createMesh(boost::shared_ptr<MayaObject> obj)
     obj->getShadingGroups();
     obj->getMeshData(points, normals, uArray, vArray, triPointIds, triNormalIds, triUvIds, triMatIds);
 
-    Logging::debug(MString("Translating mesh object ") + meshFn.name().asChar());
+    Logging::debug(MString("Translating mesh object ") + meshFn.name());
     MString meshFullName = makeGoodString(meshFn.fullPathName());
 
     // Create a new mesh object.
