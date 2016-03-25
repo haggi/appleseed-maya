@@ -322,34 +322,24 @@ void AppleseedRenderer::defineCamera(boost::shared_ptr<MayaObject> cam)
     if (camera != 0)
         Logging::debug("Camera is not null - we already have a camera -> update it.");
 
-    // Update the complete camera and place it into the scene.
     Logging::debug(MString("Creating camera shape: ") + cam->shortName);
-    float horizontalFilmAperture = 24.892f;
-    float verticalFilmAperture = 18.669f;
 
     const int width = renderGlobals->getWidth();
     const int height = renderGlobals->getHeight();
 
     float imageAspect = (float)width / (float)height;
     bool dof = renderGlobals->doDof;
-    float mtap_cameraType = 0;
-    int mtap_diaphragm_blades = 0;
-    float mtap_diaphragm_tilt_angle = 0.0;
-    float focusDistance = 0.0;
-    float fStop = 0.0;
 
-    float focalLength = 35.0f;
     MFnCamera camFn(cam->mobject, &stat);
     renderer::ParamArray camParams;
 
-    getFloat(MString("horizontalFilmAperture"), camFn, horizontalFilmAperture);
-    getFloat(MString("verticalFilmAperture"), camFn, verticalFilmAperture);
-    getFloat(MString("focalLength"), camFn, focalLength);
-    getBool(MString("depthOfField"), camFn, dof);
-    getFloat(MString("focusDistance"), camFn, focusDistance);
-    getFloat(MString("fStop"), camFn, fStop);
-    getInt(MString("mtap_diaphragm_blades"), camFn, mtap_diaphragm_blades);
-    getFloat(MString("mtap_diaphragm_tilt_angle"), camFn, mtap_diaphragm_tilt_angle);
+    float horizontalFilmAperture = getFloatAttr("horizontalFilmAperture", camFn, 24.892f);
+    float verticalFilmAperture = getFloatAttr("verticalFilmAperture", camFn, 18.669f);
+    float focalLength = getFloatAttr("focalLength", camFn, 35.0f);
+    float focusDistance = getFloatAttr("focusDistance", camFn, 10.0f);
+    float fStop = getFloatAttr("fStop", camFn, 8.0f);
+    int diaphragmBlades = getIntAttr("mtap_diaphragm_blades", camFn, 6);
+    float diaphragmTiltAngle = getFloatAttr("mtap_diaphragm_tilt_angle", camFn, 0.0);
 
     // This is a hack because this camera model does not support NON depth of field.
     if (!dof)
@@ -366,8 +356,8 @@ void AppleseedRenderer::defineCamera(boost::shared_ptr<MayaObject> cam)
     camParams.insert("focal_length", focalLength * 0.001f);
     camParams.insert("focal_distance", focusDistance);
     camParams.insert("f_stop", fStop);
-    camParams.insert("diaphragm_blades", mtap_diaphragm_blades);
-    camParams.insert("diaphragm_tilt_angle", mtap_diaphragm_tilt_angle);
+    camParams.insert("diaphragm_blades", diaphragmBlades);
+    camParams.insert("diaphragm_tilt_angle", diaphragmTiltAngle);
 
     if (!camera)
     {
