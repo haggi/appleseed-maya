@@ -530,6 +530,16 @@ void OSLUtilClass::addConnectionToConnectionArray(ConnectionArray& ca, MString s
     ca.push_back(c);
 }
 
+// Projection nodes in Maya and OLS need a special handling. Other shading systems allow the manipulation of the global u and v or s and t values
+// before they access a texture. This is not possible in OSL what means we have to feed the correct uv values into a 2d texture node. In the case of a 
+// projection node, we first have to find out which 2d nodes are connected to our node directly or indirectly. Then we create a projection helper node
+// which calculates the uv data and plug it into the 2d node. Later we use another instance of the same projection node to calculate color balance and 
+// other color specific elements.
+// 
+// placementMatrixNode -> projection_util -> 2dnode -> projectionNode -> output
+//
+// This method as a small drawback. It is not possible to use the same 2d texture node for different projections.
+//
 void OSLUtilClass::createOSLProjectionNodes(MPlug& plug)
 {
     MPlugArray pa;
@@ -543,9 +553,9 @@ void OSLUtilClass::createOSLProjectionNodes(MPlug& plug)
 void OSLUtilClass::createOSLProjectionNodes(const MObject& surfaceShaderNode)
 {
     listProjectionHistory(surfaceShaderNode);
-
     std::vector<ProjectionUtil>::iterator it;
     std::vector<ProjectionUtil> utils = projectionNodeArray;
+
     for (it = utils.begin(); it != utils.end(); it++)
     {
         ProjectionUtil util = *it;
@@ -559,8 +569,8 @@ void OSLUtilClass::createOSLProjectionNodes(const MObject& surfaceShaderNode)
         pm.connectedTo(pma, true, false);
         if (pma.length() == 0)
             continue;
-        MObject placementNode = pma[0].node();
 
+        MObject placementNode = pma[0].node();
         ShadingNode pn;
         if (!ShaderDefinitions::findShadingNode(placementNode, pn))
             continue;
@@ -568,19 +578,20 @@ void OSLUtilClass::createOSLProjectionNodes(const MObject& surfaceShaderNode)
         createOSLShadingNode(pn);
 
         ShadingNode sn;
-        if (!ShaderDefinitions::findShadingNode(placementNode, sn))
+        if (!ShaderDefinitions::findShadingNode(util.projectionNode, sn))
             continue;
         sn.fullName = sn.fullName + "_ProjUtil";
         createOSLShadingNode(sn);
 
-        ConnectionArray ca;
-        ca.push_back(Connection(pn.fullName, "worldInverseMatrix", sn.fullName, "placementMatrix"));
-        connectOSLShaders(ca);
+        addConnectionToList(Connection(pn.fullName, "worldInverseMatrix", sn.fullName, "placementMatrix"));
 
         for (uint lId = 0; lId < util.leafNodes.length(); lId++)
         {
-            projectionNodes.push_back(util.projectionNode);
-            projectionConnectNodes.push_back(util.projectionNode);
+            const MString sourceNode = sn.fullName;
+            const MString sourceAttr = "outUVCoord";
+            const MString destNode = getObjectName(util.leafNodes[lId]);
+            const MString destAttr = "uvCoord";
+            addConnectionToList(Connection(sourceNode, sourceAttr, destNode, destAttr));
         }
     }
 }
@@ -1097,18 +1108,15 @@ void OSLUtilClass::initOSLUtil()
 
 void OSLUtilClass::connectProjectionNodes(MObject& projNode)
 {
-    ConnectionArray ca;
-    MFnDependencyNode pn(projNode);
     for (size_t i = 0; i < projectionConnectNodes.size(); i++)
     {
         if (projNode == projectionConnectNodes[i])
         {
-            MString sourceNode = (getObjectName(projectionNodes[i]) + "_ProjUtil");
-            MString sourceAttr = "outUVCoord";
-            MString destNode = pn.name();
-            MString destAttr = "uvCoord";
-            ca.push_back(Connection(sourceNode, sourceAttr, destNode, destAttr));
-            connectOSLShaders(ca);
+            const MString sourceNode = (getObjectName(projectionNodes[i]) + "_ProjUtil");
+            const MString sourceAttr = "outUVCoord";
+            const MString destNode = getObjectName(projNode);
+            const MString destAttr = "uvCoord";
+            addConnectionToList(Connection(sourceNode, sourceAttr, destNode, destAttr));
         }
     }
 }
