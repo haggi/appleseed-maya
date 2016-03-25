@@ -38,7 +38,7 @@
 #include "attrtools.h"
 #include "tools.h"
 
-float getDegree(const char* plugName, const MFnDependencyNode& dn)
+double getDegrees(const char* plugName, const MFnDependencyNode& dn)
 {
     MStatus stat = MS::kSuccess;
     MPlug plug = dn.findPlug(plugName, &stat);
@@ -52,13 +52,18 @@ float getRadians(const char* plugName, const MFnDependencyNode& dn)
     return plug.asMAngle().asRadians();
 }
 
-float getFloatAttr(const char* plugName, const MFnDependencyNode& dn, float defaultValue)
+float getFloatAttr(const char* plugName, const MFnDependencyNode& dn, const float defaultValue)
 {
-    MStatus stat = MS::kSuccess;
-    MPlug plug = dn.findPlug(plugName, &stat);
-    if (!stat)
-        return defaultValue;
-    return plug.asFloat();
+    MStatus status = MS::kSuccess;
+    const MPlug plug = dn.findPlug(plugName, &status);
+    return status == MStatus::kSuccess ? plug.asFloat() : defaultValue;
+}
+
+float getDoubleAttr(const char* plugName, const MFnDependencyNode& dn, const double defaultValue)
+{
+    MStatus status = MS::kSuccess;
+    const MPlug plug = dn.findPlug(plugName, &status);
+    return status == MStatus::kSuccess ? plug.asDouble() : defaultValue;
 }
 
 bool getFloat(const MString& plugName, const MFnDependencyNode& dn, float& value)

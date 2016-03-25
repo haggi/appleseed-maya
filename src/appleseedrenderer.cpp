@@ -240,9 +240,9 @@ void AppleseedRenderer::addRenderParams(renderer::ParamArray& paramArray)
     paramArray.insert_path("adaptive_pixel_renderer.quality", getFloatAttr("adaptiveQuality", renderGlobalsFn, 3.0f));
 
     paramArray.insert_path("generic_frame_renderer.passes", getIntAttr("frameRendererPasses", renderGlobalsFn, 1));
-    paramArray.insert_path("generic_frame_renderer.tile_ordering", bucketOrder);
+    paramArray.insert_path("generic_frame_renderer.tile_ordering", bucketOrder.asChar());
 
-    paramArray.insert("lighting_engine", lightingEngine);
+    paramArray.insert("lighting_engine", lightingEngine.asChar());
     paramArray.insert_path((lightingEngine + ".enable_ibl").asChar(), getBoolAttr("enable_ibl", renderGlobalsFn, true));
     paramArray.insert_path((lightingEngine + ".enable_dl").asChar(), getBoolAttr("enable_dl", renderGlobalsFn, true));
     paramArray.insert_path((lightingEngine + ".dl_light_samples").asChar(), getIntAttr("directLightSamples", renderGlobalsFn, 0));
@@ -259,7 +259,7 @@ void AppleseedRenderer::addRenderParams(renderer::ParamArray& paramArray)
 
     if (getFloatAttr("max_ray_intensity", renderGlobalsFn, .5f) > 0.0)
         paramArray.insert_path((lightingEngine + ".max_ray_intensity").asChar(), getFloatAttr("max_ray_intensity", renderGlobalsFn, .5f));
-    paramArray.insert_path((lightingEngine + ".photon_type").asChar(), photonType);
+    paramArray.insert_path((lightingEngine + ".photon_type").asChar(), photonType.asChar());
     paramArray.insert_path((lightingEngine + ".max_path_length").asChar(), getFloatAttr("max_path_length", renderGlobalsFn, 8.0f));
     paramArray.insert_path((lightingEngine + ".rr_min_path_length").asChar(), getFloatAttr("rr_min_path_length", renderGlobalsFn, 3.0f));
     paramArray.insert_path((lightingEngine + ".path_tracing_max_path_length").asChar(), getFloatAttr("path_tracing_max_path_length", renderGlobalsFn, 8.0f));
@@ -291,14 +291,34 @@ void AppleseedRenderer::defineConfig()
         .get_by_name("interactive")->get_parameters()
             .insert_path("generic_tile_renderer.sampler", pixel_renderer);
 
+    if (renderGlobals->getUseRenderRegion())
+    {
+        const int imgWidth = renderGlobals->getWidth();
+        const int imgHeight = renderGlobals->getHeight();
+
+        int left, right, bottom, top;
+        renderGlobals->getRenderRegion(left, bottom, right, top);
+
+        const int ybot = imgHeight - bottom;
+        const int ytop = imgHeight - top;
+        const int ymin = ybot < ytop ? ybot : ytop;
+        const int ymax = ybot > ytop ? ybot : ytop;
+
+        const MString regionString = MString("") + left + " " + ymin + " " + right + " " + ymax;
+
+        project->configurations()
+            .get_by_name("final")->get_parameters()
+            .insert_path("generic_tile_renderer.crop_window", regionString);
+    }
+
     project->configurations()
         .get_by_name("interactive")->get_parameters()
-            .insert_path("generic_tile_renderer.filter", renderGlobals->filterTypeString.toLowerCase())
+            .insert_path("generic_tile_renderer.filter", renderGlobals->filterTypeString.toLowerCase().asChar())
             .insert_path("generic_tile_renderer.filter_size", renderGlobals->filterSize);
 
     renderer::Configuration *cfg = project->configurations().get_by_name("interactive");
     renderer::ParamArray &params = cfg->get_parameters();
-    params.insert_path("generic_tile_renderer.filter", renderGlobals->filterTypeString.toLowerCase());
+    params.insert_path("generic_tile_renderer.filter", renderGlobals->filterTypeString.toLowerCase().asChar());
     params.insert_path("generic_tile_renderer.filter_size", renderGlobals->filterSize);
     params.insert("sample_renderer", "generic");
     params.insert("sample_generator", "generic");
@@ -322,24 +342,34 @@ void AppleseedRenderer::defineCamera(boost::shared_ptr<MayaObject> cam)
     if (camera != 0)
         Logging::debug("Camera is not null - we already have a camera -> update it.");
 
+    // Update the complete camera and place it into the scene.
     Logging::debug(MString("Creating camera shape: ") + cam->shortName);
+    float horizontalFilmAperture = 24.892f;
+    float verticalFilmAperture = 18.669f;
 
     const int width = renderGlobals->getWidth();
     const int height = renderGlobals->getHeight();
 
     float imageAspect = (float)width / (float)height;
     bool dof = renderGlobals->doDof;
+    float mtap_cameraType = 0;
+    int mtap_diaphragm_blades = 0;
+    float mtap_diaphragm_tilt_angle = 0.0;
+    float focusDistance = 0.0;
+    float fStop = 0.0;
 
+    float focalLength = 35.0f;
     MFnCamera camFn(cam->mobject, &stat);
     renderer::ParamArray camParams;
 
-    float horizontalFilmAperture = getFloatAttr("horizontalFilmAperture", camFn, 24.892f);
-    float verticalFilmAperture = getFloatAttr("verticalFilmAperture", camFn, 18.669f);
-    float focalLength = getFloatAttr("focalLength", camFn, 35.0f);
-    float focusDistance = getFloatAttr("focusDistance", camFn, 10.0f);
-    float fStop = getFloatAttr("fStop", camFn, 8.0f);
-    int diaphragmBlades = getIntAttr("mtap_diaphragm_blades", camFn, 6);
-    float diaphragmTiltAngle = getFloatAttr("mtap_diaphragm_tilt_angle", camFn, 0.0);
+    getFloat(MString("horizontalFilmAperture"), camFn, horizontalFilmAperture);
+    getFloat(MString("verticalFilmAperture"), camFn, verticalFilmAperture);
+    getFloat(MString("focalLength"), camFn, focalLength);
+    getBool(MString("depthOfField"), camFn, dof);
+    getFloat(MString("focusDistance"), camFn, focusDistance);
+    getFloat(MString("fStop"), camFn, fStop);
+    getInt(MString("mtap_diaphragm_blades"), camFn, mtap_diaphragm_blades);
+    getFloat(MString("mtap_diaphragm_tilt_angle"), camFn, mtap_diaphragm_tilt_angle);
 
     // This is a hack because this camera model does not support NON depth of field.
     if (!dof)
@@ -351,13 +381,15 @@ void AppleseedRenderer::defineCamera(boost::shared_ptr<MayaObject> cam)
     horizontalFilmAperture = horizontalFilmAperture * 2.54f * 0.01f;
     verticalFilmAperture = verticalFilmAperture * 2.54f * 0.01f;
     verticalFilmAperture = horizontalFilmAperture / imageAspect;
+    MString filmBack = MString("") + horizontalFilmAperture + " " + verticalFilmAperture;
+    MString focalLen = MString("") + focalLength * 0.001f;
 
-    camParams.insert("film_dimensions", format("^1s ^2s", horizontalFilmAperture, verticalFilmAperture));
-    camParams.insert("focal_length", focalLength * 0.001f);
-    camParams.insert("focal_distance", focusDistance);
-    camParams.insert("f_stop", fStop);
-    camParams.insert("diaphragm_blades", diaphragmBlades);
-    camParams.insert("diaphragm_tilt_angle", diaphragmTiltAngle);
+    camParams.insert("film_dimensions", filmBack.asChar());
+    camParams.insert("focal_length", focalLen.asChar());
+    camParams.insert("focal_distance", (MString("") + focusDistance).asChar());
+    camParams.insert("f_stop", (MString("") + fStop).asChar());
+    camParams.insert("diaphragm_blades", (MString("") + mtap_diaphragm_blades).asChar());
+    camParams.insert("diaphragm_tilt_angle", (MString("") + mtap_diaphragm_tilt_angle).asChar());
 
     if (!camera)
     {
@@ -400,34 +432,24 @@ void AppleseedRenderer::defineOutput()
         static const char* colorSpaces[] = { "linear_rgb", "srgb", "ciexyz" };
         MFnDependencyNode depFn(getRenderGlobalsNode());
         boost::shared_ptr<RenderGlobals> renderGlobals = getWorldPtr()->mRenderGlobals;
-        const int tilesize = getIntAttr("tilesize", depFn, 64);
+
         const int width = renderGlobals->getWidth();
         const int height = renderGlobals->getHeight();
 
         project->set_frame(
             renderer::FrameFactory::create(
-            "beauty",
-            renderer::ParamArray()
-                .insert("camera", project->get_scene()->get_camera()->get_name())
-                .insert("resolution", format("^1s ^2s", width, height))
-                .insert("tile_size", format("^1s ^2s", tilesize, tilesize))
-                .insert("color_space", colorSpaces[getEnumInt("colorSpace", depFn)])));
-
-        if (renderGlobals->getUseRenderRegion())
-        {
-            int left, right, bottom, top;
-            renderGlobals->getRenderRegion(left, bottom, right, top);
-            const int b = std::min(height - bottom, height - (top + 1));
-            const int t = std::max(height - bottom, height - (top + 1));
-            const foundation::AABB2u crop(foundation::Vector2u(left, b), foundation::Vector2u(right, t));
-            getWorldPtr()->mRenderer->getProjectPtr()->get_frame()->set_crop_window(crop);
-        }
+                "beauty",
+                renderer::ParamArray()
+                    .insert("camera", project->get_scene()->get_camera()->get_name())
+                    .insert("resolution", MString("") + width + " " + height)
+                    .insert("tile_size", MString("") + renderGlobals->tilesize + " " + renderGlobals->tilesize)
+                    .insert("color_space", colorSpaces[getEnumInt("colorSpace", depFn)])));
     }
 }
 
 void AppleseedRenderer::defineEnvironment()
 {
-    renderer::Scene* scene = project->get_scene();
+    renderer::Scene *scene = project->get_scene();
 
     MFnDependencyNode appleseedGlobals(getRenderGlobalsNode());
     MString textInstName = "bg_texture_inst";
@@ -469,61 +491,75 @@ void AppleseedRenderer::defineEnvironment()
 
     switch (environmentType)
     {
-        case 0: //constant
+        // Constant.
+        case 0:
         {
-            environmentEDF = renderer::ConstantEnvironmentEDFFactory().create(
+            environmentEDF =
+                renderer::ConstantEnvironmentEDFFactory().create(
                     "sky_edf",
                     renderer::ParamArray()
-                    .insert("radiance", envColorName));
+                        .insert("radiance", envColorName));
             break;
         }
-        case 1: //ConstantHemisphere
-        {
-            environmentEDF = renderer::ConstantHemisphereEnvironmentEDFFactory().create(
-                "sky_edf",
-                renderer::ParamArray()
-                .insert("radiance", envColorName)
-                .insert("upper_hemi_radiance", gradHorizName)
-                .insert("lower_hemi_radiance", gradHorizName));
-            break;
-        }
-        case 2: //Gradient
-        {
-            environmentEDF = renderer::GradientEnvironmentEDFFactory().create(
-                    "sky_edf",
-                    renderer::ParamArray()
-                    .insert("horizon_radiance", gradHorizName)
-                    .insert("zenith_radiance", gradZenitName)
-                    );
-            break;
-        }
-        case 3: //Latitude Longitude
-        {
-            environmentEDF = renderer::LatLongMapEnvironmentEDFFactory().create(
-                    "sky_edf",
-                    renderer::ParamArray()
-                    .insert("radiance", envMapAttrName)
-                    .insert("radiance_multiplier", environmentIntensity)
-                    .insert("horizontal_shift", latlongHoShift)
-                    .insert("vertical_shift", latlongVeShift)
-                    );
-            break;
-        }
-        case 4: //Mirror Ball
-        {
-            environmentEDF = renderer::MirrorBallMapEnvironmentEDFFactory().create(
-                    "sky_edf",
-                    renderer::ParamArray()
-                    .insert("radiance", envMapAttrName)
-                    .insert("radiance_multiplier", environmentIntensity));
-            break;
-        }
-        case 5: //Physical Sky
-        {
-            float sun_theta = getFloatAttr("sun_theta", appleseedGlobals, 30.0f);
-            float sun_phi = getFloatAttr("sun_phi", appleseedGlobals, 60.0f);
-            bool usePhysicalSun = getBoolAttr("physicalSun", appleseedGlobals, true);
 
+        // ConstantHemisphere.
+        case 1:
+        {
+            environmentEDF =
+                renderer::ConstantHemisphereEnvironmentEDFFactory().create(
+                    "sky_edf",
+                    renderer::ParamArray()
+                        .insert("radiance", envColorName)
+                        .insert("upper_hemi_radiance", gradHorizName)
+                        .insert("lower_hemi_radiance", gradHorizName));
+            break;
+        }
+
+        // Gradient.
+        case 2:
+        {
+            environmentEDF =
+                renderer::GradientEnvironmentEDFFactory().create(
+                    "sky_edf",
+                    renderer::ParamArray()
+                        .insert("horizon_radiance", gradHorizName)
+                        .insert("zenith_radiance", gradZenitName));
+            break;
+        }
+
+        // Latitude-Longitude.
+        case 3:
+        {
+            environmentEDF =
+                renderer::LatLongMapEnvironmentEDFFactory().create(
+                    "sky_edf",
+                    renderer::ParamArray()
+                        .insert("radiance", envMapAttrName.asChar())
+                        .insert("radiance_multiplier", environmentIntensity)
+                        .insert("horizontal_shift", latlongHoShift)
+                        .insert("vertical_shift", latlongVeShift));
+            break;
+        }
+
+        // Mirror Ball.
+        case 4:
+        {
+            environmentEDF =
+                renderer::MirrorBallMapEnvironmentEDFFactory().create(
+                    "sky_edf",
+                    renderer::ParamArray()
+                        .insert("radiance", envMapAttrName.asChar())
+                        .insert("radiance_multiplier", environmentIntensity));
+            break;
+        }
+
+        // Physical Sky.
+        case 5:
+        {
+            double sunTheta = getDoubleAttr("sun_theta", appleseedGlobals, 30.0);
+            double sunPhi = getDoubleAttr("sun_phi", appleseedGlobals, 60.0);
+
+            const bool usePhysicalSun = getBoolAttr("physicalSun", appleseedGlobals, true);
             if (usePhysicalSun)
             {
                 // Get the connected sun light.
@@ -534,13 +570,13 @@ void AppleseedRenderer::defineEnvironment()
                     MMatrix tm = tn.transformationMatrix(&stat);
                     if (stat)
                     {
-                        MVector sunOrient(0, 0, 1);
+                        MVector sunOrient(0.0, 0.0, 1.0);
                         sunOrient *= tm;
                         sunOrient.normalize();
-                        foundation::Vector3f unitVector(sunOrient.x, sunOrient.y, sunOrient.z);
-                        renderer::unit_vector_to_angles(unitVector, sun_theta, sun_phi);
-                        sun_theta = foundation::rad_to_deg(sun_theta);
-                        sun_phi = foundation::rad_to_deg(sun_phi);
+                        const foundation::Vector3d unitVector(sunOrient.x, sunOrient.y, sunOrient.z);
+                        renderer::unit_vector_to_angles(unitVector, sunTheta, sunPhi);
+                        sunTheta = foundation::rad_to_deg(sunTheta);
+                        sunPhi = foundation::rad_to_deg(sunPhi);
                     }
                 }
                 else
@@ -549,39 +585,43 @@ void AppleseedRenderer::defineEnvironment()
                 }
             }
 
-            if (skyModel == 0) // preetham
+            if (skyModel == 0) // Preetham
             {
-                environmentEDF = renderer::PreethamEnvironmentEDFFactory().create(
+                environmentEDF =
+                    renderer::PreethamEnvironmentEDFFactory().create(
                         "sky_edf",
                         renderer::ParamArray()
-                        .insert("horizon_shift", horizon_shift)
-                        .insert("luminance_multiplier", luminance_multiplier)
-                        .insert("saturation_multiplier", saturation_multiplier)
-                        .insert("sun_phi", sun_phi)
-                        .insert("sun_theta", sun_theta)
-                        .insert("turbidity", turbidity)
-                        .insert("turbidity_max", turbidity_max)
-                        .insert("turbidity_min", turbidity_min));
+                            .insert("horizon_shift", horizon_shift)
+                            .insert("luminance_multiplier", luminance_multiplier)
+                            .insert("saturation_multiplier", saturation_multiplier)
+                            .insert("sun_phi", sunPhi)
+                            .insert("sun_theta", sunTheta)
+                            .insert("turbidity", turbidity)
+                            .insert("turbidity_max", turbidity_max)
+                            .insert("turbidity_min", turbidity_min));
             }
-            else // hosek
+            else // Hosek
             { 
-                environmentEDF = renderer::HosekEnvironmentEDFFactory().create(
+                environmentEDF =
+                    renderer::HosekEnvironmentEDFFactory().create(
                         "sky_edf",
                         renderer::ParamArray()
-                        .insert("ground_albedo", ground_albedo)
-                        .insert("horizon_shift", horizon_shift)
-                        .insert("luminance_multiplier", luminance_multiplier)
-                        .insert("saturation_multiplier", saturation_multiplier)
-                        .insert("sun_phi", sun_phi)
-                        .insert("sun_theta", sun_theta)
-                        .insert("turbidity", turbidity)
-                        .insert("turbidity_max", turbidity_max)
-                        .insert("turbidity_min", turbidity_min));
+                            .insert("ground_albedo", ground_albedo)
+                            .insert("horizon_shift", horizon_shift)
+                            .insert("luminance_multiplier", luminance_multiplier)
+                            .insert("saturation_multiplier", saturation_multiplier)
+                            .insert("sun_phi", sunPhi)
+                            .insert("sun_theta", sunTheta)
+                            .insert("turbidity", turbidity)
+                            .insert("turbidity_max", turbidity_max)
+                            .insert("turbidity_min", turbidity_min));
             }
 
             break;
         }
-        case 6: //OSL Sky
+
+        // OSL Sky.
+        case 6:
         {
             foundation::auto_release_ptr<renderer::ShaderGroup> oslShaderGroup = renderer::ShaderGroupFactory().create("OSL_Sky");
             oslShaderGroup->add_shader("surface", "testBG", "BGLayer", renderer::ParamArray());
@@ -652,7 +692,7 @@ void AppleseedRenderer::createMesh(boost::shared_ptr<MayaObject> obj)
     obj->getShadingGroups();
     obj->getMeshData(points, normals, uArray, vArray, triPointIds, triNormalIds, triUvIds, triMatIds);
 
-    Logging::debug(MString("Translating mesh object ") + meshFn.name());
+    Logging::debug(MString("Translating mesh object ") + meshFn.name().asChar());
     MString meshFullName = makeGoodString(meshFn.fullPathName());
 
     // Create a new mesh object.
@@ -845,10 +885,6 @@ void AppleseedRenderer::doInteractiveUpdate()
     for (iaIt = interactiveUpdateList.begin(); iaIt != interactiveUpdateList.end(); iaIt++)
     {
         InteractiveElement *iElement = *iaIt;
-
-        if (iElement == 0) // only trigger a new rendering e.g. if an ipr region update is done
-            continue;
-
         if (iElement->node.hasFn(MFn::kShadingEngine))
         {
             if (iElement->obj)
@@ -967,16 +1003,17 @@ void AppleseedRenderer::defineLight(boost::shared_ptr<MayaObject> obj)
         MString colorAttribute = obj->shortName + "_intensity";
         defineColor(project.get(), colorAttribute.asChar(), col, intensity);
         Logging::debug(MString("Creating spotLight: ") + depFn.name());
-        float coneAngle = getDegree("coneAngle", depFn);
-        float penumbraAngle = getDegree("penumbraAngle", depFn);
-        float inner_angle = coneAngle;
-        float outer_angle = coneAngle + penumbraAngle;
+        const double coneAngle = getDegrees("coneAngle", depFn);
+        const double penumbraAngle = getDegrees("penumbraAngle", depFn);
+        const double innerAngle = coneAngle;
+        const double outerAngle = coneAngle + penumbraAngle;
 
         if (light == 0)
         {
-            foundation::auto_release_ptr<renderer::Light> lp = renderer::SpotLightFactory().create(
-                obj->shortName.asChar(),
-                renderer::ParamArray());
+            foundation::auto_release_ptr<renderer::Light> lp =
+                renderer::SpotLightFactory().create(
+                    obj->shortName.asChar(),
+                    renderer::ParamArray());
             light = lp.get();
             lightAssembly->lights().insert(lp);
         }
@@ -984,11 +1021,10 @@ void AppleseedRenderer::defineLight(boost::shared_ptr<MayaObject> obj)
         renderer::ParamArray& params = light->get_parameters();
         params.insert("radiance", colorAttribute);
         params.insert("radiance_multiplier", intensity);
-        params.insert("inner_angle", inner_angle);
-        params.insert("outer_angle", outer_angle);
+        params.insert("inner_angle", innerAngle);
+        params.insert("outer_angle", outerAngle);
         params.insert("importance_multiplier", importance_multiplier);
         params.insert("cast_indirect_light", cast_indirect_light);
-        MMatrix matrix = obj->transformMatrices[0];
         fillTransformMatrices(obj, light);
     }
 
@@ -1074,6 +1110,7 @@ void AppleseedRenderer::defineLight(boost::shared_ptr<MayaObject> obj)
         MString areaLightColorName = areaLightName + "_color";
         MString edfName = areaLightName + "_edf";
         renderer::ParamArray edfParams;
+        MString lightColor = lightColorAsString(depFn);
         MColor color = getColorAttr("color", depFn);
         defineColor(project.get(), areaLightColorName.asChar(), color, getFloatAttr("intensity", depFn, 1.0f));
         edfParams.insert("radiance", areaLightColorName.asChar());
