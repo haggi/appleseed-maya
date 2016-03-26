@@ -337,7 +337,6 @@ void AppleseedRenderer::defineCamera(boost::shared_ptr<MayaObject> cam)
     MStatus stat;
     boost::shared_ptr<MayaScene> mayaScene = getWorldPtr()->mScene;
     boost::shared_ptr<RenderGlobals> renderGlobals = getWorldPtr()->mRenderGlobals;
-
     renderer::Camera *camera = project->get_scene()->get_camera();
     if (camera != 0)
         Logging::debug("Camera is not null - we already have a camera -> update it.");

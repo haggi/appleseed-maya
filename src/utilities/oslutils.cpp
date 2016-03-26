@@ -505,6 +505,12 @@ void OSLUtilClass::defineOSLParameter(ShaderAttribute& sa, MFnDependencyNode& de
     if (sa.type == "matrix")
     {
         MMatrix value = getMatrix(plug);
+        boost::shared_ptr<RenderGlobals> renderGlobals = getWorldPtr()->mRenderGlobals;
+        MMatrix scale;
+        scale = scale.setToIdentity();
+        if (renderGlobals)
+            scale = renderGlobals->globalConversionMatrix;
+        value *= scale;
         paramArray.push_back(OSLParameter(sa.name.c_str(), value));
     }
     if (sa.type == "vector")
