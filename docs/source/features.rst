@@ -2,7 +2,7 @@ Features
 ========
 
 Supported features:
-=============================
+-------------------
 - Unidirectional Path Tracing
 - Stochastic Progressive Photon Mapping
 - Multi-pass rendering
@@ -10,7 +10,7 @@ Supported features:
 - Subsurface scattering
 
 Supported Maya shading nodes:
-=============================
+-----------------------------
 - blendColors
 - bulge
 - bump2d
@@ -29,7 +29,7 @@ Supported Maya shading nodes:
 
 
 Extra shading nodes:
-====================
+--------------------
 - uberShader
 - asLayeredShader
 - asDisneyMaterial
