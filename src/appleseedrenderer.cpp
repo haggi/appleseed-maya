@@ -884,6 +884,9 @@ void AppleseedRenderer::doInteractiveUpdate()
     for (iaIt = interactiveUpdateList.begin(); iaIt != interactiveUpdateList.end(); iaIt++)
     {
         InteractiveElement *iElement = *iaIt;
+        if (iElement == 0)
+            continue;
+
         if (iElement->node.hasFn(MFn::kShadingEngine))
         {
             if (iElement->obj)
