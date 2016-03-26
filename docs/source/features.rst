@@ -6,7 +6,6 @@ Supported Appleseed features:
 
 =====  =====
 Feature Support
-------------  
 =====  =====
 False  False
 =====  =====
