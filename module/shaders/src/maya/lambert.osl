@@ -9,18 +9,18 @@ surface lambert
         string help = "Color",
         string hint = "useAsColor"
     ]],
-	vector incandescence = 0.0
+    vector incandescence = 0.0
     [[
         string help = "Incandescence",
         string hint = "useAsColor"
     ]],
-	vector transparency = 0.0
+    vector transparency = 0.0
     [[
         string help = "Transparency",
         string hint = "useAsColor"
     ]],
-    output closure color outColor = 0	
+    output closure color outColor = 0    
 )
 {
-    outColor = (inDiffuse * color(inColor) * diffuse(Normal)) + (color(incandescence) * emission()) + (color(transparency) * transparent());		
+    outColor = (inDiffuse * color(inColor) * diffuse(Normal)) + (color(incandescence) * emission()) + (color(transparency) * transparent());        
 }

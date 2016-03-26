@@ -113,67 +113,66 @@ vector concentric(vector p)
 {
   vector st;
   vector noisePoint = vector(0.01 * int(p[0]), 0.01 * int(p[1]), 0.01 * int(p[2]));
-  float	temp = noise("perlin", noisePoint);
+  float temp = noise("perlin", noisePoint);
   st[1] = 0.5 + sin((p[0] - floor(p[0])) * 0.5) * sin((p[1] - floor(p[1])) * 0.5) * sin((p[2] - floor(p[2])) * 0.5);
   st[0] = temp;
   return st;
 }
 shader projection( int projType = 0, 
-				   vector transparency=0, 
-				   float uAngle=0, 
-				   float vAngle=0, 
-				   vector image = vector(1,0,0), 
-				   vector uvCoord=0, 
-				   matrix placementMatrix = 0, 
-				   output vector outUVCoord=0, 
-				   MAYA_COLORBALANCE,
-				   MAYA_DEFAULT_OUTPUT)
+                   vector transparency=0, 
+                   float uAngle=0, 
+                   float vAngle=0, 
+                   vector image = vector(1,0,0), 
+                   vector uvCoord=0, 
+                   matrix placementMatrix = 0, 
+                   output vector outUVCoord=0, 
+                   MAYA_COLORBALANCE,
+                   MAYA_DEFAULT_OUTPUT)
 {
-	float s = u;
-	float t = v;
-	if( isconnected(uvCoord))
-	{
-		s = uvCoord[0];
-		t = uvCoord[1];
-	}
-	vector uvw;
-	
-	if( projType == 1) //planar
-	{
-		point PP = transform(placementMatrix, P);
-		uvw = planar(PP);
-	}
-	if( projType == 2) //spherical
-	{
-		point PP = transform(placementMatrix, P);
-		uvw = spherical(PP, uAngle, vAngle);
-	}
-	if( projType == 3) //cylindrical
-	{
-		point PP = transform(placementMatrix, P);
-		uvw = cylindrical(PP, uAngle);
-	}
-	if( projType == 4) //ball
-	{
-		point PP = transform(placementMatrix, P);
-		uvw = ball(PP);
-	}
-	if( projType == 5) //cubic
-	{
-		point PP = transform(placementMatrix, P);
-		uvw = cubic(PP);
-	}
-	if( projType == 6) //triplanar
-	{
-		point PP = transform(placementMatrix, P);
-		uvw = triPlanar(PP, N);
-	}
-	if( projType == 7) //concentric
-	{
-		point PP = transform(placementMatrix, P);
-		uvw = concentric(PP);
-	}
-	outUVCoord = uvw;
-	
-	outColor = colorBalance(image, colorGain, colorOffset);
+    float s = u;
+    float t = v;
+    if (isconnected(uvCoord))
+    {
+        s = uvCoord[0];
+        t = uvCoord[1];
+    }
+    vector uvw;
+    
+    if (projType == 1) //planar
+    {
+        point PP = transform(placementMatrix, P);
+        uvw = planar(PP);
+    }
+    if (projType == 2) //spherical
+    {
+        point PP = transform(placementMatrix, P);
+        uvw = spherical(PP, uAngle, vAngle);
+    }
+    if (projType == 3) //cylindrical
+    {
+        point PP = transform(placementMatrix, P);
+        uvw = cylindrical(PP, uAngle);
+    }
+    if (projType == 4) //ball
+    {
+        point PP = transform(placementMatrix, P);
+        uvw = ball(PP);
+    }
+    if (projType == 5) //cubic
+    {
+        point PP = transform(placementMatrix, P);
+        uvw = cubic(PP);
+    }
+    if (projType == 6) //triplanar
+    {
+        point PP = transform(placementMatrix, P);
+        uvw = triPlanar(PP, N);
+    }
+    if (projType == 7) //concentric
+    {
+        point PP = transform(placementMatrix, P);
+        uvw = concentric(PP);
+    }
+    outUVCoord = uvw;
+    outColor = colorBalance(image, colorGain, colorOffset);
 }

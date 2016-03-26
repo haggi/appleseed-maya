@@ -6,10 +6,10 @@
 
 closure color calculateReflection(float ior, string mdf, color specularColor, float specular, float roughness, float anisotropy, vector normalCamera)
 {
-	closure color result = 0;
+    closure color result = 0;
     float eta = 1.0 / ior;
-	vector Normal = normalCamera;
-	vector Tangent = normalize(dPdu);	
+    vector Normal = normalCamera;
+    vector Tangent = normalize(dPdu);    
 
     if (mdf == "sharp")
     {
@@ -21,14 +21,14 @@ closure color calculateReflection(float ior, string mdf, color specularColor, fl
         mdf_roughness(roughness, anisotropy, ax, ay);
         result = specular * specularColor * microfacet(mdf, Normal, Tangent, ax, ay, eta, 0);
     }
-	return result;
+    return result;
 }
 
 closure color calculateRefraction(float eta, string mdf, color refractionColor, float refractivity, float roughness, vector normalCamera)
 {
-	closure color result = 0;
-	vector Normal = normalCamera;
-	vector Tangent = normalize(dPdu);	
+    closure color result = 0;
+    vector Normal = normalCamera;
+    vector Tangent = normalize(dPdu);    
 
     if (mdf == "sharp")
     {
@@ -40,37 +40,37 @@ closure color calculateRefraction(float eta, string mdf, color refractionColor, 
         mdf_roughness(roughness, 1.0, ax, ay);
         result = refractivity * refractionColor * microfacet(mdf, Normal, Tangent, ax, ay, eta, 1);
     }
-	return result;
+    return result;
 }
 
 
 closure color calculateDiffuse(color diffuseColor, float diffuseValue, float roughness, float translucency, color translucencyColor, vector normalCamera)
 {
-	closure color result = 0;
+    closure color result = 0;
 
-	if (roughness != 0.0)
-		result = diffuseValue * diffuseColor * oren_nayar(normalCamera, roughness);
-	else
-		result = diffuseValue * diffuseColor * diffuse(normalCamera);
-	if( (translucency > 0.0) && (!isBlack(translucencyColor)))
-	{
-		result += translucencyColor * translucency * diffuse(normalCamera);
-	}
-	return result;
+    if (roughness != 0.0)
+        result = diffuseValue * diffuseColor * oren_nayar(normalCamera, roughness);
+    else
+        result = diffuseValue * diffuseColor * diffuse(normalCamera);
+    if ((translucency > 0.0) && (!isBlack(translucencyColor)))
+    {
+        result += translucencyColor * translucency * diffuse(normalCamera);
+    }
+    return result;
 }
 
 shader uberShader
 [[
     string help = "uber shader",
-	string mayaClassification = "Appleseed/material:shader/surface:swatch/AppleseedRenderSwatch",
-	int mayaId = 0
+    string mayaClassification = "Appleseed/material:shader/surface:swatch/AppleseedRenderSwatch",
+    int mayaId = 0
 ]]
 (
-	int matte = 0
-	[[ 
-		string help = "Use matte",
-		string hint = "useAsBool"
-	]],
+    int matte = 0
+    [[ 
+        string help = "Use matte",
+        string hint = "useAsBool"
+    ]],
     vector normalCamera = N,
     float diffuseValue = 0.8
     [[
@@ -80,7 +80,7 @@ shader uberShader
     vector diffuseColor = 1.0
     [[
         string help = "Color",
-		string hint = "useAsColor"
+        string hint = "useAsColor"
     ]],
     float roughness = 0.0
     [[
@@ -93,213 +93,213 @@ shader uberShader
     float translucency = 0.0
     [[
         string help = "Translucency.",
-		APPLESEED_01_LIMIT_METADATA
+        APPLESEED_01_LIMIT_METADATA
     ]],
     vector translucencyColor = 0.0
     [[
         string help = "Translucency color",
-		string hint = "useAsColor"
+        string hint = "useAsColor"
     ]],
 
-	// specularity
-	float specular1 = 0.5
+    // specularity
+    float specular1 = 0.5
     [[
         string help = "Specularity 1 value",
-		APPLESEED_01_LIMIT_METADATA
+        APPLESEED_01_LIMIT_METADATA
     ]],
-	float specularIOR1 = 1.5
+    float specularIOR1 = 1.5
     [[
         string help = "Specularity 1 index of reflection",
-		float min = 0.001,
-		float max = 3.0,
-		string hint = "softmax"
+        float min = 0.001,
+        float max = 3.0,
+        string hint = "softmax"
     ]],
-	int specularUseFresnel1 = 1
+    int specularUseFresnel1 = 1
     [[
         string help = "Specularity 1 use fresnel",
-		string hint = "useAsBool"
+        string hint = "useAsBool"
     ]],
-	float reflectivityAtZeroDeg = 0.0
+    float reflectivityAtZeroDeg = 0.0
     [[
         string help = "Reflectivity at 0 Degree",
-		APPLESEED_01_LIMIT_METADATA
+        APPLESEED_01_LIMIT_METADATA
     ]],
-	float roughness1 = 0.1
+    float roughness1 = 0.1
     [[
-		APPLESEED_MDF_ROUGHNESS_METADATA
+        APPLESEED_MDF_ROUGHNESS_METADATA
     ]],
     vector specularColor1 = 0.0
     [[
         string help = "Specular color 1",
-		string hint = "useAsColor"
+        string hint = "useAsColor"
     ]],
     float anisotropy1 = 0.0
     [[
         APPLESEED_ANISOTROPY_METADATA
     ]],
-	string reflectionMdf = "ggx"
+    string reflectionMdf = "ggx"
     [[
-		string help = "Microfacet distribution to use: Specular, Beckmann or GGX.",
-		string options = "sharp|beckmann|ggx"
+        string help = "Microfacet distribution to use: Specular, Beckmann or GGX.",
+        string options = "sharp|beckmann|ggx"
     ]],
-	
-	// refraction
-	float refractionIOR = 1.3
+    
+    // refraction
+    float refractionIOR = 1.3
     [[
         string help = "Refraction Index",
-		float min = -2.0,
-		float max =  2.0,
-		string hint = "softminmax"
-    ]],	
+        float min = -2.0,
+        float max =  2.0,
+        string hint = "softminmax"
+    ]],    
     vector refractionColor = 1.0
     [[
         string help = "Refraction color",
-		string hint = "useAsColor"
+        string hint = "useAsColor"
     ]],
     float absorption = 0
     [[
         string help = "Absorption cross section",
         float min = 0.0,
-		float max = 1.0,
-		string hint = "softmax"
-    ]],	
+        float max = 1.0,
+        string hint = "softmax"
+    ]],    
     vector absorptionColor = 0.0
     [[
         string help = "Absorption color",
-		string hint = "useAsColor"
+        string hint = "useAsColor"
     ]],
-	float refractivity = 0.0
+    float refractivity = 0.0
     [[
         string help = "Refractivity",
-		APPLESEED_01_LIMIT_METADATA
+        APPLESEED_01_LIMIT_METADATA
     ]],
-	float refractionRoughness = 0.0
+    float refractionRoughness = 0.0
     [[
-		APPLESEED_MDF_ROUGHNESS_METADATA    
-	]],
-	string refractionMdf = "ggx"
-    [[
-		string help = "Microfacet distribution to use: Specular, Beckmann or GGX.",
-		string options = "sharp|beckmann|ggx"
+        APPLESEED_MDF_ROUGHNESS_METADATA    
     ]],
-	
-	
-	// subsurface scattering
-	int SSS1 = 0
+    string refractionMdf = "ggx"
+    [[
+        string help = "Microfacet distribution to use: Specular, Beckmann or GGX.",
+        string options = "sharp|beckmann|ggx"
+    ]],
+    
+    
+    // subsurface scattering
+    int SSS1 = 0
     [[
         string help = "Use SSS 1",
-		string hint = "useAsBool"
+        string hint = "useAsBool"
     ]],
     vector SSS1Color = 0.0
     [[
         string help = "Subsurface color",
-		string hint = "useAsColor"
+        string hint = "useAsColor"
     ]],
-	float SSS1Weight = 0.0
+    float SSS1Weight = 0.0
     [[
         string help = "Subsurface color Multiplier",
-		APPLESEED_01_LIMIT_METADATA
+        APPLESEED_01_LIMIT_METADATA
     ]],
     vector SSS1Radius = 0.0
     [[
         string help = "Radius per Color",
-		string hint = "useAsColor"
+        string hint = "useAsColor"
     ]],
-	float SSS1RadiusMultiplier = 1.0
+    float SSS1RadiusMultiplier = 1.0
     [[
         string help = "Subsurface color Multiplier",
-		float min = 0.0,
-		float max = 3.0,
-		string hint = "softmax"
+        float min = 0.0,
+        float max = 3.0,
+        string hint = "softmax"
     ]],
 
     vector emissionColor = 0.0
     [[
         string help = "Emission Color",
-		string hint = "useAsColor"
+        string hint = "useAsColor"
     ]],
-	float emissionMultiplier = 1.0
+    float emissionMultiplier = 1.0
     [[
         string help = "Emission Color Multiplier",
-		float min = 0.0,
-		float max = 3.0,
-		string hint = "softmax"
+        float min = 0.0,
+        float max = 3.0,
+        string hint = "softmax"
     ]],
-	
-	output closure color outColor = 0)
+    
+    output closure color outColor = 0)
 {
-	
-	if( (matte == 1) && (iscameraray()))
-	{
-		outColor = emission() * 0.0;
-	}
-	else
-	{
-		closure color reflectionClosure = 0;
-		closure color refractionClosure = 0;
-		closure color subsurfaceClosure = 0;
-		closure color emissionClosure = 0;
-		closure color diffuseClosure = calculateDiffuse(color(diffuseColor), diffuseValue, roughness, translucency, color(translucencyColor), normalCamera);
-		float Kr = 0.0, Kt = 0.0;
-		
-		int doReflection = (specular1 > 0.0) && (!isBlack(specularColor1));
-		int doRefraction = (refractivity > 0.0) && (!isBlack(refractionColor));
-		if( doReflection ) 
-		{
-			Kr = 1.0;
-			float ior = specularIOR1;
-			if( specularUseFresnel1 )
-				fresnel(I, normalCamera, 1.0/ior, Kr, Kt);
-			reflectionClosure = calculateReflection(ior, reflectionMdf, color(specularColor1), specular1, roughness1, anisotropy1, normalCamera);
-			Kr = max(reflectivityAtZeroDeg, Kr);
-		}
-		if( doRefraction )
-		{
-			float from_ior, to_ior;
-			color absorptionCol = 1.0;
+    
+    if ((matte == 1) && (iscameraray()))
+    {
+        outColor = emission() * 0.0;
+    }
+    else
+    {
+        closure color reflectionClosure = 0;
+        closure color refractionClosure = 0;
+        closure color subsurfaceClosure = 0;
+        closure color emissionClosure = 0;
+        closure color diffuseClosure = calculateDiffuse(color(diffuseColor), diffuseValue, roughness, translucency, color(translucencyColor), normalCamera);
+        float Kr = 0.0, Kt = 0.0;
+        
+        int doReflection = (specular1 > 0.0) && (!isBlack(specularColor1));
+        int doRefraction = (refractivity > 0.0) && (!isBlack(refractionColor));
+        if (doReflection ) 
+        {
+            Kr = 1.0;
+            float ior = specularIOR1;
+            if (specularUseFresnel1 )
+                fresnel(I, normalCamera, 1.0/ior, Kr, Kt);
+            reflectionClosure = calculateReflection(ior, reflectionMdf, color(specularColor1), specular1, roughness1, anisotropy1, normalCamera);
+            Kr = max(reflectivityAtZeroDeg, Kr);
+        }
+        if (doRefraction )
+        {
+            float from_ior, to_ior;
+            color absorptionCol = 1.0;
 
-			if (backfacing())
-			{
-				from_ior = refractionIOR;
-				getattribute("path:ray_ior", to_ior);
-				
-				if (absorption != 0.0)
-				{
-					float length;
-					getattribute("path:ray_length", length);
-					absorptionCol = exp(-absorption * absorptionColor * length);
-				}
-				
-			}
-			else
-			{
-				getattribute("path:ray_ior", from_ior);
-				to_ior = refractionIOR;
-			}
-			float eta = from_ior / to_ior;
-			// save Kr with new local variable
-			float krr;
-			fresnel( I, normalCamera, eta, krr, Kt);
-			refractionClosure = calculateRefraction( eta, refractionMdf, color(refractionColor), refractivity, roughness, normalCamera) * absorptionCol;
-		}
-		if(SSS1 > 0)
-		{
-			int depth;
-			getattribute("path:ray_depth", depth);
-			if (depth == 0)
-			{
-				float sssIOR = 1.3;
-				float g = 0.0;
-				//directional_dipole
-				//normalized_diffusion
-				//standard_dipole
-				subsurfaceClosure = as_subsurface("normalized_diffusion", N, color(SSS1Color), color(SSS1Radius * SSS1RadiusMultiplier), sssIOR, g);
-			}
-		}
-		if(emissionMultiplier > 0)
-		{
-			emissionClosure = emission() * color(emissionColor) * emissionMultiplier;
-		}
-		outColor = (diffuseClosure * (1.0 - refractivity) + refractionClosure * refractivity) * (1.0 - Kr) + reflectionClosure * Kr + subsurfaceClosure + emissionClosure;
-	}	
+            if (backfacing())
+            {
+                from_ior = refractionIOR;
+                getattribute("path:ray_ior", to_ior);
+                
+                if (absorption != 0.0)
+                {
+                    float length;
+                    getattribute("path:ray_length", length);
+                    absorptionCol = exp(-absorption * absorptionColor * length);
+                }
+                
+            }
+            else
+            {
+                getattribute("path:ray_ior", from_ior);
+                to_ior = refractionIOR;
+            }
+            float eta = from_ior / to_ior;
+            // save Kr with new local variable
+            float krr;
+            fresnel( I, normalCamera, eta, krr, Kt);
+            refractionClosure = calculateRefraction( eta, refractionMdf, color(refractionColor), refractivity, roughness, normalCamera) * absorptionCol;
+        }
+        if(SSS1 > 0)
+        {
+            int depth;
+            getattribute("path:ray_depth", depth);
+            if (depth == 0)
+            {
+                float sssIOR = 1.3;
+                float g = 0.0;
+                //directional_dipole
+                //normalized_diffusion
+                //standard_dipole
+                subsurfaceClosure = as_subsurface("normalized_diffusion", N, color(SSS1Color), color(SSS1Radius * SSS1RadiusMultiplier), sssIOR, g);
+            }
+        }
+        if(emissionMultiplier > 0)
+        {
+            emissionClosure = emission() * color(emissionColor) * emissionMultiplier;
+        }
+        outColor = (diffuseClosure * (1.0 - refractivity) + refractionClosure * refractivity) * (1.0 - Kr) + reflectionClosure * Kr + subsurfaceClosure + emissionClosure;
+    }    
 }

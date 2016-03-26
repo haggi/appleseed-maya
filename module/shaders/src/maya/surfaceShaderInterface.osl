@@ -1,5 +1,5 @@
 
 surface surfaceShaderInterface( closure color inColor = 0 )
 {
-	Ci = inColor;
+    Ci = inColor;
 }

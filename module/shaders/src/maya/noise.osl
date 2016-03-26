@@ -23,28 +23,28 @@ shader noise(
    MAYA_COLORBALANCE,
    MAYA_DEFAULT_OUTPUT   )
 {
-	float s = u;
-	float t = v;
-	if( isconnected(uvCoord))
-	{
-		s = uvCoord[0];
-		t = uvCoord[1];
-	}
-	vector pp = vector(s, t, 0.0);
-	if (implode)
-	{
-	  vector icp = vector(implodeCenter[0], implodeCenter[1], 0.0);
-	  vector dp = pp - icp;
-	  dp = dp / pow(length(dp), implode);
-	  pp = dp + icp;
-	}
-	int depth[2] = {0, depthMax};
-	float ripples[3] = {2, 2, 2};
-	vector pn = pp * frequency;
-	
-	float noiseVal = 0.0;
-	if(noiseType == 0) // perlin
-	{
+    float s = u;
+    float t = v;
+    if (isconnected(uvCoord))
+    {
+        s = uvCoord[0];
+        t = uvCoord[1];
+    }
+    vector pp = vector(s, t, 0.0);
+    if (implode)
+    {
+      vector icp = vector(implodeCenter[0], implodeCenter[1], 0.0);
+      vector dp = pp - icp;
+      dp = dp / pow(length(dp), implode);
+      pp = dp + icp;
+    }
+    int depth[2] = {0, depthMax};
+    float ripples[3] = {2, 2, 2};
+    vector pn = pp * frequency;
+    
+    float noiseVal = 0.0;
+    if(noiseType == 0) // perlin
+    {
       if (inflection)
       {
 //         noiseVal = amplitude * fTurb(pn, inTime, 1.0, frequencyRatio, depth, ratio, ripples);
@@ -52,49 +52,49 @@ shader noise(
       else
       {
 //         noiseVal = fBm(pn, inTime, amplitude, depth, 1, frequencyRatio, ratio);
-			float amp = amplitude;
-			vector pp = pn;
-			float sum = 0;
-			int i = 0;
-			float lacunarity = 1.0;
-			int octaves[2] = {depth[0], depth[1]};
-			
-			float pixelSize = sampleArea();
-			float nyquist = 2.0 * pixelSize;
-			float pixel = 1.0;
+            float amp = amplitude;
+            vector pp = pn;
+            float sum = 0;
+            int i = 0;
+            float lacunarity = 1.0;
+            int octaves[2] = {depth[0], depth[1]};
+            
+            float pixelSize = sampleArea();
+            float nyquist = 2.0 * pixelSize;
+            float pixel = 1.0;
 
-			while ((i < octaves[1] && pixel > nyquist) || i < octaves[0])
-			{
-			  sum += amp * noise(pp * lacunarity, time);
-			  amp *= ratio;
-			  lacunarity *= frequencyRatio;
-			  pixel /= frequencyRatio;
-			  ++i;
-			}
+            while ((i < octaves[1] && pixel > nyquist) || i < octaves[0])
+            {
+              sum += amp * noise(pp * lacunarity, time);
+              amp *= ratio;
+              lacunarity *= frequencyRatio;
+              pixel /= frequencyRatio;
+              ++i;
+            }
 
-			if (pixel > pixelSize && i <= octaves[1])
-			{
-			  float weight = clamp(pixel/pixelSize - 1.0, 0.0, 1.0);
-			  sum += weight * amp * noise(pp * lacunarity, time);
-			}
-			noiseVal = sum;
-			printf("sum %f\n", sum);
+            if (pixel > pixelSize && i <= octaves[1])
+            {
+              float weight = clamp(pixel/pixelSize - 1.0, 0.0, 1.0);
+              sum += weight * amp * noise(pp * lacunarity, time);
+            }
+            noiseVal = sum;
+            printf("sum %f\n", sum);
       }
-	}	
-	if(noiseType == 1) // billow
-	{
-	}	
-	if(noiseType == 2) // wave
-	{
-	}	
-	if(noiseType == 3) // wispy
-	{
-	}	
-	if(noiseType == 4) // spacetime
-	{
-	}	
-	outColor = vector(1,0,0) * noiseVal;
-	outColor = colorBalance(outColor, colorGain, colorOffset);		
+    }    
+    if(noiseType == 1) // billow
+    {
+    }    
+    if(noiseType == 2) // wave
+    {
+    }    
+    if(noiseType == 3) // wispy
+    {
+    }    
+    if(noiseType == 4) // spacetime
+    {
+    }    
+    outColor = vector(1,0,0) * noiseVal;
+    outColor = colorBalance(outColor, colorGain, colorOffset);        
 }
 /*
 shader_evaluate
