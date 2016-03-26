@@ -298,7 +298,7 @@ global proc updateMayaImageFormatControl()
                                                                                                                                        ('string', 'camera')]))
         pm.renderer(self.rendererName, edit=True, stopIprRenderProcedure=self.makeMelProcFromPythonCmd(self.stopIprRenderProcedure, []))
         pm.renderer(self.rendererName, edit=True, pauseIprRenderProcedure=self.makeMelProcFromPythonCmd(self.pauseIprRenderProcedure, [('string', 'editor'), ('int', 'pause')]))
-        pm.renderer(self.rendererName, edit=True, changeIprRegionProcedure=self.renderCallback("changeIprRegionProcedure"))
+        pm.renderer(self.rendererName, edit=True, changeIprRegionProcedure=self.makeMelProcFromPythonCmd(self.changeIprRegionProcedure, [('string', 'editor')]))
         pm.renderer(self.rendererName, edit=True, iprRenderProcedure=self.renderCallback("iprRenderProcedure"))
         pm.renderer(self.rendererName, edit=True, isRunningIprProcedure=self.renderCallback("isRunningIprProcedure"))
         pm.renderer(self.rendererName, edit=True, refreshIprRenderProcedure=self.renderCallback("refreshIprRenderProcedure"))
@@ -454,7 +454,7 @@ global proc updateMayaImageFormatControl()
     def globalsTabUpdateProcNames(self):
         pass
 
-    def changeIprRegionProcedure(self, *args, **kwargs):
+    def changeIprRegionProcedure(self, editor=None):
         pass
     
     def iprOptionsProcedure(self):

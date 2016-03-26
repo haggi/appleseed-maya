@@ -575,7 +575,7 @@ class AppleseedRenderer(renderer.MayaToRenderer):
         pm.appleseedMaya(stopIpr=True)
         self.ipr_isrunning = False
 
-    def changeIprRegionProcedure(self, *args, **kwargs):
+    def changeIprRegionProcedure(self, editor=None):
         pm.appleseedMaya(updateIprRegion=True)
     
     def updateProgressBar(self, percent):
