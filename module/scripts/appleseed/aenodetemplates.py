@@ -122,6 +122,11 @@ class AEappleseedNodeTemplate(BaseTemplate):
             self.addControl("mtap_visibleDiffuse", label="Visible For Diffulse Rays")
             self.addControl("mtap_visibleTransparency", label="Visible For Transparent Rays")
             self.endLayout()
+            
+        if self.thisNode.type() == "bump2d":
+            self.beginLayout("AppleSeed" ,collapse=1)
+            self.addControl("upVector", label="Up Vector")
+            self.endLayout()            
 
     def buildBody(self, nodeName):
         self.buildAppleSeedTemplates(nodeName)

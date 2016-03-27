@@ -1,6 +1,41 @@
-#include "mayaUtils.h"
 
-shader bulge(float uWidth=0, float vWidth=0, vector uvCoord = 0, MAYA_COLORBALANCE, MAYA_DEFAULT_OUTPUT)
+//
+// This source file is part of appleseed.
+// Visit http://appleseedhq.net/ for additional information and resources.
+//
+// This software is released under the MIT license.
+//
+// Copyright (c) 2014 The masked shader writer, The appleseedhq Organization
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
+//
+
+#include "mayautils.h"
+
+shader bulge
+(
+    float uWidth = 0,
+    float vWidth = 0,
+    vector uvCoord = 0,
+    MAYA_COLORBALANCE,
+    MAYA_DEFAULT_OUTPUT
+)
 {
     vector uvw;
     float s = 0.0;
@@ -9,7 +44,9 @@ shader bulge(float uWidth=0, float vWidth=0, vector uvCoord = 0, MAYA_COLORBALAN
     {
         s = uvCoord[0];
         t = uvCoord[1];
-    }else{
+    }
+    else
+    {
         s = u;
         t = v;
     }
@@ -20,9 +57,8 @@ shader bulge(float uWidth=0, float vWidth=0, vector uvCoord = 0, MAYA_COLORBALAN
     
     float a = smoothstep(uWidth / 2, .5, s) * (1 - smoothstep(0.5, 1 - (uWidth / 2), s));
     float b = smoothstep(vWidth / 2, .5, t) * (1 - smoothstep(0.5, 1 - (vWidth / 2), t));
-    vector C = sqrt(abs(a * b));
+    vector c = sqrt(abs(a * b));
     
-    C = colorBalance(C, colorGain, colorOffset);
-    outColor = C;    
+    outColor = colorBalance(c, colorGain, colorOffset);
     outAlpha = luminance(color(outColor));
 }
