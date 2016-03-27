@@ -45,7 +45,8 @@ vector normal_map
 )
 {
     normal n = (normal) mix(-1, 1, clamp(Color, 0, 1));
-
+    vector NormalOut = n;
+    
     if (UpVector == "Green")
     {
         float tmp = n[2];
@@ -82,7 +83,8 @@ vector bump_map
 {
     int has_diffs;
     int get_attr_ok = getattribute("path:ray_has_differentials", has_diffs);
-
+    vector NormalOut = Normal;
+    
     // dPdx and dPdy are not allways defined.
     if (get_attr_ok && has_diffs)
     {
@@ -123,7 +125,7 @@ shader bump2d
     output vector outNormal = 1
 )
 {
-    normal outNormal = normalCamera;
+    outNormal = normalCamera;
     
     // bumpInterp 0 == normal bump mapping, bumpInterp > 0 == tangent/object space normal mapping
     if (bumpInterp == 0)

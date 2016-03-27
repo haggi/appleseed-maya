@@ -39,7 +39,6 @@ shader place2dTexture
     int wrapU = 1,
     int wrapV = 1,
     int stagger = 0,
-    float coverageV = 1.0,
     float repeatU = 1.0,
     float repeatV = 1.0,
     float offsetU = 0.0,
