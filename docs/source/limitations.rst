@@ -1,4 +1,4 @@
 Limitations
 ===========
 
-All shader trees are translated to a corresponding OSL shading group.
+- Light colors in spot light and area lights cannot yet be mapped
