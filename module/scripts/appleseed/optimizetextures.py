@@ -26,12 +26,12 @@
 # THE SOFTWARE.
 #
 
-import pymel.core as pm
-import path
 import logging
 import os
-import subprocess
+import path
+import pymel.core as pm
 import shutil
+import subprocess
 import sys
 
 log = logging.getLogger("mtapLogger")
