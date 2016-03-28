@@ -22,6 +22,12 @@ Supported Maya features:
 - Point light
 - Directional light
 - Area light
+- Particle instancer
+- True instances
+- Polygon geometry inclusive smooth preview subdivisions
+- Per face shading
+- IPR
+- Render region in normal and IPR mode
 
 Supported Maya shading nodes:
 
@@ -48,6 +54,8 @@ Supported Maya shading nodes:
 - rgbToHsv
 - samplerInfo
 - setRange
+
+The shading node implementation is work in progress and some nodes are only partially supported. e.g. the color space in the file node is not yet recognized.
 
 Extra shading nodes:
 
