@@ -17,6 +17,7 @@ Supported features:
 - Image based lighting
 
 Supported Maya features:
+
 - Spot light
 - Point light
 - Directional light
