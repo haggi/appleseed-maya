@@ -8,6 +8,19 @@ Supported features:
 - Multi-pass rendering
 - Interactive rendering
 - Subsurface scattering
+- Depth of field
+- Transformation motionblur
+- Deformation motionblur
+- OSL
+- Physically based sky
+- Physically based sun
+- Image based lighting
+
+Supported Maya features:
+- Spot light
+- Point light
+- Directional light
+- Area light
 
 Supported Maya shading nodes:
 
@@ -26,7 +39,14 @@ Supported Maya shading nodes:
 - rgbToHsv
 - luminance
 - multiplyDivide
-
+- place2dTexture
+- place3dTexture
+- projection
+- ramp
+- reverse
+- rgbToHsv
+- samplerInfo
+- setRange
 
 Extra shading nodes:
 
