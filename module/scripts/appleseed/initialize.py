@@ -554,6 +554,12 @@ class AppleseedRenderer(renderer.MayaToRenderer):
         pm.addExtension(nodeType="areaLight", longName="mtap_visibleSpecular", attributeType="bool", defaultValue=True)
         pm.addExtension(nodeType="areaLight", longName="mtap_visibleDiffuse", attributeType="bool", defaultValue=True)
         pm.addExtension(nodeType="areaLight", longName="mtap_visibleTransparency", attributeType="bool", defaultValue=True)
+        
+        pm.addExtension(nodeType='bump2d', longName='normalMap', usedAsColor=True, attributeType='float3' )
+        pm.addExtension(nodeType='bump2d', longName='normalMapR', attributeType='float', parent='normalMap' )
+        pm.addExtension(nodeType='bump2d', longName='normalMapG', attributeType='float', parent='normalMap' )
+        pm.addExtension(nodeType='bump2d', longName='normalMapB', attributeType='float', parent='normalMap' )        
+        pm.addExtension(nodeType="bump2d", longName="upVector", attributeType="enum", enumName="Blue:Green", defaultValue=0)
 
     def renderProcedure(self, width, height, doShadows, doGlow, camera, options):
         self.createGlobalsNode()

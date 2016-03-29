@@ -1,65 +1,93 @@
+
+//
+// This source file is part of appleseed.
+// Visit http://appleseedhq.net/ for additional information and resources.
+//
+// This software is released under the MIT license.
+//
+// Copyright (c) 2014 The masked shader writer, The appleseedhq Organization
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
+//
+
 #include "mayaUtils.h"
 
-float floatFromSRGB( float srgbFloat)
+float floatFromSRGB(float srgbFloat)
 {
-	float f = clamp(srgbFloat, 0.0, 1.0);
+    float f = clamp(srgbFloat, 0.0, 1.0);
     if (f <= 0.03928)
-	{
-      return f/12.92;
-	}
-	return exp(2.4 * log((f + 0.055) / 1.055));
+    {
+        return f / 12.92;
+    }
+    return exp(2.4 * log((f + 0.055) / 1.055));
 }
 
-float floatToSRGB( float linearFloat)
+float floatToSRGB(float linearFloat)
 {
-	if (linearFloat <= 0.0031308)
-	{
-		return (linearFloat * 12.92);
-	}
-	return 1.055 * (exp((1 / 2.4) * log(linearFloat))) - 0.055;	
+    if (linearFloat <= 0.0031308)
+    {
+        return (linearFloat * 12.92);
+    }
+    return 1.055 * (exp((1 / 2.4) * log(linearFloat))) - 0.055;
 }
 
-color fromLinearToSRGB( color linearColor)
+color fromLinearToSRGB(color linearColor)
 {
-	color outColor = linearColor;
-	outColor[0] = floatToSRGB(outColor[0]);
-	outColor[1] = floatToSRGB(outColor[1]);
-	outColor[2] = floatToSRGB(outColor[2]);
-	return outColor;
+    color outColor = linearColor;
+    outColor[0] = floatToSRGB(outColor[0]);
+    outColor[1] = floatToSRGB(outColor[1]);
+    outColor[2] = floatToSRGB(outColor[2]);
+    return outColor;
 }
 
-color fromSRGBToLinear( color srgbColor)
+color fromSRGBToLinear(color srgbColor)
 {
-	color outColor = srgbColor;
-	outColor[0] = floatFromSRGB(outColor[0]);
-	outColor[1] = floatFromSRGB(outColor[1]);
-	outColor[2] = floatFromSRGB(outColor[2]);
-	return outColor;
+    color outColor = srgbColor;
+    outColor[0] = floatFromSRGB(outColor[0]);
+    outColor[1] = floatFromSRGB(outColor[1]);
+    outColor[2] = floatFromSRGB(outColor[2]);
+    return outColor;
 }
 
-shader file (vector uvCoord = 0, 
-			 string fileTextureName = "",
-			 string baseName = "",
-			 string ext = "",
-			 int uvTilingMode = 2,
-			 int fromSRGB = 0,
-			 int toSRGB = 0,
-			 int textureFilter = 0,
-			 float textureFilterWidth = 1.0,
-			 float textureBlur = 0.0,
-			 MAYA_COLORBALANCE,
-			 MAYA_DEFAULT_OUTPUT)
+shader file
+(
+    vector uvCoord = 0,
+    string fileTextureName = "",
+    string baseName = "",
+    string ext = "",
+    int uvTilingMode = 2,
+    int fromSRGB = 0,
+    int toSRGB = 0,
+    int textureFilter = 0,
+    float textureFilterWidth = 1.0,
+    float textureBlur = 0.0,
+    MAYA_COLORBALANCE,
+    MAYA_DEFAULT_OUTPUT)
 {
-	float s = u;
-	float t = v;
-	if( isconnected(uvCoord))
-	{
-		s = uvCoord[0];
-		t = uvCoord[1];
-	}
-	
-// ------------------------------------------
-	
+    float s = u;
+    float t = v;
+    if (isconnected(uvCoord))
+    {
+        s = uvCoord[0];
+        t = uvCoord[1];
+    }
+
 #define NAME(i) format("%s%d.%s",baseName,i+1001, ext)
 #define TENNAMES(j)  NAME(10*j+0),NAME(10*j+1),NAME(10*j+2),NAME(10*j+3),NAME(10*j+4), \
                     NAME(10*j+5),NAME(10*j+6),NAME(10*j+7),NAME(10*j+8),NAME(10*j+9)
@@ -91,38 +119,35 @@ shader file (vector uvCoord = 0,
     int umap = int(s);
     int vmap = int(t);
     int udim = 10*vmap + umap;
-	if( uvTilingMode == 1) //ZBrush 0-based u<U>v<V>
-		udim = udim * 1;
-	if( uvTilingMode == 2) //Mudbox 1-based u<U>v<V>
-		udim = 10*(vmap+1) + (umap+1);
-		
-    string filename = fileTextureName; 
-	if( uvTilingMode == 1 || uvTilingMode == 2)
-		filename = filenamesMudbox[udim]; 
-	if( uvTilingMode == 3)
-		filename = filenames[udim];
-		
-	//printf("%s\n", filename);
-//-------------------------------------	
-	
-	t = 1.0 - t;
-	string filters[4] = {"smartcubic", "cubic", "linear", "closest"};
-	string filter = filters[textureFilter];
-	int numChannels = 0;		
-	color C = texture(filename, s, t, "wrap", "periodic", "interp", filter, "width", textureFilterWidth, "blur", textureBlur);
-	if( fromSRGB > 0)
-	{
-		C = fromSRGBToLinear(C);
-	}
-	if( toSRGB > 0)
-	{
-		C = fromLinearToSRGB(C);
-	}
-	vector CB = colorBalance(vector(C), colorGain, colorOffset);	
-	if( invert )
-	{
-		CB = vector(1.0) - CB;
-	}
-	outColor = CB;
-	outAlpha = luminance(color(outColor));	
+    if (uvTilingMode == 1) //ZBrush 0-based u<U>v<V>
+        udim = udim * 1;
+    if (uvTilingMode == 2) //Mudbox 1-based u<U>v<V>
+        udim = 10*(vmap+1) + (umap+1);
+
+    string filename = fileTextureName;
+    if (uvTilingMode == 1 || uvTilingMode == 2)
+        filename = filenamesMudbox[udim];
+    if (uvTilingMode == 3)
+        filename = filenames[udim];
+
+    t = 1.0 - t;
+    string filters[4] = {"smartcubic", "cubic", "linear", "closest"};
+    string filter = filters[textureFilter];
+    int numChannels = 0;
+    color C = texture(filename, s, t, "wrap", "periodic", "interp", filter, "width", textureFilterWidth, "blur", textureBlur);
+    if (fromSRGB > 0)
+    {
+        C = fromSRGBToLinear(C);
+    }
+    if (toSRGB > 0)
+    {
+        C = fromLinearToSRGB(C);
+    }
+    vector CB = colorBalance(vector(C), colorGain, colorOffset);
+    if (invert)
+    {
+        CB = vector(1.0) - CB;
+    }
+    outColor = CB;
+    outAlpha = luminance(color(outColor));
 }

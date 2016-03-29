@@ -651,29 +651,48 @@ bool OSLUtilClass::handleSpecialPlugs(MString attributeName, MFnDependencyNode& 
         return result;
     }
 
-    // Maya's bump2d node is terrible. It is no problem if you want to use a default bump.
-    // but as soon as you want to use a normalMap, you have to find out the other node and connect it correctly by yourself.
+    // Maya's bump2d node is terrible. It is no problem if you want to use a default bump,
+    // but as soon as you want to use a normalMap, you have a problem because the bump2d node does not have a color
+    // input which would be needed for a normal map. This is done internally by mentalray and other renderers.
+    // We add a dummy normal map attribute to the bump2d node and try to find out what node is connected to the bump2d bumpDepth
+    // attribute. Unfortunately the bumpDepth is a float attribute what accepts a color component or by default the alpha cannel
+    // of a node output. If a node has an outAlpha, it has an outColor as well (I hope) so we search for a outColor.
     if (attributeName == "bumpValue")
     {
         if (depFn.typeName() == "bump2d")
         {
             int bumpType = getEnumInt("bumpInterp", depFn);
-            // bumpType 0 == default texture bump, type 1 == tangentBased normal, type 2 == object based normal map
+            // bumpType 0 == default texture bump, type 1 == tangentBased normal, type 2 == object based normal map.
             if (bumpType > 0)
             {
                 MPlug normalMap = depFn.findPlug("normalMap", true);
-                // what I try to do is to find the source node and find something like outColor which we can connect to our normalMap attribute
-                MObject inNode = getConnectedInNode(depFn.object(), "bumpDepth");
-                if (inNode != MObject::kNullObj)
+                MPlug depthPlug = depFn.findPlug("bumpDepth", true);
+                if (depthPlug.isConnected())
                 {
-                    MFnDependencyNode inDepFn(inNode);
-                    MStatus stat;
-                    MPlug outColor = inDepFn.findPlug("outColor", true, &stat);
-                    if (!outColor.isNull())
+                    MPlugArray pa;
+                    depthPlug.connectedTo(pa, true, false);
+                    if (pa.length() > 0)
                     {
-                        sourcePlugs.append(outColor);
-                        destPlugs.append(normalMap);
-                        return true;
+                        MPlug bumpDepthInPlug = pa[0];
+                        // Take care that we connect a vector or color, otherwise OSL compilation will fail.
+                        if (bumpDepthInPlug.numChildren() == 3)
+                        {
+                            sourcePlugs.append(bumpDepthInPlug);
+                            destPlugs.append(normalMap);
+                            return true;
+                        }
+                        // If the source plug is not a color or vector, we search for an outColor plug.
+                        else
+                        {
+                            MFnDependencyNode inputNodeFn(bumpDepthInPlug[0].node());
+                            MPlug colorPlug = inputNodeFn.findPlug("outColor", true);
+                            if (!colorPlug.isNull())
+                            {
+                                sourcePlugs.append(colorPlug);
+                                destPlugs.append(normalMap);
+                                return true;
+                            }
+                        }
                     }
                 }
             }

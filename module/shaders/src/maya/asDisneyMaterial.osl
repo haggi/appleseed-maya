@@ -46,7 +46,7 @@ surface asDisneyMaterial
     float SheenTint = 0.5,
     float Clearcoat = 0,
     float ClearcoatGloss = 1,
-	output closure color outColor = 0
+    output closure color outColor = 0
 )
 {
     outColor = as_disney(
