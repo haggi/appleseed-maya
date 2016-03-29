@@ -35,18 +35,18 @@ shader multiplyDivide
 )
 {
     outOutput = input1;
-    if (operation == 1) //multiply
+    if (operation == 1) // multiply
     {
         outOutput = input1 * input2;
     }
-    if (operation == 2) //divide
+    if (operation == 2) // divide
     {
         outOutput = input1 / input2;
     }
-    if (operation == 3) //pow
+    if (operation == 3) // pow
     {
-        outOutput[0] = pow(input1[0],input2[0]);
-        outOutput[1] = pow(input1[1],input2[1]);
-        outOutput[2] = pow(input1[2],input2[2]);
+        outOutput[0] = pow(input1[0], input2[0]);
+        outOutput[1] = pow(input1[1], input2[1]);
+        outOutput[2] = pow(input1[2], input2[2]);
     }
 }

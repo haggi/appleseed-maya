@@ -28,9 +28,9 @@
 
 shader vectorToFloat
 (
-    vector inVector = vector(1,1,1),
+    vector inVector = vector(1, 1, 1),
     output float outX = 0.0,
-    output float outY=0.0,
+    output float outY = 0.0,
     output float outZ = 0.0
 )
 {
@@ -38,6 +38,3 @@ shader vectorToFloat
     outY = inVector[1];
     outZ = inVector[2];
 }
-
-
-

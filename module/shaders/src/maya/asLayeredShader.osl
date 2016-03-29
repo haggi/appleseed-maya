@@ -46,7 +46,7 @@ surface asLayeredShader
     closure color col[MAXENTRIES];
     float msk[MAXENTRIES];
     int mode[MAXENTRIES];
-    
+
     col[0] = materialEntryMtl0;
     col[1] = materialEntryMtl1;
     col[2] = materialEntryMtl2;
@@ -81,7 +81,7 @@ surface asLayeredShader
     mode[9] = materialEntryMode9;
 
     outColor = baseMaterial;
-    
+
     for (int i = 0; i < numEntries; i++)
     {
         if (msk[i] > 0.0)
@@ -91,9 +91,3 @@ surface asLayeredShader
         }
     }
 }
-
-
-
-
-
-

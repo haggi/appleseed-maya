@@ -45,8 +45,8 @@ surface lambert
         string help = "Transparency",
         string hint = "useAsColor"
     ]],
-    output closure color outColor = 0    
+    output closure color outColor = 0
 )
 {
-    outColor = (inDiffuse * color(inColor) * diffuse(Normal)) + (color(incandescence) * emission()) + (color(transparency) * transparent());        
+    outColor = (inDiffuse * color(inColor) * diffuse(Normal)) + (color(incandescence) * emission()) + (color(transparency) * transparent());
 }

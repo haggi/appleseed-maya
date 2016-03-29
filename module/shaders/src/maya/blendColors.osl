@@ -28,8 +28,8 @@
 
 shader blendColors
 (
-    vector color1 = vector(1,0,0),
-    vector color2 = vector(0,0,1),
+    vector color1 = vector(1, 0, 0),
+    vector color2 = vector(0, 0, 1),
     float blender = 0.0,
     output vector outOutput = 0
 )

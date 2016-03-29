@@ -36,21 +36,21 @@ shader OSLInterface
     vector inVector = 0,
     output color Cout = 0
 )
-{    
-    if (isconnected(inColor) )
+{
+    if (isconnected(inColor))
     {
         Cout = color(inColor) * multiplier + offset;
     }
-    if (isconnected(inFloat) )
+    if (isconnected(inFloat))
     {
         Cout = inFloat * multiplier + offset;
     }
-    if (isconnected(inInt) )
+    if (isconnected(inInt))
     {
         Cout = inInt * multiplier + offset;
     }
-    if (isconnected(inVector) )
+    if (isconnected(inVector))
     {
         Cout = color(inVector) * multiplier + offset;
-    }    
+    }
 }

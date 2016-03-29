@@ -40,7 +40,7 @@ shader solidFractal
     {
         m = placementMatrix;
     }
-    
+
     point PP = transform(m, P);
     color nc = noise("noise", PP);
     outColor = vector(nc);
