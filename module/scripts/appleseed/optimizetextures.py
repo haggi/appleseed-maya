@@ -37,7 +37,7 @@ import sys
 log = logging.getLogger("mtapLogger")
 
 binDir = path.path(__file__).dirname().parent / "bin"
-converterCmd = binDir/"makeTx.exe"
+converterCmd = binDir/"maketx.exe"
 
 def isOlderThan(fileA, fileB):
     return path.path(fileA).mtime < path.path(fileB).mtime
