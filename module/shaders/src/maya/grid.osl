@@ -28,9 +28,9 @@
 
 #include "mayaUtils.h"
 
-vector Contrast(vector c, vector d, float f) 
+vector Contrast(vector c, vector d, float f)
 {
-   return mix((c + d) / 2.0, c, f);
+    return mix((c + d) / 2.0, c, f);
 }
 
 shader grid
@@ -63,12 +63,12 @@ shader grid
     //filteredPulseTrain(vWidth, 1.0, tt + vWidth * 0.5, dtt);
 
     vector lc = Contrast(lineColor, fillerColor, contrast);
-    vector fc = Contrast(fillerColor, lineColor, contrast);    
+    vector fc = Contrast(fillerColor, lineColor, contrast);
 
     outColor = mix(lc, fc, f);
 
     vector C = colorBalance(outColor, colorGain, colorOffset);
-    outColor = C;    
+    outColor = C;
     if (alphaIsLuminance == 1)
         outAlpha = luminance(color(outColor));
 }

@@ -28,26 +28,26 @@
 
 #include "mayaUtils.h"
 
-float floatFromSRGB( float srgbFloat)
+float floatFromSRGB(float srgbFloat)
 {
     float f = clamp(srgbFloat, 0.0, 1.0);
     if (f <= 0.03928)
     {
-      return f/12.92;
+        return f / 12.92;
     }
     return exp(2.4 * log((f + 0.055) / 1.055));
 }
 
-float floatToSRGB( float linearFloat)
+float floatToSRGB(float linearFloat)
 {
     if (linearFloat <= 0.0031308)
     {
         return (linearFloat * 12.92);
     }
-    return 1.055 * (exp((1 / 2.4) * log(linearFloat))) - 0.055;    
+    return 1.055 * (exp((1 / 2.4) * log(linearFloat))) - 0.055;
 }
 
-color fromLinearToSRGB( color linearColor)
+color fromLinearToSRGB(color linearColor)
 {
     color outColor = linearColor;
     outColor[0] = floatToSRGB(outColor[0]);
@@ -56,7 +56,7 @@ color fromLinearToSRGB( color linearColor)
     return outColor;
 }
 
-color fromSRGBToLinear( color srgbColor)
+color fromSRGBToLinear(color srgbColor)
 {
     color outColor = srgbColor;
     outColor[0] = floatFromSRGB(outColor[0]);
@@ -67,18 +67,18 @@ color fromSRGBToLinear( color srgbColor)
 
 shader file
 (
-    vector uvCoord = 0, 
-     string fileTextureName = "",
-     string baseName = "",
-     string ext = "",
-     int uvTilingMode = 2,
-     int fromSRGB = 0,
-     int toSRGB = 0,
-     int textureFilter = 0,
-     float textureFilterWidth = 1.0,
-     float textureBlur = 0.0,
-     MAYA_COLORBALANCE,
-     MAYA_DEFAULT_OUTPUT)
+    vector uvCoord = 0,
+    string fileTextureName = "",
+    string baseName = "",
+    string ext = "",
+    int uvTilingMode = 2,
+    int fromSRGB = 0,
+    int toSRGB = 0,
+    int textureFilter = 0,
+    float textureFilterWidth = 1.0,
+    float textureBlur = 0.0,
+    MAYA_COLORBALANCE,
+    MAYA_DEFAULT_OUTPUT)
 {
     float s = u;
     float t = v;
@@ -87,7 +87,7 @@ shader file
         s = uvCoord[0];
         t = uvCoord[1];
     }
-    
+
 #define NAME(i) format("%s%d.%s",baseName,i+1001, ext)
 #define TENNAMES(j)  NAME(10*j+0),NAME(10*j+1),NAME(10*j+2),NAME(10*j+3),NAME(10*j+4), \
                     NAME(10*j+5),NAME(10*j+6),NAME(10*j+7),NAME(10*j+8),NAME(10*j+9)
@@ -123,17 +123,17 @@ shader file
         udim = udim * 1;
     if (uvTilingMode == 2) //Mudbox 1-based u<U>v<V>
         udim = 10*(vmap+1) + (umap+1);
-        
-    string filename = fileTextureName; 
+
+    string filename = fileTextureName;
     if (uvTilingMode == 1 || uvTilingMode == 2)
-        filename = filenamesMudbox[udim]; 
+        filename = filenamesMudbox[udim];
     if (uvTilingMode == 3)
-        filename = filenames[udim];        
-    
+        filename = filenames[udim];
+
     t = 1.0 - t;
     string filters[4] = {"smartcubic", "cubic", "linear", "closest"};
     string filter = filters[textureFilter];
-    int numChannels = 0;        
+    int numChannels = 0;
     color C = texture(filename, s, t, "wrap", "periodic", "interp", filter, "width", textureFilterWidth, "blur", textureBlur);
     if (fromSRGB > 0)
     {
@@ -143,11 +143,11 @@ shader file
     {
         C = fromLinearToSRGB(C);
     }
-    vector CB = colorBalance(vector(C), colorGain, colorOffset);    
-    if (invert )
+    vector CB = colorBalance(vector(C), colorGain, colorOffset);
+    if (invert)
     {
         CB = vector(1.0) - CB;
     }
     outColor = CB;
-    outAlpha = luminance(color(outColor));    
+    outAlpha = luminance(color(outColor));
 }

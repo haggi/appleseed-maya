@@ -54,11 +54,11 @@ shader bulge
 
     s = mod(s, WRAPMAX);
     t = mod(t, WRAPMAX);
-    
-    float a = smoothstep(uWidth / 2, .5, s) * (1 - smoothstep(0.5, 1 - (uWidth / 2), s));
-    float b = smoothstep(vWidth / 2, .5, t) * (1 - smoothstep(0.5, 1 - (vWidth / 2), t));
+
+    float a = smoothstep(uWidth / 2, 0.5, s) * (1.0 - smoothstep(0.5, 1.0 - (uWidth / 2), s));
+    float b = smoothstep(vWidth / 2, 0.5, t) * (1.0 - smoothstep(0.5, 1.0 - (vWidth / 2), t));
     vector c = sqrt(abs(a * b));
-    
+
     outColor = colorBalance(c, colorGain, colorOffset);
     outAlpha = luminance(color(outColor));
 }

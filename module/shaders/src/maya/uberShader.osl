@@ -271,16 +271,16 @@ shader uberShader
         
         int doReflection = (specular1 > 0.0) && (!isBlack(specularColor1));
         int doRefraction = (refractivity > 0.0) && (!isBlack(refractionColor));
-        if (doReflection ) 
+        if (doReflection) 
         {
             Kr = 1.0;
             float ior = specularIOR1;
-            if (specularUseFresnel1 )
+            if (specularUseFresnel1)
                 fresnel(I, normalCamera, 1.0/ior, Kr, Kt);
             reflectionClosure = calculateReflection(ior, reflectionMdf, color(specularColor1), specular1, roughness1, anisotropy1, normalCamera);
             Kr = max(reflectivityAtZeroDeg, Kr);
         }
-        if (doRefraction )
+        if (doRefraction)
         {
             float from_ior, to_ior;
             color absorptionCol = 1.0;
@@ -306,10 +306,10 @@ shader uberShader
             float eta = from_ior / to_ior;
             // save Kr with new local variable
             float krr;
-            fresnel( I, normalCamera, eta, krr, Kt);
-            refractionClosure = calculateRefraction( eta, refractionMdf, color(refractionColor), refractivity, roughness, normalCamera) * absorptionCol;
+            fresnel(I, normalCamera, eta, krr, Kt);
+            refractionClosure = calculateRefraction(eta, refractionMdf, color(refractionColor), refractivity, roughness, normalCamera) * absorptionCol;
         }
-        if(SSS1 > 0)
+        if (SSS1 > 0)
         {
             int depth;
             getattribute("path:ray_depth", depth);
@@ -323,7 +323,7 @@ shader uberShader
                 subsurfaceClosure = as_subsurface("normalized_diffusion", N, color(SSS1Color), color(SSS1Radius * SSS1RadiusMultiplier), sssIOR, g);
             }
         }
-        if(emissionMultiplier > 0)
+        if (emissionMultiplier > 0)
         {
             emissionClosure = emission() * color(emissionColor) * emissionMultiplier;
         }

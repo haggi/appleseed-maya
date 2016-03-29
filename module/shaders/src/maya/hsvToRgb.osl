@@ -34,6 +34,3 @@ shader hsvToRgb
 {
     outRgb = vector(transformc("hsv", "rgb", color(inHsv)));
 }
-
-
-

@@ -37,7 +37,7 @@ shader setRange
 )
 {
     vector clippedColor = value;
-    
+
     if (clippedColor[0] < oldMin[0])
         clippedColor[0] = oldMin[0];
     if (clippedColor[1] < oldMin[1])
@@ -51,7 +51,7 @@ shader setRange
         clippedColor[1] = oldMax[1];
     if (clippedColor[2] > oldMax[2])
         clippedColor[3] = oldMax[2];
-        
+
     float dOld = 0.0;
     float dNew = 0.0;
     for (int i = 0; i < 3; i++)
