@@ -543,83 +543,102 @@
 	<shader>
 		<inputs>
 			<input>
+				<default>1</default>
+				<type>float</type>
+				<name>coverageU</name>
+			</input>
+			<input>
+				<default>1</default>
+				<type>float</type>
+				<name>coverageV</name>
+			</input>
+			<input>
+				<default>0</default>
+				<type>float</type>
+				<name>translateFrameU</name>
+			</input>
+			<input>
+				<default>0</default>
+				<type>float</type>
+				<name>translateFrameV</name>
+			</input>
+			<input>
+				<default>0</default>
+				<type>int</type>
+				<name>mirrorU</name>
+			</input>
+			<input>
+				<default>0</default>
+				<type>int</type>
+				<name>mirrorV</name>
+			</input>
+			<input>
+				<default>1</default>
+				<type>int</type>
+				<name>wrapU</name>
+			</input>
+			<input>
+				<default>1</default>
+				<type>int</type>
+				<name>wrapV</name>
+			</input>
+			<input>
+				<default>0</default>
+				<type>int</type>
+				<name>stagger</name>
+			</input>
+			<input>
+				<default>1</default>
+				<type>float</type>
 				<name>repeatU</name>
-				<hint>None</hint>
-				<default>1</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
-				<type>float</type>
-				<help>None</help>
 			</input>
 			<input>
+				<default>1</default>
+				<type>float</type>
 				<name>repeatV</name>
-				<hint>None</hint>
-				<default>1</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
-				<type>float</type>
-				<help>None</help>
 			</input>
 			<input>
+				<default>0</default>
+				<type>float</type>
 				<name>offsetU</name>
-				<hint>None</hint>
-				<default>0</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
-				<type>float</type>
-				<help>None</help>
 			</input>
 			<input>
+				<default>0</default>
+				<type>float</type>
 				<name>offsetV</name>
-				<hint>None</hint>
-				<default>0</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
-				<type>float</type>
-				<help>None</help>
 			</input>
 			<input>
+				<default>0</default>
+				<type>float</type>
 				<name>rotateUV</name>
-				<hint>None</hint>
-				<default>0</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
-				<type>float</type>
-				<help>None</help>
 			</input>
 			<input>
-				<name>uvCoord</name>
-				<hint>None</hint>
+				<default>0</default>
+				<type>float</type>
+				<name>noiseU</name>
+			</input>
+			<input>
+				<default>0</default>
+				<type>float</type>
+				<name>noiseV</name>
+			</input>
+			<input>
 				<default>[0.0, 0.0, 0.0]</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
 				<type>vector</type>
-				<help>None</help>
+				<name>uvCoord</name>
 			</input>
 		</inputs>
 		<name>place2dTexture</name>
 		<outputs>
 			<output>
+				<default>[0.0, 0.0, 0.0]</default>
 				<type>output vector</type>
 				<name>outUV</name>
-				<help />
 			</output>
 		</outputs>
 		<mayaId>0</mayaId>
-		<mayaClassification>None</mayaClassification>
-		<help>None</help>
+		<mayaClassification />
+		<help />
 	</shader>
 	<shader>
 		<inputs>
@@ -3063,212 +3082,396 @@
 	<shader>
 		<inputs>
 			<input>
-				<default>[0.0, 0.0, 0.0]</default>
-				<compAttrArrayPath>colorEntryList.color</compAttrArrayPath>
-				<type>vector</type>
 				<name>color0</name>
+				<hint />
+				<default>[0.0, 0.0, 0.0]</default>
+				<max>1</max>
+				<compAttrArrayPath>colorEntryList.color</compAttrArrayPath>
+				<min>0</min>
+				<isArrayPlug />
+				<type>vector</type>
+				<help />
 			</input>
 			<input>
-				<default>[0.0, 0.0, 0.0]</default>
-				<compAttrArrayPath>colorEntryList.color</compAttrArrayPath>
-				<type>vector</type>
 				<name>color1</name>
+				<hint />
+				<default>[0.0, 0.0, 0.0]</default>
+				<max>1</max>
+				<compAttrArrayPath>colorEntryList.color</compAttrArrayPath>
+				<min>0</min>
+				<isArrayPlug />
+				<type>vector</type>
+				<help />
 			</input>
 			<input>
-				<default>[0.0, 0.0, 0.0]</default>
-				<compAttrArrayPath>colorEntryList.color</compAttrArrayPath>
-				<type>vector</type>
 				<name>color2</name>
+				<hint />
+				<default>[0.0, 0.0, 0.0]</default>
+				<max>1</max>
+				<compAttrArrayPath>colorEntryList.color</compAttrArrayPath>
+				<min>0</min>
+				<isArrayPlug />
+				<type>vector</type>
+				<help />
 			</input>
 			<input>
-				<default>[0.0, 0.0, 0.0]</default>
-				<compAttrArrayPath>colorEntryList.color</compAttrArrayPath>
-				<type>vector</type>
 				<name>color3</name>
+				<hint />
+				<default>[0.0, 0.0, 0.0]</default>
+				<max>1</max>
+				<compAttrArrayPath>colorEntryList.color</compAttrArrayPath>
+				<min>0</min>
+				<isArrayPlug />
+				<type>vector</type>
+				<help />
 			</input>
 			<input>
-				<default>[0.0, 0.0, 0.0]</default>
-				<compAttrArrayPath>colorEntryList.color</compAttrArrayPath>
-				<type>vector</type>
 				<name>color4</name>
+				<hint />
+				<default>[0.0, 0.0, 0.0]</default>
+				<max>1</max>
+				<compAttrArrayPath>colorEntryList.color</compAttrArrayPath>
+				<min>0</min>
+				<isArrayPlug />
+				<type>vector</type>
+				<help />
 			</input>
 			<input>
-				<default>[0.0, 0.0, 0.0]</default>
-				<compAttrArrayPath>colorEntryList.color</compAttrArrayPath>
-				<type>vector</type>
 				<name>color5</name>
+				<hint />
+				<default>[0.0, 0.0, 0.0]</default>
+				<max>1</max>
+				<compAttrArrayPath>colorEntryList.color</compAttrArrayPath>
+				<min>0</min>
+				<isArrayPlug />
+				<type>vector</type>
+				<help />
 			</input>
 			<input>
-				<default>[0.0, 0.0, 0.0]</default>
-				<compAttrArrayPath>colorEntryList.color</compAttrArrayPath>
-				<type>vector</type>
 				<name>color6</name>
+				<hint />
+				<default>[0.0, 0.0, 0.0]</default>
+				<max>1</max>
+				<compAttrArrayPath>colorEntryList.color</compAttrArrayPath>
+				<min>0</min>
+				<isArrayPlug />
+				<type>vector</type>
+				<help />
 			</input>
 			<input>
-				<default>[0.0, 0.0, 0.0]</default>
-				<compAttrArrayPath>colorEntryList.color</compAttrArrayPath>
-				<type>vector</type>
 				<name>color7</name>
+				<hint />
+				<default>[0.0, 0.0, 0.0]</default>
+				<max>1</max>
+				<compAttrArrayPath>colorEntryList.color</compAttrArrayPath>
+				<min>0</min>
+				<isArrayPlug />
+				<type>vector</type>
+				<help />
 			</input>
 			<input>
-				<default>[0.0, 0.0, 0.0]</default>
-				<compAttrArrayPath>colorEntryList.color</compAttrArrayPath>
-				<type>vector</type>
 				<name>color8</name>
-			</input>
-			<input>
+				<hint />
 				<default>[0.0, 0.0, 0.0]</default>
+				<max>1</max>
 				<compAttrArrayPath>colorEntryList.color</compAttrArrayPath>
+				<min>0</min>
+				<isArrayPlug />
 				<type>vector</type>
+				<help />
+			</input>
+			<input>
 				<name>color9</name>
+				<hint />
+				<default>[0.0, 0.0, 0.0]</default>
+				<max>1</max>
+				<compAttrArrayPath>colorEntryList.color</compAttrArrayPath>
+				<min>0</min>
+				<isArrayPlug />
+				<type>vector</type>
+				<help />
 			</input>
 			<input>
-				<default>-1</default>
-				<compAttrArrayPath>colorEntryList.position</compAttrArrayPath>
-				<type>float</type>
 				<name>position0</name>
+				<hint />
+				<default>-1</default>
+				<max>1</max>
+				<compAttrArrayPath>colorEntryList.position</compAttrArrayPath>
+				<min>0</min>
+				<isArrayPlug />
+				<type>float</type>
+				<help />
 			</input>
 			<input>
-				<default>-1</default>
-				<compAttrArrayPath>colorEntryList.position</compAttrArrayPath>
-				<type>float</type>
 				<name>position1</name>
+				<hint />
+				<default>-1</default>
+				<max>1</max>
+				<compAttrArrayPath>colorEntryList.position</compAttrArrayPath>
+				<min>0</min>
+				<isArrayPlug />
+				<type>float</type>
+				<help />
 			</input>
 			<input>
-				<default>-1</default>
-				<compAttrArrayPath>colorEntryList.position</compAttrArrayPath>
-				<type>float</type>
 				<name>position2</name>
+				<hint />
+				<default>-1</default>
+				<max>1</max>
+				<compAttrArrayPath>colorEntryList.position</compAttrArrayPath>
+				<min>0</min>
+				<isArrayPlug />
+				<type>float</type>
+				<help />
 			</input>
 			<input>
-				<default>-1</default>
-				<compAttrArrayPath>colorEntryList.position</compAttrArrayPath>
-				<type>float</type>
 				<name>position3</name>
+				<hint />
+				<default>-1</default>
+				<max>1</max>
+				<compAttrArrayPath>colorEntryList.position</compAttrArrayPath>
+				<min>0</min>
+				<isArrayPlug />
+				<type>float</type>
+				<help />
 			</input>
 			<input>
-				<default>-1</default>
-				<compAttrArrayPath>colorEntryList.position</compAttrArrayPath>
-				<type>float</type>
 				<name>position4</name>
+				<hint />
+				<default>-1</default>
+				<max>1</max>
+				<compAttrArrayPath>colorEntryList.position</compAttrArrayPath>
+				<min>0</min>
+				<isArrayPlug />
+				<type>float</type>
+				<help />
 			</input>
 			<input>
-				<default>-1</default>
-				<compAttrArrayPath>colorEntryList.position</compAttrArrayPath>
-				<type>float</type>
 				<name>position5</name>
+				<hint />
+				<default>-1</default>
+				<max>1</max>
+				<compAttrArrayPath>colorEntryList.position</compAttrArrayPath>
+				<min>0</min>
+				<isArrayPlug />
+				<type>float</type>
+				<help />
 			</input>
 			<input>
-				<default>-1</default>
-				<compAttrArrayPath>colorEntryList.position</compAttrArrayPath>
-				<type>float</type>
 				<name>position6</name>
+				<hint />
+				<default>-1</default>
+				<max>1</max>
+				<compAttrArrayPath>colorEntryList.position</compAttrArrayPath>
+				<min>0</min>
+				<isArrayPlug />
+				<type>float</type>
+				<help />
 			</input>
 			<input>
-				<default>-1</default>
-				<compAttrArrayPath>colorEntryList.position</compAttrArrayPath>
-				<type>float</type>
 				<name>position7</name>
+				<hint />
+				<default>-1</default>
+				<max>1</max>
+				<compAttrArrayPath>colorEntryList.position</compAttrArrayPath>
+				<min>0</min>
+				<isArrayPlug />
+				<type>float</type>
+				<help />
 			</input>
 			<input>
-				<default>-1</default>
-				<compAttrArrayPath>colorEntryList.position</compAttrArrayPath>
-				<type>float</type>
 				<name>position8</name>
-			</input>
-			<input>
+				<hint />
 				<default>-1</default>
+				<max>1</max>
 				<compAttrArrayPath>colorEntryList.position</compAttrArrayPath>
+				<min>0</min>
+				<isArrayPlug />
 				<type>float</type>
+				<help />
+			</input>
+			<input>
 				<name>position9</name>
+				<hint />
+				<default>-1</default>
+				<max>1</max>
+				<compAttrArrayPath>colorEntryList.position</compAttrArrayPath>
+				<min>0</min>
+				<isArrayPlug />
+				<type>float</type>
+				<help />
 			</input>
 			<input>
-				<default>0</default>
-				<type>int</type>
 				<name>numEntries</name>
+				<hint />
+				<default>0</default>
+				<max>1</max>
+				<compAttrArrayPath />
+				<min>0</min>
+				<isArrayPlug />
+				<type>int</type>
+				<help />
 			</input>
 			<input>
-				<default>0</default>
-				<type>int</type>
 				<name>type</name>
+				<hint />
+				<default>0</default>
+				<max>1</max>
+				<compAttrArrayPath />
+				<min>0</min>
+				<isArrayPlug />
+				<type>int</type>
+				<help />
 			</input>
 			<input>
-				<default>0</default>
-				<type>int</type>
 				<name>interpolation</name>
+				<hint />
+				<default>0</default>
+				<max>1</max>
+				<compAttrArrayPath />
+				<min>0</min>
+				<isArrayPlug />
+				<type>int</type>
+				<help />
 			</input>
 			<input>
-				<default>[0.0, 0.0, 0.0]</default>
-				<type>vector</type>
 				<name>uvCoord</name>
-			</input>
-			<input>
-				<default>0</default>
-				<type>float</type>
-				<name>uCoord</name>
-			</input>
-			<input>
-				<default>0</default>
-				<type>float</type>
-				<name>vCoord</name>
-			</input>
-			<input>
-				<default>0</default>
-				<type>float</type>
-				<name>exposure</name>
-			</input>
-			<input>
-				<default>[0.5, 0.5, 0.5]</default>
-				<type>vector</type>
-				<name>defaultColor</name>
-			</input>
-			<input>
-				<default>[1.0, 1.0, 1.0]</default>
-				<type>vector</type>
-				<name>colorGain</name>
-			</input>
-			<input>
+				<hint />
 				<default>[0.0, 0.0, 0.0]</default>
+				<max>1</max>
+				<compAttrArrayPath />
+				<min>0</min>
+				<isArrayPlug />
 				<type>vector</type>
+				<help />
+			</input>
+			<input>
+				<name>uCoord</name>
+				<hint />
+				<default>0</default>
+				<max>1</max>
+				<compAttrArrayPath />
+				<min>0</min>
+				<isArrayPlug />
+				<type>float</type>
+				<help />
+			</input>
+			<input>
+				<name>vCoord</name>
+				<hint />
+				<default>0</default>
+				<max>1</max>
+				<compAttrArrayPath />
+				<min>0</min>
+				<isArrayPlug />
+				<type>float</type>
+				<help />
+			</input>
+			<input>
+				<name>exposure</name>
+				<hint />
+				<default>0</default>
+				<max>1</max>
+				<compAttrArrayPath />
+				<min>0</min>
+				<isArrayPlug />
+				<type>float</type>
+				<help />
+			</input>
+			<input>
+				<name>defaultColor</name>
+				<hint />
+				<default>[0.5, 0.5, 0.5]</default>
+				<max>1</max>
+				<compAttrArrayPath />
+				<min>0</min>
+				<isArrayPlug />
+				<type>vector</type>
+				<help />
+			</input>
+			<input>
+				<name>colorGain</name>
+				<hint />
+				<default>[1.0, 1.0, 1.0]</default>
+				<max>1</max>
+				<compAttrArrayPath />
+				<min>0</min>
+				<isArrayPlug />
+				<type>vector</type>
+				<help />
+			</input>
+			<input>
 				<name>colorOffset</name>
+				<hint />
+				<default>[0.0, 0.0, 0.0]</default>
+				<max>1</max>
+				<compAttrArrayPath />
+				<min>0</min>
+				<isArrayPlug />
+				<type>vector</type>
+				<help />
 			</input>
 			<input>
-				<default>1</default>
-				<type>float</type>
 				<name>alphaGain</name>
-			</input>
-			<input>
-				<default>0</default>
-				<type>float</type>
-				<name>alphaOffset</name>
-			</input>
-			<input>
+				<hint />
 				<default>1</default>
-				<type>int</type>
-				<name>alphaIsLuminance</name>
+				<max>1</max>
+				<compAttrArrayPath />
+				<min>0</min>
+				<isArrayPlug />
+				<type>float</type>
+				<help />
 			</input>
 			<input>
+				<name>alphaOffset</name>
+				<hint />
 				<default>0</default>
+				<max>1</max>
+				<compAttrArrayPath />
+				<min>0</min>
+				<isArrayPlug />
+				<type>float</type>
+				<help />
+			</input>
+			<input>
+				<name>alphaIsLuminance</name>
+				<hint />
+				<default>1</default>
+				<max>1</max>
+				<compAttrArrayPath />
+				<min>0</min>
+				<isArrayPlug />
 				<type>int</type>
+				<help />
+			</input>
+			<input>
 				<name>invert</name>
+				<hint />
+				<default>0</default>
+				<max>1</max>
+				<compAttrArrayPath />
+				<min>0</min>
+				<isArrayPlug />
+				<type>int</type>
+				<help />
 			</input>
 		</inputs>
 		<name>ramp</name>
 		<outputs>
 			<output>
-				<default>[0.0, 0.0, 0.0]</default>
 				<type>output vector</type>
 				<name>outColor</name>
+				<help />
 			</output>
 			<output>
-				<default>0</default>
 				<type>output float</type>
 				<name>outAlpha</name>
+				<help />
 			</output>
 		</outputs>
 		<mayaId>0</mayaId>
-		<mayaClassification />
-		<help />
+		<mayaClassification>None</mayaClassification>
+		<help>None</help>
 	</shader>
 	<shader>
 		<inputs>

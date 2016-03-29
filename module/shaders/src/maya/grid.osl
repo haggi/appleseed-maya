@@ -1,36 +1,74 @@
+
+//
+// This source file is part of appleseed.
+// Visit http://appleseedhq.net/ for additional information and resources.
+//
+// This software is released under the MIT license.
+//
+// Copyright (c) 2014 The masked shader writer, The appleseedhq Organization
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
+//
+
 #include "mayaUtils.h"
 
 vector Contrast(vector c, vector d, float f) 
 {
    return mix((c + d) / 2.0, c, f);
 }
-shader grid(vector lineColor=1, vector fillerColor=0, float uWidth=.1, float vWidth = 0.1, vector uvCoord=0, float contrast = 0.5, MAYA_COLORBALANCE, MAYA_DEFAULT_OUTPUT)
+
+shader grid
+(
+    vector lineColor = 1,
+    vector fillerColor = 0,
+    float uWidth = 0.1,
+    float vWidth = 0.1,
+    vector uvCoord = 0,
+    float contrast = 0.5,
+    MAYA_COLORBALANCE,
+    MAYA_DEFAULT_OUTPUT
+)
 {
-   float filter = 1;
-   float filterOffset = 0;
+    float filter = 1;
+    float filterOffset = 0;
 
-   float ss = uvCoord[0];
-   float tt = 1.0 - uvCoord[1];
-   ss = mod(ss, 1.000001);
-   tt = mod(tt, 1.000001);
+    float ss = uvCoord[0];
+    float tt = 1.0 - uvCoord[1];
+    ss = mod(ss, 1.000001);
+    tt = mod(tt, 1.000001);
 
-   // set fw to zero at the moment
-   float fw = 0.0;
+    // set fw to zero at the moment
+    float fw = 0.0;
 
-   float dss = fw * 2.0;
-   float dtt = fw * 2.0;
+    float dss = fw * 2.0;
+    float dtt = fw * 2.0;
 
-   float f = filteredPulseTrain(uWidth, 1.0, ss + uWidth * 0.5, dss);
-             filteredPulseTrain(vWidth, 1.0, tt + vWidth * 0.5, dtt);
+    float f = filteredPulseTrain(uWidth, 1.0, ss + uWidth * 0.5, dss);
+    //filteredPulseTrain(vWidth, 1.0, tt + vWidth * 0.5, dtt);
 
-   vector lc = Contrast(lineColor, fillerColor, contrast);
-   vector fc = Contrast(fillerColor, lineColor, contrast);	
-   
-   outColor = mix(lc, fc, f);
+    vector lc = Contrast(lineColor, fillerColor, contrast);
+    vector fc = Contrast(fillerColor, lineColor, contrast);    
 
-	vector C = colorBalance(outColor, colorGain, colorOffset);
-	outColor = C;	
-	if( alphaIsLuminance == 1)
-		outAlpha = luminance(color(outColor));   
-   
+    outColor = mix(lc, fc, f);
+
+    vector C = colorBalance(outColor, colorGain, colorOffset);
+    outColor = C;    
+    if (alphaIsLuminance == 1)
+        outAlpha = luminance(color(outColor));
 }

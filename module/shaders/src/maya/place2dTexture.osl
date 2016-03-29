@@ -1,35 +1,77 @@
-shader place2dTexture ( float repeatU = 1.0, 
-					    float repeatV = 1.0, 
-						float offsetU = 0.0,
-						float offsetV = 0.0,
-						float rotateUV = 0.0,
-						vector uvCoord = 0,
-						output vector outUV = 0)
+
+//
+// This source file is part of appleseed.
+// Visit http://appleseedhq.net/ for additional information and resources.
+//
+// This software is released under the MIT license.
+//
+// Copyright (c) 2014 The masked shader writer, The appleseedhq Organization
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
+//
+
+#include "mayaUtils.h"
+
+shader place2dTexture
+(
+    float coverageU = 1.0,
+    float coverageV = 1.0,
+    float translateFrameU = 0.0,
+    float translateFrameV = 0.0,
+    int mirrorU = 0,
+    int mirrorV = 0,
+    int wrapU = 1,
+    int wrapV = 1,
+    int stagger = 0,
+    float repeatU = 1.0,
+    float repeatV = 1.0,
+    float offsetU = 0.0,
+    float offsetV = 0.0,
+    float rotateUV = 0.0,
+    float noiseU = 0.0,
+    float noiseV = 0.0,
+    vector uvCoord = 0,
+    output vector outUV = 0
+)
 {
+    float ss = u;
+    float tt = v;
+    if (isconnected(uvCoord))
+    {
+        ss = uvCoord[0];
+        tt = uvCoord[1];
+    }
 
-	float ss = u;
-	float tt = v;
-	if( isconnected(uvCoord))
-	{
-		ss = uvCoord[0];
-		tt = uvCoord[1];
-	}
-
-	float s = ss * repeatU;
-	float t = tt * repeatV;	
-	
-	point p0 = point(0,0,0);
-	point p1 = point(0,1,0);
-	point pRot = point(s - 0.5 * repeatU, 0.0, t - 0.5 * repeatV);
-	point result = rotate(pRot, rotateUV, p0, p1); 
-	
-	s = result[0] + 0.5 * repeatU;
-	t = result[2] + 0.5 * repeatV;
-	
-	s += offsetU;
-	t += offsetV;
-	
-	outUV[0] = s;
-	outUV[1] = t;
-	
+    float s = ss * repeatU;
+    float t = tt * repeatV;    
+    
+    point p0 = point(0,0,0);
+    point p1 = point(0,1,0);
+    point pRot = point(s - 0.5 * repeatU, 0.0, t - 0.5 * repeatV);
+    point result = rotate(pRot, rotateUV, p0, p1); 
+    
+    s = result[0] + 0.5 * repeatU;
+    t = result[2] + 0.5 * repeatV;
+    
+    s += offsetU;
+    t += offsetV;
+    
+    outUV[0] = s;
+    outUV[1] = t;
 }

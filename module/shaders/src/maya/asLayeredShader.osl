@@ -1,3 +1,31 @@
+
+//
+// This source file is part of appleseed.
+// Visit http://appleseedhq.net/ for additional information and resources.
+//
+// This software is released under the MIT license.
+//
+// Copyright (c) 2014 The masked shader writer, The appleseedhq Organization
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
+//
+
 #include "appleseed/defaults.h"
 
 #define MAXENTRIES 10
@@ -7,60 +35,61 @@
 
 surface asLayeredShader
 (
-	closure color baseMaterial = 0,
-	SHADERIN,
-	MASKIN,
-	MODEIN,
-	int numEntries = 0,
-	output closure color outColor = 0
+    closure color baseMaterial = 0,
+    SHADERIN,
+    MASKIN,
+    MODEIN,
+    int numEntries = 0,
+    output closure color outColor = 0
 )
 {
-	closure color col[MAXENTRIES];
-	float msk[MAXENTRIES];
-	int mode[MAXENTRIES];
-	
-	col[0] = materialEntryMtl0;
-	col[1] = materialEntryMtl1;
-	col[2] = materialEntryMtl2;
-	col[3] = materialEntryMtl3;
-	col[4] = materialEntryMtl4;
-	col[5] = materialEntryMtl5;
-	col[6] = materialEntryMtl6;
-	col[7] = materialEntryMtl7;
-	col[8] = materialEntryMtl8;
-	col[9] = materialEntryMtl9;
+    closure color col[MAXENTRIES];
+    float msk[MAXENTRIES];
+    int mode[MAXENTRIES];
+    
+    col[0] = materialEntryMtl0;
+    col[1] = materialEntryMtl1;
+    col[2] = materialEntryMtl2;
+    col[3] = materialEntryMtl3;
+    col[4] = materialEntryMtl4;
+    col[5] = materialEntryMtl5;
+    col[6] = materialEntryMtl6;
+    col[7] = materialEntryMtl7;
+    col[8] = materialEntryMtl8;
+    col[9] = materialEntryMtl9;
 
-	msk[0] = materialEntryMsk0;
-	msk[1] = materialEntryMsk1;
-	msk[2] = materialEntryMsk2;
-	msk[3] = materialEntryMsk3;
-	msk[4] = materialEntryMsk4;
-	msk[5] = materialEntryMsk5;
-	msk[6] = materialEntryMsk6;
-	msk[7] = materialEntryMsk7;
-	msk[8] = materialEntryMsk8;
-	msk[9] = materialEntryMsk9;
+    msk[0] = materialEntryMsk0;
+    msk[1] = materialEntryMsk1;
+    msk[2] = materialEntryMsk2;
+    msk[3] = materialEntryMsk3;
+    msk[4] = materialEntryMsk4;
+    msk[5] = materialEntryMsk5;
+    msk[6] = materialEntryMsk6;
+    msk[7] = materialEntryMsk7;
+    msk[8] = materialEntryMsk8;
+    msk[9] = materialEntryMsk9;
 
-	mode[0] = materialEntryMode0;
-	mode[1] = materialEntryMode1;
-	mode[2] = materialEntryMode2;
-	mode[3] = materialEntryMode3;
-	mode[4] = materialEntryMode4;
-	mode[5] = materialEntryMode5;
-	mode[6] = materialEntryMode6;
-	mode[7] = materialEntryMode7;
-	mode[8] = materialEntryMode8;
-	mode[9] = materialEntryMode9;
+    mode[0] = materialEntryMode0;
+    mode[1] = materialEntryMode1;
+    mode[2] = materialEntryMode2;
+    mode[3] = materialEntryMode3;
+    mode[4] = materialEntryMode4;
+    mode[5] = materialEntryMode5;
+    mode[6] = materialEntryMode6;
+    mode[7] = materialEntryMode7;
+    mode[8] = materialEntryMode8;
+    mode[9] = materialEntryMode9;
 
     outColor = baseMaterial;
-	for( int i = 0; i < numEntries; i++)
-	{
-		if( msk[i] > 0.0)
-		{
-			if( mode[i] == 0) // over
-				outColor = outColor * (1.0 - msk[i]) + col[i] * msk[i];
-		}
-	}
+    
+    for (int i = 0; i < numEntries; i++)
+    {
+        if (msk[i] > 0.0)
+        {
+            if (mode[i] == 0) // over
+                outColor = outColor * (1.0 - msk[i]) + col[i] * msk[i];
+        }
+    }
 }
 
 
