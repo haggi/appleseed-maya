@@ -9,8 +9,8 @@ Supported features:
 - Interactive rendering
 - Subsurface scattering
 - Depth of field
-- Transformation motionblur
-- Deformation motionblur
+- Transformation motion blur
+- Deformation motion blur
 - OSL
 - Physically based sky
 - Physically based sun
@@ -24,8 +24,8 @@ Supported Maya features:
 - Area light
 - Particle instancer
 - True instances
-- Polygon geometry inclusive smooth preview subdivisions
-- Per face shading
+- Polygon geometry including smooth preview subdivisions
+- Per-face shading
 - IPR
 - Render region in normal and IPR mode
 
@@ -38,7 +38,7 @@ Supported Maya shading nodes:
 - clamp
 - condition
 - contrast
-- file (inclusive UDIM tiling)
+- file (including UDIM tiling)
 - gammaCorrect
 - grid
 - hsvToRgb
