@@ -1,21 +1,144 @@
-shader bump2d (float bumpValue = 0, float bumpDepth = 1.0, int bumpInterp = 0, vector normalCamera = N, vector normalMap = vector(0,0,0),output vector outNormal = 1)
-{
-	normal dNormal = normalCamera;
-	
-	if( bumpInterp > 0)
-	{
-		if( isconnected(normalMap) )
-		{
-			dNormal[0] = normalMap[0];
-			dNormal[1] = normalMap[1];
-			dNormal[2] = normalMap[2];
-		}
-	}
 
-	if( bumpInterp == 0)
-	{
-		dNormal = (bumpValue * bumpDepth);
-	}
-	outNormal = dNormal;
+//
+// This source file is part of appleseed.
+// Visit http://appleseedhq.net/ for additional information and resources.
+//
+// This software is released under the MIT license.
+//
+// Copyright (c) 2014 The masked shader writer, The appleseedhq Organization
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
+//
+
+//
+// Reference for bump function:
+//
+//     Bump Mapping Unparametrized Surfaces on the GPU
+//     Morten S. Mikkelsen
+//     https://dl.dropbox.com/u/55891920/papers/mm_sfgrad_bump.pdf
+//
+
+vector normal_map
+(
+    color         Color,
+    vector        Normal,
+    vector        Tn,
+    string        UpVector,
+    string        Space,
+    float         Amount
+)
+{
+    normal n = (normal) mix(-1, 1, clamp(Color, 0, 1));
+    vector NormalOut = n;
+
+    if (UpVector == "Green")
+    {
+        float tmp = n[2];
+        n[2] = n[1];
+        n[1] = tmp;
+    }
+
+    vector bn = cross(Tn, Normal);
+
+    if (Space == "Object")
+    {
+        n = transform("object", "world", n);
+    }
+    else if (Space == "Tangent")
+    {
+        n = n[0] * Tn + n[1] * bn + n[2] * Normal;
+    }
+
+    if (Amount != 1.0)
+        NormalOut = normalize(mix(Normal, n, Amount));
+    else
+        NormalOut = normalize(n);
+    return NormalOut;
 }
 
+vector bump_map
+(
+    vector        Position,
+    vector        Normal,
+    vector        Tn,
+    float         Height,
+    float         Amount
+)
+{
+    int has_diffs;
+    int get_attr_ok = getattribute("path:ray_has_differentials", has_diffs);
+    vector NormalOut = Normal;
+
+    // dPdx and dPdy are not allways defined.
+    if (get_attr_ok && has_diffs)
+    {
+        vector n = normalize(Normal);
+        vector dpdx = Dx(Position);
+        vector dpdy = Dy(Position);
+
+        vector rx = cross(dpdy, n);
+        vector ry = cross(n, dpdx);
+
+        float dhx = Dx(Height) * Amount;
+        float dhy = Dy(Height) * Amount;
+
+        float det = dot(dpdx, rx);
+
+        vector surf_grad = sign(det) * (dhx * rx + dhy * ry);
+        NormalOut = normalize(abs(det) * n - surf_grad);
+    }
+
+    if (dot(Normal, NormalOut) < 0.0)
+        NormalOut = -NormalOut;
+    return NormalOut;
+}
+
+shader bump2d
+(
+    float bumpValue = 0,
+    float bumpDepth = 1.0,
+    int bumpInterp = 0,
+    vector normalCamera = N,
+    vector normalMap = vector(0,0,0),
+    vector Tn = 0
+    [[
+        int    lockgeom = 0
+    ]],
+    int upVector = 0,
+    output vector outNormal = 1
+)
+{
+    outNormal = normalCamera;
+
+    // bumpInterp 0 == normal bump mapping, bumpInterp > 0 == tangent/object space normal mapping
+    if (bumpInterp == 0)
+    {
+        if (isconnected(bumpValue))
+            outNormal = bump_map(P, normalCamera, Tn, bumpValue, bumpDepth);
+    }
+    else
+    {
+        if (isconnected(normalMap))
+        {
+            string upVectorList[2] = {"Blue", "Green"};
+            string spaceList[3] = {"Tangent", "Object"}; // Maya only does not offer world space
+            outNormal = normal_map(normalMap, normalCamera, Tn, upVectorList[upVector], spaceList[bumpInterp - 1], bumpDepth);
+        }
+    }
+}

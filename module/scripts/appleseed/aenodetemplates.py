@@ -68,15 +68,14 @@ class AEappleseedNodeTemplate(BaseTemplate):
         self.thisNode = pm.PyNode(nodeName)
 
         if self.thisNode.type() == "camera":
-            log.debug("AEappleSeedNodeTemplate:build camera AE")
-            self.beginLayout("AppleSeed" ,collapse=1)
+            self.beginLayout("appleseed" ,collapse=1)
             self.addControl("mtap_cameraType", label="Camera Type")
             self.addControl("mtap_diaphragm_blades", label="Diaphragm Blades")
             self.addControl("mtap_diaphragm_tilt_angle", label="Diaphragm Tilt Angle")
             self.endLayout()
 
         if self.thisNode.type() == "mesh":
-            self.beginLayout("AppleSeed" ,collapse=1)
+            self.beginLayout("appleseed" ,collapse=1)
             #self.addControl("mtap_mesh_useassembly", label="Use seperate Assembly")
             self.addControl("mtap_ray_bias_method", label="Ray Bias Method", changeCommand=self.updateUI)
             self.addControl("mtap_ray_bias_distance", label="Ray Bias Distance")
@@ -90,13 +89,13 @@ class AEappleseedNodeTemplate(BaseTemplate):
             self.endLayout()
 
         if self.thisNode.type() == "spotLight":
-            self.beginLayout("AppleSeed" ,collapse=1)
+            self.beginLayout("appleseed" ,collapse=1)
             self.addControl("mtap_cast_indirect_light", label="Cast Indirect Light")
             self.addControl("mtap_importance_multiplier", label="Importance Multiplier")
             self.endLayout()
 
         if self.thisNode.type() == "directionalLight":
-            self.beginLayout("AppleSeed" ,collapse=1)
+            self.beginLayout("appleseed" ,collapse=1)
             self.addControl("mtap_cast_indirect_light", label="Cast Indirect Light")
             self.addControl("mtap_importance_multiplier", label="Importance Multiplier")
             self.beginLayout("Sun Light Options" ,collapse=1)
@@ -106,13 +105,13 @@ class AEappleseedNodeTemplate(BaseTemplate):
             self.endLayout()
 
         if self.thisNode.type() == "pointLight":
-            self.beginLayout("AppleSeed" ,collapse=1)
+            self.beginLayout("appleseed" ,collapse=1)
             self.addControl("mtap_cast_indirect_light", label="Cast Indirect Light")
             self.addControl("mtap_importance_multiplier", label="Importance Multiplier")
             self.endLayout()
 
         if self.thisNode.type() == "areaLight":
-            self.beginLayout("AppleSeed" ,collapse=1)
+            self.beginLayout("appleseed" ,collapse=1)
             self.addControl("primaryVisibility", label="Primary Visibility")
             self.addControl("castsShadows", label="Casts Shadows")
             self.addControl("mtap_visibleLights", label="Visible For Light Rays")
@@ -122,6 +121,11 @@ class AEappleseedNodeTemplate(BaseTemplate):
             self.addControl("mtap_visibleDiffuse", label="Visible For Diffulse Rays")
             self.addControl("mtap_visibleTransparency", label="Visible For Transparent Rays")
             self.endLayout()
+            
+        if self.thisNode.type() == "bump2d":
+            self.beginLayout("appleseed" ,collapse=1)
+            self.addControl("upVector", label="Up Vector")
+            self.endLayout()            
 
     def buildBody(self, nodeName):
         self.buildAppleSeedTemplates(nodeName)

@@ -1,4 +1,32 @@
-#include "mayaUtils.h"
+
+//
+// This source file is part of appleseed.
+// Visit http://appleseedhq.net/ for additional information and resources.
+//
+// This software is released under the MIT license.
+//
+// Copyright (c) 2014 The masked shader writer, The appleseedhq Organization
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
+//
+
+#include "mayautils.h"
 
 #define MAXENTRIES 10
 #define RAMPCOLORIN vector color0=0[[string compAttrArrayPath="colorEntryList.color"]], \
@@ -35,12 +63,12 @@ color interpolateColors(color firstColor, color secondColor, float first, float 
         outColor = firstColor;
     }
     float diff = second - first;
-    if (diff == 0.0 )
+    if (diff == 0.0)
     {
         outColor = firstColor;
     }
     else
-    {	
+    {
         if (interpolation == 0) // none
         {
             outColor = firstColor;
@@ -48,7 +76,7 @@ color interpolateColors(color firstColor, color secondColor, float first, float 
         if (interpolation == 1) // linear
         {
             float per = (value - first) / diff;
-            outColor = firstColor  * (1.0 - per) + secondColor* per;			
+            outColor = firstColor  * (1.0 - per) + secondColor* per;
         }
         if (interpolation == 2) // exp up
         {
@@ -74,8 +102,8 @@ color interpolateColors(color firstColor, color secondColor, float first, float 
             float per = (value - first) / diff;
             float per2;
             color diffCol = secondColor - firstColor;
-            
-            if( (diffCol[0]+diffCol[1]+diffCol[2]) > 0.0)
+
+            if ((diffCol[0] + diffCol[1] + diffCol[2]) > 0.0)
                 per2 = sin(per * M_PI_2);
             else
                 per2 = sin((per - 1.0) * M_PI_2) + 1.0;
@@ -83,14 +111,14 @@ color interpolateColors(color firstColor, color secondColor, float first, float 
             outColor[0] = per2 * (secondColor[0] - firstColor[0]) + firstColor[0];
             outColor[1] = per2 * (secondColor[1] - firstColor[1]) + firstColor[1];
             outColor[2] = per2 * (secondColor[2] - firstColor[2]) + firstColor[2];
-        }		
+        }
         if (interpolation == 6) // spike
         {
             float per = (value - first) / diff;
             float per2;
             color diffCol = secondColor - firstColor;
-            
-            if((diffCol[0]+diffCol[1]+diffCol[2]) < 0.0)
+
+            if ((diffCol[0] + diffCol[1] + diffCol[2]) < 0.0)
                 per2 = sin(per * M_PI_2);
             else
                 per2 = sin((per - 1.0) * M_PI_2) + 1.0;
@@ -98,18 +126,18 @@ color interpolateColors(color firstColor, color secondColor, float first, float 
             outColor[0] = per2 * (secondColor[0] - firstColor[0]) + firstColor[0];
             outColor[1] = per2 * (secondColor[1] - firstColor[1]) + firstColor[1];
             outColor[2] = per2 * (secondColor[2] - firstColor[2]) + firstColor[2];
-        }		
-    }	
+        }
+    }
     return outColor;
 }
 
 color getColorsAtPos(color col[], float pos[], int interpolation, float value)
 {
-	float first=-1.0, second=2.0;
-	color firstColor = 0;
-	color secondColor = 0;
-	float pMin = 2.0;
-	int iMin = -1;
+    float first=-1.0, second=2.0;
+    color firstColor = 0;
+    color secondColor = 0;
+    float pMin = 2.0;
+    int iMin = -1;
     for (int i = 0; i < MAXENTRIES; i++)
     {
         float p = pos[i];
@@ -130,7 +158,7 @@ color getColorsAtPos(color col[], float pos[], int interpolation, float value)
         {
             second = p;
             secondColor = col[i];
-        }	
+        }
     }
     if (first < pMin)
     {
@@ -140,9 +168,21 @@ color getColorsAtPos(color col[], float pos[], int interpolation, float value)
     return(interpolateColors(firstColor, secondColor, first, second, value, interpolation));
 }
 
-shader ramp(RAMPCOLORIN, RAMPPOSIN, int numEntries=0, int type = 0, int interpolation=0, vector uvCoord=0, float uCoord=0.0, float vCoord=0.0, MAYA_COLORBALANCE, MAYA_DEFAULT_OUTPUT)
+shader ramp
+(
+    RAMPCOLORIN,
+    RAMPPOSIN,
+    int numEntries = 0,
+    int type = 0,
+    int interpolation = 0,
+    vector uvCoord = 0,
+    float uCoord = 0.0,
+    float vCoord = 0.0,
+    MAYA_COLORBALANCE,
+    MAYA_DEFAULT_OUTPUT
+)
 {
-    outColor = vector(0,0,0);
+    outColor = vector(0, 0, 0);
 
     float s = u;
     float t = v;
@@ -157,9 +197,9 @@ shader ramp(RAMPCOLORIN, RAMPPOSIN, int numEntries=0, int type = 0, int interpol
     else
     {
         if (isconnected(uCoord))
-        s = uCoord;
+            s = uCoord;
         if (isconnected(vCoord))
-            t = vCoord;			
+            t = vCoord;
     }
 
     s = (s > 1.0 || s < 0.0) ? s - floor(s) : s;
@@ -192,7 +232,7 @@ shader ramp(RAMPCOLORIN, RAMPPOSIN, int numEntries=0, int type = 0, int interpol
 
     if (numEntries == 0)
     {
-    outColor = vector(0,0,0);
+        outColor = vector(0, 0, 0);
     }
 
     if (numEntries == 1)
@@ -205,28 +245,28 @@ shader ramp(RAMPCOLORIN, RAMPPOSIN, int numEntries=0, int type = 0, int interpol
         if (type == 0) // v-ramp
         {
             float value = t;
-            outColor = vector(getColorsAtPos(col, pos, interpolation, value)); 
+            outColor = vector(getColorsAtPos(col, pos, interpolation, value));
         }
         if (type == 1) // u-ramp
         {
             float value = s;
-            outColor = vector(getColorsAtPos(col, pos, interpolation, value)); 
+            outColor = vector(getColorsAtPos(col, pos, interpolation, value));
         }
         if (type == 2) // diagonal-ramp
         {
             float value = (s + t) * 0.5;
-            outColor = vector(getColorsAtPos(col, pos, interpolation, value)); 
+            outColor = vector(getColorsAtPos(col, pos, interpolation, value));
         }
         if (type == 3) // radial-ramp
         {
             float value = 0;
             float ss = s - 0.5;
             float tt = t - 0.5;
-            if((ss == 0.0) && (tt == 0.0))
+            if ((ss == 0.0) && (tt == 0.0))
                 value = 0.0;
             else
                 value = atan2(ss, tt) / M_2PI + 0.5;
-            outColor = vector(getColorsAtPos(col, pos, interpolation, value)); 
+            outColor = vector(getColorsAtPos(col, pos, interpolation, value));
         }
         if (type == 4) // circular-ramp
         {
@@ -236,7 +276,7 @@ shader ramp(RAMPCOLORIN, RAMPPOSIN, int numEntries=0, int type = 0, int interpol
             value = ss * ss + tt * tt;
             if (value > 0)
                 value = sqrt(value);
-            outColor = vector(getColorsAtPos(col, pos, interpolation, value)); 
+            outColor = vector(getColorsAtPos(col, pos, interpolation, value));
         }
         if (type == 5) // box-ramp
         {
@@ -246,16 +286,16 @@ shader ramp(RAMPCOLORIN, RAMPPOSIN, int numEntries=0, int type = 0, int interpol
             if (ss > tt)
                 value = ss * 2.0;
             else
-                value = tt * 2.0;		
-            outColor = vector(getColorsAtPos(col, pos, interpolation, value)); 
+                value = tt * 2.0;
+            outColor = vector(getColorsAtPos(col, pos, interpolation, value));
         }
         if (type == 6) // uv-ramp
         {
             float value = 0, ss = 0, tt = 0;
             ss = abs(s - 0.5) * 2.0;
             tt = abs(t - 0.5) * 2.0;
-            vector c1 = vector(getColorsAtPos(col, pos, interpolation, tt)); 
-            vector c2 = vector(getColorsAtPos(col, pos, interpolation, ss)); 
+            vector c1 = vector(getColorsAtPos(col, pos, interpolation, tt));
+            vector c2 = vector(getColorsAtPos(col, pos, interpolation, ss));
             outColor[0] = c1[0] * c2[0];
             outColor[1] = c1[1] * c2[1];
             outColor[2] = c1[2] * c2[2];
@@ -269,7 +309,7 @@ shader ramp(RAMPCOLORIN, RAMPPOSIN, int numEntries=0, int type = 0, int interpol
             outColor[1] = c1[1] * w1;
             outColor[2] = c1[2] * w1;
 
-            if (numEntries > 1) 
+            if (numEntries > 1)
             {
               color c1 = col[1];
               float w1 = s * (1.0 - t);
@@ -277,7 +317,7 @@ shader ramp(RAMPCOLORIN, RAMPPOSIN, int numEntries=0, int type = 0, int interpol
               outColor[1] += c1[1] * w1;
               outColor[2] += c1[2] * w1;
             }
-            if (numEntries > 2) 
+            if (numEntries > 2)
             {
               color c1 = col[2];
               float w1 = (1.0 - s) * t;
@@ -285,7 +325,7 @@ shader ramp(RAMPCOLORIN, RAMPPOSIN, int numEntries=0, int type = 0, int interpol
               outColor[1] += c1[1] * w1;
               outColor[2] += c1[2] * w1;
             }
-            if (numEntries > 3) 
+            if (numEntries > 3)
             {
               color c1 = col[3];
               float w1 = s * t;
@@ -299,16 +339,15 @@ shader ramp(RAMPCOLORIN, RAMPPOSIN, int numEntries=0, int type = 0, int interpol
             float value = 0, ss = 0, tt = 0;
             ss = abs(s - 0.5) * 2.0;
             tt = abs(t - 0.5) * 2.0;
-            vector c1 = vector(getColorsAtPos(col, pos, interpolation, tt)); 
-            vector c2 = vector(getColorsAtPos(col, pos, interpolation, ss)); 
+            vector c1 = vector(getColorsAtPos(col, pos, interpolation, tt));
+            vector c2 = vector(getColorsAtPos(col, pos, interpolation, ss));
             outColor[0] = (c1[0] + c2[0]) * 0.5;
             outColor[1] = (c1[1] + c2[1]) * 0.5;
-            outColor[2] = (c1[2] + c2[2]) * 0.5;			
+            outColor[2] = (c1[2] + c2[2]) * 0.5;
         }
     }
 
-    vector C = colorBalance(outColor, colorGain, colorOffset);
-    outColor = C;	
+    outColor = colorBalance(outColor, colorGain, colorOffset);
     if (alphaIsLuminance == 1)
         outAlpha = luminance(color(outColor));
 }
