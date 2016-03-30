@@ -12,8 +12,8 @@ Supported features:
 - Transformation motion blur
 - Deformation motion blur
 - OSL
-- Physically based sky
-- Physically based sun
+- Physically-based sky
+- Physically-based sun
 - Image based lighting
 
 Supported Maya features:

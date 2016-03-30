@@ -884,6 +884,8 @@ void AppleseedRenderer::doInteractiveUpdate()
     for (iaIt = interactiveUpdateList.begin(); iaIt != interactiveUpdateList.end(); iaIt++)
     {
         InteractiveElement *iElement = *iaIt;
+        // The iElement can be 0 if the interactiveUpdateList is used to trigger a rendering, but no scene element has changed.
+        // This is the case e.g. if the render region or a render globals attribute changes.
         if (iElement == 0)
             continue;
 

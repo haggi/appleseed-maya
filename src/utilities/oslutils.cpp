@@ -506,11 +506,10 @@ void OSLUtilClass::defineOSLParameter(ShaderAttribute& sa, MFnDependencyNode& de
     {
         MMatrix value = getMatrix(plug);
         boost::shared_ptr<RenderGlobals> renderGlobals = getWorldPtr()->mRenderGlobals;
-        MMatrix scale;
-        scale = scale.setToIdentity();
         if (renderGlobals)
-            scale = renderGlobals->globalConversionMatrix;
-        value *= scale;
+        {
+            value *= renderGlobals->globalConversionMatrix;
+        }
         paramArray.push_back(OSLParameter(sa.name.c_str(), value));
     }
     if (sa.type == "vector")
@@ -536,15 +535,15 @@ void OSLUtilClass::addConnectionToConnectionArray(ConnectionArray& ca, MString s
     ca.push_back(c);
 }
 
-// Projection nodes in Maya and OLS need a special handling. Other shading systems allow the manipulation of the global u and v or s and t values
-// before they access a texture. This is not possible in OSL what means we have to feed the correct uv values into a 2d texture node. In the case of a 
+// Projection nodes in Maya and OSL need a special handling. Other shading systems allow the manipulation of the global u and v or s and t values
+// before they access a texture. This is not possible in OSL which means we have to feed the correct uv values into a 2d texture node. In the case of a 
 // projection node, we first have to find out which 2d nodes are connected to our node directly or indirectly. Then we create a projection helper node
 // which calculates the uv data and plug it into the 2d node. Later we use another instance of the same projection node to calculate color balance and 
 // other color specific elements.
 // 
 // placementMatrixNode -> projection_util -> 2dnode -> projectionNode -> output
 //
-// This method as a small drawback. It is not possible to use the same 2d texture node for different projections.
+// This method has a small drawback. It is not possible to use the same 2d texture node for different projections.
 //
 void OSLUtilClass::createOSLProjectionNodes(MPlug& plug)
 {
@@ -1137,7 +1136,7 @@ void OSLUtilClass::connectProjectionNodes(MObject& projNode)
     {
         if (projNode == projectionConnectNodes[i])
         {
-            const MString sourceNode = (getObjectName(projectionNodes[i]) + "_ProjUtil");
+            const MString sourceNode = getObjectName(projectionNodes[i]) + "_ProjUtil";
             const MString sourceAttr = "outUVCoord";
             const MString destNode = getObjectName(projNode);
             const MString destAttr = "uvCoord";
@@ -1165,12 +1164,12 @@ namespace
         if (param.type == OSL::TypeDesc::TypeVector)
         {
             SimpleVector &v = boost::get<SimpleVector>(param.value);
-            result = MString("vector ") + v.f[0] + " " + v.f[1] + " " + v.f[2];
+            result = format("vector ^1s ^2s ^3s", v.f[0], v.f[1], v.f[2]);
         }
         if (param.type == OSL::TypeDesc::TypeColor)
         {
             SimpleVector &v = boost::get<SimpleVector>(param.value);
-            result = MString("color ") + v.f[0] + " " + v.f[1] + " " + v.f[2];
+            result = format("color ^1s ^2s ^3s", v.f[0], v.f[1], v.f[2]);
         }
         if (param.type == OSL::TypeDesc::TypeString)
         {
@@ -1183,10 +1182,14 @@ namespace
         if (param.type == OSL::TypeDesc::TypeMatrix)
         {
             SimpleMatrix &v = boost::get<SimpleMatrix>(param.value);
-            result = MString("matrix ") + v.f[0][0] + " " + v.f[0][1] + " " + v.f[0][2] + " " + v.f[0][3] +" " +
-                v.f[1][0] + " " + v.f[1][1] + " " + v.f[1][2] + " " + v.f[1][3] + " " +
-                v.f[2][0] + " " + v.f[2][1] + " " + v.f[2][2] + " " + v.f[2][3] + " " +
-                v.f[3][0] + " " + v.f[3][1] + " " + v.f[3][2] + " " + v.f[3][3];
+            result = MString("matrix");
+            for (unsigned int i = 0; i < 4; i++)
+            {
+                for (unsigned int k = 0; k < 4; k++)
+                {
+                    result += format(" ^1s", v.f[i][k]);
+                }
+            }
         }
         return result;
     }

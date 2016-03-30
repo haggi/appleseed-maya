@@ -37,13 +37,12 @@ import sys
 log = logging.getLogger("mtapLogger")
 
 binDir = path.path(__file__).dirname().parent.parent / "bin"
-converterCmd = binDir/"maketx"
+converterCmd = binDir / "maketx"
 
 def isOlderThan(fileA, fileB):
     return path.path(fileA).mtime < path.path(fileB).mtime
 
 def makeTxFile(sourceFile, destFile):
-    
     if not destFile.dirname().exists():
         destFile.parent.makedirs()
     
