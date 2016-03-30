@@ -581,8 +581,7 @@ class AppleseedRenderer(renderer.MayaToRenderer):
         pm.appleseedMaya(stopIpr=True)
         self.ipr_isrunning = False
 
-    def changeIprRegionProcedure(self, *args, **kwargs):
-        print "changeIprRegionProcedure", args, "--", kwargs
+    def changeIprRegionProcedure(self, editor=None):
         pm.appleseedMaya(updateIprRegion=True)
     
     def updateProgressBar(self, percent):
@@ -602,7 +601,7 @@ class AppleseedRenderer(renderer.MayaToRenderer):
                 self.renderGlobalsNode.threads.set(numThreads)
 
         if self.renderGlobalsNode.useOptimizedTextures.get():
-            if not self.renderGlobalsNode.optimizedTexturePath.get() or len(self.renderGlobalsNode.optimizedTexturePath.get()) == 0:
+            if not self.renderGlobalsNode.optimizedTexturePath.get():
                 try:
                     optimizedPath = pm.workspace.path / pm.workspace.fileRules['renderData'] / "optimizedTextures"
                 except:
@@ -610,7 +609,6 @@ class AppleseedRenderer(renderer.MayaToRenderer):
                 if not os.path.exists(optimizedPath):
                     optimizedPath.makedirs()
                 self.renderGlobalsNode.optimizedTexturePath.set(str(optimizedPath))
-
             optimizetextures.preRenderOptimizeTextures(optimizedFilePath=self.renderGlobalsNode.optimizedTexturePath.get())
 
         if not self.ipr_isrunning:

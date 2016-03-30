@@ -26,56 +26,40 @@
 # THE SOFTWARE.
 #
 
-import pymel.core as pm
-import path
 import logging
 import os
-import subprocess
+import path
+import pymel.core as pm
 import shutil
+import subprocess
 import sys
 
 log = logging.getLogger("mtapLogger")
 
+binDir = path.path(__file__).dirname().parent.parent / "bin"
+converterCmd = binDir / "maketx"
+
 def isOlderThan(fileA, fileB):
     return path.path(fileA).mtime < path.path(fileB).mtime
 
-def makeExrTiled(sourceFile):
-    tiledPath = path.path(sourceFile.replace(".exr", ".t_exr"))
-    cmd = "maketiledexr {0} {1}".format(sourceFile, tiledPath)
-    try:
-        log.debug(cmd)
-        subprocess.call(cmd, shell = True)
-    except:
-        log.warning("Conversion to tiled exr failed: {0}\nskipping tiled exr for this file.".format(sys.exc_info()[0]))
-        return True
-
-    try:
-        tiledPath.move(sourceFile)
-    except:
-        log.warning("Renaming tiled exr failed: {0}\nskipping file.".format(sys.exc_info()[0]))
-        return False
-
-def makeExr(sourceFile, destFile):
-    cmd = "imf_copy {0} {1}".format(sourceFile, destFile)
-    try:
-        if subprocess.call(cmd, shell = True) is not 0:
-            log.error("Conversion of {0} to {1} failed".format(sourceFile, destFile))
-            return False
-    except:
-        log.warning("Conversion to exr failed: {0}\nskipping file.".format(sys.exc_info()[0]))
-        return False
-    makeExrTiled(destFile)
-
-def makeDestFile( sourceFile, destFile ):
+def makeTxFile(sourceFile, destFile):
     if not destFile.dirname().exists():
-        destFile.makedirs()
-
-    if destFile.endswith(".exr"):
-        return makeExr(sourceFile, destFile)
-
+        destFile.parent.makedirs()
+    
+    # convert everything to exr files
+    destFileTmp = ".".join(destFile.split(".")[:-1]) + "_t.exr"
+    cmd = "{converterCmd} -v -oiio -o \"{destFile}\" \"{origFile}\"".format(converterCmd=converterCmd, destFile=destFileTmp, origFile=sourceFile)        
+    log.debug(cmd)
+    try:
+        subprocess.check_output(cmd, stderr=subprocess.STDOUT, shell=True, universal_newlines=True)
+        path.path(destFileTmp).rename(destFile)
+    except subprocess.CalledProcessError as error:
+        log.error("Conversion failed.\n\t{0}".format(error.output))
+        return False
+            
     return True
 
-def preRenderOptimizeTextures(destFormat = "exr", optimizedFilePath = ""):
+def preRenderOptimizeTextures(destFormat = "tx", optimizedFilePath = ""):
     for fileTexture in pm.ls(type="file"):
         fileNamePath = path.path(fileTexture.fileTextureName.get())
 
@@ -108,7 +92,6 @@ def preRenderOptimizeTextures(destFormat = "exr", optimizedFilePath = ""):
         elif fileNamePath.startswith("/"):
             localPath = optimizedFilePath / fileNamePath[1:]
         localPath = path.path("{0}.{1}".format(localPath, destFormat))
-        localPath = localPath.realpath()
 
         doConvert = True
         if localPath.exists():
@@ -117,7 +100,7 @@ def preRenderOptimizeTextures(destFormat = "exr", optimizedFilePath = ""):
                 doConvert = False
 
         if doConvert:
-            if not makeDestFile(fileNamePath.realpath(), path.path(localPath.replace(".exr", "_t.exr")).realpath()):
+            if not makeTxFile(fileNamePath, localPath):
                 log.error("Problem converting {0}".format(fileNamePath))
                 continue
 

@@ -10,8 +10,11 @@ Contents:
 
 .. toctree::
    :maxdepth: 2
-
+   
+   features
+   limitations
    install
+   tutorials
 
 Indices and tables
 ==================
