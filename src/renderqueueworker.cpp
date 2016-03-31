@@ -731,7 +731,7 @@ void RenderQueueWorker::startRenderQueueWorker()
                 if (MGlobal::mayaState() != MGlobal::kBatch)
                 {
                     // we only need renderComputation (means esc-able rendering) if we render in UI (==NORMAL)
-                    if (getWorldPtr()->getRenderType() == World::UIRENDER)
+                    if (getWorldPtr()->getRenderType() != World::IPRRENDER)
                     {
                         if (MRenderView::doesRenderEditorExist())
                             MGlobal::executePythonCommand("import pymel.core as pm; pm.waitCursor(state=True);");
@@ -788,7 +788,8 @@ void RenderQueueWorker::startRenderQueueWorker()
                     if (MRenderView::doesRenderEditorExist())
                     {
                         MRenderView::endRender();
-                        MGlobal::executePythonCommand("import pymel.core as pm; pm.waitCursor(state=False); pm.refresh()");
+                        if (getWorldPtr()->getRenderType() != World::IPRRENDER)
+                            MGlobal::executePythonCommand("import pymel.core as pm; pm.waitCursor(state=False); pm.refresh()");
                     }
                 }
 
@@ -842,7 +843,8 @@ void RenderQueueWorker::startRenderQueueWorker()
           case Event::UPDATEUI:
             updateRenderView(e.xMin, e.xMax, e.yMin, e.yMax, e.pixels.get());
             numPixelsDone += (e.xMax - e.xMin) * (e.yMax - e.yMin);
-            logOutput(numPixelsDone, numPixelsTotal);
+            if (getWorldPtr()->getRenderType() != World::IPRRENDER)
+                logOutput(numPixelsDone, numPixelsTotal);
             break;
 
           case Event::PRETILE:
