@@ -11,6 +11,6 @@ Shading:
 
 - Light colors in spot light and area lights cannot yet be mapped
 - Displacment is not yet supported
-- Not all shaders are translated to OSL, please have a look at the supported node list
-- Textures used upstream a projection node cannot be used for other texturing. A connection from the checker texture to the projection node and the incandescense attribute as shown in the image below needs two different uv coordinates what is not supported at the moment:
+- Not all shaders are translated to OSL, please have a look at the supported node list :doc:`../features`
+- Textures used upstream a projection node cannot be used for other texturing. A connection from the checker texture to the projection node and the incandescence attribute as shown in the image below needs two different uv coordinates what is not supported at the moment:
 .. image:: images/projection.jpg
