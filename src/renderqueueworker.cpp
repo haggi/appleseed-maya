@@ -721,7 +721,9 @@ void RenderQueueWorker::startRenderQueueWorker()
                     else
                     {
                         MRenderView::startRender(width, height, true, true);
+#if MAYA_API_VERSION >= 201600
                         MRenderView::setDrawTileBoundary(false);
+#endif
                     }
                 }
 

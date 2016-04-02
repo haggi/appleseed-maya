@@ -282,14 +282,14 @@ void removeTextureEntityIfItExists(MString& textureName)
 {
     boost::shared_ptr<AppleseedRenderer> appleRenderer = boost::static_pointer_cast<AppleseedRenderer>(getWorldPtr()->mRenderer);
     assert(appleRenderer != 0);
-    renderer::Scene *scene = getSceneFromProject(appleRenderer->getProjectPtr());
+    renderer::Scene* scene = getSceneFromProject(appleRenderer->getProjectPtr());
 
-    MString textureInstanceName = textureName + "_texInst";
-    renderer::Entity *texture = (renderer::Entity *)scene->textures().get_by_name(textureName.asChar());
+    const MString textureInstanceName = textureName + "_texInst";
+    renderer::Texture* texture = scene->textures().get_by_name(textureName.asChar());
     if (texture != 0)
         scene->textures().remove(texture);
 
-    renderer::TextureInstance *textureInstance = scene->texture_instances().get_by_name(textureInstanceName.asChar());
+    renderer::TextureInstance* textureInstance = scene->texture_instances().get_by_name(textureInstanceName.asChar());
     if (textureInstance != 0)
         scene->texture_instances().remove(textureInstance);
 }
