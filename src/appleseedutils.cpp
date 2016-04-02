@@ -285,7 +285,7 @@ void removeTextureEntityIfItExists(MString& textureName)
     renderer::Scene *scene = getSceneFromProject(appleRenderer->getProjectPtr());
 
     MString textureInstanceName = textureName + "_texInst";
-    renderer::Entity *texture = (renderer::Entity *)scene->textures().get_by_name(textureName.asChar());
+    renderer::Texture *texture = (renderer::Texture *)scene->textures().get_by_name(textureName.asChar());
     if (texture != 0)
         scene->textures().remove(texture);
 

@@ -37,17 +37,9 @@ closure color calculateReflection(float ior, string mdf, color specularColor, fl
     float eta = 1.0 / ior;
     vector Normal = normalCamera;
     vector Tangent = normalize(dPdu);    
-
-    if (mdf == "sharp")
-    {
-        result = specular * specularColor * reflection(Normal);
-    }
-    else
-    {
-        float ax, ay;
-        mdf_roughness(roughness, anisotropy, ax, ay);
-        result = specular * specularColor * microfacet(mdf, Normal, Tangent, ax, ay, eta, 0);
-    }
+    float roughnessDepthScale = 1.0;
+    result = specular * specularColor * as_glossy( mdf, Normal, Tangent, microfacet_roughness(roughness, roughnessDepthScale), anisotropy, ior);
+        
     return result;
 }
 
@@ -59,13 +51,13 @@ closure color calculateRefraction(float eta, string mdf, color refractionColor, 
 
     if (mdf == "sharp")
     {
-        result = refractivity * refractionColor * refraction(Normal, eta);
+        //result = refractivity * refractionColor * refraction(Normal, eta);
     }
     else
     {
         float ax, ay;
-        mdf_roughness(roughness, 1.0, ax, ay);
-        result = refractivity * refractionColor * microfacet(mdf, Normal, Tangent, ax, ay, eta, 1);
+        //mdf_roughness(roughness, 1.0, ax, ay);
+        //result = refractivity * refractionColor * microfacet(mdf, Normal, Tangent, ax, ay, eta, 1);
     }
     return result;
 }
@@ -153,7 +145,10 @@ shader uberShader
     ]],
     float roughness1 = 0.1
     [[
-        APPLESEED_MDF_ROUGHNESS_METADATA
+        string help = "Roughness",
+        float min = 0.001,
+        float max = 1.0,
+        string hint = "softmax"
     ]],
     vector specularColor1 = 0.0
     [[
@@ -162,12 +157,14 @@ shader uberShader
     ]],
     float anisotropy1 = 0.0
     [[
-        APPLESEED_ANISOTROPY_METADATA
+        string help = "Anisotropy",
+        float min = -1.0,
+        float max =  1.0
     ]],
     string reflectionMdf = "ggx"
     [[
-        string help = "Microfacet distribution to use: Specular, Beckmann or GGX.",
-        string options = "sharp|beckmann|ggx"
+        string help = "Microfacet distribution to use: Beckmann or GGX.",
+        string options = "beckmann|ggx"
     ]],
     
     // refraction
@@ -202,12 +199,15 @@ shader uberShader
     ]],
     float refractionRoughness = 0.0
     [[
-        APPLESEED_MDF_ROUGHNESS_METADATA    
+        string help = "Refraction roughness",
+        float min = 0.001,
+        float max = 1.0,
+        string hint = "softmax"
     ]],
     string refractionMdf = "ggx"
     [[
-        string help = "Microfacet distribution to use: Specular, Beckmann or GGX.",
-        string options = "sharp|beckmann|ggx"
+        string help = "Microfacet distribution to use: Beckmann or GGX.",
+        string options = "beckmann|ggx"
     ]],
     
     
