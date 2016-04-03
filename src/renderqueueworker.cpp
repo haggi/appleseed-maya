@@ -716,15 +716,24 @@ void RenderQueueWorker::startRenderQueueWorker()
                     {
                         unsigned int left, right, bottom, top;
                         MRenderView::getRenderRegion(left, right, bottom, top);
+#if MAYA_API_VERSION >= 201600
+                        MRenderView::startRegionRender(width, height, left, right, bottom, top, true, true);
+#else
                         MRenderView::startRegionRender(width, height, left, right, bottom, top, false, true);
-                    } 
+#endif
+                    }
                     else
                     {
+#if MAYA_API_VERSION >= 201600
                         MRenderView::startRender(width, height, true, true);
-                        MRenderView::setDrawTileBoundary(false);
+#else
+                        MRenderView::startRender(width, height, false, true);
+#endif
                     }
                 }
-
+#if MAYA_API_VERSION >= 201600
+                MRenderView::setDrawTileBoundary(false);
+#endif
                 getWorldPtr()->setRenderState(World::RSTATETRANSLATING);
                 boost::shared_ptr<MayaScene> mayaScene = getWorldPtr()->mScene;
 

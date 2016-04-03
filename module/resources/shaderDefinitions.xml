@@ -2227,13 +2227,13 @@
 				<help>Refraction color</help>
 			</input>
 			<input>
-				<name>absorption</name>
+				<name>absorptionDist</name>
 				<min>0</min>
 				<default>0</default>
-				<max>1</max>
+				<max>5</max>
 				<hint>softmax</hint>
 				<type>float</type>
-				<help>Absorption cross section</help>
+				<help>Absorption distance</help>
 			</input>
 			<input>
 				<default>[0.0, 0.0, 0.0]</default>

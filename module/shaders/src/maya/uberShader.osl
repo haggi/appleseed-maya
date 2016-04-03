@@ -31,37 +31,25 @@
 
 #define isBlack(c) ((c[0] <= 0.0) && (c[1] <= 0.0) && (c[2] <= 0.0))
 
-closure color calculateReflection(float ior, string mdf, color specularColor, float specular, float roughness, float anisotropy, vector normalCamera)
+closure color calculateReflection(float ior, string mdf, color specularColor, float roughness, float anisotropy, vector normalCamera)
 {
     closure color result = 0;
-    float eta = 1.0 / ior;
-    vector Normal = normalCamera;
-    vector Tangent = normalize(dPdu);    
+    vector Tangent = normalize(dPdu);
     float roughnessDepthScale = 1.0;
-    result = specular * specularColor * as_glossy( mdf, Normal, Tangent, microfacet_roughness(roughness, roughnessDepthScale), anisotropy, ior);
-        
+    float Ior = ior * 10;
+    result = specularColor * as_glossy( mdf, normalCamera, Tangent, microfacet_roughness(roughness, roughnessDepthScale), anisotropy, Ior);
     return result;
 }
 
-closure color calculateRefraction(float eta, string mdf, color refractionColor, float refractivity, float roughness, vector normalCamera)
+closure color calculateRefraction(float ior, string mdf, color refractionColor, float roughness, vector normalCamera, color absorptionColor, float absorptionDist)
 {
     closure color result = 0;
     vector Normal = normalCamera;
-    vector Tangent = normalize(dPdu);    
-
-    if (mdf == "sharp")
-    {
-        //result = refractivity * refractionColor * refraction(Normal, eta);
-    }
-    else
-    {
-        float ax, ay;
-        //mdf_roughness(roughness, 1.0, ax, ay);
-        //result = refractivity * refractionColor * microfacet(mdf, Normal, Tangent, ax, ay, eta, 1);
-    }
+    vector Tangent = normalize(dPdu);
+    // We use a complete transparent version, all reflectivity will be calculated in the calculateReflection function above
+    result = as_glass( mdf, Normal, Tangent, color(1.0), color(0.0), refractionColor, roughness, 1.0, ior, absorptionColor, absorptionDist);
     return result;
 }
-
 
 closure color calculateDiffuse(color diffuseColor, float diffuseValue, float roughness, float translucency, color translucencyColor, vector normalCamera)
 {
@@ -86,7 +74,7 @@ shader uberShader
 ]]
 (
     int matte = 0
-    [[ 
+    [[
         string help = "Use matte",
         string hint = "useAsBool"
     ]],
@@ -166,7 +154,7 @@ shader uberShader
         string help = "Microfacet distribution to use: Beckmann or GGX.",
         string options = "beckmann|ggx"
     ]],
-    
+
     // refraction
     float refractionIOR = 1.3
     [[
@@ -174,19 +162,19 @@ shader uberShader
         float min = -2.0,
         float max =  2.0,
         string hint = "softminmax"
-    ]],    
+    ]],
     vector refractionColor = 1.0
     [[
         string help = "Refraction color",
         string hint = "useAsColor"
     ]],
-    float absorption = 0
+    float absorptionDist = 0
     [[
-        string help = "Absorption cross section",
+        string help = "Absorption distance",
         float min = 0.0,
-        float max = 1.0,
+        float max = 5.0,
         string hint = "softmax"
-    ]],    
+    ]],
     vector absorptionColor = 0.0
     [[
         string help = "Absorption color",
@@ -209,8 +197,8 @@ shader uberShader
         string help = "Microfacet distribution to use: Beckmann or GGX.",
         string options = "beckmann|ggx"
     ]],
-    
-    
+
+
     // subsurface scattering
     int SSS1 = 0
     [[
@@ -252,10 +240,10 @@ shader uberShader
         float max = 3.0,
         string hint = "softmax"
     ]],
-    
+
     output closure color outColor = 0)
 {
-    
+
     if ((matte == 1) && (iscameraray()))
     {
         outColor = emission() * 0.0;
@@ -268,46 +256,24 @@ shader uberShader
         closure color emissionClosure = 0;
         closure color diffuseClosure = calculateDiffuse(color(diffuseColor), diffuseValue, roughness, translucency, color(translucencyColor), normalCamera);
         float Kr = 0.0, Kt = 0.0;
-        
+
         int doReflection = (specular1 > 0.0) && (!isBlack(specularColor1));
         int doRefraction = (refractivity > 0.0) && (!isBlack(refractionColor));
-        if (doReflection) 
+        if (doReflection)
         {
             Kr = 1.0;
             float ior = specularIOR1;
             if (specularUseFresnel1)
                 fresnel(I, normalCamera, 1.0/ior, Kr, Kt);
-            reflectionClosure = calculateReflection(ior, reflectionMdf, color(specularColor1), specular1, roughness1, anisotropy1, normalCamera);
+            reflectionClosure = specular1 * calculateReflection(ior, reflectionMdf, color(specularColor1), roughness1, anisotropy1, normalCamera);
             Kr = max(reflectivityAtZeroDeg, Kr);
         }
         if (doRefraction)
         {
-            float from_ior, to_ior;
-            color absorptionCol = 1.0;
-
-            if (backfacing())
-            {
-                from_ior = refractionIOR;
-                getattribute("path:ray_ior", to_ior);
-                
-                if (absorption != 0.0)
-                {
-                    float length;
-                    getattribute("path:ray_length", length);
-                    absorptionCol = exp(-absorption * absorptionColor * length);
-                }
-                
-            }
-            else
-            {
-                getattribute("path:ray_ior", from_ior);
-                to_ior = refractionIOR;
-            }
-            float eta = from_ior / to_ior;
             // save Kr with new local variable
             float krr;
-            fresnel(I, normalCamera, eta, krr, Kt);
-            refractionClosure = calculateRefraction(eta, refractionMdf, color(refractionColor), refractivity, roughness, normalCamera) * absorptionCol;
+            fresnel(I, normalCamera, 1.0/refractionIOR, krr, Kt);
+            refractionClosure = refractivity * calculateRefraction(refractionIOR, refractionMdf, color(refractionColor), roughness, normalCamera, absorptionColor, absorptionDist);
         }
         if (SSS1 > 0)
         {
@@ -327,6 +293,6 @@ shader uberShader
         {
             emissionClosure = emission() * color(emissionColor) * emissionMultiplier;
         }
-        outColor = (diffuseClosure * (1.0 - refractivity) + refractionClosure * refractivity) * (1.0 - Kr) + reflectionClosure * Kr + subsurfaceClosure + emissionClosure;
-    }    
+        outColor = (diffuseClosure * (1.0 - refractivity) + refractionClosure) * (1.0 - Kr) + reflectionClosure * Kr + subsurfaceClosure + emissionClosure;
+    }
 }
