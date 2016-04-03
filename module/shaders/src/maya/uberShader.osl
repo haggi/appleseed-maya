@@ -273,7 +273,7 @@ shader uberShader
             // save Kr with new local variable
             float krr;
             fresnel(I, normalCamera, 1.0/refractionIOR, krr, Kt);
-            refractionClosure = refractivity * calculateRefraction(refractionIOR, refractionMdf, color(refractionColor), roughness, normalCamera, absorptionColor, absorptionDist);
+            refractionClosure = refractivity * calculateRefraction(refractionIOR, refractionMdf, color(refractionColor), refractionRoughness, normalCamera, absorptionColor, absorptionDist);
         }
         if (SSS1 > 0)
         {

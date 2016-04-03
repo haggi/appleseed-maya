@@ -111,6 +111,7 @@ class AEuberShaderTemplate(BaseTemplate):
             anno = self.shaderDesc['roughness']
         print "AETemplate roughness anno", anno
         self.addControl("roughness", label="Roughness", annotation = anno)
+        self.callCustom(self.bumpNew, self.bumpReplace, "normalCamera")
         self.addSeparator()
         if self.shaderDesc.has_key('translucency'):
             anno = self.shaderDesc['translucency']
