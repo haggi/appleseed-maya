@@ -26,7 +26,7 @@
 // THE SOFTWARE.
 //
 
-#include "mayaUtils.h"
+#include "mayautils.h"
 
 vector Contrast(vector c, vector d, float f)
 {
