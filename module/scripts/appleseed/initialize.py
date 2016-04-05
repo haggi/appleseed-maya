@@ -188,7 +188,7 @@ class AppleseedRenderer(renderer.MayaToRenderer):
                 with pm.frameLayout(label="Environment Lighting", collapsable=False):
                     with pm.columnLayout(self.rendererName + "ColumnLayout", adjustableColumn=True, width=400):
                         attr = pm.Attribute(self.renderGlobalsNodeName + ".environmentType")
-                        envDict['environmentType'] = pm.attrEnumOptionMenuGrp(label="Environemnt Type", at=self.renderGlobalsNodeName + ".environmentType", ei=self.getEnumList(attr))
+                        envDict['environmentType'] = pm.attrEnumOptionMenuGrp(label="Environment Type", at=self.renderGlobalsNodeName + ".environmentType", ei=self.getEnumList(attr))
 
                 with pm.frameLayout(label="Environment Colors", collapsable=False) as envDict['commonEnvFrame']:
                     with pm.columnLayout(self.rendererName + "ColumnLayout", adjustableColumn=True, width=400):

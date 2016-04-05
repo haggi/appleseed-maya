@@ -39,8 +39,8 @@
 #if MAYA_API_VERSION >= 201600
 #include "hypershaderenderer.h"
 #endif
-#include "newswatchrenderer.h"
 #include "renderqueueworker.h"
+#include "swatchrenderer.h"
 #include "version.h"
 #include "world.h"
 
@@ -168,7 +168,7 @@ APPLESEEDMAYA_DLL_EXPORT MStatus initializePlugin(MObject obj)
     getWorldPtr()->shaderSearchPath.append(plugin.loadPath());
 
     if (MGlobal::mayaState() != MGlobal::kBatch)
-        MSwatchRenderRegister::registerSwatchRender(swatchName, NewSwatchRenderer::creator);
+        MSwatchRenderRegister::registerSwatchRender(swatchName, SwatchRenderer::creator);
 
 #if MAYA_API_VERSION >= 201600
     status = plugin.registerRenderer("Appleseed", HypershadeRenderer::creator);

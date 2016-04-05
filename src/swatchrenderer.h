@@ -26,8 +26,8 @@
 // THE SOFTWARE.
 //
 
-#ifndef NEWSWATCHRENDERER_H
-#define NEWSWATCHRENDERER_H
+#ifndef SWATCHRENDERER_H
+#define SWATCHRENDERER_H
 
 // appleseed.foundation headers.
 #include "foundation/platform/compiler.h"
@@ -38,7 +38,7 @@
 // Forward declarations.
 class MObject;
 
-class NewSwatchRenderer
+class SwatchRenderer
   : public MSwatchRenderBase
 {
   public:
@@ -46,9 +46,9 @@ class NewSwatchRenderer
 
     static MSwatchRenderBase* creator(MObject dependNode, MObject renderNode, int imageResolution);
 
-    NewSwatchRenderer(MObject dependNode, MObject renderNode, int imageResolution);
+    SwatchRenderer(MObject dependNode, MObject renderNode, int imageResolution);
 
     virtual bool doIteration() APPLESEED_OVERRIDE;
 };
 
-#endif  // !NEWSWATCHRENDERER_H
+#endif  // !SWATCHRENDERER_H

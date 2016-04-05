@@ -27,7 +27,7 @@
 //
 
 // Interface header.
-#include "newswatchrenderer.h"
+#include "swatchrenderer.h"
 
 // appleseed-maya headers.
 #include "appleseedswatchrenderer.h"
@@ -36,18 +36,18 @@
 // Maya headers.
 #include <maya/MImage.h>
 
-MSwatchRenderBase* NewSwatchRenderer::creator(MObject dependNode, MObject renderNode, int imageResolution)
+MSwatchRenderBase* SwatchRenderer::creator(MObject dependNode, MObject renderNode, int imageResolution)
 {
-    return new NewSwatchRenderer(dependNode, renderNode, imageResolution);
+    return new SwatchRenderer(dependNode, renderNode, imageResolution);
 }
 
-NewSwatchRenderer::NewSwatchRenderer(MObject dependNode, MObject renderNode, int imageResolution)
+SwatchRenderer::SwatchRenderer(MObject dependNode, MObject renderNode, int imageResolution)
   : MSwatchRenderBase(dependNode, renderNode, imageResolution)
   , dNode(dependNode)
 {
 }
 
-bool NewSwatchRenderer::doIteration()
+bool SwatchRenderer::doIteration()
 {
     if (getWorldPtr()->getRenderType() == World::IPRRENDER)
     {

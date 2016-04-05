@@ -41,14 +41,14 @@
 
 // Forward declarations.
 class MObject;
-class NewSwatchRenderer;
+class SwatchRenderer;
 
 class AppleseedSwatchRenderer
 {
   public:
     AppleseedSwatchRenderer();
 
-    void renderSwatch(NewSwatchRenderer* sr);
+    void renderSwatch(SwatchRenderer* sr);
 
   private:
     foundation::auto_release_ptr<renderer::Project> mProject;
