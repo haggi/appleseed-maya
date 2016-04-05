@@ -77,33 +77,67 @@ vector bump_map
     vector        Position,
     vector        Normal,
     vector        Tn,
+    vector        Bn,
     float         Height,
     float         Amount
 )
 {
-    int has_diffs;
-    int get_attr_ok = getattribute("path:ray_has_differentials", has_diffs);
-    vector NormalOut = Normal;
+    vector NormalOut = 0;
+    vector dpdx = Dx(Position);
+    vector dpdy = Dy(Position);
 
-    // dPdx and dPdy are not allways defined.
-    if (get_attr_ok && has_diffs)
+    float dhx = Dx(Height) * Amount;
+    float dhy = Dy(Height) * Amount;
+    string Method = "classic";
+    
+    if (Method == "classic")
     {
-        vector n = normalize(Normal);
-        vector dpdx = Dx(Position);
-        vector dpdy = Dy(Position);
+        //
+        // Classic Blinn algorithm.
+        // 
+        // Reference:
+        //
+        //    Physically Based Rendering, 2nd edition, page 490.
+        //
 
-        vector rx = cross(dpdy, n);
-        vector ry = cross(n, dpdx);
+        vector new_tn = Tn * length(dpdx) + Normal * dhx;
+        vector new_bn = Bn * length(dpdy) + Normal * dhy;
+        NormalOut = cross(new_bn, new_tn);
+    }
+    else
+    {
+        //
+        // Surface gradients
+        //
+        // Reference:
+        //
+        //     Bump Mapping Unparametrized Surfaces on the GPU
+        //     Morten S. Mikkelsen
+        //     https://dl.dropbox.com/u/55891920/papers/mm_sfgrad_bump.pdf
+        //
 
-        float dhx = Dx(Height) * Amount;
-        float dhy = Dy(Height) * Amount;
+        int has_diffs;
+        int get_attr_ok = getattribute("path:ray_has_differentials", has_diffs);
 
-        float det = dot(dpdx, rx);
+        // dPdx and dPdy are not always defined.
+        if (get_attr_ok && has_diffs)
+        {
+            vector rx = cross(dpdy, Normal);
+            vector ry = cross(Normal, dpdx);
 
-        vector surf_grad = sign(det) * (dhx * rx + dhy * ry);
-        NormalOut = normalize(abs(det) * n - surf_grad);
+            float det = dot(dpdx, rx);
+            vector surf_grad = sign(det) * (dhx * rx + dhy * ry);
+
+            NormalOut = abs(det) * Normal - surf_grad;
+        }
     }
 
+    NormalOut = normalize(NormalOut);
+
+    // Place the perturbed normal in the same hemisphere
+    // as the original normal.
+    //if (PreventNormalFlip && dot(Normal, NormalOut) < 0.0)
+    //    NormalOut = -NormalOut;
     if (dot(Normal, NormalOut) < 0.0)
         NormalOut = -NormalOut;
     return NormalOut;
@@ -120,6 +154,10 @@ shader bump2d
     [[
         int    lockgeom = 0
     ]],
+    vector Bn = 0
+    [[
+        int    lockgeom = 0
+    ]],
     int upVector = 0,
     output vector outNormal = 1
 )
@@ -130,7 +168,7 @@ shader bump2d
     if (bumpInterp == 0)
     {
         if (isconnected(bumpValue))
-            outNormal = bump_map(P, normalCamera, Tn, bumpValue, bumpDepth);
+            outNormal = bump_map(P, normalCamera, Tn, Bn, bumpValue, bumpDepth);
     }
     else
     {

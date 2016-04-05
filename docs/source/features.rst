@@ -1,8 +1,8 @@
 Features
 ========
 
-Supported features:
-
+Supported appleseed features
+-------------------
 - Unidirectional Path Tracing
 - Stochastic Progressive Photon Mapping
 - Multi-pass rendering
@@ -16,8 +16,8 @@ Supported features:
 - Physically-based sun
 - Image based lighting
 
-Supported Maya features:
-
+Supported Maya features
+------------------------
 - Spot light
 - Point light
 - Directional light
@@ -29,8 +29,8 @@ Supported Maya features:
 - IPR
 - Render region in normal and IPR mode
 
-Supported Maya shading nodes:
-
+Supported Maya shading nodes
+-----------------------------
 - blendColors
 - bulge
 - bump2d
@@ -57,8 +57,8 @@ Supported Maya shading nodes:
 
 The shading node implementation is work in progress and some nodes are only partially supported. e.g. the color space in the file node is not yet recognized.
 
-Extra shading nodes:
-
+Extra shading nodes
+--------------------
 - uberShader
 - asLayeredShader
 - asDisneyMaterial

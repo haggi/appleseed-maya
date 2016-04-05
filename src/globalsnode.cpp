@@ -220,8 +220,11 @@ MStatus GlobalsNode::initialize()
     attr.enable_caustics = nAttr.create("enable_caustics", "enable_caustics",  MFnNumericData::kBoolean, false);
     CHECK_MSTATUS(addAttribute(attr.enable_caustics));
 
-    attr.enable_dl = nAttr.create("enable_dl", "enable_ibl",  MFnNumericData::kBoolean, true);
+    attr.enable_dl = nAttr.create("enable_dl", "enable_dl",  MFnNumericData::kBoolean, true);
     CHECK_MSTATUS(addAttribute(attr.enable_dl));
+
+    attr.enable_ibl = nAttr.create("enable_ibl", "enable_ibl", MFnNumericData::kBoolean, true);
+    CHECK_MSTATUS(addAttribute(attr.enable_ibl));
 
     attr.enable_diagnostics = nAttr.create("enable_diagnostics", "enable_diagnostics",  MFnNumericData::kBoolean, false);
     CHECK_MSTATUS(addAttribute(attr.enable_diagnostics));
