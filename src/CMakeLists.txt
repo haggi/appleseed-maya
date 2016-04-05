@@ -110,8 +110,6 @@ set (sources
     mayascene.h
     meshwalker.cpp
     meshwalker.h
-    newswatchrenderer.cpp
-    newswatchrenderer.h
     pluginmain.cpp
     proxymesh.cpp
     proxymesh.h
@@ -121,6 +119,8 @@ set (sources
     renderglobals.h
     renderqueueworker.cpp
     renderqueueworker.h
+    swatchrenderer.cpp
+    swatchrenderer.h
     tilecallback.cpp
     tilecallback.h
     version.cpp

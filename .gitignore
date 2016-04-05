@@ -1,2 +1,5 @@
 build/
+module/2015/
+module/2016/
+module/bin/
 *.pyc
