@@ -192,7 +192,7 @@ MStatus GlobalsNode::initialize()
     stat = eAttr.addField("64-bit Floating Point", 5);
     CHECK_MSTATUS(addAttribute(attr.bitdepth));
 
-    attr.pixel_renderer = eAttr.create("pixel_renderer", "pixel_renderer", 0, &stat);
+    attr.pixel_renderer = eAttr.create("pixel_renderer", "pixel_renderer", 1, &stat);
     stat = eAttr.addField("Adaptive", 0);
     stat = eAttr.addField("Uniform", 1);
     CHECK_MSTATUS(addAttribute(attr.pixel_renderer));
