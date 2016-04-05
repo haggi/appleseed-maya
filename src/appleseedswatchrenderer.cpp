@@ -35,7 +35,7 @@
 #include "utilities/logging.h"
 #include "utilities/oslutils.h"
 #include "utilities/tools.h"
-#include "newswatchrenderer.h"
+#include "swatchrenderer.h"
 #include "world.h"
 
 // appleseed.renderer headers.
@@ -76,6 +76,9 @@
 #include <maya/MGlobal.h>
 #include <maya/MPlugArray.h>
 
+// Standard headers.
+#include <cstring>
+
 AppleseedSwatchRenderer::AppleseedSwatchRenderer()
   : mTerminateLoop(false)
 {
@@ -102,7 +105,7 @@ AppleseedSwatchRenderer::AppleseedSwatchRenderer()
             &mRendererController));
 }
 
-void AppleseedSwatchRenderer::renderSwatch(NewSwatchRenderer *sr)
+void AppleseedSwatchRenderer::renderSwatch(SwatchRenderer* sr)
 {
     const int res = sr->resolution();
 
@@ -139,24 +142,18 @@ void AppleseedSwatchRenderer::renderSwatch(NewSwatchRenderer *sr)
 
 namespace
 {
-    void updateMaterial(MObject materialNode, const renderer::Assembly *assembly)
+    void updateMaterial(MObject materialNode, const renderer::Assembly* assembly)
     {
         OSLUtilClass OSLShaderClass;
         MObject surfaceShaderNode = getConnectedInNode(materialNode, "surfaceShader");
-        MString surfaceShaderName = getObjectName(surfaceShaderNode);
         MString shadingGroupName = getObjectName(materialNode);
         ShadingNetwork network(surfaceShaderNode);
-        size_t numNodes = network.shaderList.size();
 
-        MString assName = "swatchRenderer_world";
-        if (assName == assembly->get_name())
-        {
+        if (std::strcmp(assembly->get_name(), "swatchRenderer_world") == 0)
             shadingGroupName = "previewSG";
-        }
 
         MString shaderGroupName = shadingGroupName + "_OSLShadingGroup";
-
-        renderer::ShaderGroup *shaderGroup = assembly->shader_groups().get_by_name(shaderGroupName.asChar());
+        renderer::ShaderGroup* shaderGroup = assembly->shader_groups().get_by_name(shaderGroupName.asChar());
 
         if (shaderGroup != 0)
         {
@@ -169,20 +166,15 @@ namespace
             shaderGroup = assembly->shader_groups().get_by_name(shaderGroupName.asChar());
         }
 
-        OSLShaderClass.group = (OSL::ShaderGroup *)shaderGroup;
+        OSLShaderClass.group = (OSL::ShaderGroup*)shaderGroup;
 
         MFnDependencyNode shadingGroupNode(materialNode);
         MPlug shaderPlug = shadingGroupNode.findPlug("surfaceShader");
         OSLShaderClass.createOSLProjectionNodes(shaderPlug);
 
-        for (int shadingNodeId = 0; shadingNodeId < numNodes; shadingNodeId++)
-        {
-            ShadingNode snode = network.shaderList[shadingNodeId];
-            Logging::debug(MString("ShadingNode Id: ") + shadingNodeId + " ShadingNode name: " + snode.fullName);
-            if (shadingNodeId == (numNodes - 1))
-                Logging::debug(MString("LastNode Surface Shader: ") + snode.fullName);
-            OSLShaderClass.createOSLShadingNode(network.shaderList[shadingNodeId]);
-        }
+        const size_t numNodes = network.shaderList.size();
+        for (size_t i = 0; i < numNodes; ++i)
+            OSLShaderClass.createOSLShadingNode(network.shaderList[i]);
 
         OSLShaderClass.cleanupShadingNodeList();
         OSLShaderClass.createAndConnectShaderNodes();
@@ -192,19 +184,18 @@ namespace
             ShadingNode snode = network.shaderList[numNodes - 1];
             MString layer = (snode.fullName + "_interface");
             Logging::debug(MString("Adding interface shader: ") + layer);
-            renderer::ShaderGroup *sg = (renderer::ShaderGroup *)OSLShaderClass.group;
+            renderer::ShaderGroup* sg = (renderer::ShaderGroup *)OSLShaderClass.group;
             sg->add_shader("surface", "surfaceShaderInterface", layer.asChar(), renderer::ParamArray());
-            const char *srcLayer = snode.fullName.asChar();
-            const char *srcAttr = "outColor";
-            const char *dstLayer = layer.asChar();
-            const char *dstAttr = "inColor";
+            const char* srcLayer = snode.fullName.asChar();
+            const char* srcAttr = "outColor";
+            const char* dstLayer = layer.asChar();
+            const char* dstAttr = "inColor";
             Logging::debug(MString("Connecting interface shader: ") + srcLayer + "." + srcAttr + " -> " + dstLayer + "." + dstAttr);
             sg->add_connection(srcLayer, srcAttr, dstLayer, dstAttr);
         }
 
+        // Add shaders only if they do not yet exist.
         MString physicalSurfaceName = shadingGroupName + "_physical_surface_shader";
-
-        // add shaders only if they do not yet exist
         if (assembly->surface_shaders().get_by_name(physicalSurfaceName.asChar()) == 0)
         {
             assembly->surface_shaders().insert(
@@ -226,28 +217,24 @@ namespace
 
 void AppleseedSwatchRenderer::defineMaterial(MObject shadingNode)
 {
-    MStatus status;
-    // to use the unified material function we need the shading group
-    // this works only for surface shaders, textures can be handled differently later
+    // To use the unified material function we need the shading group.
+    // This works only for surface shaders, textures can be handled differently later.
     MPlugArray pa, paOut;
     MFnDependencyNode depFn(shadingNode);
     depFn.getConnections(pa);
-    renderer::Assembly *assembly = mProject->get_scene()->assemblies().get_by_name("swatchRenderer_world");
+    renderer::Assembly* assembly = mProject->get_scene()->assemblies().get_by_name("swatchRenderer_world");
     for (uint i = 0; i < pa.length(); i++)
     {
         if (pa[i].isDestination())
             continue;
         pa[i].connectedTo(paOut, false, true);
-        if (paOut.length() > 0)
+        for (uint k = 0; k < paOut.length(); k++)
         {
-            for (uint k = 0; k < paOut.length(); k++)
+            if (paOut[k].node().hasFn(MFn::kShadingEngine))
             {
-                if (paOut[k].node().hasFn(MFn::kShadingEngine))
-                {
-                    MObject outNode = paOut[k].node();
-                    updateMaterial(outNode, assembly);
-                    break;
-                }
+                MObject outNode = paOut[k].node();
+                updateMaterial(outNode, assembly);
+                break;
             }
         }
     }
