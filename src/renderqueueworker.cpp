@@ -716,24 +716,31 @@ void RenderQueueWorker::startRenderQueueWorker()
                     {
                         unsigned int left, right, bottom, top;
                         MRenderView::getRenderRegion(left, right, bottom, top);
+#if MAYA_API_VERSION >= 201600
+                        MRenderView::startRegionRender(width, height, left, right, bottom, top, true, true);
+#else
                         MRenderView::startRegionRender(width, height, left, right, bottom, top, false, true);
-                    } 
+#endif
+                    }
                     else
                     {
-                        MRenderView::startRender(width, height, true, true);
 #if MAYA_API_VERSION >= 201600
-                        MRenderView::setDrawTileBoundary(false);
+                        MRenderView::startRender(width, height, true, true);
+#else
+                        MRenderView::startRender(width, height, false, true);
 #endif
                     }
                 }
-
+#if MAYA_API_VERSION >= 201600
+                MRenderView::setDrawTileBoundary(false);
+#endif
                 getWorldPtr()->setRenderState(World::RSTATETRANSLATING);
                 boost::shared_ptr<MayaScene> mayaScene = getWorldPtr()->mScene;
 
                 if (MGlobal::mayaState() != MGlobal::kBatch)
                 {
                     // we only need renderComputation (means esc-able rendering) if we render in UI (==NORMAL)
-                    if (getWorldPtr()->getRenderType() == World::UIRENDER)
+                    if (getWorldPtr()->getRenderType() != World::IPRRENDER)
                     {
                         if (MRenderView::doesRenderEditorExist())
                             MGlobal::executePythonCommand("import pymel.core as pm; pm.waitCursor(state=True);");
@@ -790,7 +797,8 @@ void RenderQueueWorker::startRenderQueueWorker()
                     if (MRenderView::doesRenderEditorExist())
                     {
                         MRenderView::endRender();
-                        MGlobal::executePythonCommand("import pymel.core as pm; pm.waitCursor(state=False); pm.refresh()");
+                        if (getWorldPtr()->getRenderType() != World::IPRRENDER)
+                            MGlobal::executePythonCommand("import pymel.core as pm; pm.waitCursor(state=False); pm.refresh()");
                     }
                 }
 
@@ -844,7 +852,8 @@ void RenderQueueWorker::startRenderQueueWorker()
           case Event::UPDATEUI:
             updateRenderView(e.xMin, e.xMax, e.yMin, e.yMax, e.pixels.get());
             numPixelsDone += (e.xMax - e.xMin) * (e.yMax - e.yMin);
-            logOutput(numPixelsDone, numPixelsTotal);
+            if (getWorldPtr()->getRenderType() != World::IPRRENDER)
+                logOutput(numPixelsDone, numPixelsTotal);
             break;
 
           case Event::PRETILE:

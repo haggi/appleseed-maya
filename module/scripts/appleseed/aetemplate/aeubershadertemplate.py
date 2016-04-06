@@ -111,6 +111,7 @@ class AEuberShaderTemplate(BaseTemplate):
             anno = self.shaderDesc['roughness']
         print "AETemplate roughness anno", anno
         self.addControl("roughness", label="Roughness", annotation = anno)
+        self.callCustom(self.bumpNew, self.bumpReplace, "normalCamera")
         self.addSeparator()
         if self.shaderDesc.has_key('translucency'):
             anno = self.shaderDesc['translucency']
@@ -150,7 +151,7 @@ class AEuberShaderTemplate(BaseTemplate):
             anno = self.shaderDesc['refractionMdf']
         self.addControl("refractionMdf", label="Refraction MDF", changeCommand=self.update)
         self.addSeparator()
-        self.addControl("absorption", label="Absorption", changeCommand=self.update)
+        self.addControl("absorptionDist", label="Absorption Distance", changeCommand=self.update)
         self.addControl("absorptionColor", label="Absorption Color", changeCommand=self.update)
         self.addSeparator()
         self.endLayout()

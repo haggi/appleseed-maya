@@ -49,8 +49,6 @@ class GlobalsNode
     static void* creator();
     static MStatus initialize();
 
-    virtual void postConstructor() APPLESEED_OVERRIDE;
-
   private:
     struct Attributes
     {
