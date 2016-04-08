@@ -337,10 +337,6 @@ void AppleseedRenderer::defineCamera(boost::shared_ptr<MayaObject> cam)
     MStatus stat;
     boost::shared_ptr<MayaScene> mayaScene = getWorldPtr()->mScene;
     boost::shared_ptr<RenderGlobals> renderGlobals = getWorldPtr()->mRenderGlobals;
-    renderer::Camera *camera = project->get_scene()->get_camera();
-    if (camera != 0)
-        Logging::debug("Camera is not null - we already have a camera -> update it.");
-
     // Update the complete camera and place it into the scene.
     Logging::debug(MString("Creating camera shape: ") + cam->shortName);
     float horizontalFilmAperture = 24.892f;
@@ -389,16 +385,11 @@ void AppleseedRenderer::defineCamera(boost::shared_ptr<MayaObject> cam)
     camParams.insert("f_stop", (MString("") + fStop).asChar());
     camParams.insert("diaphragm_blades", (MString("") + mtap_diaphragm_blades).asChar());
     camParams.insert("diaphragm_tilt_angle", (MString("") + mtap_diaphragm_tilt_angle).asChar());
-
-    if (!camera)
-    {
-        foundation::auto_release_ptr<renderer::Camera> appleCam = renderer::ThinLensCameraFactory().create(
-            cam->shortName.asChar(),
-            camParams);
-        project->get_scene()->set_camera(appleCam);
-        camera = project->get_scene()->get_camera();
-    }
-
+    foundation::auto_release_ptr<renderer::Camera> appleCam = renderer::ThinLensCameraFactory().create(
+        cam->shortName.asChar(),
+        camParams);
+    renderer::Camera* camera = appleCam.get();
+    project->get_scene()->set_camera(appleCam);
     fillMatrices(cam, camera->transform_sequence());
 }
 
