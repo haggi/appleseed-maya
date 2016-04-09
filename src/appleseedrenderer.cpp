@@ -337,8 +337,6 @@ void AppleseedRenderer::defineCamera(boost::shared_ptr<MayaObject> cam)
     MStatus stat;
     boost::shared_ptr<MayaScene> mayaScene = getWorldPtr()->mScene;
     boost::shared_ptr<RenderGlobals> renderGlobals = getWorldPtr()->mRenderGlobals;
-    // Update the complete camera and place it into the scene.
-    Logging::debug(MString("Creating camera shape: ") + cam->shortName);
     float horizontalFilmAperture = 24.892f;
     float verticalFilmAperture = 18.669f;
 
@@ -376,15 +374,12 @@ void AppleseedRenderer::defineCamera(boost::shared_ptr<MayaObject> cam)
     horizontalFilmAperture = horizontalFilmAperture * 2.54f * 0.01f;
     verticalFilmAperture = verticalFilmAperture * 2.54f * 0.01f;
     verticalFilmAperture = horizontalFilmAperture / imageAspect;
-    MString filmBack = MString("") + horizontalFilmAperture + " " + verticalFilmAperture;
-    MString focalLen = MString("") + focalLength * 0.001f;
-
-    camParams.insert("film_dimensions", filmBack.asChar());
-    camParams.insert("focal_length", focalLen.asChar());
-    camParams.insert("focal_distance", (MString("") + focusDistance).asChar());
-    camParams.insert("f_stop", (MString("") + fStop).asChar());
-    camParams.insert("diaphragm_blades", (MString("") + mtap_diaphragm_blades).asChar());
-    camParams.insert("diaphragm_tilt_angle", (MString("") + mtap_diaphragm_tilt_angle).asChar());
+    camParams.insert("film_dimensions", format("^1s ^2s", horizontalFilmAperture, verticalFilmAperture));
+    camParams.insert("focal_length", focalLength * 0.001f);
+    camParams.insert("focal_distance", focusDistance * renderGlobals->scaleFactor);
+    camParams.insert("f_stop", fStop);
+    camParams.insert("diaphragm_blades", mtap_diaphragm_blades);
+    camParams.insert("diaphragm_tilt_angle", mtap_diaphragm_tilt_angle);
     foundation::auto_release_ptr<renderer::Camera> appleCam = renderer::ThinLensCameraFactory().create(
         cam->shortName.asChar(),
         camParams);
@@ -439,7 +434,7 @@ void AppleseedRenderer::defineOutput()
 
 void AppleseedRenderer::defineEnvironment()
 {
-    renderer::Scene *scene = project->get_scene();
+    renderer::Scene* scene = project->get_scene();
 
     MFnDependencyNode appleseedGlobals(getRenderGlobalsNode());
     MString textInstName = "bg_texture_inst";
@@ -476,9 +471,6 @@ void AppleseedRenderer::defineEnvironment()
 
     foundation::auto_release_ptr<renderer::EnvironmentEDF> environmentEDF;
 
-    bool updateSkyShader = (scene->environment_shaders().get_by_name("sky_shader") != 0);
-    bool updateSkyEdf = (scene->environment_edfs().get_by_name("sky_edf") != 0);
-
     switch (environmentType)
     {
         // Constant.
@@ -501,7 +493,7 @@ void AppleseedRenderer::defineEnvironment()
                     renderer::ParamArray()
                         .insert("radiance", envColorName)
                         .insert("upper_hemi_radiance", gradHorizName)
-                        .insert("lower_hemi_radiance", gradHorizName));
+                        .insert("lower_hemi_radiance", gradZenitName));
             break;
         }
 
@@ -902,24 +894,10 @@ void AppleseedRenderer::doInteractiveUpdate()
                 defineLight(iElement->obj);
             }
         }
-        // Shading nodes.
-        if (iElement->node.hasFn(MFn::kPluginDependNode) || iElement->node.hasFn(MFn::kLambert))
+        // appleseedGlobals node.
+        if (MFnDependencyNode(iElement->node).typeId().id() == 0x0011CF40)
         {
-            MFnDependencyNode depFn(iElement->node);
-            std::vector<MString> shaderNames;
-            shaderNames.push_back("asLayeredShader");
-            shaderNames.push_back("uberShader");
-            shaderNames.push_back("asDisneyMaterial");
-
-            MString typeName = depFn.typeName();
-            for (uint si = 0; si < shaderNames.size(); si++)
-            {
-                if (typeName == shaderNames[si])
-                {
-                    Logging::debug(MString("AppleseedRenderer::doInteractiveUpdate - found shader.") + iElement->name);
-                    defineMaterial(iElement->obj);
-                }
-            }
+            defineEnvironment();
         }
         if (iElement->node.hasFn(MFn::kMesh))
         {
