@@ -148,7 +148,7 @@ def analyzeContent(content):
                 elementName = line.split(" ")[0].replace("\"", "")
                 currentElement['name'] = reverseValidate(elementName)
                 currentElement['type'] = " ".join(line.split(" ")[1:]).replace("\"", "")
-                
+
                 if "output" in line:
                     d['outputs'].append(currentElement)
                     currentElement = d['outputs'][-1]
@@ -271,7 +271,6 @@ def writeXMLShaderDescription(shaderDict=None):
 
 def updateOSLShaderInfo(force=False, osoFiles=[]):
     pp = pprint.PrettyPrinter(indent=4)
-    IDLE_PRIORITY_CLASS = 64
     cmd = "oslinfo -v"
     infoDict = {}
     # if we have updates we need to update the xml file as well.
@@ -281,7 +280,7 @@ def updateOSLShaderInfo(force=False, osoFiles=[]):
     for osoFile in osoFiles:
         infoCmd = cmd + " " + osoFile
         shaderName = path.path(osoFile).basename().replace(".oso", "")
-        process = subprocess.Popen(infoCmd, bufsize=1, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, creationflags=IDLE_PRIORITY_CLASS)
+        process = subprocess.Popen(infoCmd, bufsize=1, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         content = []
         while 1:
             line = process.stdout.readline()
@@ -325,12 +324,11 @@ def compileAllShaders():
                         continue
                     else:
                         osoOutputFile.remove()
-                        
+
                 saved_wd = os.getcwd()
                 os.chdir(root)
                 compileCmd = oslc_cmd + " -v -I" + include_dir + ' -o ' + osoOutputPath + ' ' + oslInputFile
-                IDLE_PRIORITY_CLASS = 64
-                process = subprocess.Popen(compileCmd, bufsize=1, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, creationflags=IDLE_PRIORITY_CLASS)
+                process = subprocess.Popen(compileCmd, bufsize=1, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
                 progress = []
                 fail = False
                 while 1:
