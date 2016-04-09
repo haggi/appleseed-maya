@@ -86,27 +86,31 @@ class AppleseedRenderer(renderer.MayaToRenderer):
             envDict['latlongVeShift'].setManage(False)
             envDict['latlongHoShift'].setManage(False)
             
+            # Constant
             if envType == 0:
                 envDict['environmentColor'].setManage(True)
-            # Gradient
+            # ConstantHemisphere
             elif envType == 1:
                 envDict['gradientHorizon'].setManage(True)
                 envDict['gradientZenit'].setManage(True)
-            # Map
+                envDict['gradientHorizon'].setLabel("Upper Hemisphere Color:")
+                envDict['gradientZenit'].setLabel("Lower Hemisphere Color:")
+            # Gradient
             elif envType == 2:
-                envDict['environmentMap'].setManage(True)
-                envDict['latlongVeShift'].setManage(True)
-                envDict['latlongHoShift'].setManage(True)    
-            # SphericalMap
+                envDict['gradientHorizon'].setManage(True)
+                envDict['gradientZenit'].setManage(True)
+                envDict['gradientHorizon'].setLabel("Gradient Horizon Color:")
+                envDict['gradientZenit'].setLabel("Gradient Zenith Color:")
+            # Map
             elif envType == 3:
                 envDict['environmentMap'].setManage(True)
                 envDict['latlongVeShift'].setManage(True)
                 envDict['latlongHoShift'].setManage(True)    
-            # MirrorBall
+            # SphericalMap
             elif envType == 4:
                 envDict['environmentMap'].setManage(True)
-                envDict['latlongVeShift'].setManage(True)
-                envDict['latlongHoShift'].setManage(True)
+                envDict['latlongVeShift'].setManage(False)
+                envDict['latlongHoShift'].setManage(False)    
         else:
             envDict['commonEnvFrame'].setManage(False)
             
