@@ -110,7 +110,7 @@ class AppleseedRenderer(renderer.MayaToRenderer):
             elif envType == 4:
                 envDict['environmentMap'].setManage(True)
                 envDict['latlongVeShift'].setManage(False)
-                envDict['latlongHoShift'].setManage(False)    
+                envDict['latlongHoShift'].setManage(False)
         else:
             envDict['commonEnvFrame'].setManage(False)
             
@@ -177,7 +177,7 @@ class AppleseedRenderer(renderer.MayaToRenderer):
                 if l == sunShape:
                     selectIndex = index
                     
-        pm.optionMenu(opMenu, e=True, select=selectIndex+1)
+        pm.optionMenu(opMenu, e=True, select=selectIndex + 1)
         
     def AppleseedEnvironmentCreateTab(self):
         self.createGlobalsNode()
@@ -559,10 +559,10 @@ class AppleseedRenderer(renderer.MayaToRenderer):
         pm.addExtension(nodeType="areaLight", longName="mtap_visibleDiffuse", attributeType="bool", defaultValue=True)
         pm.addExtension(nodeType="areaLight", longName="mtap_visibleTransparency", attributeType="bool", defaultValue=True)
         
-        pm.addExtension(nodeType='bump2d', longName='normalMap', usedAsColor=True, attributeType='float3' )
-        pm.addExtension(nodeType='bump2d', longName='normalMapR', attributeType='float', parent='normalMap' )
-        pm.addExtension(nodeType='bump2d', longName='normalMapG', attributeType='float', parent='normalMap' )
-        pm.addExtension(nodeType='bump2d', longName='normalMapB', attributeType='float', parent='normalMap' )        
+        pm.addExtension(nodeType='bump2d', longName='normalMap', usedAsColor=True, attributeType='float3')
+        pm.addExtension(nodeType='bump2d', longName='normalMapR', attributeType='float', parent='normalMap')
+        pm.addExtension(nodeType='bump2d', longName='normalMapG', attributeType='float', parent='normalMap')
+        pm.addExtension(nodeType='bump2d', longName='normalMapB', attributeType='float', parent='normalMap')        
         pm.addExtension(nodeType="bump2d", longName="upVector", attributeType="enum", enumName="Blue:Green", defaultValue=0)
 
     def renderProcedure(self, width, height, doShadows, doGlow, camera, options):
