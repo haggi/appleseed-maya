@@ -669,7 +669,7 @@ namespace
             MString progressStr;
             progressStr.format("^1s% done.", MString(perc));
             Logging::info(progressStr);
-            MString cmd = MString("import appleseed_maya.initialize; appleseed.initialize.theRenderer().updateProgressBar(") + perc + ")";
+            MString cmd = MString("import appleseed_maya.initialize; appleseed_maya.initialize.theRenderer().updateProgressBar(") + perc + ")";
             MGlobal::executePythonCommand(cmd);
         }
     }
