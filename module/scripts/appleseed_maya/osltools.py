@@ -158,7 +158,7 @@ def analyzeContent(content):
     return d
 
 def readShadersXMLDescription():
-    xmlFile = path.path(__file__).parent.parent.parent / "resources/shaderdefinitions.xml"
+    xmlFile = path.path(__file__).parent.parent.parent / "resources/shaderDefinitions.xml"
     if not xmlFile.exists():
         return
     try:
