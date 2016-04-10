@@ -85,7 +85,7 @@ shader asGlossy
     outColor = color(surfaceColor) * reflectance * as_glossy(
         distribution, 
         normalCamera, 
-        tangent,
+        Tn,
         microfacet_roughness(roughness, roughnessDepthScale),
         anisotropic, 
         ior);

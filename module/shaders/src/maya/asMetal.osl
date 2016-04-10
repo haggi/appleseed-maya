@@ -84,7 +84,7 @@ shader asMetal
     outColor = reflectance * as_metal(
         distribution,
         normalCamera,
-        tangent,
+        Tn,
         color(normalReflectance),
         color(edgeTint),
         microfacet_roughness(roughness, roughnessDepthScale),

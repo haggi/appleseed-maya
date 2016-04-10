@@ -96,7 +96,7 @@ shader asGlass
     outColor = transmittance * as_glass(
         distribution,
         normalCamera,
-        tangent,
+        Tn,
         color(surfaceTransmittance),
         color(reflectionTint),
         color(refractionTint),
