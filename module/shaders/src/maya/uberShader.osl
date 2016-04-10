@@ -269,7 +269,7 @@ shader uberShader
         float Kr = doReflection;
         float Kt = doRefraction;
         
-        if (doRefraction)
+        if (doReflection)
         {        
             if (specularUseFresnel1)
                 fresnel(I, normalCamera, 1.0/specularIOR1, Kr, Kt);                

@@ -433,6 +433,13 @@ namespace
         IprCallbacksDone = false;
         boost::shared_ptr<MayaScene> mayaScene = getWorldPtr()->mScene;
 
+        // Add some global dependency nodes to the update list.
+        InteractiveElement iel;
+        iel.mobj = getRenderGlobalsNode();
+        iel.name = getObjectName(iel.mobj);
+        iel.node = iel.mobj;
+        mayaScene->interactiveUpdateMap[mayaScene->interactiveUpdateMap.size()] = iel;
+
         std::map<uint, InteractiveElement>::iterator ite;
         std::map<uint, InteractiveElement> ielements = mayaScene->interactiveUpdateMap;
         for (ite = ielements.begin(); ite != ielements.end(); ite++)
