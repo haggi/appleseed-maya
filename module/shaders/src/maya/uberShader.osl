@@ -74,10 +74,16 @@ closure color calculateDiffuse(color diffuseColor, float diffuseValue, float rou
     return result;
 }
 
+closure color calculateTransparentShadow(float kr)
+{
+    closure color result = 0;
+    return (1.0 - kr) * transparent();
+}
+
 shader uberShader
 [[
     string help = "uber shader",
-    string mayaClassification = "Appleseed/material:shader/surface:swatch/AppleseedRenderSwatch",
+    string mayaClassification = "Appleseed/material:shader/surface:swatch/AppleseedRenderSwatch:drawdb/shader/surface/uberShader",
     int mayaId = 0
 ]]
 (
@@ -223,7 +229,7 @@ shader uberShader
         string help = "Subsurface color Multiplier",
         APPLESEED_01_LIMIT_METADATA
     ]],
-    vector SSS1Radius = 0.0
+    vector SSS1Radius = 1.0
     [[
         string help = "Radius per Color",
         string hint = "useAsColor"
@@ -274,6 +280,12 @@ shader uberShader
             if (specularUseFresnel1)
                 fresnel(I, normalCamera, 1.0/specularIOR1, Kr, Kt);                
         }
+        
+        if (raytype("shadow") && doRefraction)
+        {
+            outColor = refractivity * calculateTransparentShadow(Kt);
+        }
+        
         if (doReflection)
         {
             reflectionClosure = specular1 * calculateReflection(reflectionMdf, color(specularColor1), roughness1, anisotropy1, normalCamera);
