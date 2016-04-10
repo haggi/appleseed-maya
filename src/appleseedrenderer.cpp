@@ -344,7 +344,6 @@ void AppleseedRenderer::defineCamera(boost::shared_ptr<MayaObject> cam)
     const int height = renderGlobals->getHeight();
 
     float imageAspect = (float)width / (float)height;
-    bool dof = renderGlobals->doDof;
     float mtap_cameraType = 0;
     int mtap_diaphragm_blades = 0;
     float mtap_diaphragm_tilt_angle = 0.0;
@@ -358,7 +357,8 @@ void AppleseedRenderer::defineCamera(boost::shared_ptr<MayaObject> cam)
     getFloat(MString("horizontalFilmAperture"), camFn, horizontalFilmAperture);
     getFloat(MString("verticalFilmAperture"), camFn, verticalFilmAperture);
     getFloat(MString("focalLength"), camFn, focalLength);
-    getBool(MString("depthOfField"), camFn, dof);
+    bool dof = getBoolAttr("depthOfField", camFn, false) && renderGlobals->doDof;
+
     getFloat(MString("focusDistance"), camFn, focusDistance);
     getFloat(MString("fStop"), camFn, fStop);
     getInt(MString("mtap_diaphragm_blades"), camFn, mtap_diaphragm_blades);
