@@ -70,7 +70,7 @@ World::World()
     std::string oslShaderPath = (getRendererHome() + "shaders").asChar();
 
     MStringArray oslDirs;
-    MGlobal::executePythonCommand("import appleseed.osltools as osl; osl.getOSODirs();", oslDirs, false, false);
+    MGlobal::executePythonCommand("import appleseed_maya.osltools as osl; osl.getOSODirs();", oslDirs, false, false);
 
     for (uint i = 0; i < oslDirs.length(); i++)
         shaderSearchPath.append(oslDirs[i].asChar());
