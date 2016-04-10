@@ -368,8 +368,6 @@ void AppleseedRenderer::defineCamera(boost::shared_ptr<MayaObject> cam)
     if (!dof)
         fStop *= 10000.0f;
 
-    focusDistance *= renderGlobals->scaleFactor;
-
     // Maya's aperture is given in inces so convert to cm and convert to meters.
     horizontalFilmAperture = horizontalFilmAperture * 2.54f * 0.01f;
     verticalFilmAperture = verticalFilmAperture * 2.54f * 0.01f;
