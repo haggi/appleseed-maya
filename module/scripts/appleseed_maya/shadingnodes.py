@@ -67,8 +67,7 @@ def registerShadingNodes(plugin):
             #log.info("shading node {0} is already registered, skipping.".format(key))
             continue
 
-        # at the moment we only care about uberShader for testing
-        if key == "uberShader":
+        if key in ["uberShader", "asGlass", "asGlossy", "asMetal"]:
             classification = "shader/surface"
             nodeId = om.MTypeId(LAST_ID)
             shaderDict = shadersDict[key]

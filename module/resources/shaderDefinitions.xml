@@ -1073,6 +1073,121 @@
 	<shader>
 		<inputs>
 			<input>
+				<name>normalCamera</name>
+				<hint>None</hint>
+				<default>[ 0.0, 0.0, 0.0 ]</default>
+				<max>1</max>
+				<compAttrArrayPath>None</compAttrArrayPath>
+				<min>0</min>
+				<isArrayPlug>True</isArrayPlug>
+				<type>vector</type>
+				<help>None</help>
+			</input>
+			<input>
+				<name>tangent</name>
+				<hint>None</hint>
+				<default>[0.0, 0.0, 0.0]</default>
+				<max>1</max>
+				<compAttrArrayPath>None</compAttrArrayPath>
+				<min>0</min>
+				<isArrayPlug>True</isArrayPlug>
+				<type>vector</type>
+				<help>Tangent</help>
+			</input>
+			<input>
+				<name>reflectance</name>
+				<hint>None</hint>
+				<default>0.8</default>
+				<max>1</max>
+				<compAttrArrayPath>None</compAttrArrayPath>
+				<min>0</min>
+				<isArrayPlug>True</isArrayPlug>
+				<type>float</type>
+				<help>None</help>
+			</input>
+			<input>
+				<name>normalReflectance</name>
+				<hint>useAsColor</hint>
+				<default>[0.92, 0.92, 0.92]</default>
+				<max>1</max>
+				<compAttrArrayPath>None</compAttrArrayPath>
+				<min>0</min>
+				<isArrayPlug>True</isArrayPlug>
+				<type>vector</type>
+				<help>Normal Reflectance</help>
+			</input>
+			<input>
+				<name>edgeTint</name>
+				<hint>useAsColor</hint>
+				<default>[0.98, 0.98, 0.98]</default>
+				<max>1</max>
+				<compAttrArrayPath>None</compAttrArrayPath>
+				<min>0</min>
+				<isArrayPlug>True</isArrayPlug>
+				<type>vector</type>
+				<help>EdgeTint</help>
+			</input>
+			<input>
+				<name>distribution</name>
+				<hint>None</hint>
+				<default>ggx</default>
+				<max>1</max>
+				<compAttrArrayPath>None</compAttrArrayPath>
+				<min>0</min>
+				<isArrayPlug>True</isArrayPlug>
+				<type>string</type>
+				<options>['beckmann', 'ggx']</options>
+				<help>Microfacet distribution to use: Beckmann or GGX.</help>
+			</input>
+			<input>
+				<name>roughness</name>
+				<hint>None</hint>
+				<default>0.1</default>
+				<max>1</max>
+				<compAttrArrayPath>None</compAttrArrayPath>
+				<min>0.001</min>
+				<isArrayPlug>True</isArrayPlug>
+				<type>float</type>
+				<help>Roughness</help>
+			</input>
+			<input>
+				<name>roughnessDepthScale</name>
+				<hint>None</hint>
+				<default>1</default>
+				<max>1</max>
+				<compAttrArrayPath>None</compAttrArrayPath>
+				<min>1</min>
+				<isArrayPlug>True</isArrayPlug>
+				<type>float</type>
+				<help>None</help>
+			</input>
+			<input>
+				<name>anisotropic</name>
+				<hint>None</hint>
+				<default>0</default>
+				<max>1</max>
+				<compAttrArrayPath>None</compAttrArrayPath>
+				<min>-1</min>
+				<isArrayPlug>True</isArrayPlug>
+				<type>float</type>
+				<help>Anisotropy</help>
+			</input>
+		</inputs>
+		<name>asMetal</name>
+		<outputs>
+			<output>
+				<type>output pointer</type>
+				<name>outColor</name>
+				<help />
+			</output>
+		</outputs>
+		<mayaId>0</mayaId>
+		<mayaClassification>Appleseed/material:shader/surface:swatch/AppleseedRenderSwatch</mayaClassification>
+		<help>Metal surface shader</help>
+	</shader>
+	<shader>
+		<inputs>
+			<input>
 				<name>bumpValue</name>
 				<hint>None</hint>
 				<default>0</default>
@@ -1174,9 +1289,38 @@
 		<help>None</help>
 	</shader>
 	<shader>
-		<inputs />
-		<name>testBG</name>
-		<outputs />
+		<inputs>
+			<input>
+				<name>value</name>
+				<hint>None</hint>
+				<default>[0.0, 0.0, 0.0]</default>
+				<max>1</max>
+				<compAttrArrayPath>None</compAttrArrayPath>
+				<min>0</min>
+				<isArrayPlug>True</isArrayPlug>
+				<type>vector</type>
+				<help>None</help>
+			</input>
+			<input>
+				<name>gamma</name>
+				<hint>None</hint>
+				<default>[0.0, 0.0, 0.0]</default>
+				<max>1</max>
+				<compAttrArrayPath>None</compAttrArrayPath>
+				<min>0</min>
+				<isArrayPlug>True</isArrayPlug>
+				<type>vector</type>
+				<help>None</help>
+			</input>
+		</inputs>
+		<name>gammaCorrect</name>
+		<outputs>
+			<output>
+				<type>output vector</type>
+				<name>outValue</name>
+				<help />
+			</output>
+		</outputs>
 		<mayaId>0</mayaId>
 		<mayaClassification>None</mayaClassification>
 		<help>None</help>
@@ -2105,229 +2249,334 @@
 	<shader>
 		<inputs>
 			<input>
-				<default>0</default>
-				<hint>useAsBool</hint>
-				<type>int</type>
 				<name>matte</name>
+				<hint>useAsBool</hint>
+				<default>0</default>
+				<max>1</max>
+				<compAttrArrayPath>None</compAttrArrayPath>
+				<min>0</min>
+				<isArrayPlug>True</isArrayPlug>
+				<type>int</type>
 				<help>Use matte</help>
 			</input>
 			<input>
-				<default>[ 0.0, 0.0, 0.0 ]</default>
-				<type>vector</type>
 				<name>normalCamera</name>
+				<hint>None</hint>
+				<default>[ 0.0, 0.0, 0.0 ]</default>
+				<max>1</max>
+				<compAttrArrayPath>None</compAttrArrayPath>
+				<min>0</min>
+				<isArrayPlug>True</isArrayPlug>
+				<type>vector</type>
+				<help>None</help>
 			</input>
 			<input>
 				<name>diffuseValue</name>
-				<min>0</min>
+				<hint>None</hint>
 				<default>0.8</default>
 				<max>1</max>
+				<compAttrArrayPath>None</compAttrArrayPath>
+				<min>0</min>
+				<isArrayPlug>True</isArrayPlug>
 				<type>float</type>
 				<help>Diffuse reflectivity multiplier</help>
 			</input>
 			<input>
-				<default>[1.0, 1.0, 1.0]</default>
-				<hint>useAsColor</hint>
-				<type>vector</type>
 				<name>diffuseColor</name>
+				<hint>useAsColor</hint>
+				<default>[1.0, 1.0, 1.0]</default>
+				<max>1</max>
+				<compAttrArrayPath>None</compAttrArrayPath>
+				<min>0</min>
+				<isArrayPlug>True</isArrayPlug>
+				<type>vector</type>
 				<help>Color</help>
 			</input>
 			<input>
-				<default>0</default>
-				<type>float</type>
 				<name>roughness</name>
+				<hint>None</hint>
+				<default>0</default>
+				<max>1</max>
+				<compAttrArrayPath>None</compAttrArrayPath>
+				<min>0</min>
+				<isArrayPlug>True</isArrayPlug>
+				<type>float</type>
 				<help>Surface roughness. Mix between lambert and orenNayar.</help>
 			</input>
 			<input>
-				<default>0</default>
-				<type>float</type>
 				<name>backlighting</name>
+				<hint>None</hint>
+				<default>0</default>
+				<max>1</max>
+				<compAttrArrayPath>None</compAttrArrayPath>
+				<min>0</min>
+				<isArrayPlug>True</isArrayPlug>
+				<type>float</type>
 				<help>Backlighting, show light though a surface (poor mans translucency).</help>
 			</input>
 			<input>
 				<name>translucency</name>
-				<min>0</min>
+				<hint>None</hint>
 				<default>0</default>
 				<max>1</max>
+				<compAttrArrayPath>None</compAttrArrayPath>
+				<min>0</min>
+				<isArrayPlug>True</isArrayPlug>
 				<type>float</type>
 				<help>Translucency.</help>
 			</input>
 			<input>
-				<default>[0.0, 0.0, 0.0]</default>
-				<hint>useAsColor</hint>
-				<type>vector</type>
 				<name>translucencyColor</name>
+				<hint>useAsColor</hint>
+				<default>[0.0, 0.0, 0.0]</default>
+				<max>1</max>
+				<compAttrArrayPath>None</compAttrArrayPath>
+				<min>0</min>
+				<isArrayPlug>True</isArrayPlug>
+				<type>vector</type>
 				<help>Translucency color</help>
 			</input>
 			<input>
 				<name>specular1</name>
-				<min>0</min>
+				<hint>None</hint>
 				<default>0.5</default>
 				<max>1</max>
+				<compAttrArrayPath>None</compAttrArrayPath>
+				<min>0</min>
+				<isArrayPlug>True</isArrayPlug>
 				<type>float</type>
 				<help>Specularity 1 value</help>
 			</input>
 			<input>
 				<name>specularIOR1</name>
-				<min>0.001</min>
+				<hint>softmax</hint>
 				<default>1.5</default>
 				<max>3</max>
-				<hint>softmax</hint>
+				<compAttrArrayPath>None</compAttrArrayPath>
+				<min>0.001</min>
+				<isArrayPlug>True</isArrayPlug>
 				<type>float</type>
 				<help>Specularity 1 index of reflection</help>
 			</input>
 			<input>
-				<default>1</default>
-				<hint>useAsBool</hint>
-				<type>int</type>
 				<name>specularUseFresnel1</name>
+				<hint>useAsBool</hint>
+				<default>1</default>
+				<max>1</max>
+				<compAttrArrayPath>None</compAttrArrayPath>
+				<min>0</min>
+				<isArrayPlug>True</isArrayPlug>
+				<type>int</type>
 				<help>Specularity 1 use fresnel</help>
 			</input>
 			<input>
 				<name>reflectivityAtZeroDeg</name>
-				<min>0</min>
+				<hint>None</hint>
 				<default>0</default>
 				<max>1</max>
+				<compAttrArrayPath>None</compAttrArrayPath>
+				<min>0</min>
+				<isArrayPlug>True</isArrayPlug>
 				<type>float</type>
 				<help>Reflectivity at 0 Degree</help>
 			</input>
 			<input>
 				<name>roughness1</name>
-				<min>0.001</min>
+				<hint>softmax</hint>
 				<default>0.1</default>
 				<max>1</max>
-				<hint>softmax</hint>
+				<compAttrArrayPath>None</compAttrArrayPath>
+				<min>0.001</min>
+				<isArrayPlug>True</isArrayPlug>
 				<type>float</type>
 				<help>Roughness</help>
 			</input>
 			<input>
-				<default>[0.0, 0.0, 0.0]</default>
-				<hint>useAsColor</hint>
-				<type>vector</type>
 				<name>specularColor1</name>
+				<hint>useAsColor</hint>
+				<default>[0.0, 0.0, 0.0]</default>
+				<max>1</max>
+				<compAttrArrayPath>None</compAttrArrayPath>
+				<min>0</min>
+				<isArrayPlug>True</isArrayPlug>
+				<type>vector</type>
 				<help>Specular color 1</help>
 			</input>
 			<input>
 				<name>anisotropy1</name>
-				<min>-1</min>
+				<hint>None</hint>
 				<default>0</default>
 				<max>1</max>
+				<compAttrArrayPath>None</compAttrArrayPath>
+				<min>-1</min>
+				<isArrayPlug>True</isArrayPlug>
 				<type>float</type>
 				<help>Anisotropy</help>
 			</input>
 			<input>
-				<default>ggx</default>
-				<options>['beckmann', 'ggx']</options>
-				<type>string</type>
 				<name>reflectionMdf</name>
+				<hint>None</hint>
+				<default>ggx</default>
+				<max>1</max>
+				<compAttrArrayPath>None</compAttrArrayPath>
+				<min>0</min>
+				<isArrayPlug>True</isArrayPlug>
+				<type>string</type>
+				<options>['beckmann', 'ggx']</options>
 				<help>Microfacet distribution to use: Beckmann or GGX.</help>
 			</input>
 			<input>
 				<name>refractionIOR</name>
-				<min>-2</min>
+				<hint>softminmax</hint>
 				<default>1.3</default>
 				<max>2</max>
-				<hint>softminmax</hint>
+				<compAttrArrayPath>None</compAttrArrayPath>
+				<min>-2</min>
+				<isArrayPlug>True</isArrayPlug>
 				<type>float</type>
 				<help>Refraction Index</help>
 			</input>
 			<input>
-				<default>[1.0, 1.0, 1.0]</default>
-				<hint>useAsColor</hint>
-				<type>vector</type>
 				<name>refractionColor</name>
+				<hint>useAsColor</hint>
+				<default>[1.0, 1.0, 1.0]</default>
+				<max>1</max>
+				<compAttrArrayPath>None</compAttrArrayPath>
+				<min>0</min>
+				<isArrayPlug>True</isArrayPlug>
+				<type>vector</type>
 				<help>Refraction color</help>
 			</input>
 			<input>
 				<name>absorptionDist</name>
-				<min>0</min>
+				<hint>softmax</hint>
 				<default>0</default>
 				<max>5</max>
-				<hint>softmax</hint>
+				<compAttrArrayPath>None</compAttrArrayPath>
+				<min>0</min>
+				<isArrayPlug>True</isArrayPlug>
 				<type>float</type>
 				<help>Absorption distance</help>
 			</input>
 			<input>
-				<default>[0.0, 0.0, 0.0]</default>
-				<hint>useAsColor</hint>
-				<type>vector</type>
 				<name>absorptionColor</name>
+				<hint>useAsColor</hint>
+				<default>[0.0, 0.0, 0.0]</default>
+				<max>1</max>
+				<compAttrArrayPath>None</compAttrArrayPath>
+				<min>0</min>
+				<isArrayPlug>True</isArrayPlug>
+				<type>vector</type>
 				<help>Absorption color</help>
 			</input>
 			<input>
 				<name>refractivity</name>
-				<min>0</min>
+				<hint>None</hint>
 				<default>0</default>
 				<max>1</max>
+				<compAttrArrayPath>None</compAttrArrayPath>
+				<min>0</min>
+				<isArrayPlug>True</isArrayPlug>
 				<type>float</type>
 				<help>Refractivity</help>
 			</input>
 			<input>
 				<name>refractionRoughness</name>
-				<min>0.001</min>
+				<hint>softmax</hint>
 				<default>0</default>
 				<max>1</max>
-				<hint>softmax</hint>
+				<compAttrArrayPath>None</compAttrArrayPath>
+				<min>0.001</min>
+				<isArrayPlug>True</isArrayPlug>
 				<type>float</type>
 				<help>Refraction roughness</help>
 			</input>
 			<input>
-				<default>ggx</default>
-				<options>['beckmann', 'ggx']</options>
-				<type>string</type>
 				<name>refractionMdf</name>
+				<hint>None</hint>
+				<default>ggx</default>
+				<max>1</max>
+				<compAttrArrayPath>None</compAttrArrayPath>
+				<min>0</min>
+				<isArrayPlug>True</isArrayPlug>
+				<type>string</type>
+				<options>['beckmann', 'ggx']</options>
 				<help>Microfacet distribution to use: Beckmann or GGX.</help>
 			</input>
 			<input>
-				<default>0</default>
-				<hint>useAsBool</hint>
-				<type>int</type>
 				<name>SSS1</name>
+				<hint>useAsBool</hint>
+				<default>0</default>
+				<max>1</max>
+				<compAttrArrayPath>None</compAttrArrayPath>
+				<min>0</min>
+				<isArrayPlug>True</isArrayPlug>
+				<type>int</type>
 				<help>Use SSS 1</help>
 			</input>
 			<input>
-				<default>[0.0, 0.0, 0.0]</default>
-				<hint>useAsColor</hint>
-				<type>vector</type>
 				<name>SSS1Color</name>
+				<hint>useAsColor</hint>
+				<default>[0.0, 0.0, 0.0]</default>
+				<max>1</max>
+				<compAttrArrayPath>None</compAttrArrayPath>
+				<min>0</min>
+				<isArrayPlug>True</isArrayPlug>
+				<type>vector</type>
 				<help>Subsurface color</help>
 			</input>
 			<input>
 				<name>SSS1Weight</name>
-				<min>0</min>
+				<hint>None</hint>
 				<default>0</default>
 				<max>1</max>
+				<compAttrArrayPath>None</compAttrArrayPath>
+				<min>0</min>
+				<isArrayPlug>True</isArrayPlug>
 				<type>float</type>
 				<help>Subsurface color Multiplier</help>
 			</input>
 			<input>
-				<default>[0.0, 0.0, 0.0]</default>
-				<hint>useAsColor</hint>
-				<type>vector</type>
 				<name>SSS1Radius</name>
+				<hint>useAsColor</hint>
+				<default>[0.0, 0.0, 0.0]</default>
+				<max>1</max>
+				<compAttrArrayPath>None</compAttrArrayPath>
+				<min>0</min>
+				<isArrayPlug>True</isArrayPlug>
+				<type>vector</type>
 				<help>Radius per Color</help>
 			</input>
 			<input>
 				<name>SSS1RadiusMultiplier</name>
-				<min>0</min>
+				<hint>softmax</hint>
 				<default>1</default>
 				<max>3</max>
-				<hint>softmax</hint>
+				<compAttrArrayPath>None</compAttrArrayPath>
+				<min>0</min>
+				<isArrayPlug>True</isArrayPlug>
 				<type>float</type>
 				<help>Subsurface color Multiplier</help>
 			</input>
 			<input>
-				<default>[0.0, 0.0, 0.0]</default>
-				<hint>useAsColor</hint>
-				<type>vector</type>
 				<name>emissionColor</name>
+				<hint>useAsColor</hint>
+				<default>[0.0, 0.0, 0.0]</default>
+				<max>1</max>
+				<compAttrArrayPath>None</compAttrArrayPath>
+				<min>0</min>
+				<isArrayPlug>True</isArrayPlug>
+				<type>vector</type>
 				<help>Emission Color</help>
 			</input>
 			<input>
 				<name>emissionMultiplier</name>
-				<min>0</min>
+				<hint>softmax</hint>
 				<default>1</default>
 				<max>3</max>
-				<hint>softmax</hint>
+				<compAttrArrayPath>None</compAttrArrayPath>
+				<min>0</min>
+				<isArrayPlug>True</isArrayPlug>
 				<type>float</type>
 				<help>Emission Color Multiplier</help>
 			</input>
@@ -2337,6 +2586,7 @@
 			<output>
 				<type>output pointer</type>
 				<name>outColor</name>
+				<help />
 			</output>
 		</outputs>
 		<mayaId>0</mayaId>
@@ -2412,6 +2662,121 @@
 		<mayaId>0</mayaId>
 		<mayaClassification>None</mayaClassification>
 		<help>None</help>
+	</shader>
+	<shader>
+		<inputs>
+			<input>
+				<name>normalCamera</name>
+				<hint />
+				<default>[ 0.0, 0.0, 0.0 ]</default>
+				<max>1</max>
+				<compAttrArrayPath />
+				<min>0</min>
+				<isArrayPlug />
+				<type>vector</type>
+				<help />
+			</input>
+			<input>
+				<name>tangent</name>
+				<hint />
+				<default>[0.0, 0.0, 0.0]</default>
+				<max>1</max>
+				<compAttrArrayPath />
+				<min>0</min>
+				<isArrayPlug />
+				<type>vector</type>
+				<help>Tangent</help>
+			</input>
+			<input>
+				<name>reflectance</name>
+				<hint />
+				<default>0.8</default>
+				<max>1</max>
+				<compAttrArrayPath />
+				<min>0</min>
+				<isArrayPlug />
+				<type>float</type>
+				<help />
+			</input>
+			<input>
+				<name>surfaceColor</name>
+				<hint>useAsColor</hint>
+				<default>[1.0, 1.0, 1.0]</default>
+				<max>1</max>
+				<compAttrArrayPath />
+				<min>0</min>
+				<isArrayPlug />
+				<type>vector</type>
+				<help>Surface Color</help>
+			</input>
+			<input>
+				<name>ior</name>
+				<hint>softminmax</hint>
+				<default>1.5</default>
+				<max>1</max>
+				<compAttrArrayPath />
+				<min>-1</min>
+				<isArrayPlug />
+				<type>float</type>
+				<help>Index of refraction</help>
+			</input>
+			<input>
+				<name>distribution</name>
+				<hint />
+				<default>ggx</default>
+				<max>1</max>
+				<compAttrArrayPath />
+				<min>0</min>
+				<isArrayPlug />
+				<type>string</type>
+				<options>['beckmann', 'ggx']</options>
+				<help>Microfacet distribution to use</help>
+			</input>
+			<input>
+				<name>roughness</name>
+				<hint />
+				<default>0.1</default>
+				<max>1</max>
+				<compAttrArrayPath />
+				<min>0.001</min>
+				<isArrayPlug />
+				<type>float</type>
+				<help>Surface roughness</help>
+			</input>
+			<input>
+				<name>roughnessDepthScale</name>
+				<hint />
+				<default>1</default>
+				<max>1</max>
+				<compAttrArrayPath />
+				<min>1</min>
+				<isArrayPlug />
+				<type>float</type>
+				<help />
+			</input>
+			<input>
+				<name>anisotropic</name>
+				<hint />
+				<default>0</default>
+				<max>1</max>
+				<compAttrArrayPath />
+				<min>-1</min>
+				<isArrayPlug />
+				<type>float</type>
+				<help>Anisotropy</help>
+			</input>
+		</inputs>
+		<name>asGlossy</name>
+		<outputs>
+			<output>
+				<type>output pointer</type>
+				<name>outColor</name>
+				<help />
+			</output>
+		</outputs>
+		<mayaId>0</mayaId>
+		<mayaClassification>Appleseed/material:shader/surface:swatch/AppleseedRenderSwatch</mayaClassification>
+		<help>Glossy surface shader</help>
 	</shader>
 	<shader>
 		<inputs>
@@ -2535,43 +2900,6 @@
 			<output>
 				<type>output vector</type>
 				<name>output</name>
-				<help />
-			</output>
-		</outputs>
-		<mayaId>0</mayaId>
-		<mayaClassification>None</mayaClassification>
-		<help>None</help>
-	</shader>
-	<shader>
-		<inputs>
-			<input>
-				<name>value</name>
-				<hint>None</hint>
-				<default>[0.0, 0.0, 0.0]</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
-				<type>vector</type>
-				<help>None</help>
-			</input>
-			<input>
-				<name>gamma</name>
-				<hint>None</hint>
-				<default>[0.0, 0.0, 0.0]</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
-				<type>vector</type>
-				<help>None</help>
-			</input>
-		</inputs>
-		<name>gammaCorrect</name>
-		<outputs>
-			<output>
-				<type>output vector</type>
-				<name>outValue</name>
 				<help />
 			</output>
 		</outputs>
@@ -2892,6 +3220,102 @@
 		<mayaId>0</mayaId>
 		<mayaClassification>None</mayaClassification>
 		<help>None</help>
+	</shader>
+	<shader>
+		<inputs>
+			<input>
+				<default>[ 0.0, 0.0, 0.0 ]</default>
+				<type>vector</type>
+				<name>normalCamera</name>
+			</input>
+			<input>
+				<default>[0.0, 0.0, 0.0]</default>
+				<type>vector</type>
+				<name>tangent</name>
+				<help>Tangent</help>
+			</input>
+			<input>
+				<default>0.8</default>
+				<type>float</type>
+				<name>transmittance</name>
+				<min>0</min>
+			</input>
+			<input>
+				<default>[1.0, 1.0, 1.0]</default>
+				<hint>useAsColor</hint>
+				<type>vector</type>
+				<name>surfaceTransmittance</name>
+				<help>surface Transmittance</help>
+			</input>
+			<input>
+				<default>[1.0, 1.0, 1.0]</default>
+				<hint>useAsColor</hint>
+				<type>vector</type>
+				<name>reflectionTint</name>
+				<help>ReflectionTint</help>
+			</input>
+			<input>
+				<default>[1.0, 1.0, 1.0]</default>
+				<hint>useAsColor</hint>
+				<type>vector</type>
+				<name>refractionTint</name>
+				<help>RefractionTint</help>
+			</input>
+			<input>
+				<name>ior</name>
+				<min>0.001</min>
+				<default>1.5</default>
+				<max>2</max>
+				<hint>softminmax</hint>
+				<type>float</type>
+				<help>Index of refraction</help>
+			</input>
+			<input>
+				<default>ggx</default>
+				<options>['beckmann', 'ggx']</options>
+				<type>string</type>
+				<name>distribution</name>
+				<help>Microfacet distribution to use</help>
+			</input>
+			<input>
+				<name>roughness</name>
+				<min>0.001</min>
+				<default>0.1</default>
+				<max>1</max>
+				<type>float</type>
+				<help>Surface roughness</help>
+			</input>
+			<input>
+				<name>anisotropic</name>
+				<min>-1</min>
+				<default>0</default>
+				<max>1</max>
+				<type>float</type>
+				<help>Anisotropy</help>
+			</input>
+			<input>
+				<default>[1.0, 1.0, 1.0]</default>
+				<hint>useAsColor</hint>
+				<type>vector</type>
+				<name>volumeTransmittance</name>
+				<help>volumeTransmittance</help>
+			</input>
+			<input>
+				<default>0</default>
+				<type>float</type>
+				<name>volumeTransmittanceDistance</name>
+			</input>
+		</inputs>
+		<name>asGlass</name>
+		<outputs>
+			<output>
+				<type>output pointer</type>
+				<name>outColor</name>
+			</output>
+		</outputs>
+		<mayaId>0</mayaId>
+		<mayaClassification>Appleseed/material:shader/surface:swatch/AppleseedRenderSwatch</mayaClassification>
+		<help>Glass surface shader</help>
 	</shader>
 	<shader>
 		<inputs>
