@@ -160,7 +160,7 @@ APPLESEEDMAYA_DLL_EXPORT MStatus initializePlugin(MObject obj)
 
     setRendererHome(getenv("APPLESEED_MAYA_HOME"));
 
-    status = MGlobal::executePythonCommand("import appleseed.initialize; appleseed.initialize.initRenderer()", true, false);
+    status = MGlobal::executePythonCommand("import appleseed_maya.initialize; appleseed_maya.initialize.initRenderer()", true, false);
     CHECK_MSTATUS_AND_RETURN_IT(status);
 
     defineWorld();
@@ -195,7 +195,7 @@ APPLESEEDMAYA_DLL_EXPORT MStatus uninitializePlugin(MObject obj)
 
     deleteWorld();
 
-    status = MGlobal::executePythonCommand("import appleseed.initialize; appleseed.initialize.unregister()");
+    status = MGlobal::executePythonCommand("import appleseed_maya.initialize; appleseed_maya.initialize.unregister()");
     CHECK_MSTATUS_AND_RETURN_IT(status);
 
     status =

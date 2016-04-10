@@ -26,7 +26,7 @@
 # THE SOFTWARE.
 #
 
-import appleseed.osltools as osltools
+import appleseed_maya.osltools as osltools
 
 import pymel.core as pm
 

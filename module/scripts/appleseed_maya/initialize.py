@@ -78,14 +78,14 @@ class AppleseedRenderer(renderer.MayaToRenderer):
             envDict['pysSkyFrame'].setManage(False)
             envDict['commonEnvFrame'].setManage(True)
             envDict['oslFrame'].setManage(False)
-            
+
             envDict['environmentColor'].setManage(False)
             envDict['gradientHorizon'].setManage(False)
             envDict['gradientZenit'].setManage(False)
             envDict['environmentMap'].setManage(False)
             envDict['latlongVeShift'].setManage(False)
             envDict['latlongHoShift'].setManage(False)
-            
+
             if envType == 0:
                 envDict['environmentColor'].setManage(True)
             # Gradient
@@ -96,12 +96,12 @@ class AppleseedRenderer(renderer.MayaToRenderer):
             elif envType == 2:
                 envDict['environmentMap'].setManage(True)
                 envDict['latlongVeShift'].setManage(True)
-                envDict['latlongHoShift'].setManage(True)    
+                envDict['latlongHoShift'].setManage(True)
             # SphericalMap
             elif envType == 3:
                 envDict['environmentMap'].setManage(True)
                 envDict['latlongVeShift'].setManage(True)
-                envDict['latlongHoShift'].setManage(True)    
+                envDict['latlongHoShift'].setManage(True)
             # MirrorBall
             elif envType == 4:
                 envDict['environmentMap'].setManage(True)
@@ -109,13 +109,13 @@ class AppleseedRenderer(renderer.MayaToRenderer):
                 envDict['latlongHoShift'].setManage(True)
         else:
             envDict['commonEnvFrame'].setManage(False)
-            
+
         # Pyhsical Sky
         if envType == 5:
             envDict['pysSkyFrame'].setManage(True)
             envDict['commonEnvFrame'].setManage(False)
             envDict['oslFrame'].setManage(False)
-            
+
             skyModel = self.renderGlobalsNode.skyModel.get()
             if skyModel == 1:  # hosek
                 envDict['pskGrAlbedo'].setManage(True)
@@ -127,13 +127,13 @@ class AppleseedRenderer(renderer.MayaToRenderer):
             envDict['pysSkyFrame'].setManage(False)
             envDict['commonEnvFrame'].setManage(False)
             envDict['oslFrame'].setManage(True)
-            
+
         self.updateSunLightOptionMenu()
-        
+
     def updateSunLightOptionMenu(self, selection=None):
         uiDict = self.rendererTabUiDict['environment']
         opMenu = uiDict['sunLightOptionMenu'] + "|OptionMenu"
-        
+
         if selection:
             if selection == "Create New Sun Light...":
                 lightShape = pm.createNode("directionalLight")
@@ -151,20 +151,20 @@ class AppleseedRenderer(renderer.MayaToRenderer):
                             pm.PyNode(selection).getParent().message >> self.renderGlobalsNode.physicalSunConnection
                 else:
                     pm.PyNode(selection).getParent().message >> self.renderGlobalsNode.physicalSunConnection
-                    
+
         menuItems = pm.optionMenu(opMenu, q=True, itemListLong=True)
         if menuItems:
             pm.deleteUI(menuItems)
-        
+
         directionalLightList = pm.ls(type="directionalLight")
         if len(directionalLightList) == 0:
             directionalLightList.append("Create New Sun Light...")
         else:
             directionalLightList.append("None")
-        
+
         for value in directionalLightList:
             pm.menuItem(str(value), parent=opMenu)
-        
+
         connections = self.renderGlobalsNode.physicalSunConnection.inputs()
         selectIndex = len(directionalLightList) - 1
         if len(connections) > 0:
@@ -172,9 +172,9 @@ class AppleseedRenderer(renderer.MayaToRenderer):
             for index, l in enumerate(directionalLightList):
                 if l == sunShape:
                     selectIndex = index
-                    
+
         pm.optionMenu(opMenu, e=True, select=selectIndex+1)
-        
+
     def AppleseedEnvironmentCreateTab(self):
         self.createGlobalsNode()
         parentForm = pm.setParent(query=True)
@@ -220,7 +220,7 @@ class AppleseedRenderer(renderer.MayaToRenderer):
                         pm.connectControl(envDict['pskTurbMin'], self.renderGlobalsNodeName + ".turbidity_min", index=2)
                         envDict['pskTurbMax'] = pm.floatFieldGrp(label="Turbidity Max:", value1=1.0, numberOfFields=1)
                         pm.connectControl(envDict['pskTurbMax'], self.renderGlobalsNodeName + ".turbidity_max", index=2)
-                        
+
                 with pm.frameLayout(label="OSL", collapsable=False) as envDict['oslFrame']:
                     with pm.columnLayout(self.rendererName + "ColumnLayout", adjustableColumn=True, width=400):
                         envDict['environmentOSL'] = pm.attrColorSliderGrp(label="OSL Background", at=self.renderGlobalsNodeName + ".environmentOSL")
@@ -448,7 +448,7 @@ class AppleseedRenderer(renderer.MayaToRenderer):
         dirname = pm.fileDialog2(fileMode=3, caption="Select Optimize Files Dir")
         if dirname:
             self.rendererTabUiDict['opti']['optiField'].setText(dirname[0])
-        
+
     def AppleseedTranslatorCreateTab(self):
         self.createGlobalsNode()
         parentForm = pm.setParent(query=True)
@@ -506,7 +506,7 @@ class AppleseedRenderer(renderer.MayaToRenderer):
                 exportFileName = pm.workspace.path + "/renderData/" + pm.sceneName().basename().split(".")[0] + ".appleseed"
                 self.renderGlobalsNode.exportSceneFileName.set(exportFileName)
                 pm.textField(textField, edit=True, text=exportFileName)
-                
+
     def uiCallback(self, **args):
         if args['tab'] == "environment":
             self.updateEnvironment()
@@ -554,11 +554,11 @@ class AppleseedRenderer(renderer.MayaToRenderer):
         pm.addExtension(nodeType="areaLight", longName="mtap_visibleSpecular", attributeType="bool", defaultValue=True)
         pm.addExtension(nodeType="areaLight", longName="mtap_visibleDiffuse", attributeType="bool", defaultValue=True)
         pm.addExtension(nodeType="areaLight", longName="mtap_visibleTransparency", attributeType="bool", defaultValue=True)
-        
+
         pm.addExtension(nodeType='bump2d', longName='normalMap', usedAsColor=True, attributeType='float3' )
         pm.addExtension(nodeType='bump2d', longName='normalMapR', attributeType='float', parent='normalMap' )
         pm.addExtension(nodeType='bump2d', longName='normalMapG', attributeType='float', parent='normalMap' )
-        pm.addExtension(nodeType='bump2d', longName='normalMapB', attributeType='float', parent='normalMap' )        
+        pm.addExtension(nodeType='bump2d', longName='normalMapB', attributeType='float', parent='normalMap' )
         pm.addExtension(nodeType="bump2d", longName="upVector", attributeType="enum", enumName="Blue:Green", defaultValue=0)
 
     def renderProcedure(self, width, height, doShadows, doGlow, camera, options):
@@ -583,7 +583,7 @@ class AppleseedRenderer(renderer.MayaToRenderer):
 
     def changeIprRegionProcedure(self, editor=None):
         pm.appleseedMaya(updateIprRegion=True)
-    
+
     def updateProgressBar(self, percent):
         if self.gMainProgressBar is not None:
             progressValue = percent * 100
@@ -616,11 +616,11 @@ class AppleseedRenderer(renderer.MayaToRenderer):
             pm.progressBar(self.gMainProgressBar, edit=True, beginProgress=True, isInterruptable=True, status='"Render progress:', maxValue=100)
 
     def postRenderProcedure(self):
-        optimizetextures.postRenderOptimizeTextures()        
+        optimizetextures.postRenderOptimizeTextures()
         if self.gMainProgressBar is not None:
             pm.progressBar(self.gMainProgressBar, edit=True, endProgress=True)
             self.gMainProgressBar = None
-            
+
     def afterGlobalsNodeReplacement(self):
         self.rendererTabUiDict = {}
 
@@ -663,19 +663,18 @@ AETemplates directory, the automatic loading will not work. So I replace it with
 """
 
 def loadAETemplates():
-    rendererName = "appleseed"
     aeDir = path.path(__file__).dirname() + "/aetemplate/"
     for d in aeDir.listdir("*.py"):
         if d.endswith("template.py"):
             templateName = d.basename().replace(".py", "")
-            pythonCommand = "import {1}.aetemplate.{0}".format(templateName, rendererName.lower())
+            pythonCommand = "import appleseed_maya.aetemplate.{0}".format(templateName)
             melCommand = 'python("{0}");'.format(pythonCommand)
             pm.mel.eval(melCommand)
 
 def loadPlugins():
     python_plugins = ["loadshadersplugin.py"]
     currentPath = path.path(__file__).dirname()
-    
+
     for plugin in python_plugins:
         try:
             log.debug("Loading additional plugin: {0}".format(plugin))

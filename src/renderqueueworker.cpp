@@ -662,7 +662,7 @@ namespace
             MString progressStr;
             progressStr.format("^1s% done.", MString(perc));
             Logging::info(progressStr);
-            MString cmd = MString("import appleseed.initialize; appleseed.initialize.theRenderer().updateProgressBar(") + perc + ")";
+            MString cmd = MString("import appleseed_maya.initialize; appleseed.initialize.theRenderer().updateProgressBar(") + perc + ")";
             MGlobal::executePythonCommand(cmd);
         }
     }
@@ -820,7 +820,7 @@ void RenderQueueWorker::startRenderQueueWorker()
                 getWorldPtr()->cleanUpAfterRender();
                 getWorldPtr()->mRenderer->unInitializeRenderer();
                 getWorldPtr()->setRenderState(World::RSTATENONE);
-                MGlobal::executePythonCommand("import appleseed.initialize; appleseed.initialize.theRenderer().postRenderProcedure()");
+                MGlobal::executePythonCommand("import appleseed_maya.initialize; appleseed.initialize.theRenderer().postRenderProcedure()");
             }
             return;     // note: terminate the loop
 
