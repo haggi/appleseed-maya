@@ -35,7 +35,7 @@ shader asGlossy
 ]]
 (
     vector               normalCamera = N,
-    vector               tangent = 0
+    vector               Tn = 0
     [[
         int    lockgeom = 0,
         string help = "Tangent"
