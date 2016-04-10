@@ -827,7 +827,7 @@ void RenderQueueWorker::startRenderQueueWorker()
                 getWorldPtr()->cleanUpAfterRender();
                 getWorldPtr()->mRenderer->unInitializeRenderer();
                 getWorldPtr()->setRenderState(World::RSTATENONE);
-                MGlobal::executePythonCommand("import appleseed_maya.initialize; appleseed.initialize.theRenderer().postRenderProcedure()");
+                MGlobal::executePythonCommand("import appleseed_maya.initialize; appleseed_maya.initialize.theRenderer().postRenderProcedure()");
             }
             return;     // note: terminate the loop
 
