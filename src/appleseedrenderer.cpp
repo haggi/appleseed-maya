@@ -337,7 +337,7 @@ void AppleseedRenderer::defineCamera(boost::shared_ptr<MayaObject> cam)
     MStatus stat;
     boost::shared_ptr<MayaScene> mayaScene = getWorldPtr()->mScene;
     boost::shared_ptr<RenderGlobals> renderGlobals = getWorldPtr()->mRenderGlobals;
-    renderer::Camera *camera = project->get_scene()->get_camera();
+    renderer::Camera* camera = project->get_scene()->get_camera();
     if (camera != 0)
         Logging::debug("Camera is not null - we already have a camera -> update it.");
 
@@ -875,46 +875,45 @@ void AppleseedRenderer::defineGeometry()
     }
 }
 
-void AppleseedRenderer::doInteractiveUpdate()
+void AppleseedRenderer::applyInteractiveUpdates(const std::vector<InteractiveElement*>& modifiedElementList)
 {
-    Logging::debug("AppleseedRenderer::doInteractiveUpdate");
-    if (interactiveUpdateList.empty())
-        return;
-    std::vector<InteractiveElement *>::iterator iaIt;
-    for (iaIt = interactiveUpdateList.begin(); iaIt != interactiveUpdateList.end(); iaIt++)
+    std::vector<InteractiveElement *>::const_iterator iaIt;
+    for (iaIt = modifiedElementList.begin(); iaIt != modifiedElementList.end(); iaIt++)
     {
-        InteractiveElement *iElement = *iaIt;
-        // The iElement can be 0 if the interactiveUpdateList is used to trigger a rendering, but no scene element has changed.
+        InteractiveElement* element = *iaIt;
+
+        // The element can be 0 if the modifiedElementList is used to trigger a rendering, but no scene element has changed.
         // This is the case e.g. if the render region or a render globals attribute changes.
-        if (iElement == 0)
+        if (element == 0)
             continue;
 
-        if (iElement->node.hasFn(MFn::kShadingEngine))
+        if (element->node.hasFn(MFn::kShadingEngine))
         {
-            if (iElement->obj)
+            if (element->obj)
             {
-                Logging::debug(MString("AppleseedRenderer::doInteractiveUpdate - found shadingEngine.") + iElement->name);
-                updateMaterial(iElement->node);
+                Logging::debug(MString("AppleseedRenderer::applyInteractiveUpdates() - found shadingEngine.") + element->name);
+                updateMaterial(element->node);
             }
         }
-        if (iElement->node.hasFn(MFn::kCamera))
+
+        if (element->node.hasFn(MFn::kCamera))
         {
-            Logging::debug(MString("AppleseedRenderer::doInteractiveUpdate - found camera.") + iElement->name);
-            if (iElement->obj)
-                defineCamera(iElement->obj);
+            Logging::debug(MString("AppleseedRenderer::applyInteractiveUpdates() - found camera.") + element->name);
+            if (element->obj)
+                defineCamera(element->obj);
         }
-        if (iElement->node.hasFn(MFn::kLight))
+
+        if (element->node.hasFn(MFn::kLight))
         {
-            Logging::debug(MString("AppleseedRenderer::doInteractiveUpdate - found light.") + iElement->name);
-            if (iElement->obj)
-            {
-                defineLight(iElement->obj);
-            }
+            Logging::debug(MString("AppleseedRenderer::applyInteractiveUpdates() - found light.") + element->name);
+            if (element->obj)
+                defineLight(element->obj);
         }
+
         // Shading nodes.
-        if (iElement->node.hasFn(MFn::kPluginDependNode) || iElement->node.hasFn(MFn::kLambert))
+        if (element->node.hasFn(MFn::kPluginDependNode) || element->node.hasFn(MFn::kLambert))
         {
-            MFnDependencyNode depFn(iElement->node);
+            MFnDependencyNode depFn(element->node);
             std::vector<MString> shaderNames;
             shaderNames.push_back("asLayeredShader");
             shaderNames.push_back("uberShader");
@@ -925,28 +924,29 @@ void AppleseedRenderer::doInteractiveUpdate()
             {
                 if (typeName == shaderNames[si])
                 {
-                    Logging::debug(MString("AppleseedRenderer::doInteractiveUpdate - found shader.") + iElement->name);
-                    defineMaterial(iElement->obj);
+                    Logging::debug(MString("AppleseedRenderer::applyInteractiveUpdates() - found shader.") + element->name);
+                    defineMaterial(element->obj);
                 }
             }
         }
-        if (iElement->node.hasFn(MFn::kMesh))
+
+        if (element->node.hasFn(MFn::kMesh))
         {
-            if (iElement->obj->removed)
+            if (element->obj->removed)
             {
                 continue;
             }
 
-            if (iElement->triggeredFromTransform)
+            if (element->triggeredFromTransform)
             {
-                Logging::debug(MString("AppleseedRenderer::doInteractiveUpdate mesh ") + iElement->name + " ieNodeName " + getObjectName(iElement->node) + " objDagPath " + iElement->obj->dagPath.fullPathName());
+                Logging::debug(MString("AppleseedRenderer::applyInteractiveUpdates() mesh ") + element->name + " ieNodeName " + getObjectName(element->node) + " objDagPath " + element->obj->dagPath.fullPathName());
                 MStatus stat;
 
-                renderer::AssemblyInstance *assInst = getExistingObjectAssemblyInstance(iElement->obj.get());
+                renderer::AssemblyInstance *assInst = getExistingObjectAssemblyInstance(element->obj.get());
                 if (assInst == 0)
                     continue;
 
-                MMatrix m = iElement->obj->dagPath.inclusiveMatrix(&stat);
+                MMatrix m = element->obj->dagPath.inclusiveMatrix(&stat);
                 if (!stat)
                     Logging::debug(MString("Error ") + stat.errorString());
                 assInst->transform_sequence().clear();
@@ -955,14 +955,13 @@ void AppleseedRenderer::doInteractiveUpdate()
             }
             else
             {
-                if (iElement->obj->instanceNumber == 0)
-                    updateGeometry(iElement->obj);
-                if (iElement->obj->instanceNumber > 0)
-                    updateInstance(iElement->obj);
+                if (element->obj->instanceNumber == 0)
+                    updateGeometry(element->obj);
+                if (element->obj->instanceNumber > 0)
+                    updateInstance(element->obj);
             }
         }
     }
-    interactiveUpdateList.clear();
 }
 
 void AppleseedRenderer::defineLight(boost::shared_ptr<MayaObject> obj)

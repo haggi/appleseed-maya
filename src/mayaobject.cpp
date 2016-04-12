@@ -99,7 +99,6 @@ bool MayaObject::isCamera()
 
 bool MayaObject::isGeo()
 {
-
     if (mobject.hasFn(MFn::kMesh))
         return true;
     if (mobject.hasFn(MFn::kNurbsSurface))
@@ -123,6 +122,7 @@ bool MayaObject::isGeo()
             return true;
         }
     }
+
     return false;
 }
 

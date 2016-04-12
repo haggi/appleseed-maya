@@ -26,13 +26,14 @@
 // THE SOFTWARE.
 //
 
-#ifndef MAYA_SCENE_H
-#define MAYA_SCENE_H
+#ifndef MAYASCENE_H
+#define MAYASCENE_H
 
 #include <maya/MDagPath.h>
-#include <maya/MObject.h>
 #include <maya/MDagPathArray.h>
+#include <maya/MObject.h>
 #include <maya/MTransformationMatrix.h>
+
 #include <map>
 #include <vector>
 
@@ -46,6 +47,7 @@ class InteractiveElement
     MObject mobj;
     MString name;
     MObject node;
+
     bool triggeredFromTransform; // to recognize if we have to update the shape or only the instance transform
 
     InteractiveElement()
@@ -124,4 +126,4 @@ class MayaScene
 
 };
 
-#endif
+#endif  // !MAYASCENE_H

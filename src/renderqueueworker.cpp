@@ -58,8 +58,8 @@ namespace
     MCallbackId idleCallbackId = 0;
     MCallbackId nodeAddedCallbackId = 0;
     MCallbackId nodeRemovedCallbackId = 0;
-    std::vector<MCallbackId> nodeCallbacks;
-    std::vector<InteractiveElement *> modifiedElementList;
+    std::vector<MCallbackId> callbacksToDelete;
+    std::vector<InteractiveElement*> modifiedElementList;   // todo: not thread-safe!
     clock_t renderStartTime = 0;
     clock_t renderEndTime = 0;
     bool IprCallbacksDone = false;
@@ -122,7 +122,6 @@ namespace
                 MRenderView::refresh(xmin, xmax, ymin, ymax);
                 return;
             }
-
         }
 
         MRenderView::updatePixels(xMin, xMax, yMin, yMax, pixels, true);
@@ -202,8 +201,8 @@ namespace
     void iprFindLeafNodes()
     {
         boost::shared_ptr<MayaScene> mayaScene = getWorldPtr()->mScene;
-        std::map<MCallbackId, InteractiveElement *>::iterator it;
-        std::vector<InteractiveElement *> leafList;
+        std::map<MCallbackId, InteractiveElement*>::iterator it;
+        std::vector<InteractiveElement*> leafList;
 
         for (it = idInteractiveMap.begin(); it != idInteractiveMap.end(); it++)
         {
@@ -223,7 +222,7 @@ namespace
                                 InteractiveElement iel = seIt->second;
                                 if (seIt->second.node == dagIter.currentItem())
                                 {
-                                    InteractiveElement *ie = &mayaScene->interactiveUpdateMap[seIt->first];
+                                    InteractiveElement* ie = &mayaScene->interactiveUpdateMap[seIt->first];
                                     ie->triggeredFromTransform = true;
                                     leafList.push_back(&mayaScene->interactiveUpdateMap[seIt->first]);
                                 }
@@ -238,10 +237,9 @@ namespace
             }
         }
 
-        // the idea is that the renderer waits in IPR mode for an non empty modifiesElementList,
+        // The idea is that the renderer waits in IPR mode for an non empty modifiedElementList,
         // it updates the render database with the elements and empties the list which is then free for the next run
-        // todo: maybe use wait for variables.
-        while (modifiedElementList.size() > 0)
+        while (!modifiedElementList.empty())
             foundation::sleep(100);
 
         std::vector<InteractiveElement *>::iterator llIt;
@@ -269,9 +267,9 @@ namespace
     //                  This map is filled by sceneParsing and shader translation process which are called before rendering and during geometry translation.
     //                  So the addIPRCallbacks() has to be called after everything is translated.
 
-    void IPRattributeChangedCallback(MNodeMessage::AttributeMessage msg, MPlug & plug,  MPlug & otherPlug, void *element)
+    void IPRAttributeChangedCallback(MNodeMessage::AttributeMessage msg, MPlug & plug,  MPlug & otherPlug, void *element)
     {
-        Logging::debug(MString("IPRattributeChangedCallback. attribA: ") + plug.name() + " attribB: " + otherPlug.name());
+        Logging::debug(MString("IPRAttributeChangedCallback. attribA: ") + plug.name() + " attribB: " + otherPlug.name());
         InteractiveElement *userData = (InteractiveElement *)element;
         boost::shared_ptr<MayaScene> mayaScene = getWorldPtr()->mScene;
 
@@ -280,15 +278,15 @@ namespace
 
         if (msg & MNodeMessage::kConnectionMade)
         {
-            Logging::debug(MString("IPRattributeChangedCallback. connection created."));
+            Logging::debug(MString("IPRAttributeChangedCallback. connection created."));
             MString plugName = plug.name();
             std::string pn = plugName.asChar();
             if (pn.find("instObjGroups[") != std::string::npos)
             {
-                Logging::debug(MString("IPRattributeChangedCallback. InstObjGroups affected, checking other side."));
+                Logging::debug(MString("IPRAttributeChangedCallback. InstObjGroups affected, checking other side."));
                 if (otherPlug.node().hasFn(MFn::kShadingEngine))
                 {
-                    Logging::debug(MString("IPRattributeChangedCallback. Found shading group on the other side: ") + getObjectName(otherPlug.node()));
+                    Logging::debug(MString("IPRAttributeChangedCallback. Found shading group on the other side: ") + getObjectName(otherPlug.node()));
                     MCallbackId thisId = MMessage::currentCallbackId();
                     MObject sgNode = otherPlug.node();
                     InteractiveElement iel;
@@ -303,30 +301,28 @@ namespace
         }
         else if (msg & MNodeMessage::kConnectionBroken)
         {
-            Logging::debug(MString("IPRattributeChangedCallback. connection broken."));
+            Logging::debug(MString("IPRAttributeChangedCallback. connection broken."));
         }
     }
 
-    void IPRNodeDirtyCallback(void *interactiveElement)
+    void IPRNodeDirtyCallback(void* interactiveElement)
     {
-        MStatus stat;
-        InteractiveElement *userData = (InteractiveElement *)interactiveElement;
-
         MCallbackId thisId = MMessage::currentCallbackId();
-        idInteractiveMap[thisId] = userData;
+        idInteractiveMap[thisId] = static_cast<InteractiveElement*>(interactiveElement);
     }
 
-    void IPRIdleCallback(float time, float lastTime, void *userPtr)
+    void IPRIdleCallback(float time, float lastTime, void* userPtr)
     {
         if (idInteractiveMap.empty())
             return;
 
         getWorldPtr()->mRenderer->abortRendering();
+
         iprFindLeafNodes();
         idInteractiveMap.clear();
     }
 
-    void IPRNodeAddedCallback(MObject& node, void *userPtr)
+    void IPRNodeAddedCallback(MObject& node, void* userPtr)
     {
         boost::shared_ptr<MayaScene> mayaScene = getWorldPtr()->mScene;
         MStatus stat;
@@ -382,10 +378,10 @@ namespace
                 if (ie.node.hasFn(MFn::kMesh))
                 {
                     MString nd = getObjectName(ie.node);
-                    id = MNodeMessage::addAttributeChangedCallback(ie.node, IPRattributeChangedCallback, userData, &stat);
+                    id = MNodeMessage::addAttributeChangedCallback(ie.node, IPRAttributeChangedCallback, userData, &stat);
                     objIdMap[id] = ie.node;
                     if (stat)
-                        nodeCallbacks.push_back(id);
+                        callbacksToDelete.push_back(id);
                 }
             }
         }
@@ -433,12 +429,13 @@ namespace
         IprCallbacksDone = false;
         boost::shared_ptr<MayaScene> mayaScene = getWorldPtr()->mScene;
 
-        std::map<uint, InteractiveElement>::iterator ite;
-        std::map<uint, InteractiveElement> ielements = mayaScene->interactiveUpdateMap;
-        for (ite = ielements.begin(); ite != ielements.end(); ite++)
+        for (std::map<uint, InteractiveElement>::iterator
+                 i = mayaScene->interactiveUpdateMap.begin(),
+                 e = mayaScene->interactiveUpdateMap.end();
+             i != e; ++i)
         {
-            uint elementId = ite->first;
-            InteractiveElement iae = ite->second;
+            uint elementId = i->first;
+            InteractiveElement iae = i->second;
             MObject nodeDirty;
 
             if (iae.obj)
@@ -452,19 +449,19 @@ namespace
                 nodeDirty = iae.mobj;
             }
             Logging::debug(MString("Adding dirty callback node ") + getObjectName(nodeDirty));
-            InteractiveElement *userData = &mayaScene->interactiveUpdateMap[elementId];
+            InteractiveElement* userData = &mayaScene->interactiveUpdateMap[elementId];
             MCallbackId id = MNodeMessage::addNodeDirtyCallback(nodeDirty, IPRNodeDirtyCallback, userData, &stat);
             objIdMap[id] = nodeDirty;
             if (stat)
-                nodeCallbacks.push_back(id);
+                callbacksToDelete.push_back(id);
 
             if (nodeDirty.hasFn(MFn::kMesh))
             {
                 MString nd = getObjectName(nodeDirty);
-                id = MNodeMessage::addAttributeChangedCallback(nodeDirty, IPRattributeChangedCallback, userData, &stat);
+                id = MNodeMessage::addAttributeChangedCallback(nodeDirty, IPRAttributeChangedCallback, userData, &stat);
                 objIdMap[id] = nodeDirty;
                 if (stat)
-                    nodeCallbacks.push_back(id);
+                    callbacksToDelete.push_back(id);
             }
         }
 
@@ -499,10 +496,10 @@ namespace
         nodeRemovedCallbackId = 0;
         nodeAddedCallbackId = 0;
 
-        for (std::vector<MCallbackId>::iterator i = nodeCallbacks.begin(); i != nodeCallbacks.end(); i++)
+        for (std::vector<MCallbackId>::iterator i = callbacksToDelete.begin(); i != callbacksToDelete.end(); i++)
             MMessage::removeCallback(*i);
 
-        nodeCallbacks.clear();
+        callbacksToDelete.clear();
         objIdMap.clear();
         modifiedElementList.clear(); // make sure that the iprFindLeafNodes exits with an empty list
     }
@@ -537,17 +534,25 @@ namespace
     {
         if (getWorldPtr()->getRenderType() == World::IPRRENDER)
         {
-            // the idea is that the renderer waits in IPR mode for an non empty modifiesElementList,
+            // The idea is that the renderer waits in IPR mode for an non empty modifiedElementList,
             // it updates the render database with the elements and empties the list which is then free for the next run
-            while ((getWorldPtr()->getRenderType() == World::IPRRENDER))
+            while (getWorldPtr()->getRenderType() == World::IPRRENDER)
             {
                 getWorldPtr()->mRenderer->render();
-                while ((modifiedElementList.size() == 0) && (getWorldPtr()->getRenderType() == World::IPRRENDER) && (getWorldPtr()->getRenderState() != World::RSTATESTOPPED))
+
+                while (modifiedElementList.empty() &&
+                       getWorldPtr()->getRenderType() == World::IPRRENDER &&
+                       getWorldPtr()->getRenderState() != World::RSTATESTOPPED)
+                {
                     foundation::sleep(100);
-                if ((getWorldPtr()->getRenderType() != World::IPRRENDER) || (getWorldPtr()->getRenderState() == World::RSTATESTOPPED))
+                }
+
+                if (getWorldPtr()->getRenderType() != World::IPRRENDER ||
+                    getWorldPtr()->getRenderState() == World::RSTATESTOPPED)
                     break;
-                getWorldPtr()->mRenderer->interactiveUpdateList = modifiedElementList;
-                getWorldPtr()->mRenderer->doInteractiveUpdate();
+
+                // Tell the renderer to apply the changes.
+                getWorldPtr()->mRenderer->applyInteractiveUpdates(modifiedElementList);
                 modifiedElementList.clear();
             }
         }
@@ -899,7 +904,7 @@ void RenderQueueWorker::IPRUpdateCallbacks()
             id = MNodeMessage::addNodeDirtyCallback(nodeDirty, IPRNodeDirtyCallback, element, &stat);
             objIdMap[id] = nodeDirty;
             if (stat)
-                nodeCallbacks.push_back(id);
+                callbacksToDelete.push_back(id);
         }
     }
 }
