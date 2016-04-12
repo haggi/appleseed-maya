@@ -26,8 +26,8 @@
 // THE SOFTWARE.
 //
 
-#ifndef MTM_ATTR_TOOLS_H
-#define MTM_ATTR_TOOLS_H
+#ifndef UTILITIES_ATTRTOOLS_H
+#define UTILITIES_ATTRTOOLS_H
 
 #include <maya/MColor.h>
 #include <maya/MFnDependencyNode.h>
@@ -136,4 +136,4 @@ ATTR_TYPE getPlugAttrType(const char *plugName, const MFnDependencyNode& dn);
 
 ATTR_TYPE getPlugAttrType(MPlug plug);
 
-#endif
+#endif  // !UTILITIES_ATTRTOOLS_H

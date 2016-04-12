@@ -26,6 +26,9 @@
 // THE SOFTWARE.
 //
 
+#ifndef SHADERS_ASDISNEYMATERIAL_H
+#define SHADERS_ASDISNEYMATERIAL_H
+
 #include <maya/MPxNode.h>
 #include <maya/MTypeId.h>
 
@@ -81,82 +84,32 @@ class asDisneyMaterial : public MPxNode
     static MObject  Clearcoat;
     static MObject  ClearcoatGloss;
 
-   // Translucence coefficient
    static MObject  aTranslucenceCoeff;
-
-   // Diffuse Reflectivity
    static MObject  aDiffuseReflectivity;
-
-   // Surface color
-   static MObject  aColor;
-
-   // Incandescence
+   static MObject  aColor;              // surface color
    static MObject  aIncandescence;
-
-   // Surface transparency
-   static MObject  aInTransparency;
-
-   // Output color
+   static MObject  aInTransparency;     // surface transparency
    static MObject  aOutColor;
-
-   // Output transparency
    static MObject  aOutTransparency;
-
-   // X component of surface normal
    static MObject  aNormalCameraX;
-
-   // Y component of surface normal
    static MObject  aNormalCameraY;
-
-   // Z component of surface normal
    static MObject  aNormalCameraZ;
-
-   // Surface normal
-   static MObject  aNormalCamera;
-
-   // X component of light direction vector
+   static MObject  aNormalCamera;       // surface normal
    static MObject  aLightDirectionX;
-
-   // Y component of light direction vector
    static MObject  aLightDirectionY;
-
-   // Z component of light direction vector
    static MObject  aLightDirectionZ;
-
-   // Light direction vector
    static MObject  aLightDirection;
-
-   // Red component of light intensity
    static MObject  aLightIntensityR;
-
-   // Green component of light intensity
    static MObject  aLightIntensityG;
-
-   // Blue component of light intensity
    static MObject  aLightIntensityB;
-
-   // Light Intensity vector
    static MObject  aLightIntensity;
-
-   // Ambient flag
    static MObject  aLightAmbient;
-
-   // Diffuse flag
    static MObject  aLightDiffuse;
-
-   // Specular flag
    static MObject  aLightSpecular;
-
-   // Shadow Fraction flag
    static MObject   aLightShadowFraction;
-
-   // Pre Shadow Intensity
    static MObject   aPreShadowIntensity;
-
-   // Light blind data
    static MObject   aLightBlindData;
-
-   // Light data array
    static MObject   aLightData;
-
 };
+
+#endif  // !SHADERS_ASDISNEYMATERIAL_H

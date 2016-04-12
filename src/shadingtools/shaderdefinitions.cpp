@@ -53,10 +53,6 @@ ShaderDefinitions::ShaderDefinitions()
     ShaderDefinitions::readDone = false;
 }
 
-ShaderDefinitions::~ShaderDefinitions()
-{
-}
-
 void ShaderDefinitions::readShaderDefinitions()
 {
     ptree pt;

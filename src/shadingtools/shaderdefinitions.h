@@ -26,8 +26,8 @@
 // THE SOFTWARE.
 //
 
-#ifndef MT_SHADING_TOOLS_SHADERDEFS_H
-#define MT_SHADING_TOOLS_SHADERDEFS_H
+#ifndef SHADINGTOOLS_SHADERDEFINITIONS_H
+#define SHADINGTOOLS_SHADERDEFINITIONS_H
 
 // Standard headers.
 #include <vector>
@@ -41,11 +41,11 @@ class ShaderDefinitions
     static bool readDone;
 
     ShaderDefinitions();
-    ~ShaderDefinitions();
+
     static void readShaderDefinitions();
     static bool findShadingNode(const MObject& mobject, ShadingNode& snode);
     static bool findShadingNode(const MString& typeName, ShadingNode& snode);
     static bool shadingNodeSupported(const MString& typeName);
 };
 
-#endif
+#endif  // !SHADINGTOOLS_SHADERDEFINITIONS_H

@@ -26,8 +26,8 @@
 // THE SOFTWARE.
 //
 
-#ifndef MATATOCOMMON_UTILITIES_TOOLS
-#define MATATOCOMMON_UTILITIES_TOOLS
+#ifndef UTILITIES_TOOLS_H
+#define UTILITIES_TOOLS_H
 
 #include <maya/MString.h>
 #include <maya/MStringArray.h>
@@ -195,4 +195,4 @@ MString format(const MString& fmt, const T1& arg1, const T1& arg2, const T1& arg
     return result;
 }
 
-#endif  // !MATATOCOMMON_UTILITIES_TOOLS
+#endif  // !UTILITIES_TOOLS_H
