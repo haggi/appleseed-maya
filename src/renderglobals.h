@@ -130,7 +130,7 @@ class RenderGlobals
     int getWidth() const { return imgWidth; }
     int getHeight() const { return imgHeight; }
 
-    float updateFrameNumber(); // returns the current frame number and incements the currentFrameIndex
+    float updateFrameNumber();  // returns the current frame number and incements the currentFrameIndex
     float getFrameNumber();
     bool frameListDone();
     float pixelAspect;
@@ -151,13 +151,13 @@ class RenderGlobals
     float gamma;
 
     bool doMb;
-    float motionBlurRange; // float range default = 0.4 ~ 144�
-    int motionBlurType; // Center, FrameStart, FrameEnd
-    float mbStartTime; // frame relative start time e.g. -0.2 frames
-    float mbEndTime; // frame relative end time e.g. 0.2 frames
-    float mbLength; // absolute length of motion blur, e.g. 0.4 frames
+    float motionBlurRange;      // float range default = 0.4 ~ 144�
+    int motionBlurType;         // Center, FrameStart, FrameEnd
+    double mbStartTime;         // frame relative start time e.g. -0.2 frames
+    double mbEndTime;           // frame relative end time e.g. 0.2 frames
+    double mbLength;            // absolute length of motion blur, e.g. 0.4 frames
     bool doDof;
-    int bitdepth; // 8, 16, 16halfFloat, 32float
+    int bitdepth;               // 8, 16, 16halfFloat, 32float
 
     int threads;
     int tilesize;

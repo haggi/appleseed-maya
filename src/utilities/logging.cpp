@@ -35,6 +35,8 @@
 
 // Maya headers.
 #include <maya/MGlobal.h>
+#include <maya/MStreamUtils.h>
+#include <maya/MString.h>
 
 namespace
 {
@@ -42,13 +44,13 @@ namespace
     {
         switch (level)
         {
-          case Logging::LevelInfo: return "info";
-          case Logging::LevelError: return "error";
-          case Logging::LevelWarning: return "warning";
-          case Logging::LevelProgress: return "progress";
-          case Logging::LevelDebug: return "debug";
-          case Logging::LevelNone: return "none";
-          default: return "unknown";
+          case Logging::LevelInfo: return "INFO";
+          case Logging::LevelError: return "ERROR";
+          case Logging::LevelWarning: return "WARNING";
+          case Logging::LevelProgress: return "PROGRESS";
+          case Logging::LevelDebug: return "DEBUG";
+          case Logging::LevelNone: return "NONE";
+          default: return "UNKNOWN";
         }
     }
 
@@ -63,12 +65,9 @@ namespace
     }
 }
 
-void Logging::setLogLevel(Logging::LogLevel level)
+void Logging::setLogLevel(const LogLevel level)
 {
-    MString level_name = get_level_name(level);
-    level_name.toUpperCase();
-
-    MGlobal::displayInfo("Set logging level to " + level_name);
+    MGlobal::displayInfo("Setting logging level to " + get_level_name(level));
     log_level = level;
 }
 

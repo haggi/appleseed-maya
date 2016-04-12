@@ -26,6 +26,13 @@
 // THE SOFTWARE.
 //
 
+// Interface header.
+#include "attrtools.h"
+
+// appleseed-maya headers.
+#include "tools.h"
+
+// Maya headers.
 #include <maya/MStatus.h>
 #include <maya/MDGContext.h>
 #include <maya/MFnEnumAttribute.h>
@@ -35,21 +42,11 @@
 #include <maya/MFnMatrixData.h>
 #include <maya/MAngle.h>
 
-#include "attrtools.h"
-#include "tools.h"
-
 double getDegrees(const char* plugName, const MFnDependencyNode& dn)
 {
     MStatus stat = MS::kSuccess;
     MPlug plug = dn.findPlug(plugName, &stat);
     return plug.asMAngle().asDegrees();
-}
-
-float getRadians(const char* plugName, const MFnDependencyNode& dn)
-{
-    MStatus stat = MS::kSuccess;
-    MPlug plug = dn.findPlug(plugName, &stat);
-    return plug.asMAngle().asRadians();
 }
 
 float getFloatAttr(const char* plugName, const MFnDependencyNode& dn, const float defaultValue)
@@ -59,7 +56,7 @@ float getFloatAttr(const char* plugName, const MFnDependencyNode& dn, const floa
     return status == MStatus::kSuccess ? plug.asFloat() : defaultValue;
 }
 
-float getDoubleAttr(const char* plugName, const MFnDependencyNode& dn, const double defaultValue)
+double getDoubleAttr(const char* plugName, const MFnDependencyNode& dn, const double defaultValue)
 {
     MStatus status = MS::kSuccess;
     const MPlug plug = dn.findPlug(plugName, &status);

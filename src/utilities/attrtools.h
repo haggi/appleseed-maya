@@ -49,10 +49,8 @@ int getChildId(const MPlug& plug);
 
 double getDegrees(const char* plugName, const MFnDependencyNode& dn);
 
-float getRadians(const char* plugName, const MFnDependencyNode& dn);
-
 float getFloatAttr(const char* plugName, const MFnDependencyNode& dn, const float defaultValue);
-float getDoubleAttr(const char* plugName, const MFnDependencyNode& dn, const double defaultValue);
+double getDoubleAttr(const char* plugName, const MFnDependencyNode& dn, const double defaultValue);
 
 bool getFloat(const MString& plugName, const MFnDependencyNode& dn, float& value);
 

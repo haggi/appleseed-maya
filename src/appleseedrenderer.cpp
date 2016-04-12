@@ -193,7 +193,7 @@ void AppleseedRenderer::render()
             e.mType = Event::ADDIPRCALLBACKS;
             gEventQueue()->push(e);
 
-            while (!RenderQueueWorker::iprCallbacksDone())
+            while (!RenderQueueWorker::IPRCallbacksDone())
                 foundation::sleep(10);
         }
 
@@ -719,7 +719,7 @@ void AppleseedRenderer::createMesh(boost::shared_ptr<MayaObject> obj)
         mesh->push_triangle(renderer::Triangle(vtxId0, vtxId1, vtxId2,  normalId0, normalId1, normalId2, uvId0, uvId1, uvId2, perFaceShadingGroup));
     }
 
-    MayaObject *assemblyObject = getAssemblyMayaObject(obj.get());
+    MayaObject* assemblyObject = getAssemblyMayaObject(obj.get());
     renderer::Assembly *ass = getCreateObjectAssembly(obj);
 
     Logging::debug(MString("Placing mesh ") + mesh->get_name() + " into assembly " + ass->get_name());
@@ -1257,9 +1257,7 @@ foundation::StringArray AppleseedRenderer::defineMaterial(boost::shared_ptr<Maya
                 mayaScene->interactiveUpdateMap[mayaScene->interactiveUpdateMap.size()] = iel;
 
                 if (getWorldPtr()->getRenderState() == World::RSTATERENDERING)
-                {
                     RenderQueueWorker::IPRUpdateCallbacks();
-                }
             }
         }
 

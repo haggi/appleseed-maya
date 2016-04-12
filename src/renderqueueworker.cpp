@@ -64,17 +64,17 @@ namespace
     clock_t renderEndTime = 0;
     bool IprCallbacksDone = false;
     std::map<MCallbackId, MObject> objIdMap;
-    std::map<MCallbackId, InteractiveElement *> idInteractiveMap;
+    std::map<MCallbackId, InteractiveElement*> idInteractiveMap;
     size_t numPixelsDone;
     size_t numPixelsTotal;
 
     boost::thread sceneThread;
-    concurrent_queue<Event> RenderEventQueue;
+    concurrent_queue<Event> renderEventQueue;
 }
 
 concurrent_queue<Event>* gEventQueue()
 {
-    return &RenderEventQueue;
+    return &renderEventQueue;
 }
 
 namespace
@@ -166,25 +166,19 @@ namespace
 
     MString getElapsedTimeString()
     {
-        int hours;
-        int minutes;
-        float sec;
-        float elapsedTime = (float)(renderEndTime - renderStartTime)/(float)CLOCKS_PER_SEC;
-        hours = elapsedTime/3600;
+        float elapsedTime = static_cast<float>(renderEndTime - renderStartTime) / CLOCKS_PER_SEC;
+        const int hours = static_cast<int>(elapsedTime / 3600);
         elapsedTime -= hours * 3600;
-        minutes = elapsedTime/60;
+        const int minutes = static_cast<int>(elapsedTime / 60);
         elapsedTime -= minutes * 60;
-        sec = elapsedTime;
-        char hourStr[1024], minStr[1024], secStr[1024];
-        memset(hourStr, '\0', 1024);
-        memset(minStr, '\0', 1024);
-        memset(secStr, '\0', 1024);
+        const float seconds = elapsedTime;
+
+        char hourStr[32], minStr[32], secStr[32];
         sprintf(hourStr, "%02d", hours);
         sprintf(minStr, "%02d", minutes);
-        sprintf(secStr, "%02.1f", sec);
+        sprintf(secStr, "%02.1f", seconds);
 
-        MString timeString = format("^1s:^2s:^3s", hourStr, minStr,secStr);
-        return format("Render Time: ^1s", timeString);
+        return format("Render Time: ^1s:^2s:^3s", hourStr, minStr,secStr);
     }
 
     MString getCaptionString()
@@ -826,7 +820,7 @@ void RenderQueueWorker::startRenderQueueWorker()
                         MString("import pymel.core as pm; pm.renderWindowEditor(\"renderView\", edit=True, pcaption=\"") + getCaptionString() + "\");");
 
                     // Empty the queue.
-                    while (RenderEventQueue.try_pop(e)) {}
+                    while (renderEventQueue.try_pop(e)) {}
                 }
 
                 getWorldPtr()->cleanUpAfterRender();
@@ -889,7 +883,7 @@ void RenderQueueWorker::IPRUpdateCallbacks()
 
     for (size_t elementId = 0; elementId < mayaScene->interactiveUpdateMap.size(); elementId++)
     {
-        InteractiveElement *element = &mayaScene->interactiveUpdateMap[elementId];
+        InteractiveElement* element = &mayaScene->interactiveUpdateMap[elementId];
         MCallbackId id = 0;
 
         std::map<MCallbackId, MObject>::iterator mit;
@@ -916,7 +910,7 @@ void RenderQueueWorker::IPRUpdateCallbacks()
     }
 }
 
-bool RenderQueueWorker::iprCallbacksDone()
+bool RenderQueueWorker::IPRCallbacksDone()
 {
     return IprCallbacksDone;
 }
