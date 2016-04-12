@@ -271,7 +271,7 @@ void Material::printNodes(ShadingNetwork& network)
 
 void Material::cleanNetwork(ShadingNetwork& network)
 {
-    ShadingNodeList cleanList;
+    std::vector<ShadingNode> cleanList;
     std::vector<ShadingNode>::iterator it;
     std::vector<ShadingNode> shaders = network.shaderList;
     for (it = shaders.begin(); it != shaders.end(); it++)

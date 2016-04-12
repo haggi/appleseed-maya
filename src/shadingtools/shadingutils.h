@@ -26,8 +26,8 @@
 // THE SOFTWARE.
 //
 
-#ifndef APPLESEED_MAYA_SHADING_UTILS_H
-#define APPLESEED_MAYA_SHADING_UTILS_H
+#ifndef SHADINGTOOLS_SHADINGUTILS_H
+#define SHADINGTOOLS_SHADINGUTILS_H
 
 // Maya headers.
 #include <maya/MObject.h>
@@ -39,4 +39,4 @@ bool getObjectShadingGroups(const MDagPath& shapeObjectDP, MIntArray& perFaceAss
 bool getObjectShadingGroups(const MDagPath& shapeObjectDP, MObject& shadingGroup);
 bool getObjectShadingGroups(const MObject& geoObject, MObject& sGroup, int instId);
 
-#endif
+#endif  // !SHADINGTOOLS_SHADINGUTILS_H

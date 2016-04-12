@@ -26,8 +26,8 @@
 // THE SOFTWARE.
 //
 
-#ifndef asDisneyMaterialOverride_H
-#define asDisneyMaterialOverride_H
+#ifndef SHADERS_ASDISNEYMATERIALOVERRIDE_H
+#define SHADERS_ASDISNEYMATERIALOVERRIDE_H
 
 //-
 // ===========================================================================
@@ -68,4 +68,4 @@ class asDisneyMaterialOverride : public MHWRender::MPxSurfaceShadingNodeOverride
     asDisneyMaterialOverride(const MObject& obj);
 };
 
-#endif // _asDisneyMaterialOverride
+#endif  // !SHADERS_ASDISNEYMATERIALOVERRIDE_H

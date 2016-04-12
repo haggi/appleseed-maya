@@ -26,8 +26,8 @@
 // THE SOFTWARE.
 //
 
-#ifndef MT_SHADING_TOOLS_SHADINGNODE_H
-#define MT_SHADING_TOOLS_SHADINGNODE_H
+#ifndef SHADINGTOOLS_SHADINGNODE_H
+#define SHADINGTOOLS_SHADINGNODE_H
 
 #include <maya/MObject.h>
 #include <maya/MPlug.h>
@@ -102,4 +102,4 @@ class ShadingNode
     }
 };
 
-#endif
+#endif  // !SHADINGTOOLS_SHADINGNODE_H
