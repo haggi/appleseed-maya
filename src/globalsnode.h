@@ -159,7 +159,6 @@ class GlobalsNode
         MObject turbidity;
         MObject turbidity_max;
         MObject turbidity_min;
-        MObject physicalSun;
         MObject physicalSunConnection;
         MObject sunTurbidity;
         MObject sunExitanceMultiplier;
