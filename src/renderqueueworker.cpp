@@ -429,6 +429,13 @@ namespace
         IprCallbacksDone = false;
         boost::shared_ptr<MayaScene> mayaScene = getWorldPtr()->mScene;
 
+        // Add some global dependency nodes to the update list.
+        InteractiveElement iel;
+        iel.mobj = getRenderGlobalsNode();
+        iel.name = getObjectName(iel.mobj);
+        iel.node = iel.mobj;
+        mayaScene->interactiveUpdateMap[mayaScene->interactiveUpdateMap.size()] = iel;
+
         for (std::map<uint, InteractiveElement>::iterator
                  i = mayaScene->interactiveUpdateMap.begin(),
                  e = mayaScene->interactiveUpdateMap.end();
@@ -667,7 +674,7 @@ namespace
             MString progressStr;
             progressStr.format("^1s% done.", MString(perc));
             Logging::info(progressStr);
-            MString cmd = MString("import appleseed.initialize; appleseed.initialize.theRenderer().updateProgressBar(") + perc + ")";
+            MString cmd = MString("import appleseed_maya.initialize; appleseed_maya.initialize.theRenderer().updateProgressBar(") + perc + ")";
             MGlobal::executePythonCommand(cmd);
         }
     }
@@ -825,7 +832,7 @@ void RenderQueueWorker::startRenderQueueWorker()
                 getWorldPtr()->cleanUpAfterRender();
                 getWorldPtr()->mRenderer->unInitializeRenderer();
                 getWorldPtr()->setRenderState(World::RSTATENONE);
-                MGlobal::executePythonCommand("import appleseed.initialize; appleseed.initialize.theRenderer().postRenderProcedure()");
+                MGlobal::executePythonCommand("import appleseed_maya.initialize; appleseed_maya.initialize.theRenderer().postRenderProcedure()");
             }
             return;     // note: terminate the loop
 

@@ -1,0 +1,108 @@
+
+//
+// This source file is part of appleseed.
+// Visit http://appleseedhq.net/ for additional information and resources.
+//
+// This software is released under the MIT license.
+//
+// Copyright (c) 2015 The masked shader writer, The appleseedhq Organization
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
+//
+
+shader asGlass
+[[
+    string help = "Glass surface shader",
+    string mayaClassification = "Appleseed/material:shader/surface:swatch/AppleseedRenderSwatch"
+]]
+(
+    vector               normalCamera = N,
+    vector               Tn = 0
+    [[
+        int    lockgeom = 0,
+        string help = "Tangent",
+        string label = "Tangent"
+    ]],
+    float                transmittance = 0.8
+    [[
+        float  min = 0
+    ]],
+    vector                surfaceTransmittance = 1.0
+    [[
+        string help = "surface Transmittance",
+        string hint = "useAsColor"
+    ]],
+    vector                reflectionTint = 1.0
+   [[
+        string help = "ReflectionTint",
+        string hint = "useAsColor"
+    ]],
+     vector                refractionTint = 1.0
+   [[
+        string help = "RefractionTint",
+        string hint = "useAsColor"
+    ]],
+     float                ior = 1.5
+    [[
+        string help = "Index of refraction",
+        float  min = 0.001,
+        float  max = 2.0,
+        string hint = "softminmax"
+    ]],
+    string               distribution = "ggx"
+    [[
+        string help = "Microfacet distribution to use",
+        string widget = "popup",
+        string options = "beckmann|ggx"
+    ]],
+    float                roughness = 0.1
+    [[
+        string help = "Surface roughness",
+        float  min = 0.001,
+        float  max = 1.0
+    ]],
+    float                anisotropic = 0.0
+    [[
+        string help = "Anisotropy",
+        float  min = -1.0,
+        float  max = 1.0,
+        int    divider = 1
+    ]],
+    vector               volumeTransmittance = 1.0
+    [[
+        string help = "volumeTransmittance",
+        string hint = "useAsColor"
+    ]],
+    float                volumeTransmittanceDistance = 0.0,
+    output closure color outColor = 0
+)
+{
+    outColor = transmittance * as_glass(
+        distribution,
+        normalCamera,
+        Tn,
+        color(surfaceTransmittance),
+        color(reflectionTint),
+        color(refractionTint),
+        roughness,
+        anisotropic,
+        ior,
+        color(volumeTransmittance),
+        volumeTransmittanceDistance);
+}

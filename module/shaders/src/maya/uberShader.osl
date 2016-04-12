@@ -31,13 +31,21 @@
 
 #define isBlack(c) ((c[0] <= 0.0) && (c[1] <= 0.0) && (c[2] <= 0.0))
 
-closure color calculateReflection(float ior, string mdf, color specularColor, float roughness, float anisotropy, vector normalCamera)
+closure color calculateReflection(string mdf, color specularColor, float roughness, float anisotropy, vector normalCamera)
 {
     closure color result = 0;
     vector Tangent = normalize(dPdu);
     float roughnessDepthScale = 1.0;
-    float Ior = ior * 10;
-    result = specularColor * as_glossy( mdf, normalCamera, Tangent, microfacet_roughness(roughness, roughnessDepthScale), anisotropy, Ior);
+    color NormalReflectance = 1.0;
+    color EdgeTint = 1.0;
+    result = specularColor * as_metal(
+        mdf,
+        normalCamera,
+        Tangent,
+        NormalReflectance,
+        EdgeTint,
+        microfacet_roughness(roughness, roughnessDepthScale),
+        anisotropy);    
     return result;
 }
 
@@ -255,24 +263,24 @@ shader uberShader
         closure color subsurfaceClosure = 0;
         closure color emissionClosure = 0;
         closure color diffuseClosure = calculateDiffuse(color(diffuseColor), diffuseValue, roughness, translucency, color(translucencyColor), normalCamera);
-        float Kr = 0.0, Kt = 0.0;
 
         int doReflection = (specular1 > 0.0) && (!isBlack(specularColor1));
         int doRefraction = (refractivity > 0.0) && (!isBlack(refractionColor));
+        float Kr = doReflection;
+        float Kt = doRefraction;
+        
+        if (doReflection)
+        {        
+            if (specularUseFresnel1)
+                fresnel(I, normalCamera, 1.0/specularIOR1, Kr, Kt);                
+        }
         if (doReflection)
         {
-            Kr = 1.0;
-            float ior = specularIOR1;
-            if (specularUseFresnel1)
-                fresnel(I, normalCamera, 1.0/ior, Kr, Kt);
-            reflectionClosure = specular1 * calculateReflection(ior, reflectionMdf, color(specularColor1), roughness1, anisotropy1, normalCamera);
+            reflectionClosure = specular1 * calculateReflection(reflectionMdf, color(specularColor1), roughness1, anisotropy1, normalCamera);
             Kr = max(reflectivityAtZeroDeg, Kr);
         }
         if (doRefraction)
         {
-            // save Kr with new local variable
-            float krr;
-            fresnel(I, normalCamera, 1.0/refractionIOR, krr, Kt);
             refractionClosure = refractivity * calculateRefraction(refractionIOR, refractionMdf, color(refractionColor), refractionRoughness, normalCamera, absorptionColor, absorptionDist);
         }
         if (SSS1 > 0)

@@ -60,9 +60,17 @@ MStatus GlobalsNode::initialize()
     MStatus stat = MStatus::kSuccess;
 
     attr.filtertype = eAttr.create("filtertype", "filtertype", 0, &stat);
+    eAttr.addField("Box", 0);
+    eAttr.addField("Blackman-Harris", 1);
+    eAttr.addField("Catmull-Rom", 2);
+    eAttr.addField("Mitchell", 3);
+    eAttr.addField("Gauss", 4);
+    eAttr.addField("Triangle", 5);
     CHECK_MSTATUS(addAttribute(attr.filtertype));
 
     attr.imageFormat = eAttr.create("imageFormat", "imageFormat", 0, &stat);
+    eAttr.addField("PNG", 0);
+    eAttr.addField("EXR", 1);
     CHECK_MSTATUS(addAttribute(attr.imageFormat));
 
     attr.sceneScale = nAttr.create("sceneScale", "sceneScale",  MFnNumericData::kFloat, 1.0f);
@@ -192,7 +200,7 @@ MStatus GlobalsNode::initialize()
     stat = eAttr.addField("64-bit Floating Point", 5);
     CHECK_MSTATUS(addAttribute(attr.bitdepth));
 
-    attr.pixel_renderer = eAttr.create("pixel_renderer", "pixel_renderer", 0, &stat);
+    attr.pixel_renderer = eAttr.create("pixel_renderer", "pixel_renderer", 1, &stat);
     stat = eAttr.addField("Adaptive", 0);
     stat = eAttr.addField("Uniform", 1);
     CHECK_MSTATUS(addAttribute(attr.pixel_renderer));
@@ -220,7 +228,7 @@ MStatus GlobalsNode::initialize()
     attr.enable_caustics = nAttr.create("enable_caustics", "enable_caustics",  MFnNumericData::kBoolean, false);
     CHECK_MSTATUS(addAttribute(attr.enable_caustics));
 
-    attr.enable_dl = nAttr.create("enable_dl", "enable_dl",  MFnNumericData::kBoolean, true);
+    attr.enable_dl = nAttr.create("enable_dl", "enable_dl", MFnNumericData::kBoolean, true);
     CHECK_MSTATUS(addAttribute(attr.enable_dl));
 
     attr.enable_ibl = nAttr.create("enable_ibl", "enable_ibl", MFnNumericData::kBoolean, true);
@@ -408,24 +416,4 @@ MStatus GlobalsNode::initialize()
     CHECK_MSTATUS(addAttribute(attr.photon_type));
 
     return stat;
-}
-
-void GlobalsNode::postConstructor()
-{
-    MObject thisObj = thisMObject();
-
-    MPlug imgFormatPlug(thisObj, attr.imageFormat);
-    MFnEnumAttribute imgFormatAttribute(imgFormatPlug.attribute());
-    imgFormatAttribute.addField("PNG", 0);
-    imgFormatAttribute.addField("EXR", 1);
-
-    MPlug filtertypePlug(thisObj, attr.filtertype);
-    MFnEnumAttribute filtertypeAttribute(filtertypePlug.attribute());
-    filtertypeAttribute.addField("Box", 0);
-    filtertypeAttribute.addField("Blackman-Harris", 1);
-    filtertypeAttribute.addField("Catmull-Rom", 2);
-    filtertypeAttribute.addField("Mitchell", 3);
-    filtertypeAttribute.addField("Gauss", 4);
-    filtertypeAttribute.addField("Triangle", 5);
-    filtertypeAttribute.setDefault(0);
 }

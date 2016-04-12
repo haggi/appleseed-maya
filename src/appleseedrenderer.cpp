@@ -337,12 +337,6 @@ void AppleseedRenderer::defineCamera(boost::shared_ptr<MayaObject> cam)
     MStatus stat;
     boost::shared_ptr<MayaScene> mayaScene = getWorldPtr()->mScene;
     boost::shared_ptr<RenderGlobals> renderGlobals = getWorldPtr()->mRenderGlobals;
-    renderer::Camera* camera = project->get_scene()->get_camera();
-    if (camera != 0)
-        Logging::debug("Camera is not null - we already have a camera -> update it.");
-
-    // Update the complete camera and place it into the scene.
-    Logging::debug(MString("Creating camera shape: ") + cam->shortName);
     float horizontalFilmAperture = 24.892f;
     float verticalFilmAperture = 18.669f;
 
@@ -350,7 +344,6 @@ void AppleseedRenderer::defineCamera(boost::shared_ptr<MayaObject> cam)
     const int height = renderGlobals->getHeight();
 
     float imageAspect = (float)width / (float)height;
-    bool dof = renderGlobals->doDof;
     float mtap_cameraType = 0;
     int mtap_diaphragm_blades = 0;
     float mtap_diaphragm_tilt_angle = 0.0;
@@ -364,7 +357,8 @@ void AppleseedRenderer::defineCamera(boost::shared_ptr<MayaObject> cam)
     getFloat(MString("horizontalFilmAperture"), camFn, horizontalFilmAperture);
     getFloat(MString("verticalFilmAperture"), camFn, verticalFilmAperture);
     getFloat(MString("focalLength"), camFn, focalLength);
-    getBool(MString("depthOfField"), camFn, dof);
+    bool dof = getBoolAttr("depthOfField", camFn, false) && renderGlobals->doDof;
+
     getFloat(MString("focusDistance"), camFn, focusDistance);
     getFloat(MString("fStop"), camFn, fStop);
     getInt(MString("mtap_diaphragm_blades"), camFn, mtap_diaphragm_blades);
@@ -374,31 +368,21 @@ void AppleseedRenderer::defineCamera(boost::shared_ptr<MayaObject> cam)
     if (!dof)
         fStop *= 10000.0f;
 
-    focusDistance *= renderGlobals->scaleFactor;
-
     // Maya's aperture is given in inces so convert to cm and convert to meters.
     horizontalFilmAperture = horizontalFilmAperture * 2.54f * 0.01f;
     verticalFilmAperture = verticalFilmAperture * 2.54f * 0.01f;
     verticalFilmAperture = horizontalFilmAperture / imageAspect;
-    MString filmBack = MString("") + horizontalFilmAperture + " " + verticalFilmAperture;
-    MString focalLen = MString("") + focalLength * 0.001f;
-
-    camParams.insert("film_dimensions", filmBack.asChar());
-    camParams.insert("focal_length", focalLen.asChar());
-    camParams.insert("focal_distance", (MString("") + focusDistance).asChar());
-    camParams.insert("f_stop", (MString("") + fStop).asChar());
-    camParams.insert("diaphragm_blades", (MString("") + mtap_diaphragm_blades).asChar());
-    camParams.insert("diaphragm_tilt_angle", (MString("") + mtap_diaphragm_tilt_angle).asChar());
-
-    if (!camera)
-    {
-        foundation::auto_release_ptr<renderer::Camera> appleCam = renderer::ThinLensCameraFactory().create(
-            cam->shortName.asChar(),
-            camParams);
-        project->get_scene()->set_camera(appleCam);
-        camera = project->get_scene()->get_camera();
-    }
-
+    camParams.insert("film_dimensions", format("^1s ^2s", horizontalFilmAperture, verticalFilmAperture));
+    camParams.insert("focal_length", focalLength * 0.001f);
+    camParams.insert("focal_distance", focusDistance * renderGlobals->scaleFactor);
+    camParams.insert("f_stop", fStop);
+    camParams.insert("diaphragm_blades", mtap_diaphragm_blades);
+    camParams.insert("diaphragm_tilt_angle", mtap_diaphragm_tilt_angle);
+    foundation::auto_release_ptr<renderer::Camera> appleCam = renderer::ThinLensCameraFactory().create(
+        cam->shortName.asChar(),
+        camParams);
+    renderer::Camera* camera = appleCam.get();
+    project->get_scene()->set_camera(appleCam);
     fillMatrices(cam, camera->transform_sequence());
 }
 
@@ -448,7 +432,7 @@ void AppleseedRenderer::defineOutput()
 
 void AppleseedRenderer::defineEnvironment()
 {
-    renderer::Scene *scene = project->get_scene();
+    renderer::Scene* scene = project->get_scene();
 
     MFnDependencyNode appleseedGlobals(getRenderGlobalsNode());
     MString textInstName = "bg_texture_inst";
@@ -485,9 +469,6 @@ void AppleseedRenderer::defineEnvironment()
 
     foundation::auto_release_ptr<renderer::EnvironmentEDF> environmentEDF;
 
-    bool updateSkyShader = (scene->environment_shaders().get_by_name("sky_shader") != 0);
-    bool updateSkyEdf = (scene->environment_edfs().get_by_name("sky_edf") != 0);
-
     switch (environmentType)
     {
         // Constant.
@@ -510,7 +491,7 @@ void AppleseedRenderer::defineEnvironment()
                     renderer::ParamArray()
                         .insert("radiance", envColorName)
                         .insert("upper_hemi_radiance", gradHorizName)
-                        .insert("lower_hemi_radiance", gradHorizName));
+                        .insert("lower_hemi_radiance", gradZenitName));
             break;
         }
 
@@ -910,24 +891,10 @@ void AppleseedRenderer::applyInteractiveUpdates(const std::vector<InteractiveEle
                 defineLight(element->obj);
         }
 
-        // Shading nodes.
-        if (element->node.hasFn(MFn::kPluginDependNode) || element->node.hasFn(MFn::kLambert))
+        // appleseedGlobals node.
+        if (MFnDependencyNode(element->node).typeId().id() == 0x0011CF40)
         {
-            MFnDependencyNode depFn(element->node);
-            std::vector<MString> shaderNames;
-            shaderNames.push_back("asLayeredShader");
-            shaderNames.push_back("uberShader");
-            shaderNames.push_back("asDisneyMaterial");
-
-            MString typeName = depFn.typeName();
-            for (uint si = 0; si < shaderNames.size(); si++)
-            {
-                if (typeName == shaderNames[si])
-                {
-                    Logging::debug(MString("AppleseedRenderer::applyInteractiveUpdates() - found shader.") + element->name);
-                    defineMaterial(element->obj);
-                }
-            }
+            defineEnvironment();
         }
 
         if (element->node.hasFn(MFn::kMesh))
