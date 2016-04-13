@@ -34,6 +34,7 @@
 #include "appleseedrenderer.h"
 #include "appleseedswatchrenderer.h"
 #include "mayascene.h"
+#include "renderglobals.h"
 #include "renderqueueworker.h"
 
 // Maya headers.

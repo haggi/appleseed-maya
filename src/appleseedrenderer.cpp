@@ -900,19 +900,17 @@ void AppleseedRenderer::applyInteractiveUpdates(const std::vector<InteractiveEle
         if (element->node.hasFn(MFn::kMesh))
         {
             if (element->obj->removed)
-            {
                 continue;
-            }
 
             if (element->triggeredFromTransform)
             {
                 Logging::debug(MString("AppleseedRenderer::applyInteractiveUpdates() mesh ") + element->name + " ieNodeName " + getObjectName(element->node) + " objDagPath " + element->obj->dagPath.fullPathName());
-                MStatus stat;
 
                 renderer::AssemblyInstance *assInst = getExistingObjectAssemblyInstance(element->obj.get());
                 if (assInst == 0)
                     continue;
 
+                MStatus stat;
                 MMatrix m = element->obj->dagPath.inclusiveMatrix(&stat);
                 if (!stat)
                     Logging::debug(MString("Error ") + stat.errorString());

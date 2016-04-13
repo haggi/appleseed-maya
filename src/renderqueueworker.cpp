@@ -33,6 +33,7 @@
 #include "utilities/logging.h"
 #include "utilities/tools.h"
 #include "mayascene.h"
+#include "renderglobals.h"
 #include "world.h"
 
 // appleseed.foundation headers.
@@ -256,7 +257,7 @@ namespace
     //          - because we want to be able to modify the same object again after it is updated, the node dirty callbacks are recreated for
     //            all the objects in the list.
     //      a scene message is created - we will stop the ipr as soon as a new scene is created or another scene is opened
-    //      a scene message is created - we have to stop everything as soon as the plugin will be removed, otherwise maya will crash.
+    //      a scene message is created - we have to stop everything as soon as the plugin will be removed, otherwise Maya will crash.
     //      IMPORTANT:  We do add dirty callbacks for translated nodes only which are saved in the mayaScene::interactiveUpdateMap.
     //                  This map is filled by sceneParsing and shader translation process which are called before rendering and during geometry translation.
     //                  So the addIPRCallbacks() has to be called after everything is translated.

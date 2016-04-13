@@ -131,10 +131,7 @@ class MayaObject
     bool isObjAnimated();
     bool isShapeConnected();
     bool isObjVisible();
-    bool isLight();
-    bool isCamera();
     bool isTransform();
-    bool isGeo();
     bool isVisiblityAnimated();
     bool isInstanced();
     void getShadingGroups();
