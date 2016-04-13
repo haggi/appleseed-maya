@@ -50,12 +50,11 @@ class InteractiveElement
     MObject mobj;
     MString name;
     MObject node;
-
     bool triggeredFromTransform; // to recognize if we have to update the shape or only the instance transform
 
     InteractiveElement()
+      : triggeredFromTransform(false)
     {
-        triggeredFromTransform = false;
     }
 };
 
