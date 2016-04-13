@@ -33,6 +33,7 @@
 #include "utilities/logging.h"
 #include "utilities/tools.h"
 #include "mayascene.h"
+#include "renderglobals.h"
 #include "world.h"
 
 // appleseed.foundation headers.

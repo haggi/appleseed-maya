@@ -64,17 +64,10 @@ ObjectAttributes::ObjectAttributes(boost::shared_ptr<ObjectAttributes> other)
 
 bool MayaObject::isInstanced()
 {
-    return dagPath.isInstanced() || (instanceNumber > 0) || ((attributes != 0) && attributes->hasInstancerConnection);
-}
-
-bool MayaObject::isCamera()
-{
-    if (mobject.hasFn(MFn::kCamera))
-    {
-        motionBlurred = true;
-        return true;
-    }
-    return false;
+    return
+        dagPath.isInstanced() ||
+        instanceNumber > 0 ||
+        (attributes != 0 && attributes->hasInstancerConnection);
 }
 
 bool MayaObject::isTransform()
@@ -121,23 +114,20 @@ bool MayaObject::isVisiblityAnimated()
 bool MayaObject::isObjVisible()
 {
     MFnDagNode dagNode(mobject);
-    if (!IsVisible(dagNode) || IsTemplated(dagNode) || !IsInRenderLayer(dagPath) || !IsPathVisible(dagPath) || !IsLayerVisible(dagPath))
-        return false;
-    return true;
+    return
+        IsVisible(dagNode) &&
+        !IsTemplated(dagNode) &&
+        IsInRenderLayer(dagPath) &&
+        IsPathVisible(dagPath) &&
+        IsLayerVisible(dagPath);
 }
 
 bool MayaObject::geometryShapeSupported()
 {
-    if (this->mobject.hasFn(MFn::kMesh))
-        return true;
-
-    if (mobject.hasFn(MFn::kLight))
-        return true;
-
-    if (this->isCamera())
-        return true;
-
-    return false;
+    return
+        mobject.hasFn(MFn::kMesh) ||
+        mobject.hasFn(MFn::kLight) ||
+        mobject.hasFn(MFn::kCamera);
 }
 
 bool MayaObject::shadowMapCastingLight()

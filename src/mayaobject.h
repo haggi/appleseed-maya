@@ -131,7 +131,6 @@ class MayaObject
     bool isObjAnimated();
     bool isShapeConnected();
     bool isObjVisible();
-    bool isCamera();
     bool isTransform();
     bool isVisiblityAnimated();
     bool isInstanced();

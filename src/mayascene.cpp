@@ -26,15 +26,20 @@
 // THE SOFTWARE.
 //
 
-#include "shadingtools/shadingutils.h"
-#include "utilities/logging.h"
-#include "utilities/tools.h"
-#include "utilities/attrtools.h"
-#include "utilities/pystring.h"
+// Interface header.
 #include "mayascene.h"
+
+// appleseed-maya headers.
+#include "shadingtools/shadingutils.h"
+#include "utilities/attrtools.h"
+#include "utilities/logging.h"
+#include "utilities/pystring.h"
+#include "utilities/tools.h"
+#include "renderglobals.h"
 #include "renderqueueworker.h"
 #include "world.h"
 
+// Maya headers.
 #include <maya/MDagPath.h>
 #include <maya/MItDag.h>
 #include <maya/MFnDagNode.h>
@@ -128,54 +133,21 @@ void MayaScene::getLightLinking()
     }
 }
 
-// the camera from the UI is set via render command
-void MayaScene::setCurrentCamera(MDagPath camDagPath)
+namespace
 {
-    this->uiCamera = camDagPath;
-}
-
-void MayaScene::checkParent(boost::shared_ptr<MayaObject> obj)
-{
-    MFnDagNode node(obj->mobject);
-    if (node.parentCount() == 0)
-        obj->parent.reset();
-}
-
-MDagPath MayaScene::getWorld()
-{
-    MItDag   dagIterator(MItDag::kDepthFirst, MFn::kInvalid);
-    MDagPath dagPath;
-
-    for (dagIterator.reset(); (!dagIterator.isDone()); dagIterator.next())
+    MDagPath getWorld()
     {
-        dagIterator.getPath(dagPath);
-        if (dagPath.apiType() == MFn::kWorld)
-            break;
-    }
-    return dagPath;
-}
+        MItDag dagIterator(MItDag::kDepthFirst, MFn::kInvalid);
+        for (dagIterator.reset(); !dagIterator.isDone(); dagIterator.next())
+        {
+            MDagPath dagPath;
+            dagIterator.getPath(dagPath);
+            if (dagPath.apiType() == MFn::kWorld)
+                return dagPath;
+        }
 
-void MayaScene::classifyMayaObject(boost::shared_ptr<MayaObject> obj)
-{
-    if (obj->mobject.hasFn(MFn::kCamera))
-    {
-        this->camList.push_back(obj);
-        return;
+        return MDagPath();
     }
-
-    if (obj->mobject.hasFn(MFn::kLight))
-    {
-        this->lightList.push_back(obj);
-        return;
-    }
-
-    if (obj->mobject.hasFn(MFn::kInstancer))
-    {
-        instancerDagPathList.push_back(obj->dagPath);
-        return;
-    }
-
-    this->objectList.push_back(obj);
 }
 
 bool MayaScene::parseSceneHierarchy(MDagPath currentPath, int level, boost::shared_ptr<ObjectAttributes> parentAttributes, boost::shared_ptr<MayaObject> parentObject)
@@ -187,7 +159,15 @@ bool MayaScene::parseSceneHierarchy(MDagPath currentPath, int level, boost::shar
     boost::shared_ptr<MayaObject> mo(new MayaObject(currentPath));
     boost::shared_ptr<ObjectAttributes> currentAttributes = mo->getObjectAttributes(parentAttributes);
     mo->parent = parentObject;
-    classifyMayaObject(mo);
+
+    if (mo->mobject.hasFn(MFn::kCamera))
+        camList.push_back(mo);
+    else if (mo->mobject.hasFn(MFn::kLight))
+        lightList.push_back(mo);
+    else if (mo->mobject.hasFn(MFn::kInstancer))
+        instancerDagPathList.push_back(mo->dagPath);
+    else objectList.push_back(mo);
+
     if (getWorldPtr()->getRenderType() == World::IPRRENDER)
     {
         InteractiveElement iel;
@@ -272,9 +252,9 @@ bool MayaScene::parseScene()
 
 bool MayaScene::updateScene(MFn::Type updateElement)
 {
-    for (int objId = 0; objId < this->objectList.size(); objId++)
+    for (int objId = 0; objId < objectList.size(); objId++)
     {
-        boost::shared_ptr<MayaObject> obj = this->objectList[objId];
+        boost::shared_ptr<MayaObject> obj = objectList[objId];
 
         if (!obj->mobject.hasFn(updateElement))
             continue;
@@ -299,8 +279,10 @@ bool MayaScene::updateScene(MFn::Type updateElement)
         }
 
         if (getWorldPtr()->mRenderGlobals->isDeformStep())
+        {
             if (obj->mobject.hasFn(MFn::kShape))
                 getWorldPtr()->mRenderer->updateShape(obj);
+        }
 
         if (getWorldPtr()->mRenderGlobals->isTransformStep())
         {
@@ -321,14 +303,16 @@ bool MayaScene::updateScene()
     updateScene(MFn::kShape);
     updateScene(MFn::kTransform);
 
-    for (size_t camId = 0; camId < this->camList.size(); camId++)
+    for (size_t camId = 0; camId < camList.size(); camId++)
     {
-        boost::shared_ptr<MayaObject> obj = this->camList[camId];
+        boost::shared_ptr<MayaObject> obj = camList[camId];
         obj->updateObject();
 
         if (!getWorldPtr()->mRenderGlobals->isMbStartStep())
+        {
             if (!obj->motionBlurred)
                 continue;
+        }
 
         if (getWorldPtr()->mRenderGlobals->isTransformStep())
         {
@@ -339,16 +323,17 @@ bool MayaScene::updateScene()
         }
     }
 
-    std::vector<boost::shared_ptr<MayaObject> > ::iterator mIter;
-    mIter = this->lightList.begin();
-    for (; mIter != this->lightList.end(); mIter++)
+    std::vector<boost::shared_ptr<MayaObject> >::iterator mIter;
+    for (mIter = lightList.begin(); mIter != lightList.end(); mIter++)
     {
         boost::shared_ptr<MayaObject> obj = *mIter;
         obj->updateObject();
 
         if (!getWorldPtr()->mRenderGlobals->isMbStartStep())
+        {
             if (!obj->motionBlurred)
                 continue;
+        }
 
         if (getWorldPtr()->mRenderGlobals->isTransformStep())
         {
@@ -360,17 +345,9 @@ bool MayaScene::updateScene()
     }
 
     if (getWorldPtr()->mRenderGlobals->isTransformStep())
-    {
-        this->updateInstancer();
-    }
+        updateInstancer();
 
     return true;
-}
-
-void MayaScene::clearInstancerNodeList()
-{
-    size_t numElements = this->instancerNodeElements.size();
-    this->instancerNodeElements.clear();
 }
 
 bool MayaScene::updateInstancer()
@@ -405,8 +382,6 @@ bool MayaScene::updateInstancer()
     return true;
 }
 
-std::vector<boost::shared_ptr<MayaObject> >  InstDoneList;
-
 // parsing all particle instancer nodes in the scene
 // here I put all nodes created by an instancer node into a array of its own.
 // The reason why I don't simply add it to the main list is that I have to recreate them
@@ -414,17 +389,10 @@ std::vector<boost::shared_ptr<MayaObject> >  InstDoneList;
 // of a particle
 bool MayaScene::parseInstancerNew()
 {
-    MStatus stat;
-    bool result = true;
-    Logging::debug(MString("parseInstancerNew"));
-    MDagPath dagPath;
-    size_t numInstancers = instancerDagPathList.size();
-    size_t numobjects = this->objectList.size();
-
     // if we have any previously defined instancer elements, delete it
-    this->clearInstancerNodeList();
+    instancerNodeElements.clear();
 
-    for (int iId = 0; iId < numInstancers; iId++)
+    for (int iId = 0; iId < instancerDagPathList.size(); iId++)
     {
         MDagPath instPath = instancerDagPathList[iId];
         MObject instancerMObject = instPath.node();
@@ -445,6 +413,7 @@ bool MayaScene::parseInstancerNew()
             if (nodeList[0].hasFn(MFn::kParticle))
             {
                 Logging::debug(MString("Found a particle system called ") + getObjectName(nodeList[0]));
+                MStatus stat;
                 MFnParticleSystem pSystem(nodeList[0], &stat);
                 if (stat)
                 {
