@@ -78,7 +78,6 @@ class MayaScene
         UNDEF = 5
     };
 
-    RenderType renderType;
     RenderState renderState;
     std::vector<MObject> mObjectList;
     std::vector<boost::shared_ptr<MayaObject> > objectList;
@@ -117,7 +116,6 @@ class MayaScene
     void classifyMayaObject(boost::shared_ptr<MayaObject> obj);
     bool isGeo(MObject obj);
 
-    void setRenderType(RenderType rtype);
     boost::shared_ptr<MayaObject> getObject(MObject obj);
     boost::shared_ptr<MayaObject> getObject(MDagPath dp);
 };

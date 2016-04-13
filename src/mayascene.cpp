@@ -56,8 +56,7 @@
 #include <maya/MFnComponent.h>
 
 MayaScene::MayaScene()
-  : renderType(NORMAL)
-  , renderState(MayaScene::UNDEF)
+  : renderState(MayaScene::UNDEF)
   , renderingStarted(false)
 {
 }
@@ -277,11 +276,6 @@ MString MayaScene::getFileName()
     currentFile = pystring::replace(parts.back(), ".ma", "");
     currentFile = pystring::replace(currentFile, ".mb", "");
     return MString(currentFile.c_str());
-}
-
-void MayaScene::setRenderType(RenderType rtype)
-{
-    this->renderType = rtype;
 }
 
 std::vector<boost::shared_ptr<MayaObject> >  origObjects;
