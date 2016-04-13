@@ -232,17 +232,6 @@ bool MayaScene::isGeo(MObject obj)
     if (obj.hasFn(MFn::kHairSystem))
         return true;
 
-    MFnDependencyNode depFn(obj);
-    uint nodeId = depFn.typeId().id();
-    for (uint lId = 0; lId < this->objectIdentifier.size(); lId++)
-    {
-        if (nodeId == this->objectIdentifier[lId])
-        {
-            Logging::debug(MString("Found external objtype: ") + depFn.name());
-            return true;
-        }
-    }
-
     return false;
 }
 

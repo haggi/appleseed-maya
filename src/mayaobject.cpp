@@ -62,8 +62,6 @@ ObjectAttributes::ObjectAttributes(boost::shared_ptr<ObjectAttributes> other)
     }
 }
 
-static std::vector<int> objectIdentifier; // plugids for detecting new objTypes
-
 bool MayaObject::isInstanced()
 {
     return dagPath.isInstanced() || (instanceNumber > 0) || ((attributes != 0) && attributes->hasInstancerConnection);
@@ -93,17 +91,6 @@ bool MayaObject::isGeo()
         return true;
     if (mobject.hasFn(MFn::kHairSystem))
         return true;
-
-    MFnDependencyNode depFn(mobject);
-    uint nodeId = depFn.typeId().id();
-    for (uint lId = 0; lId < objectIdentifier.size(); lId++)
-    {
-        if (nodeId == objectIdentifier[lId])
-        {
-            Logging::debug(MString("Found external geotype: ") + depFn.name());
-            return true;
-        }
-    }
 
     return false;
 }

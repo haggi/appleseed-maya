@@ -80,7 +80,6 @@ class MayaScene
 
     RenderType renderType;
     RenderState renderState;
-    std::vector<int> objectIdentifier; // plugids for detecting new objTypes
     std::vector<MObject> mObjectList;
     std::vector<boost::shared_ptr<MayaObject> > objectList;
     std::vector<boost::shared_ptr<MayaObject> > camList;
