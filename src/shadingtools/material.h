@@ -173,7 +173,6 @@ class Material
     explicit Material(MObject& shadingEngine);
 
     void printNodes(ShadingNetwork& network);
-    bool isLight(MObject& obj);
     void parseNetworks();
 
   private:

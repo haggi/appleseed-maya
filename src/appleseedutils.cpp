@@ -171,14 +171,14 @@ void defineMasterAssembly(renderer::Project *project)
     }
 }
 
-renderer::Assembly *getMasterAssemblyFromProject(renderer::Project *project)
+renderer::Assembly* getMasterAssemblyFromProject(renderer::Project* project)
 {
     defineMasterAssembly(project);
     return getSceneFromProject(project)->assemblies().get_by_name("world");
 }
 
 // return the maya object above which has it's own assembly
-MayaObject *getAssemblyMayaObject(MayaObject *mobj)
+MayaObject* getAssemblyMayaObject(MayaObject* mobj)
 {
     MayaObject *obj = mobj;
     if (obj->instanceNumber > 0)
@@ -191,39 +191,38 @@ MayaObject *getAssemblyMayaObject(MayaObject *mobj)
     return 0; // only happens if obj is world
 }
 
-renderer::Assembly *getCreateObjectAssembly(boost::shared_ptr<MayaObject> obj)
+renderer::Assembly* getCreateObjectAssembly(boost::shared_ptr<MayaObject> obj)
 {
-    boost::shared_ptr<AppleseedRenderer> appleRenderer = boost::static_pointer_cast<AppleseedRenderer>(getWorldPtr()->mRenderer);
-
-    MayaObject *assemblyObject = getAssemblyMayaObject(obj.get());
+    MayaObject* assemblyObject = getAssemblyMayaObject(obj.get());
     if (assemblyObject == 0)
-    {
-        Logging::debug("create mesh assemblyPtr == null");
         return 0;
-    }
+
     MString assemblyName = getAssemblyName(assemblyObject);
     MString assemblyInstanceName = getAssemblyInstanceName(assemblyObject);
 
-    renderer::Assembly *master = getMasterAssemblyFromProject(appleRenderer->getProjectPtr());
-    if (obj->isLight() && (!obj->mobject.hasFn(MFn::kAreaLight)))
-    {
+    boost::shared_ptr<AppleseedRenderer> appleRenderer = boost::static_pointer_cast<AppleseedRenderer>(getWorldPtr()->mRenderer);
+    renderer::Assembly* master = getMasterAssemblyFromProject(appleRenderer->getProjectPtr());
+    if (obj->mobject.hasFn(MFn::kLight) && !obj->mobject.hasFn(MFn::kAreaLight))
         return master;
-    }
-    renderer::Assembly *ass = master->assemblies().get_by_name(assemblyName.asChar());
+
+    renderer::Assembly* ass = master->assemblies().get_by_name(assemblyName.asChar());
     if (assemblyName == "world")
         ass = master;
 
     if (ass == 0)
     {
-        foundation::auto_release_ptr<renderer::Assembly> assembly(renderer::AssemblyFactory().create(assemblyName.asChar(), renderer::ParamArray()));
+        foundation::auto_release_ptr<renderer::Assembly> assembly(
+            renderer::AssemblyFactory().create(assemblyName.asChar(), renderer::ParamArray()));
         master->assemblies().insert(assembly);
         ass = master->assemblies().get_by_name(assemblyName.asChar());
 
-        foundation::auto_release_ptr<renderer::AssemblyInstance> assInst(renderer::AssemblyInstanceFactory().create(assemblyInstanceName.asChar(), renderer::ParamArray(), assemblyName.asChar()));
+        foundation::auto_release_ptr<renderer::AssemblyInstance> assInst(
+            renderer::AssemblyInstanceFactory().create(assemblyInstanceName.asChar(), renderer::ParamArray(), assemblyName.asChar()));
 
         fillMatrices(obj, assInst->transform_sequence());
         master->assembly_instances().insert(assInst);
     }
+
     return ass;
 }
 

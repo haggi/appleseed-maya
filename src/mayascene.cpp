@@ -246,24 +246,6 @@ bool MayaScene::isGeo(MObject obj)
     return false;
 }
 
-bool MayaScene::isLight(MObject obj)
-{
-    if (obj.hasFn(MFn::kLight))
-        return true;
-
-    MFnDependencyNode depFn(obj);
-    uint nodeId = depFn.typeId().id();
-    for (uint lId = 0; lId < this->lightIdentifier.size(); lId++)
-    {
-        if (nodeId == this->lightIdentifier[lId])
-        {
-            Logging::debug(MString("Found external lighttype: ") + depFn.name());
-            return true;
-        }
-    }
-    return false;
-}
-
 void MayaScene::classifyMayaObject(boost::shared_ptr<MayaObject> obj)
 {
     if (obj->mobject.hasFn(MFn::kCamera))
@@ -272,7 +254,7 @@ void MayaScene::classifyMayaObject(boost::shared_ptr<MayaObject> obj)
         return;
     }
 
-    if (this->isLight(obj->mobject))
+    if (obj->mobject.hasFn(MFn::kLight))
     {
         this->lightList.push_back(obj);
         return;
