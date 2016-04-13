@@ -55,43 +55,6 @@
 #include <maya/MFnSingleIndexedComponent.h>
 #include <maya/MFnComponent.h>
 
-MayaScene::MayaScene()
-  : renderState(MayaScene::UNDEF)
-  , renderingStarted(false)
-{
-}
-
-// Here is checked if the linklist is complete, what means that we do not have to do any
-// complicated light linking, but default procedures. If excludedLights is > 0 then we found
-// any excluded Lights.
-bool MayaScene::listContainsAllLights(MDagPathArray& linkedLights, MDagPathArray& excludedLights)
-{
-    excludedLights.clear();
-    for (uint lId = 0; lId < this->lightList.size(); lId++)
-    {
-        MDagPath path = this->lightList[lId]->dagPath;
-        bool found = false;
-        for (uint liId = 0; liId < linkedLights.length(); liId++)
-        {
-            MDagPath linkedPath = linkedLights[liId];
-            if (linkedPath == path)
-            {
-                found = true;
-                break;
-            }
-        }
-        if (found)
-            continue;
-        else
-            excludedLights.append(path);
-    }
-
-    if (excludedLights.length() > 0)
-        return false;
-
-    return true;
-}
-
 bool MayaScene::lightObjectIsInLinkedLightList(boost::shared_ptr<MayaObject> lightObject, MDagPathArray& linkedLightsArray)
 {
     for (uint lId = 0; lId < linkedLightsArray.length(); lId++)
@@ -154,7 +117,7 @@ void MayaScene::getLightLinking()
             lightLink.getLinkedLights(obj->dagPath, MObject::kNullObj, lightArray);
         }
         // if one of the light in my scene light list is NOT in the linked light list,
-        // the light has either turned off "Illuminate by default" or it is explicilty not linked to this object.
+        // the light has either turned off "Illuminate by default" or it is explicitly not linked to this object.
         for (size_t lObjId = 0; lObjId < this->lightList.size(); lObjId++)
         {
             if (!lightObjectIsInLinkedLightList(this->lightList[lObjId], lightArray))
@@ -163,30 +126,6 @@ void MayaScene::getLightLinking()
             }
         }
     }
-}
-
-boost::shared_ptr<MayaObject> MayaScene::getObject(MObject obj)
-{
-    boost::shared_ptr<MayaObject> mo;
-    size_t numobjects = this->objectList.size();
-    for (size_t objId = 0; objId < numobjects; objId++)
-    {
-        if (this->objectList[objId]->mobject == obj)
-            return this->objectList[objId];
-    }
-    return mo;
-}
-
-boost::shared_ptr<MayaObject> MayaScene::getObject(MDagPath dp)
-{
-    boost::shared_ptr<MayaObject> mo;
-    size_t numobjects = this->objectList.size();
-    for (size_t objId = 0; objId < numobjects; objId++)
-    {
-        if (this->objectList[objId]->dagPath == dp)
-            return this->objectList[objId];
-    }
-    return mo;
 }
 
 // the camera from the UI is set via render command
@@ -216,24 +155,6 @@ MDagPath MayaScene::getWorld()
     return dagPath;
 }
 
-bool MayaScene::isGeo(MObject obj)
-{
-    if (obj.hasFn(MFn::kMesh))
-        return true;
-    if (obj.hasFn(MFn::kNurbsSurface))
-        return true;
-    if (obj.hasFn(MFn::kParticle))
-        return true;
-    if (obj.hasFn(MFn::kSubSurface))
-        return true;
-    if (obj.hasFn(MFn::kNurbsCurve))
-        return true;
-    if (obj.hasFn(MFn::kHairSystem))
-        return true;
-
-    return false;
-}
-
 void MayaScene::classifyMayaObject(boost::shared_ptr<MayaObject> obj)
 {
     if (obj->mobject.hasFn(MFn::kCamera))
@@ -256,29 +177,6 @@ void MayaScene::classifyMayaObject(boost::shared_ptr<MayaObject> obj)
 
     this->objectList.push_back(obj);
 }
-
-MString MayaScene::getExportPath(MString ext, MString rendererName)
-{
-    std::string currentFile = MFileIO::currentFile().asChar();
-    std::vector<std::string> parts;
-    pystring::split(currentFile, parts, "/");
-    currentFile = pystring::replace(parts.back(), ".ma", "");
-    currentFile = pystring::replace(currentFile, ".mb", "");
-    MString scenePath = getWorldPtr()->mRenderGlobals->basePath + "/" + rendererName + "/" + currentFile.c_str() + "." + ext;
-    return scenePath;
-}
-
-MString MayaScene::getFileName()
-{
-    std::string currentFile = MFileIO::currentFile().asChar();
-    std::vector<std::string> parts;
-    pystring::split(currentFile, parts, "/");
-    currentFile = pystring::replace(parts.back(), ".ma", "");
-    currentFile = pystring::replace(currentFile, ".mb", "");
-    return MString(currentFile.c_str());
-}
-
-std::vector<boost::shared_ptr<MayaObject> >  origObjects;
 
 bool MayaScene::parseSceneHierarchy(MDagPath currentPath, int level, boost::shared_ptr<ObjectAttributes> parentAttributes, boost::shared_ptr<MayaObject> parentObject)
 {

@@ -77,24 +77,6 @@ bool MayaObject::isCamera()
     return false;
 }
 
-bool MayaObject::isGeo()
-{
-    if (mobject.hasFn(MFn::kMesh))
-        return true;
-    if (mobject.hasFn(MFn::kNurbsSurface))
-        return true;
-    if (mobject.hasFn(MFn::kParticle))
-        return true;
-    if (mobject.hasFn(MFn::kSubSurface))
-        return true;
-    if (mobject.hasFn(MFn::kNurbsCurve))
-        return true;
-    if (mobject.hasFn(MFn::kHairSystem))
-        return true;
-
-    return false;
-}
-
 bool MayaObject::isTransform()
 {
     return mobject.hasFn(MFn::kTransform);
