@@ -39,7 +39,7 @@
 #if MAYA_API_VERSION >= 201600
 #include "hypershaderenderer.h"
 #endif
-#include "renderqueueworker.h"
+#include "renderqueue.h"
 #include "swatchrenderer.h"
 #include "version.h"
 #include "world.h"

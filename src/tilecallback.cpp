@@ -32,7 +32,7 @@
 // appleseed-maya headers.
 #include "event.h"
 #include "renderglobals.h"
-#include "renderqueueworker.h"
+#include "renderqueue.h"
 #include "world.h"
 
 // appleseed.renderer headers.
@@ -71,7 +71,7 @@ void TileCallback::pre_render(
     e.yMin = static_cast<unsigned int>(frameHeight - y - height);
     e.yMax = static_cast<unsigned int>(frameHeight - y - 1);
     e.mType = Event::PRETILE;
-    gEventQueue()->push(e);
+    RenderQueue::pushEvent(e);
 }
 
 void TileCallback::post_render(const renderer::Frame* frame)
@@ -135,7 +135,7 @@ void TileCallback::post_render(const renderer::Frame* frame)
     e.yMin = 0;
     e.yMax = static_cast<unsigned int>(frameProps.m_canvas_height - 1);
     e.mType = Event::UPDATEUI;
-    gEventQueue()->push(e);
+    RenderQueue::pushEvent(e);
 }
 
 void TileCallback::post_render_tile(
@@ -176,7 +176,7 @@ void TileCallback::post_render_tile(
     e.yMin = static_cast<unsigned int>(frameProps.m_canvas_height - y - tileHeight);
     e.yMax = static_cast<unsigned int>(frameProps.m_canvas_height - y - 1);
     e.mType = Event::UPDATEUI;
-    gEventQueue()->push(e);
+    RenderQueue::pushEvent(e);
 }
 
 void TileCallbackFactory::release()

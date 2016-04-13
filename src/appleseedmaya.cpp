@@ -34,7 +34,7 @@
 #include "utilities/logging.h"
 #include "utilities/tools.h"
 #include "event.h"
-#include "renderqueueworker.h"
+#include "renderqueue.h"
 #include "world.h"
 
 // Maya headers.
@@ -107,7 +107,7 @@ MStatus AppleseedMaya::doIt(const MArgList& args)
     {
         Event e;
         e.mType = Event::IPRUPDATEREGION;
-        gEventQueue()->push(e);
+        RenderQueue::pushEvent(e);
         return MS::kSuccess;
     }
 
@@ -115,7 +115,7 @@ MStatus AppleseedMaya::doIt(const MArgList& args)
     {
         Event e;
         e.mType = Event::IPRSTOP;
-        gEventQueue()->push(e);
+        RenderQueue::pushEvent(e);
         return MS::kSuccess;
     }
 
@@ -123,7 +123,7 @@ MStatus AppleseedMaya::doIt(const MArgList& args)
     {
         Event e;
         e.mType = Event::IPRPAUSE;
-        gEventQueue()->push(e);
+        RenderQueue::pushEvent(e);
         return MS::kSuccess;
     }
 
@@ -159,10 +159,10 @@ MStatus AppleseedMaya::doIt(const MArgList& args)
         e.cameraDagPath.extendToShape();
     }
 
-    gEventQueue()->push(e);
+    RenderQueue::pushEvent(e);
 
     if (MGlobal::mayaState() == MGlobal::kBatch)
-        RenderQueueWorker::startRenderQueueWorker();
+        RenderQueue::startRenderQueueWorker();
 
     return MStatus::kSuccess;
 }

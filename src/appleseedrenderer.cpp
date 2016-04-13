@@ -40,9 +40,10 @@
 #include "utilities/pystring.h"
 #include "utilities/tools.h"
 #include "appleseedutils.h"
+#include "event.h"
 #include "mayascene.h"
 #include "renderglobals.h"
-#include "renderqueueworker.h"
+#include "renderqueue.h"
 #include "tilecallback.h"
 #include "world.h"
 
@@ -191,9 +192,9 @@ void AppleseedRenderer::render()
         {
             Event e;
             e.mType = Event::ADDIPRCALLBACKS;
-            gEventQueue()->push(e);
+            RenderQueue::pushEvent(e);
 
-            while (!RenderQueueWorker::IPRCallbacksDone())
+            while (!RenderQueue::IPRCallbacksDone())
                 foundation::sleep(10);
         }
 
@@ -1255,7 +1256,7 @@ foundation::StringArray AppleseedRenderer::defineMaterial(boost::shared_ptr<Maya
                 mayaScene->interactiveUpdateMap[mayaScene->interactiveUpdateMap.size()] = iel;
 
                 if (getWorldPtr()->getRenderState() == World::RSTATERENDERING)
-                    RenderQueueWorker::IPRUpdateCallbacks();
+                    RenderQueue::IPRUpdateCallbacks();
             }
         }
 

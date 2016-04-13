@@ -26,21 +26,20 @@
 // THE SOFTWARE.
 //
 
-#ifndef RENDERQUEUEWORKER_H
-#define RENDERQUEUEWORKER_H
+#ifndef RENDERQUEUE_H
+#define RENDERQUEUE_H
 
-#include "utilities/concurrentqueue.h"
-#include "event.h"
+// Forward declarations.
+class Event;
 
-concurrent_queue<Event>* gEventQueue();
-
-class RenderQueueWorker
+class RenderQueue
 {
   public:
     static void startRenderQueueWorker();
+    static void pushEvent(const Event& e);
     static void renderQueueWorkerTimerCallback(float time, float lastTime, void* userPtr);
     static void IPRUpdateCallbacks();
     static bool IPRCallbacksDone();
 };
 
-#endif  // !RENDERQUEUEWORKER_H
+#endif  // !RENDERQUEUE_H

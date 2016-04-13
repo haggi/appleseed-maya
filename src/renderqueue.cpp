@@ -27,11 +27,13 @@
 //
 
 // Interface header.
-#include "renderqueueworker.h"
+#include "renderqueue.h"
 
 // appleseed-maya headers.
+#include "utilities/concurrentqueue.h"
 #include "utilities/logging.h"
 #include "utilities/tools.h"
+#include "event.h"
 #include "mayascene.h"
 #include "renderglobals.h"
 #include "world.h"
@@ -71,11 +73,6 @@ namespace
 
     boost::thread sceneThread;
     concurrent_queue<Event> renderEventQueue;
-}
-
-concurrent_queue<Event>* gEventQueue()
-{
-    return &renderEventQueue;
 }
 
 namespace
@@ -523,7 +520,7 @@ namespace
             {
                 Event e;
                 e.mType = Event::INTERRUPT;
-                gEventQueue()->push(e);
+                RenderQueue::pushEvent(e);
                 break;
             }
 #endif
@@ -560,14 +557,14 @@ namespace
         }
         else
         {
-            Logging::debug("RenderQueueWorker::renderProcessThread()");
+            Logging::debug("RenderQueue::renderProcessThread()");
             getWorldPtr()->mRenderer->render();
-            Logging::debug("RenderQueueWorker::renderProcessThread() - DONE.");
+            Logging::debug("RenderQueue::renderProcessThread() - DONE.");
         }
 
         Event event;
         event.mType = Event::FRAMEDONE;
-        gEventQueue()->push(event);
+        RenderQueue::pushEvent(event);
     }
 
     void iprWaitForFinish(Event e)
@@ -575,7 +572,7 @@ namespace
         while (getWorldPtr()->getRenderState() != World::RSTATENONE)
             foundation::sleep(100);
 
-        gEventQueue()->push(e);
+        RenderQueue::pushEvent(e);
     }
 
     void doPreFrameJobs()
@@ -628,13 +625,13 @@ namespace
         {
             getWorldPtr()->mRenderGlobals->currentMbStep = mbStepId;
             getWorldPtr()->mRenderGlobals->currentMbElement = getWorldPtr()->mRenderGlobals->mbElementList[mbStepId];
-            getWorldPtr()->mRenderGlobals->currentFrameNumber = (float)(currentFrame + getWorldPtr()->mRenderGlobals->mbElementList[mbStepId].m_time);
+            getWorldPtr()->mRenderGlobals->currentFrameNumber = (float)(currentFrame + getWorldPtr()->mRenderGlobals->mbElementList[mbStepId].time);
             bool needView = true;
 
             // we can have some mb time steps at the same time, e.g. for xform and deform, then we do not need to update the view
             if (mbStepId > 0)
             {
-                if (getWorldPtr()->mRenderGlobals->mbElementList[mbStepId].m_time == getWorldPtr()->mRenderGlobals->mbElementList[mbStepId - 1].m_time)
+                if (getWorldPtr()->mRenderGlobals->mbElementList[mbStepId].time == getWorldPtr()->mRenderGlobals->mbElementList[mbStepId - 1].time)
                 {
                     needView = false;
                 }
@@ -675,16 +672,16 @@ namespace
     }
 }
 
-void RenderQueueWorker::startRenderQueueWorker()
+void RenderQueue::startRenderQueueWorker()
 {
     while (true)
     {
         Event e;
         if (MGlobal::mayaState() == MGlobal::kBatch)
-            gEventQueue()->wait_and_pop(e);
+            renderEventQueue.wait_and_pop(e);
         else
         {
-            if (!gEventQueue()->try_pop(e))
+            if (!renderEventQueue.try_pop(e))
                 break;
         }
 
@@ -757,7 +754,7 @@ void RenderQueueWorker::startRenderQueueWorker()
                 numPixelsDone = 0;
                 numPixelsTotal = e.width * e.height;
                 e.mType = Event::FRAMERENDER;
-                gEventQueue()->push(e);
+                RenderQueue::pushEvent(e);
 
                 if (MGlobal::mayaState() != MGlobal::kBatch)
                 {
@@ -783,7 +780,7 @@ void RenderQueueWorker::startRenderQueueWorker()
                 else
                 {
                     e.mType = Event::RENDERDONE;
-                    gEventQueue()->push(e);
+                    RenderQueue::pushEvent(e);
                 }
             }
             break;
@@ -793,7 +790,7 @@ void RenderQueueWorker::startRenderQueueWorker()
                 doPostFrameJobs();
 
                 e.mType = Event::FRAMERENDER;
-                gEventQueue()->push(e);
+                RenderQueue::pushEvent(e);
             }
             break;
 
@@ -873,12 +870,17 @@ void RenderQueueWorker::startRenderQueueWorker()
     }
 }
 
-void RenderQueueWorker::renderQueueWorkerTimerCallback(float time, float lastTime, void* userPtr)
+void RenderQueue::pushEvent(const Event& e)
 {
-    RenderQueueWorker::startRenderQueueWorker();
+    renderEventQueue.push(e);
 }
 
-void RenderQueueWorker::IPRUpdateCallbacks()
+void RenderQueue::renderQueueWorkerTimerCallback(float time, float lastTime, void* userPtr)
+{
+    RenderQueue::startRenderQueueWorker();
+}
+
+void RenderQueue::IPRUpdateCallbacks()
 {
     boost::shared_ptr<MayaScene> mayaScene = getWorldPtr()->mScene;
 
@@ -888,8 +890,7 @@ void RenderQueueWorker::IPRUpdateCallbacks()
         MCallbackId id = 0;
 
         std::map<MCallbackId, MObject>::iterator mit;
-        std::map<MCallbackId, MObject> oimap = objIdMap;
-        for (mit = oimap.begin(); mit != oimap.end(); mit++)
+        for (mit = objIdMap.begin(); mit != objIdMap.end(); mit++)
         {
             if (element->node == mit->second)
             {
@@ -911,7 +912,7 @@ void RenderQueueWorker::IPRUpdateCallbacks()
     }
 }
 
-bool RenderQueueWorker::IPRCallbacksDone()
+bool RenderQueue::IPRCallbacksDone()
 {
     return IprCallbacksDone;
 }
