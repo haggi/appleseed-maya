@@ -105,64 +105,55 @@ MStatus AppleseedMaya::doIt(const MArgList& args)
 
     if (argData.isFlagSet("-updateIprRegion", &stat))
     {
-        Event e;
-        e.mType = Event::IPRUPDATEREGION;
-        gEventQueue()->push(e);
+        iprUpdateRenderRegion();
         return MS::kSuccess;
     }
 
     if (argData.isFlagSet("-stopIpr", &stat))
     {
-        Event e;
-        e.mType = Event::IPRSTOP;
-        gEventQueue()->push(e);
+        //getWorldPtr()->setRenderType(World::RTYPENONE);
+        getWorldPtr()->mRenderer->abortRendering();
+        finishRender();
         return MS::kSuccess;
     }
 
     if (argData.isFlagSet("-pauseIpr", &stat))
     {
-        Event e;
-        e.mType = Event::IPRPAUSE;
-        gEventQueue()->push(e);
+        getWorldPtr()->mRenderer->abortRendering();
         return MS::kSuccess;
     }
+
+    World::RenderType renderType = World::UIRENDER;
+
+    MFnDependencyNode defaultGlobals(objectFromName("defaultResolution"));
+    int width = defaultGlobals.findPlug("width").asInt();
+    int height = defaultGlobals.findPlug("height").asInt();
 
     // I have to request useRenderRegion here because as soon the command is finished,
     // what happens immediately after the command is put into the queue, the value is
     // set back to false.
-
-    Event e;
-    e.mType = Event::INITRENDER;
-    e.renderType = World::UIRENDER;
-
-    MFnDependencyNode defaultGlobals(objectFromName("defaultResolution"));
-    e.width = defaultGlobals.findPlug("width").asInt();
-    e.height = defaultGlobals.findPlug("height").asInt();
-
     MFnDependencyNode drgfn(objectFromName("defaultRenderGlobals"));
-    e.useRenderRegion = drgfn.findPlug("useRenderRegion").asBool();
+    bool doRenderRegion = drgfn.findPlug("useRenderRegion").asBool();
 
     if (argData.isFlagSet("-startIpr", &stat))
-        e.renderType = World::IPRRENDER;
+        renderType = World::IPRRENDER;
 
     if (argData.isFlagSet("-width", &stat))
-        argData.getFlagArgument("-width", 0, e.width);
+        argData.getFlagArgument("-width", 0, width);
 
     if (argData.isFlagSet("-height", &stat))
-        argData.getFlagArgument("-height", 0, e.height);
+        argData.getFlagArgument("-height", 0, height);
 
+    MDagPath cameraDagPath;
     if (argData.isFlagSet("-camera", &stat))
     {
         MSelectionList selectionList;
         argData.getFlagArgument("-camera", 0, selectionList);
-        selectionList.getDagPath(0, e.cameraDagPath);
-        e.cameraDagPath.extendToShape();
+        selectionList.getDagPath(0, cameraDagPath);
+        cameraDagPath.extendToShape();
     }
 
-    gEventQueue()->push(e);
-
-    if (MGlobal::mayaState() == MGlobal::kBatch)
-        RenderQueueWorker::startRenderQueueWorker();
+    initRender(renderType, width, height, cameraDagPath, doRenderRegion);
 
     return MStatus::kSuccess;
 }
