@@ -314,6 +314,8 @@ namespace
         renderThread.join();
         iprFindLeafNodes();
         getWorldPtr()->mRenderer->applyInteractiveUpdates(modifiedElementList);
+        modifiedElementList.clear();
+        idInteractiveMap.clear();
         renderThread = boost::thread(renderProcessThread);
     }
 
@@ -754,6 +756,7 @@ void finishRender()
 void iprUpdateRenderRegion()
 {
     getWorldPtr()->mRenderer->abortRendering();
+    renderThread.join();
     unsigned int left, right, bottom, top;
     MRenderView::getRenderRegion(left, right, bottom, top);
     foundation::AABB2u crop(foundation::AABB2u::VectorType(left, bottom), foundation::AABB2u::VectorType(right, top));
