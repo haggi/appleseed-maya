@@ -319,6 +319,15 @@ namespace
         renderThread = boost::thread(renderProcessThread);
     }
 
+    // Register new created nodes. We need the transform and the shape node to correctly use it in IPR.
+    // So we simply use the shape node, get it's parent - a shape node and let the scene parser do the rest.
+    // Then add a node dirty callback for the new elements. By adding the callback ids to the idInteractiveMap, the
+    // IPR should detect a modification during the netxt update cycle.
+
+    // Handling of surface shaders is a bit different. A shader is not assigned directly to a surface but it is connected to a shading group
+    // which is nothing else but a objectSet. If a new surface shader is created, it is not in use until it is assigned to an object what means it is connected
+    // to a shading group. So I simply add a shadingGroup callback for new shading groups.
+
     void IPRNodeAddedCallback(MObject& node, void* userPtr)
     {
         boost::shared_ptr<MayaScene> mayaScene = getWorldPtr()->mScene;
@@ -475,15 +484,6 @@ namespace
 
         IprCallbacksDone = true;
     }
-
-    // register new created nodes. We need the transform and the shape node to correctly use it in IPR.
-    // So we simply use the shape node, get it's parent - a shape node and let the scene parser do the rest.
-    // Then add a node dirty callback for the new elements. By adding the callback ids to the idInteractiveMap, the
-    // IPR should detect a modification during the netxt update cycle.
-
-    // Handling of surface shaders is a bit different. A shader is not assigned directly to a surface but it is connected to a shading group
-    // which is nothing else but a objectSet. If a new surface shader is created, it is not in use until it is assigned to an object what means it is connected
-    // to a shading group. So I simply add a shadingGroup callback for new shading groups.
 
     void removeCallbacks()
     {
@@ -765,7 +765,7 @@ void iprUpdateRenderRegion()
 }
 
 
-void RenderQueueWorker::startRenderQueueWorker()
+void RenderQueueWorker::renderQueueWorkerCallback(float time, float lastTime, void* userPtr)
 {
     Event e;
     if (!gEventQueue()->try_pop(e))
@@ -795,11 +795,6 @@ void RenderQueueWorker::startRenderQueueWorker()
         }
         break;
     }
-}
-
-void RenderQueueWorker::renderQueueWorkerTimerCallback(float time, float lastTime, void* userPtr)
-{
-    RenderQueueWorker::startRenderQueueWorker();
 }
 
 void RenderQueueWorker::IPRUpdateCallbacks()
@@ -833,9 +828,4 @@ void RenderQueueWorker::IPRUpdateCallbacks()
                 callbacksToDelete.push_back(id);
         }
     }
-}
-
-bool RenderQueueWorker::IPRCallbacksDone()
-{
-    return IprCallbacksDone;
 }
