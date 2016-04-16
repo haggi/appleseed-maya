@@ -131,7 +131,7 @@ class AppleseedRenderer
 
     // Apply updates to the scene.
     void applyInteractiveUpdates(const std::vector<InteractiveElement*>& modifiedElementList);
-	
+
     void defineProject();
     void addRenderParams(renderer::ParamArray& paramArray);//add current render settings to all render configurations
     void defineConfig();

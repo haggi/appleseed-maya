@@ -957,8 +957,8 @@ renderer::ITileCallback* HypershadeTileCallbackFactory::create()
 }
 
 void HypershadeTileCallbackFactory::release()
-{ 
-    delete this; 
+{
+    delete this;
 }
 
 #endif

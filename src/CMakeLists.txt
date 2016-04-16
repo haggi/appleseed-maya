@@ -117,8 +117,8 @@ set (sources
     renderercontroller.h
     renderglobals.cpp
     renderglobals.h
-    renderqueueworker.cpp
-    renderqueueworker.h
+    renderqueue.cpp
+    renderqueue.h
     swatchrenderer.cpp
     swatchrenderer.h
     tilecallback.cpp

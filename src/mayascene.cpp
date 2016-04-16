@@ -36,7 +36,7 @@
 #include "utilities/pystring.h"
 #include "utilities/tools.h"
 #include "renderglobals.h"
-#include "renderqueueworker.h"
+#include "renderqueue.h"
 #include "world.h"
 
 // Maya headers.

@@ -27,11 +27,13 @@
 //
 
 // Interface header.
-#include "renderqueueworker.h"
+#include "renderqueue.h"
 
 // appleseed-maya headers.
+#include "utilities/concurrentqueue.h"
 #include "utilities/logging.h"
 #include "utilities/tools.h"
+#include "event.h"
 #include "mayascene.h"
 #include "renderglobals.h"
 #include "world.h"
@@ -40,6 +42,7 @@
 #include "foundation/platform/thread.h"
 
 // Maya headers.
+#include <maya/MDagPath.h>
 #include <maya/MDGMessage.h>
 #include <maya/MFnDagNode.h>
 #include <maya/MGlobal.h>
@@ -71,11 +74,6 @@ namespace
 
     boost::thread renderThread;
     concurrent_queue<Event> renderEventQueue;
-}
-
-concurrent_queue<Event>* gEventQueue()
-{
-    return &renderEventQueue;
 }
 
 namespace
@@ -194,7 +192,7 @@ namespace
         getWorldPtr()->mRenderer->render();
         Event event;
         event.mType = Event::RENDERDONE;
-        gEventQueue()->push(event);
+        renderEventQueue.push(event);
     }
 
     // one problem: In most cases the renderer translates shapes only not complete hierarchies
@@ -582,13 +580,13 @@ namespace
         {
             getWorldPtr()->mRenderGlobals->currentMbStep = mbStepId;
             getWorldPtr()->mRenderGlobals->currentMbElement = getWorldPtr()->mRenderGlobals->mbElementList[mbStepId];
-            getWorldPtr()->mRenderGlobals->currentFrameNumber = (float)(currentFrame + getWorldPtr()->mRenderGlobals->mbElementList[mbStepId].m_time);
+            getWorldPtr()->mRenderGlobals->currentFrameNumber = (float)(currentFrame + getWorldPtr()->mRenderGlobals->mbElementList[mbStepId].time);
             bool needView = true;
 
             // we can have some mb time steps at the same time, e.g. for xform and deform, then we do not need to update the view
             if (mbStepId > 0)
             {
-                if (getWorldPtr()->mRenderGlobals->mbElementList[mbStepId].m_time == getWorldPtr()->mRenderGlobals->mbElementList[mbStepId - 1].m_time)
+                if (getWorldPtr()->mRenderGlobals->mbElementList[mbStepId].time == getWorldPtr()->mRenderGlobals->mbElementList[mbStepId - 1].time)
                 {
                     needView = false;
                 }
@@ -764,11 +762,15 @@ void iprUpdateRenderRegion()
     renderThread = boost::thread(renderProcessThread);
 }
 
+void RenderQueue::pushEvent(const Event& e)
+{
+    renderEventQueue.push(e);
+}
 
-void RenderQueueWorker::renderQueueWorkerCallback(float time, float lastTime, void* userPtr)
+void RenderQueue::renderQueueWorkerCallback(float time, float lastTime, void* userPtr)
 {
     Event e;
-    if (!gEventQueue()->try_pop(e))
+    if (!renderEventQueue.try_pop(e))
         return;
 
     switch (e.mType)
@@ -797,7 +799,7 @@ void RenderQueueWorker::renderQueueWorkerCallback(float time, float lastTime, vo
     }
 }
 
-void RenderQueueWorker::IPRUpdateCallbacks()
+void RenderQueue::IPRUpdateCallbacks()
 {
     boost::shared_ptr<MayaScene> mayaScene = getWorldPtr()->mScene;
 
@@ -807,8 +809,7 @@ void RenderQueueWorker::IPRUpdateCallbacks()
         MCallbackId id = 0;
 
         std::map<MCallbackId, MObject>::iterator mit;
-        std::map<MCallbackId, MObject> oimap = objIdMap;
-        for (mit = oimap.begin(); mit != oimap.end(); mit++)
+        for (mit = objIdMap.begin(); mit != objIdMap.end(); mit++)
         {
             if (element->node == mit->second)
             {
