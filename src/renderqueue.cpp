@@ -66,7 +66,6 @@ namespace
     std::vector<const InteractiveElement*> modifiedElementList;   // todo: not thread-safe!
     clock_t renderStartTime = 0;
     clock_t renderEndTime = 0;
-    bool IprCallbacksDone = false;
     std::map<MCallbackId, MObject> objIdMap;
     std::map<MCallbackId, const InteractiveElement*> idInteractiveMap;
     size_t numPixelsDone;
@@ -135,30 +134,31 @@ namespace
     {
         if (!MRenderView::doesRenderEditorExist())
             return;
+
         unsigned int xmin = xMin, ymin = yMin, xmax = xMax, ymax = yMax;
         if (getWorldPtr()->mRenderGlobals->getUseRenderRegion())
         {
             unsigned int left, right, bottom, top;
             MRenderView::getRenderRegion(left, right, bottom, top);
-            if ((xMax < left) || (xMin > right) || (yMax < bottom) || (yMin > top))
+            if (xMax < left || xMin > right || yMax < bottom || yMin > top)
                 return;
             xmin = std::max(xmin, left);
-            xmax = std::min(xmax, right);
             ymin = std::max(ymin, bottom);
+            xmax = std::min(xmax, right);
             ymax = std::min(ymax, top);
         }
+
         RV_PIXEL line[4];
         for (uint x = 0; x < 4; x++)
-        {
             line[x].r = line[x].g = line[x].b = line[x].a = 1.0f;
-        }
+
         MRenderView::updatePixels(xmin, xmin + 3, ymin, ymin, line, true);
-        MRenderView::updatePixels(xmax - 3, xmax, ymin, ymin, line, true);
         MRenderView::updatePixels(xmin, xmin + 3, ymax, ymax, line, true);
+        MRenderView::updatePixels(xmax - 3, xmax, ymin, ymin, line, true);
         MRenderView::updatePixels(xmax - 3, xmax, ymax, ymax, line, true);
         MRenderView::updatePixels(xmin, xmin, ymin, ymin + 3, line, true);
-        MRenderView::updatePixels(xmin, xmin, ymax - 3, ymax, line, true);
         MRenderView::updatePixels(xmax, xmax, ymin, ymin + 3, line, true);
+        MRenderView::updatePixels(xmin, xmin, ymax - 3, ymax, line, true);
         MRenderView::updatePixels(xmax, xmax, ymax - 3, ymax, line, true);
         MRenderView::refresh(xmin, xmax, ymin, ymax);
     }
@@ -187,9 +187,10 @@ namespace
         return MString("(appleseed)\\n") + frameString + "  " + timeString;
     }
 
-    void renderProcessThread()
+    void renderThreadMain()
     {
         getWorldPtr()->mRenderer->render();
+
         Event event;
         event.mType = Event::RENDERDONE;
         renderEventQueue.push(event);
@@ -307,7 +308,7 @@ namespace
         getWorldPtr()->mRenderer->applyInteractiveUpdates(modifiedElementList);
         modifiedElementList.clear();
         idInteractiveMap.clear();
-        renderThread = boost::thread(renderProcessThread);
+        renderThread = boost::thread(renderThreadMain);
     }
 
     // Register new created nodes. We need the transform and the shape node to correctly use it in IPR.
@@ -353,7 +354,7 @@ namespace
         // here the new object is added to the object list and is added to the interactive object list
         mayaScene->parseSceneHierarchy(dagPath, 0, boost::shared_ptr<ObjectAttributes>(), boost::shared_ptr<MayaObject>());
 
-        // now we readd all interactive objects to the map
+        // now we read all interactive objects to the map
         idInteractiveMap.clear();
 
         std::vector<InteractiveElement>::reverse_iterator riter;
@@ -416,7 +417,6 @@ namespace
     void addIPRCallbacks()
     {
         MStatus stat;
-        IprCallbacksDone = false;
         boost::shared_ptr<MayaScene> mayaScene = getWorldPtr()->mScene;
 
         // Add some global dependency nodes to the update list.
@@ -436,6 +436,7 @@ namespace
                 MFnDependencyNode depFn(iae.mobj);
                 nodeDirty = iae.mobj;
             }
+
             Logging::debug(MString("Adding dirty callback node ") + getObjectName(nodeDirty));
 
             MCallbackId id = MNodeMessage::addNodeDirtyCallback(nodeDirty, IPRNodeDirtyCallback, &iae, &stat);
@@ -452,11 +453,9 @@ namespace
             }
         }
 
-        idleCallbackId = MTimerMessage::addTimerCallback(0.2, IPRIdleCallback, 0, &stat);
+        idleCallbackId = MTimerMessage::addTimerCallback(0.2f, IPRIdleCallback, 0, &stat);
         nodeAddedCallbackId = MDGMessage::addNodeAddedCallback(IPRNodeAddedCallback);
         nodeRemovedCallbackId = MDGMessage::addNodeRemovedCallback(IPRNodeRemovedCallback);
-
-        IprCallbacksDone = true;
     }
 
     void removeCallbacks()
@@ -587,18 +586,17 @@ namespace
             MGlobal::viewFrame(currentFrame);
     }
 
-    void logOutput(const int pixelsDone, const int pixelsTotal)
+    void logRenderingProgress(const size_t pixelsDone, const size_t pixelsTotal)
     {
-        const float percent = (float)pixelsDone / pixelsTotal;
-        if (((int)(percent * 100) % 5) == 0)
+        const float percents = static_cast<float>(100 * pixelsDone) / pixelsTotal;
+        if (static_cast<int>(percents) % 5 == 0)
         {
-            char perc[16];
-            sprintf(perc, "%3.2f", percent * 100.0f);
+            char buffer[16];
+            sprintf(buffer, "%3.2f", percents);
             MString progressStr;
-            progressStr.format("^1s% done.", MString(perc));
+            progressStr.format("^1s% done.", MString(buffer));
             Logging::info(progressStr);
-            MString cmd = MString("import appleseed_maya.initialize; appleseed_maya.initialize.theRenderer().updateProgressBar(") + perc + ")";
-            MGlobal::executePythonCommand(cmd);
+            MGlobal::executePythonCommand(format("import appleseed_maya.initialize; appleseed_maya.initialize.theRenderer().updateProgressBar(^1s)", buffer));
         }
     }
 }
@@ -674,7 +672,7 @@ void initRender(const World::RenderType renderType, const int width, const int h
         getWorldPtr()->mRenderer->preFrame();
         if (getWorldPtr()->getRenderType() == World::IPRRENDER)
             addIPRCallbacks();
-        renderThread = boost::thread(renderProcessThread);
+        renderThread = boost::thread(renderThreadMain);
     }
     else
     {
@@ -731,11 +729,15 @@ void iprUpdateRenderRegion()
 {
     getWorldPtr()->mRenderer->abortRendering();
     renderThread.join();
+
     unsigned int left, right, bottom, top;
     MRenderView::getRenderRegion(left, right, bottom, top);
-    foundation::AABB2u crop(foundation::AABB2u::VectorType(left, bottom), foundation::AABB2u::VectorType(right, top));
+    const foundation::AABB2u crop(
+        foundation::AABB2u::VectorType(left, bottom),
+        foundation::AABB2u::VectorType(right, top));
     getWorldPtr()->mRenderer->getProjectPtr()->get_frame()->set_crop_window(crop);
-    renderThread = boost::thread(renderProcessThread);
+
+    renderThread = boost::thread(renderThreadMain);
 }
 
 void RenderQueue::pushEvent(const Event& e)
@@ -751,23 +753,23 @@ void RenderQueue::renderQueueWorkerCallback(float time, float lastTime, void* us
 
     switch (e.mType)
     {
-        case Event::RENDERDONE:
+      case Event::RENDERDONE:
         {
             if (getWorldPtr()->getRenderType() != World::IPRRENDER)
                 waitUntilRenderFinishes();
         }
         break;
 
-        case Event::UPDATEUI:
+      case Event::UPDATEUI:
         {
             updateRenderView(e.xMin, e.xMax, e.yMin, e.yMax, e.pixels.get());
             numPixelsDone += (e.xMax - e.xMin) * (e.yMax - e.yMin);
             if (getWorldPtr()->getRenderType() != World::IPRRENDER)
-                logOutput(numPixelsDone, numPixelsTotal);
+                logRenderingProgress(numPixelsDone, numPixelsTotal);
         }
         break;
 
-        case Event::PRETILE:
+      case Event::PRETILE:
         {
             preTileRenderView(e.xMin, e.xMax, e.yMin, e.yMax);
         }
