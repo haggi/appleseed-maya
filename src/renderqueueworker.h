@@ -32,15 +32,20 @@
 #include "utilities/concurrentqueue.h"
 #include "event.h"
 
+// Maya headers.
+#include <maya/MDagPath.h>
+
 concurrent_queue<Event>* gEventQueue();
 
 class RenderQueueWorker
 {
   public:
-    static void startRenderQueueWorker();
-    static void renderQueueWorkerTimerCallback(float time, float lastTime, void* userPtr);
+    static void renderQueueWorkerCallback(float time, float lastTime, void* userPtr);
     static void IPRUpdateCallbacks();
-    static bool IPRCallbacksDone();
 };
+
+void initRender(const World::RenderType renderType, const int width, const int height, const MDagPath cameraDagPath, const bool doRenderRegion);
+void waitUntilRenderFinishes();
+void iprUpdateRenderRegion();
 
 #endif  // !RENDERQUEUEWORKER_H
