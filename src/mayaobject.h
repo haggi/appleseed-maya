@@ -26,8 +26,8 @@
 // THE SOFTWARE.
 //
 
-#ifndef MAYA_OBJECT_H
-#define MAYA_OBJECT_H
+#ifndef MAYAOBJECT_H
+#define MAYAOBJECT_H
 
 // Maya headers.
 #include <maya/MObject.h>
@@ -131,10 +131,7 @@ class MayaObject
     bool isObjAnimated();
     bool isShapeConnected();
     bool isObjVisible();
-    bool isLight();
-    bool isCamera();
     bool isTransform();
-    bool isGeo();
     bool isVisiblityAnimated();
     bool isInstanced();
     void getShadingGroups();
@@ -163,4 +160,4 @@ class MayaObject
     bool needsAssembly();
 };
 
-#endif
+#endif  // !MAYAOBJECT_H

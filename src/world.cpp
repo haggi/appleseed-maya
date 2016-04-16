@@ -34,6 +34,7 @@
 #include "appleseedrenderer.h"
 #include "appleseedswatchrenderer.h"
 #include "mayascene.h"
+#include "renderglobals.h"
 #include "renderqueueworker.h"
 
 // Maya headers.
@@ -65,7 +66,7 @@ World::World()
 {
     // in batch mode we do not need any renderView callbacks, and timer callbacks do not work anyway in batch
     if (MGlobal::mayaState() != MGlobal::kBatch)
-        timerCallbackId = MTimerMessage::addTimerCallback(0.1, RenderQueueWorker::renderQueueWorkerTimerCallback);
+        timerCallbackId = MTimerMessage::addTimerCallback(0.1, RenderQueueWorker::renderQueueWorkerCallback);
 
     std::string oslShaderPath = (getRendererHome() + "shaders").asChar();
 

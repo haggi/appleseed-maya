@@ -26,8 +26,8 @@
 // THE SOFTWARE.
 //
 
-#ifndef MTAP_APPLESEED_H
-#define MTAP_APPLESEED_H
+#ifndef APPLESEEDRENDERER_H
+#define APPLESEEDRENDERER_H
 
 // appleseed-maya headers.
 #include "renderercontroller.h"
@@ -96,8 +96,6 @@ class ShadingNode;
 class AppleseedRenderer
 {
   public:
-    std::vector<InteractiveElement *> interactiveUpdateList;
-
     AppleseedRenderer();
     ~AppleseedRenderer();
 
@@ -131,8 +129,8 @@ class AppleseedRenderer
 
     void abortRendering();
 
-    // Make an interactive update of the scene. Before this call the interactiveUpdateList should be filled appropriately.
-    void doInteractiveUpdate();
+    // Apply updates to the scene.
+    void applyInteractiveUpdates(const std::vector<InteractiveElement*>& modifiedElementList);
 	
     void defineProject();
     void addRenderParams(renderer::ParamArray& paramArray);//add current render settings to all render configurations
@@ -155,4 +153,4 @@ class AppleseedRenderer
     bool sceneBuilt;
 };
 
-#endif
+#endif  // !APPLESEEDRENDERER_H

@@ -26,8 +26,8 @@
 // THE SOFTWARE.
 //
 
-#ifndef TOOLS_BINMESH_H
-#define TOOLS_BINMESH_H
+#ifndef BINMESHTRANSLATOR_H
+#define BINMESHTRANSLATOR_H
 
 // appleseed.foundation headers.
 #include "foundation/platform/compiler.h"
@@ -64,11 +64,11 @@ class BinMeshTranslator
     virtual MString defaultExtension() const APPLESEED_OVERRIDE;
 
   private:
-    MStatus exportObjects(const MString& mode);
-    MStatus importObjects();
-
     MString mFileName;
     MString mOptions;
+
+    MStatus exportObjects(const MString& mode);
+    MStatus importObjects();
 };
 
-#endif
+#endif  // !BINMESHTRANSLATOR_H

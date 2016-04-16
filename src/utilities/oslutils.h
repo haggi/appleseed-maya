@@ -26,8 +26,8 @@
 // THE SOFTWARE.
 //
 
-#ifndef MT_OSL_UTILS_H
-#define MT_OSL_UTILS_H
+#ifndef UTILITIES_OSLUTILS_H
+#define UTILITIES_OSLUTILS_H
 
 /*
     OSL and maya projection nodes have a problem.
@@ -192,4 +192,4 @@ class OSLUtilClass
     void cleanupShadingNodeList();
 };
 
-#endif
+#endif  // !UTILITIES_OSLUTILS_H

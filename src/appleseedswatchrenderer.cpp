@@ -80,7 +80,6 @@
 #include <cstring>
 
 AppleseedSwatchRenderer::AppleseedSwatchRenderer()
-  : mTerminateLoop(false)
 {
     const MString swatchRenderFile = getRendererHome() + "resources/swatchRender.xml";
     const MString schemaPath = getRendererHome() + "schemas/project.xsd";
@@ -108,6 +107,10 @@ AppleseedSwatchRenderer::AppleseedSwatchRenderer()
 void AppleseedSwatchRenderer::renderSwatch(SwatchRenderer* sr)
 {
     const int res = sr->resolution();
+    sr->image().create(res, res, 4, MImage::kFloat);
+
+    if (!mProject.get())
+        return;
 
     const MString resString = format("^1s ^2s", res, res);
     renderer::ParamArray frameParams = mProject->get_frame()->get_parameters();
@@ -118,8 +121,6 @@ void AppleseedSwatchRenderer::renderSwatch(SwatchRenderer* sr)
     defineMaterial(sr->dNode);
 
     mRenderer->render();
-
-    sr->image().create(res, res, 4, MImage::kFloat);
 
     float* pixels = sr->image().floatPixels();
     size_t index = 0;

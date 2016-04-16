@@ -26,8 +26,8 @@
 // THE SOFTWARE.
 //
 
-#ifndef MTM_ATTR_TOOLS_H
-#define MTM_ATTR_TOOLS_H
+#ifndef UTILITIES_ATTRTOOLS_H
+#define UTILITIES_ATTRTOOLS_H
 
 #include <maya/MColor.h>
 #include <maya/MFnDependencyNode.h>
@@ -49,10 +49,8 @@ int getChildId(const MPlug& plug);
 
 double getDegrees(const char* plugName, const MFnDependencyNode& dn);
 
-float getRadians(const char* plugName, const MFnDependencyNode& dn);
-
 float getFloatAttr(const char* plugName, const MFnDependencyNode& dn, const float defaultValue);
-float getDoubleAttr(const char* plugName, const MFnDependencyNode& dn, const double defaultValue);
+double getDoubleAttr(const char* plugName, const MFnDependencyNode& dn, const double defaultValue);
 
 bool getFloat(const MString& plugName, const MFnDependencyNode& dn, float& value);
 
@@ -136,4 +134,4 @@ ATTR_TYPE getPlugAttrType(const char *plugName, const MFnDependencyNode& dn);
 
 ATTR_TYPE getPlugAttrType(MPlug plug);
 
-#endif
+#endif  // !UTILITIES_ATTRTOOLS_H

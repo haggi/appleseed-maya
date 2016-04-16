@@ -26,18 +26,22 @@
 // THE SOFTWARE.
 //
 
-#ifndef MAYA_SCENE_H
-#define MAYA_SCENE_H
+#ifndef MAYASCENE_H
+#define MAYASCENE_H
 
+// appleseed-maya headers.
+#include "mayaobject.h"
+
+// Maya headers.
 #include <maya/MDagPath.h>
 #include <maya/MObject.h>
-#include <maya/MDagPathArray.h>
-#include <maya/MTransformationMatrix.h>
+
+// Standard headers.
 #include <map>
 #include <vector>
 
-#include "renderglobals.h"
-#include "mayaobject.h"
+// Forward declarations.
+class MDagPathArray;
 
 class InteractiveElement
 {
@@ -49,79 +53,34 @@ class InteractiveElement
     bool triggeredFromTransform; // to recognize if we have to update the shape or only the instance transform
 
     InteractiveElement()
+      : triggeredFromTransform(false)
     {
-        triggeredFromTransform = false;
     }
 };
 
 class MayaScene
 {
   public:
-    enum RenderType
-    {
-        NORMAL,
-        IPR,
-        NONE,
-        BATCH
-    };
-
-    enum RenderState
-    {
-        START = 0,
-        TRANSLATE = 1,
-        RENDERING = 2,
-        UNDEF = 5
-    };
-
-    RenderType renderType;
-    RenderState renderState;
-    std::vector<int> lightIdentifier; // plugids for detecting new lighttypes
-    std::vector<int> objectIdentifier; // plugids for detecting new objTypes
-    std::vector<MObject> mObjectList;
-    std::vector<boost::shared_ptr<MayaObject> >  objectList;
-    std::vector<boost::shared_ptr<MayaObject> >  camList;
-    std::vector<boost::shared_ptr<MayaObject> >  lightList;
-    std::vector<boost::shared_ptr<MayaObject> >  instancerNodeElements; // so its easier to update them
-    std::vector<MDagPath> instancerDagPathList;
-
-    float currentFrame;
-    bool parseSceneHierarchy(MDagPath currentObject, int level, boost::shared_ptr<ObjectAttributes> attr, boost::shared_ptr<MayaObject> parentObject); // new, parse whole scene as hierarchy and save/analyze objects
-    bool parseScene();
-    bool renderingStarted;
-    bool parseInstancerNew(); // parse only particle instancer nodes, its a bit more complex
-
+    std::vector<boost::shared_ptr<MayaObject> > objectList;
+    std::vector<boost::shared_ptr<MayaObject> > camList;
+    std::vector<boost::shared_ptr<MayaObject> > lightList;
+    std::vector<boost::shared_ptr<MayaObject> > instancerNodeElements; // so its easier to update them
+    std::map<uint, InteractiveElement> interactiveUpdateMap;
     MDagPath uiCamera;
 
-    MFn::Type updateElement;
-    bool updateScene(); // update all necessary objects
-    bool updateScene(MFn::Type updateElement); // update all necessary objects
-    bool updateInstancer(); // update all necessary objects
-    MString getExportPath(MString ext, MString rendererName);
-    MString getFileName();
+    bool parseSceneHierarchy(MDagPath currentObject, int level, boost::shared_ptr<ObjectAttributes> attr, boost::shared_ptr<MayaObject> parentObject);
+    bool parseScene();
+    bool updateScene();
 
-    void clearInstancerNodeList();
-    bool lightObjectIsInLinkedLightList(boost::shared_ptr<MayaObject> lightObject, MDagPathArray& linkedLightsArray);
+  private:
+    std::vector<boost::shared_ptr<MayaObject> > origObjects;
+    std::vector<MDagPath> instancerDagPathList;
+
     void getLightLinking();
-    bool listContainsAllLights(MDagPathArray& linkedLights, MDagPathArray& excludedLights);
-    MDagPath getWorld();
-
-    void setCurrentCamera(MDagPath camera);
-    void checkParent(boost::shared_ptr<MayaObject> obj);
-
-    void classifyMayaObject(boost::shared_ptr<MayaObject> obj);
-    bool isGeo(MObject obj);
-    bool isLight(MObject obj);
-
-    void setRenderType(RenderType rtype);
-    boost::shared_ptr<MayaObject> getObject(MObject obj);
-    boost::shared_ptr<MayaObject> getObject(MDagPath dp);
-
-    MayaScene();
-
-    // interactive elements
-    std::map<uint, InteractiveElement> interactiveUpdateMap;
-    void updateInteraciveRenderScene(std::vector<InteractiveElement *> elementList);
-
+    bool lightObjectIsInLinkedLightList(boost::shared_ptr<MayaObject> lightObject, MDagPathArray& linkedLightsArray);
+    bool updateInstancer(); // update all necessary objects
+    bool updateScene(MFn::Type updateElement); // update all necessary objects
+    bool parseInstancerNew(); // parse only particle instancer nodes, its a bit more complex
 };
 
-#endif
+#endif  // !MAYASCENE_H

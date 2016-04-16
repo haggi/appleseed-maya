@@ -26,8 +26,20 @@
 // THE SOFTWARE.
 //
 
-#ifndef MT_SHADING_TOOLS_MATERIAL_H
-#define MT_SHADING_TOOLS_MATERIAL_H
+#ifndef SHADINGTOOLS_MATERIAL_H
+#define SHADINGTOOLS_MATERIAL_H
+
+// appleseed-maya headers.
+#include "shadingnode.h"
+
+// Maya headers.
+#include <maya/MDagPath.h>
+#include <maya/MIntArray.h>
+#include <maya/MObject.h>
+#include <maya/MObjectArray.h>
+
+// Standard headers.
+#include <vector>
 
 /*
     A material collects all necessary object attributes for rendering a surface or volume.
@@ -128,41 +140,32 @@
 
     But now the ramp needs an input from the placement node what would result in an invalid order. To avoid these problem I simply add all nodes and filter later for
     duplicates from the back. To avoid cycles, I check for a high amount of the same nodes (>100), simply because i dont know another useful solution.
-    */
-
-#include <maya/MDagPath.h>
-#include <maya/MObject.h>
-#include <maya/MObjectArray.h>
-#include <maya/MIntArray.h>
-
-#include <vector>
-#include "shadingnode.h"
-
-#define SNODE_LIST std::vector<ShadingNode>
-
-class Material;
-static std::vector<Material *> ShadingGroups;
-typedef std::vector<ShadingNode> ShadingNodeList;
+*/
 
 class ShadingNetwork
 {
   public:
-    SNODE_LIST shaderList;
+    ShadingNetwork();
+    explicit ShadingNetwork(const MObject& node);
+
+    void parseNetwork(const MObject& node);
+    bool alreadyDefined(const ShadingNode& sn) const;
+    void checkNodeList(MObjectArray& mobjectArray);
+    bool hasValidShadingNodeConnections(const ShadingNode& source, const ShadingNode& dest) const;
+
+    std::vector<ShadingNode> shaderList;
     MObject rootNode;
     MString rootNodeName;
-    ShadingNetwork();
-    ShadingNetwork(MObject& node);
-    ShadingNetwork(MObject& node, MString attribute);
-    ~ShadingNetwork(){}
-    void parseNetwork(MObject& node);
-    bool alreadyDefined(ShadingNode& sn);
-    void checkNodeList(MObjectArray& mobjectArray);
-    bool hasValidShadingNodeConnections(ShadingNode& source, ShadingNode& dest);
 };
 
 class Material
 {
   public:
+    explicit Material(const MObject& shadingEngine);
+
+    void printNodes(const ShadingNetwork& network) const;
+    void parseNetworks();
+
     // here we save all nodes for a certain shader type connection
     ShadingNetwork surfaceShaderNet;
     ShadingNetwork volumeShaderNet;
@@ -172,18 +175,12 @@ class Material
     MObject shadingEngineNode;
     MString materialName;
 
-    explicit Material(MObject& shadingEngine);
-
-    void printNodes(ShadingNetwork& network);
-    bool isLight(MObject& obj);
-    void parseNetworks();
-
   private:
-    void parseNetwork(MObject& shaderNode, ShadingNetwork& network);
-    bool alreadyDefined(ShadingNode& sn, ShadingNetwork& network);
+    void parseNetwork(const MObject& shaderNode, ShadingNetwork& network);
+    bool alreadyDefined(const ShadingNode& sn, const ShadingNetwork& network) const;
     void checkNodeList(MObjectArray& nodeList);
-    bool hasValidShadingNodeConnections(ShadingNode& source, ShadingNode& dest);
+    bool hasValidShadingNodeConnections(const ShadingNode& source, const ShadingNode& dest) const;
     void cleanNetwork(ShadingNetwork& network); // remove any duplicates
 };
 
-#endif
+#endif  // !SHADINGTOOLS_MATERIAL_H

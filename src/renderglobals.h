@@ -29,54 +29,14 @@
 #ifndef RENDERGLOBALS_H
 #define RENDERGLOBALS_H
 
+// Maya headers.
 #include <maya/MObject.h>
 #include <maya/MString.h>
 #include <maya/MMatrix.h>
 #include <maya/MDistance.h>
+
+// Standard headers.
 #include <vector>
-
-// Render pass definition goes into the global framework because most of the known passses are
-// the same in all renderers, like shadowmap, photonmap, caustics, bake...
-
-// A render pass contains a complete render procedure.
-// e.g. a ShadowMap Render pass will start a new rendering. Here all shadow casting lights will produce
-// shadow maps. They can be seen as a pendant to frames in a sequence.
-
-// During the render procedure the passes are collected in the render globals.
-// There are preSequence passes. e.g. for shadow maps that are created only once before the final rendering.
-// Then for every frame we have perFrame passes e.g. moving shadow maps or photon maps.
-
-class RenderPass
-{
-  public:
-    enum RenderPassType
-    {
-        PassNone,
-        PhotonGI,
-        PhotonCaustic,
-        ShadowMap,
-        Bake,
-        Beauty
-    };
-
-    enum EvalFrequency
-    {
-        FrequencyNone,
-        OncePerFrame,
-        OncePerJob
-    };
-
-    RenderPassType passType;
-    EvalFrequency evalFrequency;
-
-    std::vector<void *> objectList; // void element pointer to camera, light or other things
-
-    RenderPass()
-    {
-        passType = PassNone;
-        evalFrequency = FrequencyNone;
-    }
-};
 
 // Some renderers offer different transform mb steps and geometry deformation steps (mantra)
 // So I create this as as global framework option
@@ -91,6 +51,9 @@ class MbElement
         MotionBlurNone
     };
 
+    MbElement::Type elementType;
+    double m_time;
+
     // these are for sorting the mb steps
     bool operator>(const MbElement& other) const
     {
@@ -101,9 +64,6 @@ class MbElement
     {
         return m_time < other.m_time;
     }
-
-    MbElement::Type elementType;
-    double m_time;
 };
 
 class RenderGlobals
@@ -130,7 +90,7 @@ class RenderGlobals
     int getWidth() const { return imgWidth; }
     int getHeight() const { return imgHeight; }
 
-    float updateFrameNumber(); // returns the current frame number and incements the currentFrameIndex
+    float updateFrameNumber();  // returns the current frame number and incements the currentFrameIndex
     float getFrameNumber();
     bool frameListDone();
     float pixelAspect;
@@ -151,13 +111,13 @@ class RenderGlobals
     float gamma;
 
     bool doMb;
-    float motionBlurRange; // float range default = 0.4 ~ 144�
-    int motionBlurType; // Center, FrameStart, FrameEnd
-    float mbStartTime; // frame relative start time e.g. -0.2 frames
-    float mbEndTime; // frame relative end time e.g. 0.2 frames
-    float mbLength; // absolute length of motion blur, e.g. 0.4 frames
+    float motionBlurRange;      // float range default = 0.4 ~ 144�
+    int motionBlurType;         // Center, FrameStart, FrameEnd
+    double mbStartTime;         // frame relative start time e.g. -0.2 frames
+    double mbEndTime;           // frame relative end time e.g. 0.2 frames
+    double mbLength;            // absolute length of motion blur, e.g. 0.4 frames
     bool doDof;
-    int bitdepth; // 8, 16, 16halfFloat, 32float
+    int bitdepth;               // 8, 16, 16halfFloat, 32float
 
     int threads;
     int tilesize;
@@ -219,10 +179,6 @@ class RenderGlobals
     float sceneScale;
     MString optimizedTexturePath;
     bool useOptimizedTextures;
-
-    std::vector<RenderPass *> renderPasses;
-    RenderPass *currentRenderPass;
-    int currentRenderPassElementId;
 
     RenderGlobals();
 
