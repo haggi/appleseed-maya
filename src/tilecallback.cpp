@@ -65,7 +65,7 @@ void TileCallback::pre_render(
     const int frameHeight = renderGlobals->getHeight();
     e.pixels = boost::shared_ptr<RV_PIXEL>(new RV_PIXEL[width * height]);
     RV_PIXEL* pixelsPtr = e.pixels.get();
-    memset(pixelsPtr, 0, width * height * sizeof(RV_PIXEL));    
+    memset(pixelsPtr, 0, width * height * sizeof(RV_PIXEL));
     e.xMin = static_cast<unsigned int>(x);
     e.xMax = static_cast<unsigned int>(x + width - 1);
     e.yMin = static_cast<unsigned int>(frameHeight - y - height);

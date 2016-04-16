@@ -572,7 +572,7 @@ void AppleseedRenderer::defineEnvironment()
                             .insert("turbidity_min", turbidity_min));
             }
             else // Hosek
-            { 
+            {
                 environmentEDF =
                     renderer::HosekEnvironmentEDFFactory().create(
                         "sky_edf",
