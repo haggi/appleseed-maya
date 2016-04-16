@@ -36,7 +36,7 @@
 #include <maya/MDagPath.h>
 #include <maya/MRenderView.h>
 
-//boost
+// Boost headers.
 #include "boost/shared_ptr.hpp"
 
 class Event

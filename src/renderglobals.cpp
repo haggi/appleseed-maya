@@ -173,7 +173,7 @@ void RenderGlobals::getMbSteps()
     {
         MbElement element;
         element.elementType = MbElement::MotionBlurBoth;
-        element.m_time = 0.0;
+        element.time = 0.0;
         mbElementList.push_back(element);
         return;
     }
@@ -213,7 +213,7 @@ void RenderGlobals::getMbSteps()
         {
             MbElement element;
             element.elementType = MbElement::MotionBlurXForm;
-            element.m_time = mbStepValue;
+            element.time = mbStepValue;
             mbElementList.push_back(element);
             mbStepValue += xfStepSize;
         }
@@ -227,7 +227,7 @@ void RenderGlobals::getMbSteps()
         {
             MbElement element;
             element.elementType = MbElement::MotionBlurGeo;
-            element.m_time = mbStepValue;
+            element.time = mbStepValue;
             mbElementList.push_back(element);
             mbStepValue += geoStepSize;
         }
@@ -238,7 +238,7 @@ void RenderGlobals::getMbSteps()
     // testing this is for non mb objects or changing topology objects
     MbElement element;
     element.elementType = MbElement::MotionBlurNone;
-    element.m_time = 0;
+    element.time = 0;
     mbElementList.push_back(element);
 }
 

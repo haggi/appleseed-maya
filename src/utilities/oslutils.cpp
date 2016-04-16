@@ -319,7 +319,7 @@ void OSLUtilClass::listProjectionHistory(const MObject& mobject)
     }
 }
 
-namespace 
+namespace
 {
     unsigned int getArrayIndex(const std::string& value)
     {
@@ -347,7 +347,7 @@ void OSLUtilClass::defineOSLParameter(ShaderAttribute& sa, MFnDependencyNode& de
 
     /*
         Arrays in OSL cannot be connected per element. e.g. a connection nodeA.outColor -> nodeB.colorList[3] is invalid.
-        Our workaround is simply to use a limited number of entries (e.g. color0, color1, color2...) and map the Maya array 
+        Our workaround is simply to use a limited number of entries (e.g. color0, color1, color2...) and map the Maya array
         element to the OSL entry, e.g. nodeA.outColor -> nodeB.color3.
         Unfortunately there is no direct relationship from the OSL attribute name with the plug name. e.g. an attribute called color1
         can be an element of an array or an attribute which is really called color1 (like a color in the checker node).
@@ -536,11 +536,11 @@ void OSLUtilClass::addConnectionToConnectionArray(ConnectionArray& ca, MString s
 }
 
 // Projection nodes in Maya and OSL need a special handling. Other shading systems allow the manipulation of the global u and v or s and t values
-// before they access a texture. This is not possible in OSL which means we have to feed the correct uv values into a 2d texture node. In the case of a 
+// before they access a texture. This is not possible in OSL which means we have to feed the correct uv values into a 2d texture node. In the case of a
 // projection node, we first have to find out which 2d nodes are connected to our node directly or indirectly. Then we create a projection helper node
-// which calculates the uv data and plug it into the 2d node. Later we use another instance of the same projection node to calculate color balance and 
+// which calculates the uv data and plug it into the 2d node. Later we use another instance of the same projection node to calculate color balance and
 // other color specific elements.
-// 
+//
 // placementMatrixNode -> projection_util -> 2dnode -> projectionNode -> output
 //
 // This method has a small drawback. It is not possible to use the same 2d texture node for different projections.

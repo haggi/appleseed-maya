@@ -40,9 +40,10 @@
 #include "utilities/pystring.h"
 #include "utilities/tools.h"
 #include "appleseedutils.h"
+#include "event.h"
 #include "mayascene.h"
 #include "renderglobals.h"
-#include "renderqueueworker.h"
+#include "renderqueue.h"
 #include "tilecallback.h"
 #include "world.h"
 
@@ -571,7 +572,7 @@ void AppleseedRenderer::defineEnvironment()
                             .insert("turbidity_min", turbidity_min));
             }
             else // Hosek
-            { 
+            {
                 environmentEDF =
                     renderer::HosekEnvironmentEDFFactory().create(
                         "sky_edf",
@@ -1240,7 +1241,7 @@ foundation::StringArray AppleseedRenderer::defineMaterial(boost::shared_ptr<Maya
                 mayaScene->interactiveUpdateMap[mayaScene->interactiveUpdateMap.size()] = iel;
 
                 if (getWorldPtr()->getRenderState() == World::RSTATERENDERING)
-                    RenderQueueWorker::IPRUpdateCallbacks();
+                    RenderQueue::IPRUpdateCallbacks();
             }
         }
 

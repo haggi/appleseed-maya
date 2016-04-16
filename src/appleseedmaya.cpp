@@ -34,7 +34,7 @@
 #include "utilities/logging.h"
 #include "utilities/tools.h"
 #include "event.h"
-#include "renderqueueworker.h"
+#include "renderqueue.h"
 #include "world.h"
 
 // Maya headers.
