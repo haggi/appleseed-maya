@@ -188,16 +188,6 @@ void AppleseedRenderer::render()
                 return;
         }
 
-        if (getWorldPtr()->getRenderType() == World::IPRRENDER)
-        {
-            Event e;
-            e.mType = Event::ADDIPRCALLBACKS;
-            RenderQueue::pushEvent(e);
-
-            while (!RenderQueue::IPRCallbacksDone())
-                foundation::sleep(10);
-        }
-
         sceneBuilt = true;
     }
 
@@ -863,11 +853,6 @@ void AppleseedRenderer::applyInteractiveUpdates(const std::vector<InteractiveEle
     for (iaIt = modifiedElementList.begin(); iaIt != modifiedElementList.end(); iaIt++)
     {
         InteractiveElement* element = *iaIt;
-
-        // The element can be 0 if the modifiedElementList is used to trigger a rendering, but no scene element has changed.
-        // This is the case e.g. if the render region or a render globals attribute changes.
-        if (element == 0)
-            continue;
 
         if (element->node.hasFn(MFn::kShadingEngine))
         {

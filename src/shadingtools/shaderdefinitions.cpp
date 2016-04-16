@@ -26,12 +26,16 @@
 // THE SOFTWARE.
 //
 
-#include "shadingnode.h"
+// Interface header.
 #include "shaderdefinitions.h"
+
+// appleseed-maya headers.
+#include "shadingnode.h"
 #include "utilities/logging.h"
 #include "utilities/tools.h"
 #include "utilities/pystring.h"
 
+// Boost headers.
 #include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/xml_parser.hpp>
 #include <boost/foreach.hpp>
@@ -46,12 +50,7 @@ using boost::property_tree::ptree;
 typedef std::vector<ShadingNode> ShadingNodeVector;
 
 ShadingNodeVector ShaderDefinitions::shadingNodes;
-bool ShaderDefinitions::readDone;
-
-ShaderDefinitions::ShaderDefinitions()
-{
-    ShaderDefinitions::readDone = false;
-}
+bool ShaderDefinitions::readDone = false;
 
 void ShaderDefinitions::readShaderDefinitions()
 {

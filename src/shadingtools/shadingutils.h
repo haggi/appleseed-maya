@@ -30,10 +30,10 @@
 #define SHADINGTOOLS_SHADINGUTILS_H
 
 // Maya headers.
-#include <maya/MObject.h>
-#include <maya/MObjectArray.h>
 #include <maya/MDagPath.h>
 #include <maya/MIntArray.h>
+#include <maya/MObject.h>
+#include <maya/MObjectArray.h>
 
 bool getObjectShadingGroups(const MDagPath& shapeObjectDP, MIntArray& perFaceAssignments, MObjectArray& shadingGroups, bool needsPerFaceInfo);
 bool getObjectShadingGroups(const MDagPath& shapeObjectDP, MObject& shadingGroup);

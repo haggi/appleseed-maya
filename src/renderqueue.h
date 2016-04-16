@@ -29,17 +29,29 @@
 #ifndef RENDERQUEUE_H
 #define RENDERQUEUE_H
 
+// appleseed-maya headers.
+#include "world.h"
+
 // Forward declarations.
 class Event;
+class MDagPath;
 
 class RenderQueue
 {
   public:
-    static void startRenderQueueWorker();
     static void pushEvent(const Event& e);
-    static void renderQueueWorkerTimerCallback(float time, float lastTime, void* userPtr);
+    static void renderQueueWorkerCallback(float time, float lastTime, void* userPtr);
     static void IPRUpdateCallbacks();
-    static bool IPRCallbacksDone();
 };
+
+void initRender(
+    const World::RenderType renderType,
+    const int               width,
+    const int               height,
+    const MDagPath          cameraDagPath,
+    const bool              doRenderRegion);
+
+void waitUntilRenderFinishes();
+void iprUpdateRenderRegion();
 
 #endif  // !RENDERQUEUE_H
