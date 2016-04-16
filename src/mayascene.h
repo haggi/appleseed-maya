@@ -37,7 +37,6 @@
 #include <maya/MObject.h>
 
 // Standard headers.
-#include <map>
 #include <vector>
 
 // Forward declarations.
@@ -65,7 +64,7 @@ class MayaScene
     std::vector<boost::shared_ptr<MayaObject> > camList;
     std::vector<boost::shared_ptr<MayaObject> > lightList;
     std::vector<boost::shared_ptr<MayaObject> > instancerNodeElements; // so its easier to update them
-    std::map<uint, InteractiveElement> interactiveUpdateMap;
+    std::vector<InteractiveElement> interactiveUpdateMap;
     MDagPath uiCamera;
 
     bool parseSceneHierarchy(MDagPath currentObject, int level, boost::shared_ptr<ObjectAttributes> attr, boost::shared_ptr<MayaObject> parentObject);

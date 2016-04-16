@@ -130,7 +130,7 @@ class AppleseedRenderer
     void abortRendering();
 
     // Apply updates to the scene.
-    void applyInteractiveUpdates(const std::vector<InteractiveElement*>& modifiedElementList);
+    void applyInteractiveUpdates(const std::vector<const InteractiveElement*>& modifiedElementList);
 
     void defineProject();
     void addRenderParams(renderer::ParamArray& paramArray);//add current render settings to all render configurations

@@ -847,12 +847,11 @@ void AppleseedRenderer::defineGeometry()
     }
 }
 
-void AppleseedRenderer::applyInteractiveUpdates(const std::vector<InteractiveElement*>& modifiedElementList)
+void AppleseedRenderer::applyInteractiveUpdates(const std::vector<const InteractiveElement*>& modifiedElementList)
 {
-    std::vector<InteractiveElement *>::const_iterator iaIt;
-    for (iaIt = modifiedElementList.begin(); iaIt != modifiedElementList.end(); iaIt++)
+    for (size_t i = 0, e = modifiedElementList.size(); i < e; ++i)
     {
-        InteractiveElement* element = *iaIt;
+        const InteractiveElement* element = modifiedElementList[i];
 
         if (element->node.hasFn(MFn::kShadingEngine))
         {
@@ -879,9 +878,7 @@ void AppleseedRenderer::applyInteractiveUpdates(const std::vector<InteractiveEle
 
         // appleseedGlobals node.
         if (MFnDependencyNode(element->node).typeId().id() == 0x0011CF40)
-        {
             defineEnvironment();
-        }
 
         if (element->node.hasFn(MFn::kMesh))
         {
@@ -892,12 +889,12 @@ void AppleseedRenderer::applyInteractiveUpdates(const std::vector<InteractiveEle
             {
                 Logging::debug(MString("AppleseedRenderer::applyInteractiveUpdates() mesh ") + element->name + " ieNodeName " + getObjectName(element->node) + " objDagPath " + element->obj->dagPath.fullPathName());
 
-                renderer::AssemblyInstance *assInst = getExistingObjectAssemblyInstance(element->obj.get());
+                renderer::AssemblyInstance* assInst = getExistingObjectAssemblyInstance(element->obj.get());
                 if (assInst == 0)
                     continue;
 
                 MStatus stat;
-                MMatrix m = element->obj->dagPath.inclusiveMatrix(&stat);
+                const MMatrix m = element->obj->dagPath.inclusiveMatrix(&stat);
                 if (!stat)
                     Logging::debug(MString("Error ") + stat.errorString());
                 assInst->transform_sequence().clear();
@@ -1238,7 +1235,7 @@ foundation::StringArray AppleseedRenderer::defineMaterial(boost::shared_ptr<Maya
                 iel.obj = obj;
                 iel.name = surfaceShaderName;
                 iel.node = materialNode;
-                mayaScene->interactiveUpdateMap[mayaScene->interactiveUpdateMap.size()] = iel;
+                mayaScene->interactiveUpdateMap.push_back(iel);
 
                 if (getWorldPtr()->getRenderState() == World::RSTATERENDERING)
                     RenderQueue::IPRUpdateCallbacks();
