@@ -713,11 +713,11 @@ void initRender(const World::RenderType renderType, const int width, const int h
             getWorldPtr()->mRenderer->render(); // render blocking
             doPostFrameJobs();
         }
-        finishRender();
+        waitUntilRenderFinishes();
     }
 }
 
-void finishRender()
+void waitUntilRenderFinishes()
 {
     renderThread.join();
 
@@ -776,7 +776,7 @@ void RenderQueueWorker::renderQueueWorkerCallback(float time, float lastTime, vo
         case Event::RENDERDONE:
         {
             if (getWorldPtr()->getRenderType() != World::IPRRENDER)
-                finishRender();
+                waitUntilRenderFinishes();
         }
         break;
 

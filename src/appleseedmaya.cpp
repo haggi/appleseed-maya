@@ -111,9 +111,8 @@ MStatus AppleseedMaya::doIt(const MArgList& args)
 
     if (argData.isFlagSet("-stopIpr", &stat))
     {
-        //getWorldPtr()->setRenderType(World::RTYPENONE);
         getWorldPtr()->mRenderer->abortRendering();
-        finishRender();
+        waitUntilRenderFinishes();
         return MS::kSuccess;
     }
 

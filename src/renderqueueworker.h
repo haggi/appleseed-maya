@@ -45,7 +45,7 @@ class RenderQueueWorker
 };
 
 void initRender(const World::RenderType renderType, const int width, const int height, const MDagPath cameraDagPath, const bool doRenderRegion);
-void finishRender();
+void waitUntilRenderFinishes();
 void iprUpdateRenderRegion();
 
 #endif  // !RENDERQUEUEWORKER_H
