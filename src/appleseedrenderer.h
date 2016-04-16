@@ -86,7 +86,7 @@
 #define SMOKE_SHADER            0x0011CF47
 
 // Forward declarations.
-class InteractiveElement;
+class EditableElement;
 class MayaObject;
 class MObject;
 class mtap_MayaScene;
@@ -130,7 +130,7 @@ class AppleseedRenderer
     void abortRendering();
 
     // Apply updates to the scene.
-    void applyInteractiveUpdates(const std::vector<const InteractiveElement*>& modifiedElementList);
+    void applyInteractiveUpdates(const std::vector<const EditableElement*>& modifiedElementList);
 
     void defineProject();
     void addRenderParams(renderer::ParamArray& paramArray);//add current render settings to all render configurations

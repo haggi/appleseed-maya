@@ -37,12 +37,13 @@
 #include <maya/MObject.h>
 
 // Standard headers.
+#include <list>
 #include <vector>
 
 // Forward declarations.
 class MDagPathArray;
 
-class InteractiveElement
+class EditableElement
 {
   public:
     boost::shared_ptr<MayaObject> obj;
@@ -51,7 +52,7 @@ class InteractiveElement
     MObject node;
     bool triggeredFromTransform; // to recognize if we have to update the shape or only the instance transform
 
-    InteractiveElement()
+    EditableElement()
       : triggeredFromTransform(false)
     {
     }
@@ -64,7 +65,12 @@ class MayaScene
     std::vector<boost::shared_ptr<MayaObject> > camList;
     std::vector<boost::shared_ptr<MayaObject> > lightList;
     std::vector<boost::shared_ptr<MayaObject> > instancerNodeElements; // so its easier to update them
-    std::vector<InteractiveElement> interactiveUpdateMap;
+
+    // This container collects scene elements that can be edited during IPR.
+    // It allows node callbacks to retrieve MayaObjects associated to nodes.
+    typedef std::list<EditableElement> EditableElementContainer;
+    EditableElementContainer editableElements;
+
     MDagPath uiCamera;
 
     bool parseSceneHierarchy(MDagPath currentObject, int level, boost::shared_ptr<ObjectAttributes> attr, boost::shared_ptr<MayaObject> parentObject);

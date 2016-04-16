@@ -847,11 +847,11 @@ void AppleseedRenderer::defineGeometry()
     }
 }
 
-void AppleseedRenderer::applyInteractiveUpdates(const std::vector<const InteractiveElement*>& modifiedElementList)
+void AppleseedRenderer::applyInteractiveUpdates(const std::vector<const EditableElement*>& modifiedElementList)
 {
     for (size_t i = 0, e = modifiedElementList.size(); i < e; ++i)
     {
-        const InteractiveElement* element = modifiedElementList[i];
+        const EditableElement* element = modifiedElementList[i];
 
         if (element->node.hasFn(MFn::kShadingEngine))
         {
@@ -1230,12 +1230,12 @@ foundation::StringArray AppleseedRenderer::defineMaterial(boost::shared_ptr<Maya
         {
             if (mayaScene)
             {
-                InteractiveElement iel;
-                iel.mobj = surfaceShaderNode;
-                iel.obj = obj;
-                iel.name = surfaceShaderName;
-                iel.node = materialNode;
-                mayaScene->interactiveUpdateMap.push_back(iel);
+                EditableElement element;
+                element.mobj = surfaceShaderNode;
+                element.obj = obj;
+                element.name = surfaceShaderName;
+                element.node = materialNode;
+                mayaScene->editableElements.push_back(element);
 
                 if (getWorldPtr()->getRenderState() == World::RSTATERENDERING)
                     RenderQueue::IPRUpdateCallbacks();

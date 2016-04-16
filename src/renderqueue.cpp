@@ -63,11 +63,11 @@ namespace
     MCallbackId nodeAddedCallbackId = 0;
     MCallbackId nodeRemovedCallbackId = 0;
     std::vector<MCallbackId> callbacksToDelete;
-    std::vector<const InteractiveElement*> modifiedElementList;   // todo: not thread-safe!
+    std::vector<const EditableElement*> modifiedElementList;   // todo: not thread-safe!
     clock_t renderStartTime = 0;
     clock_t renderEndTime = 0;
     std::map<MCallbackId, MObject> objIdMap;
-    std::map<MCallbackId, const InteractiveElement*> idInteractiveMap;
+    std::map<MCallbackId, const EditableElement*> idInteractiveMap;
     size_t numPixelsDone;
     size_t numPixelsTotal;
 
@@ -204,7 +204,7 @@ namespace
     {
         boost::shared_ptr<MayaScene> mayaScene = getWorldPtr()->mScene;
 
-        std::map<MCallbackId, const InteractiveElement*>::iterator it;
+        std::map<MCallbackId, const EditableElement*>::iterator it;
         for (it = idInteractiveMap.begin(); it != idInteractiveMap.end(); it++)
         {
             MObject node = it->second->node;
@@ -215,13 +215,15 @@ namespace
                 {
                     if (dagIter.currentItem().hasFn(MFn::kShape))
                     {
-                        for (size_t i = 0, e = mayaScene->interactiveUpdateMap.size(); i < e; ++i)
+                        for (MayaScene::EditableElementContainer::iterator
+                                i = mayaScene->editableElements.begin(),
+                                e = mayaScene->editableElements.end(); i != e; ++i)
                         {
-                            InteractiveElement& iel = mayaScene->interactiveUpdateMap[i];
-                            if (iel.node == dagIter.currentItem())
+                            EditableElement& element = *i;
+                            if (element.node == dagIter.currentItem())
                             {
-                                iel.triggeredFromTransform = true;
-                                modifiedElementList.push_back(&iel);
+                                element.triggeredFromTransform = true;
+                                modifiedElementList.push_back(&element);
                             }
                         }
                     }
@@ -257,7 +259,7 @@ namespace
     void IPRAttributeChangedCallback(MNodeMessage::AttributeMessage msg, MPlug& plug, MPlug& otherPlug, void* element)
     {
         Logging::debug(MString("IPRAttributeChangedCallback. attribA: ") + plug.name() + " attribB: " + otherPlug.name());
-        InteractiveElement *userData = (InteractiveElement *)element;
+        EditableElement *userData = (EditableElement *)element;
         boost::shared_ptr<MayaScene> mayaScene = getWorldPtr()->mScene;
 
         if (!userData->obj)
@@ -275,13 +277,13 @@ namespace
                 {
                     Logging::debug(MString("IPRAttributeChangedCallback. Found shading group on the other side: ") + getObjectName(otherPlug.node()));
                     MObject sgNode = otherPlug.node();
-                    InteractiveElement iel;
-                    iel.mobj = sgNode;
-                    iel.name = getObjectName(sgNode);
-                    iel.node = sgNode;
-                    iel.obj = userData->obj;
-                    mayaScene->interactiveUpdateMap.push_back(iel);
-                    idInteractiveMap[MMessage::currentCallbackId()] = &mayaScene->interactiveUpdateMap.back();
+                    EditableElement element;
+                    element.mobj = sgNode;
+                    element.name = getObjectName(sgNode);
+                    element.node = sgNode;
+                    element.obj = userData->obj;
+                    mayaScene->editableElements.push_back(element);
+                    idInteractiveMap[MMessage::currentCallbackId()] = &mayaScene->editableElements.back();
                 }
             }
         }
@@ -294,7 +296,7 @@ namespace
     void IPRNodeDirtyCallback(void* interactiveElement)
     {
         MCallbackId thisId = MMessage::currentCallbackId();
-        idInteractiveMap[thisId] = static_cast<InteractiveElement*>(interactiveElement);
+        idInteractiveMap[thisId] = static_cast<EditableElement*>(interactiveElement);
     }
 
     void IPRIdleCallback(float time, float lastTime, void* userPtr)
@@ -356,29 +358,31 @@ namespace
 
         // Now we re-add all interactive objects to the map.
         idInteractiveMap.clear();
-
-        std::vector<InteractiveElement>::reverse_iterator riter;
-        for (riter = mayaScene->interactiveUpdateMap.rbegin(); riter != mayaScene->interactiveUpdateMap.rend(); ++riter)
+        for (MayaScene::EditableElementContainer::iterator
+                i = mayaScene->editableElements.begin(),
+                e = mayaScene->editableElements.end(); i != e; ++i)
         {
-            InteractiveElement& ie = *riter;
-            if (ie.node == node || ie.node == transform)
+            EditableElement& element = *i;
+            if (element.node == node || element.node == transform)
             {
                 // Problem: a newly created procedural mesh does not yet have a shape because it not yet connected to its creator node.
                 // We have to find a reliable solution for this. Maybe we can add an attribute callback and check for inMesh.
-                MCallbackId id = MNodeMessage::addNodeDirtyCallback(ie.node, IPRNodeDirtyCallback, &ie);
-                objIdMap[id] = ie.node;
+                MCallbackId id = MNodeMessage::addNodeDirtyCallback(element.node, IPRNodeDirtyCallback, &element);
+                objIdMap[id] = element.node;
 
                 // We only add the shape node to the update map because we do not want a transform update.
-                if (ie.node == node)
-                    idInteractiveMap[id] = &ie;
+                if (element.node == node)
+                    idInteractiveMap[id] = &element;
 
-                if (ie.node.hasFn(MFn::kMesh))
+                if (element.node.hasFn(MFn::kMesh))
                 {
-                    MCallbackId id = MNodeMessage::addAttributeChangedCallback(ie.node, IPRAttributeChangedCallback, &ie, &stat);
-                    objIdMap[id] = ie.node;
+                    MCallbackId id = MNodeMessage::addAttributeChangedCallback(element.node, IPRAttributeChangedCallback, &element, &stat);
+                    objIdMap[id] = element.node;
                     if (stat)
                         callbacksToDelete.push_back(id);
                 }
+
+                break;
             }
         }
     }
@@ -401,14 +405,16 @@ namespace
 
         // Get the MayaObject element and mark it as removed.
         boost::shared_ptr<MayaScene> mayaScene = getWorldPtr()->mScene;
-        for (size_t i = 0, e = mayaScene->interactiveUpdateMap.size(); i < e; ++i)
+        for (MayaScene::EditableElementContainer::const_iterator
+                i = mayaScene->editableElements.begin(),
+                e = mayaScene->editableElements.end(); i != e; ++i)
         {
-            const InteractiveElement& ie = mayaScene->interactiveUpdateMap[i];
-            if (ie.node == node && ie.obj)
+            const EditableElement& element = *i;
+            if (element.node == node && element.obj)
             {
-                ie.obj->removed = true;
+                element.obj->removed = true;
                 // Trigger an IPR scene update.
-                idInteractiveMap[nodeCallbackId] = &ie;
+                idInteractiveMap[nodeCallbackId] = &element;
                 break;
             }
         }
@@ -420,15 +426,17 @@ namespace
         boost::shared_ptr<MayaScene> mayaScene = getWorldPtr()->mScene;
 
         // Add some global dependency nodes to the update list.
-        InteractiveElement iel;
-        iel.mobj = getRenderGlobalsNode();
-        iel.name = getObjectName(iel.mobj);
-        iel.node = iel.mobj;
-        mayaScene->interactiveUpdateMap.push_back(iel);
+        EditableElement element;
+        element.mobj = getRenderGlobalsNode();
+        element.name = getObjectName(element.mobj);
+        element.node = element.mobj;
+        mayaScene->editableElements.push_back(element);
 
-        for (size_t i = 0, e = mayaScene->interactiveUpdateMap.size(); i < e; ++i)
+        for (MayaScene::EditableElementContainer::iterator
+                i = mayaScene->editableElements.begin(),
+                e = mayaScene->editableElements.end(); i != e; ++i)
         {
-            InteractiveElement& iae = mayaScene->interactiveUpdateMap[i];
+            EditableElement& iae = *i;
             MObject nodeDirty = iae.obj ? iae.obj->mobject : iae.mobj;
 
             if (iae.mobj.hasFn(MFn::kPluginDependNode))
@@ -781,14 +789,16 @@ void RenderQueue::IPRUpdateCallbacks()
 {
     boost::shared_ptr<MayaScene> mayaScene = getWorldPtr()->mScene;
 
-    for (size_t i = 0, e = mayaScene->interactiveUpdateMap.size(); i < e; ++i)
+    for (MayaScene::EditableElementContainer::iterator
+            i = mayaScene->editableElements.begin(),
+            e = mayaScene->editableElements.end(); i != e; ++i)
     {
-        InteractiveElement* element = &mayaScene->interactiveUpdateMap[i];
+        EditableElement& element = *i;
 
         bool found = false;
         for (std::map<MCallbackId, MObject>::iterator mit = objIdMap.begin(); mit != objIdMap.end(); ++mit)
         {
-            if (mit->second == element->node)
+            if (mit->second == element.node)
             {
                 found = true;
                 break;
@@ -797,10 +807,10 @@ void RenderQueue::IPRUpdateCallbacks()
 
         if (!found)
         {
-            MObject nodeDirty = element->node;
+            MObject nodeDirty = element.node;
             Logging::debug(MString("IPRUpdateCallbacks. Found element without callback: ") + getObjectName(nodeDirty));
             MStatus stat;
-            MCallbackId id = MNodeMessage::addNodeDirtyCallback(nodeDirty, IPRNodeDirtyCallback, element, &stat);
+            MCallbackId id = MNodeMessage::addNodeDirtyCallback(nodeDirty, IPRNodeDirtyCallback, &element, &stat);
             objIdMap[id] = nodeDirty;
             if (stat)
                 callbacksToDelete.push_back(id);

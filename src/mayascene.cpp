@@ -170,11 +170,11 @@ bool MayaScene::parseSceneHierarchy(MDagPath currentPath, int level, boost::shar
 
     if (getWorldPtr()->getRenderType() == World::IPRRENDER)
     {
-        InteractiveElement iel;
-        iel.obj = mo;
-        iel.name = mo->fullName;
-        iel.node = mo->mobject;
-        interactiveUpdateMap.push_back(iel);
+        EditableElement element;
+        element.obj = mo;
+        element.name = mo->fullName;
+        element.node = mo->mobject;
+        editableElements.push_back(element);
     }
 
     //
