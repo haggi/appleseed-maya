@@ -174,7 +174,7 @@ bool MayaScene::parseSceneHierarchy(MDagPath currentPath, int level, boost::shar
         iel.obj = mo;
         iel.name = mo->fullName;
         iel.node = mo->mobject;
-        interactiveUpdateMap[interactiveUpdateMap.size()] = iel;
+        interactiveUpdateMap.push_back(iel);
     }
 
     //
