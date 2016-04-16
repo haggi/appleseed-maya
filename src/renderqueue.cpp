@@ -351,10 +351,10 @@ namespace
         MObject transform = dagPath.node();
         MString tname = getObjectName(transform);
 
-        // here the new object is added to the object list and is added to the interactive object list
+        // Here the new object is added to the object list and to the interactive object list.
         mayaScene->parseSceneHierarchy(dagPath, 0, boost::shared_ptr<ObjectAttributes>(), boost::shared_ptr<MayaObject>());
 
-        // now we read all interactive objects to the map
+        // Now we re-add all interactive objects to the map.
         idInteractiveMap.clear();
 
         std::vector<InteractiveElement>::reverse_iterator riter;
