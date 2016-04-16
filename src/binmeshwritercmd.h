@@ -26,19 +26,21 @@
 // THE SOFTWARE.
 //
 
-#ifndef BIN_MESH_WRITER_H
-#define BIN_MESH_WRITER_H
+#ifndef BINMESHWRITERCMD_H
+#define BINMESHWRITERCMD_H
 
-#include <maya/MPxCommand.h>
-#include <maya/MSyntax.h>
-#include <maya/MString.h>
-#include <maya/MObject.h>
-#include <maya/MPoint.h>
+// Maya headers.
 #include <maya/MDagPath.h>
-#include <maya/MPointArray.h>
-#include <maya/MObjectArray.h>
 #include <maya/MDagPathArray.h>
+#include <maya/MObject.h>
+#include <maya/MObjectArray.h>
+#include <maya/MPoint.h>
+#include <maya/MPointArray.h>
+#include <maya/MPxCommand.h>
+#include <maya/MString.h>
+#include <maya/MSyntax.h>
 
+// Standard headers.
 #include <fstream>
 
 class BinMeshWriterCmd
@@ -52,34 +54,6 @@ class BinMeshWriterCmd
     MStatus doIt(const MArgList& args);
 
   private:
-    void printUsage();
-    bool exportBinMeshes();
-    void getObjectsForExport(const MArgList& args);
-    void removeSmoothMesh(MDagPath& dagPath);
-
-    inline void write(const int value)
-    {
-        mFile.write(reinterpret_cast<const char *>(&value), sizeof(int));
-    }
-
-    inline void write(const double value)
-    {
-        mFile.write(reinterpret_cast<const char *>(&value), sizeof(double));
-    }
-
-    inline void write(const MPoint& point)
-    {
-        write(point.x);
-        write(point.y);
-        write(point.z);
-    }
-
-    inline void write(const MPointArray& points)
-    {
-        for (unsigned int i = 0, e = points.length(); i < e; ++i)
-            write(points[i]);
-    }
-
     std::fstream    mFile;
     bool            mDoProxy;
     float           mPercentage;
@@ -91,6 +65,34 @@ class BinMeshWriterCmd
     bool            mDoTransform;
     bool            mExportAll;
     bool            mUseSmoothPreview;
+
+    void printUsage();
+    bool exportBinMeshes();
+    void getObjectsForExport(const MArgList& args);
+    void removeSmoothMesh(MDagPath& dagPath);
+
+    void write(const int value)
+    {
+        mFile.write(reinterpret_cast<const char *>(&value), sizeof(int));
+    }
+
+    void write(const double value)
+    {
+        mFile.write(reinterpret_cast<const char *>(&value), sizeof(double));
+    }
+
+    void write(const MPoint& point)
+    {
+        write(point.x);
+        write(point.y);
+        write(point.z);
+    }
+
+    void write(const MPointArray& points)
+    {
+        for (unsigned int i = 0, e = points.length(); i < e; ++i)
+            write(points[i]);
+    }
 };
 
-#endif
+#endif  // !BINMESHWRITERCMD_H

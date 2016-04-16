@@ -26,52 +26,44 @@
 // THE SOFTWARE.
 //
 
-#include <maya/MPlugArray.h>
+// Interface header.
 #include "shadingnode.h"
+
+// appleseed-maya headers.
+#include "utilities/logging.h"
 #include "utilities/tools.h"
 #include "utilities/pystring.h"
-#include "utilities/logging.h"
 
-ShadingNode::ShadingNode(const ShadingNode& other)
-{
-    this->mobject = other.mobject;
-    *this = other;
-    if (this->mobject != MObject::kNullObj)
-    {
-        this->typeName = getDepNodeTypeName(this->mobject);
-        this->fullName = getObjectName(this->mobject);
-    }
-}
-
-ShadingNode::ShadingNode(MObject& mobj)
-{
-    this->mobject = mobj;
-    if (this->mobject != MObject::kNullObj)
-    {
-        this->typeName = getDepNodeTypeName(this->mobject);
-        this->fullName = getObjectName(this->mobject);
-    }
-}
+// Maya headers.
+#include <maya/MPlugArray.h>
 
 ShadingNode::ShadingNode()
 {
 }
 
-ShadingNode::~ShadingNode()
+ShadingNode::ShadingNode(const MObject& mobj)
 {
+    setMObject(mobj);
 }
 
-void ShadingNode::setMObject(MObject mobj)
+ShadingNode::ShadingNode(const ShadingNode& other)
+  : inputAttributes(other.inputAttributes)
+  , outputAttributes(other.outputAttributes)
 {
-    this->mobject = mobj;
-    if (this->mobject != MObject::kNullObj)
+    setMObject(other.mobject);
+}
+
+void ShadingNode::setMObject(const MObject& mobj)
+{
+    mobject = mobj;
+    if (mobject != MObject::kNullObj)
     {
-        this->typeName = getDepNodeTypeName(this->mobject);
-        this->fullName = getObjectName(this->mobject);
+        typeName = getDepNodeTypeName(mobject);
+        fullName = getObjectName(mobject);
     }
 }
 
-bool ShadingNode::isInPlugValid(MPlug plug)
+bool ShadingNode::isInPlugValid(const MPlug& plug) const
 {
     MPlug tmpPlug = plug;
 
@@ -85,9 +77,9 @@ bool ShadingNode::isInPlugValid(MPlug plug)
     if (tmpPlug.isElement())
         tmpPlug = tmpPlug.array();
 
-    MString plugName = getAttributeNameFromPlug(tmpPlug);
+    const MString& plugName = getAttributeNameFromPlug(tmpPlug);
 
-    for (size_t inattrId = 0; inattrId < this->inputAttributes.size(); inattrId++)
+    for (size_t inattrId = 0; inattrId < inputAttributes.size(); inattrId++)
     {
         if (plugName == inputAttributes[inattrId].name.c_str())
             return true;
@@ -95,7 +87,7 @@ bool ShadingNode::isInPlugValid(MPlug plug)
     return false;
 }
 
-bool ShadingNode::isOutPlugValid(MPlug plug)
+bool ShadingNode::isOutPlugValid(const MPlug& plug) const
 {
     MPlug tmpPlug = plug;
 
@@ -111,7 +103,7 @@ bool ShadingNode::isOutPlugValid(MPlug plug)
 
     MString plugName = getAttributeNameFromPlug(tmpPlug);
 
-    for (size_t attrId = 0; attrId < this->outputAttributes.size(); attrId++)
+    for (size_t attrId = 0; attrId < outputAttributes.size(); attrId++)
     {
         if (plugName == outputAttributes[attrId].name.c_str())
             return true;
@@ -119,10 +111,9 @@ bool ShadingNode::isOutPlugValid(MPlug plug)
     return false;
 }
 
-bool ShadingNode::isAttributeValid(MString attributeName)
+bool ShadingNode::isAttributeValid(const MString& attributeName) const
 {
-    MStatus stat;
-    MFnDependencyNode depFn(this->mobject);
+    MFnDependencyNode depFn(mobject);
     MPlugArray pa;
     depFn.getConnections(pa);
     for (uint pId = 0; pId < pa.length(); pId++)
@@ -135,7 +126,7 @@ bool ShadingNode::isAttributeValid(MString attributeName)
             MString plugName = getAttributeNameFromPlug(parentPlug);
             if (plugName == attributeName)
             {
-                for (size_t inattrId = 0; inattrId < this->inputAttributes.size(); inattrId++)
+                for (size_t inattrId = 0; inattrId < inputAttributes.size(); inattrId++)
                 {
                     if (attributeName == inputAttributes[inattrId].name.c_str())
                         return true;
@@ -147,10 +138,10 @@ bool ShadingNode::isAttributeValid(MString attributeName)
     return false;
 }
 
-void ShadingNode::getConnectedInputObjects(MObjectArray& objectArray)
+void ShadingNode::getConnectedInputObjects(MObjectArray& objectArray) const
 {
     MStatus stat;
-    MFnDependencyNode depFn(this->mobject);
+    MFnDependencyNode depFn(mobject);
     MStringArray aliasArray;
     depFn.getAliasList(aliasArray);
     MObjectArray objectList;
@@ -174,13 +165,10 @@ void ShadingNode::getConnectedInputObjects(MObjectArray& objectArray)
         // name contains node.attributeName, so we have to get rid of the nodeName
         mainPlug.name().split('.', stringArray);
         MString plugName = stringArray[stringArray.length() - 1];
-        if (!this->isAttributeValid(plugName))
+        if (!isAttributeValid(plugName))
             continue;
         getConnectedInNodes(p, objectList);
         makeUniqueArray(objectList);
     }
     objectArray = objectList;
 }
-
-void ShadingNode::getConnectedOutputObjects(MObjectArray& objectArray)
-{}

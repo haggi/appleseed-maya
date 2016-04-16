@@ -26,12 +26,10 @@
 // THE SOFTWARE.
 //
 
-#ifndef MTM_LOGGING_H
-#define MTM_LOGGING_H
+#ifndef UTILITIES_LOGGING_H
+#define UTILITIES_LOGGING_H
 
-#include <maya/MString.h>
-#include <maya/MTimerMessage.h>
-#include <maya/MStreamUtils.h>
+class MString;
 
 class Logging
 {
@@ -52,7 +50,7 @@ class Logging
         OutputWindow
     };
 
-    static void setLogLevel(Logging::LogLevel level);
+    static void setLogLevel(const LogLevel level);
     static void info(const MString& message);
     static void warning(const MString& message);
     static void error(const MString& message);
@@ -60,7 +58,7 @@ class Logging
     static void progress(const MString& message);
 };
 
-static  Logging::LogLevel log_level = Logging::LevelInfo;
-static  Logging::OutputType log_outtype = Logging::ScriptEditor;
+static Logging::LogLevel log_level = Logging::LevelInfo;
+static Logging::OutputType log_outtype = Logging::ScriptEditor;
 
-#endif
+#endif  // !UTILITIES_LOGGING_H

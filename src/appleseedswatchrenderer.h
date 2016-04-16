@@ -54,7 +54,6 @@ class AppleseedSwatchRenderer
     foundation::auto_release_ptr<renderer::Project> mProject;
     std::auto_ptr<renderer::MasterRenderer>         mRenderer;
     renderer::DefaultRendererController             mRendererController;
-    bool                                            mTerminateLoop;
 
     void defineMaterial(MObject shadingNode);
 };

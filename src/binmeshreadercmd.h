@@ -26,20 +26,22 @@
 // THE SOFTWARE.
 //
 
-#ifndef BIN_MESH_READER_H
-#define BIN_MESH_READER_H
+#ifndef BINMESHREADERCMD_H
+#define BINMESHREADERCMD_H
 
-#include <maya/MPxCommand.h>
-#include <maya/MSyntax.h>
-#include <maya/MString.h>
-#include <maya/MObject.h>
-#include <maya/MPoint.h>
+// Maya headers.
 #include <maya/MDagPath.h>
-#include <maya/MPointArray.h>
-#include <maya/MFloatArray.h>
-#include <maya/MObjectArray.h>
 #include <maya/MDagPathArray.h>
+#include <maya/MFloatArray.h>
+#include <maya/MObject.h>
+#include <maya/MObjectArray.h>
+#include <maya/MPoint.h>
+#include <maya/MPointArray.h>
+#include <maya/MPxCommand.h>
+#include <maya/MString.h>
+#include <maya/MSyntax.h>
 
+// Standard headers.
 #include <fstream>
 
 class BinMeshReaderCmd
@@ -53,36 +55,36 @@ class BinMeshReaderCmd
     MStatus doIt(const MArgList& args);
 
   private:
+    std::fstream    mFile;
+    bool            mDoProxy;
+    float           mPercentage;
+    MString         mPath;
+
     void printUsage();
     bool importBinMeshes();
 
-    inline void write(const int value)
+    void write(const int value)
     {
         mFile.write(reinterpret_cast<const char *>(&value), sizeof(int));
     }
 
-    inline void write(const double value)
+    void write(const double value)
     {
         mFile.write(reinterpret_cast<const char *>(&value), sizeof(double));
     }
 
-    inline void write(const MPoint& point)
+    void write(const MPoint& point)
     {
         write(point.x);
         write(point.y);
         write(point.z);
     }
 
-    inline void write(const MPointArray& points)
+    void write(const MPointArray& points)
     {
         for (size_t i = 0, e = points.length(); i < e; i++)
             write(points[i]);
     }
-
-    std::fstream    mFile;
-    bool            mDoProxy;
-    float           mPercentage;
-    MString         mPath;
 };
 
-#endif
+#endif  // !BINMESHREADERCMD_H

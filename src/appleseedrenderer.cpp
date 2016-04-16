@@ -187,16 +187,6 @@ void AppleseedRenderer::render()
                 return;
         }
 
-        if (getWorldPtr()->getRenderType() == World::IPRRENDER)
-        {
-            Event e;
-            e.mType = Event::ADDIPRCALLBACKS;
-            gEventQueue()->push(e);
-
-            while (!RenderQueueWorker::iprCallbacksDone())
-                foundation::sleep(10);
-        }
-
         sceneBuilt = true;
     }
 
@@ -719,7 +709,7 @@ void AppleseedRenderer::createMesh(boost::shared_ptr<MayaObject> obj)
         mesh->push_triangle(renderer::Triangle(vtxId0, vtxId1, vtxId2,  normalId0, normalId1, normalId2, uvId0, uvId1, uvId2, perFaceShadingGroup));
     }
 
-    MayaObject *assemblyObject = getAssemblyMayaObject(obj.get());
+    MayaObject* assemblyObject = getAssemblyMayaObject(obj.get());
     renderer::Assembly *ass = getCreateObjectAssembly(obj);
 
     Logging::debug(MString("Placing mesh ") + mesh->get_name() + " into assembly " + ass->get_name());
@@ -856,64 +846,57 @@ void AppleseedRenderer::defineGeometry()
     }
 }
 
-void AppleseedRenderer::doInteractiveUpdate()
+void AppleseedRenderer::applyInteractiveUpdates(const std::vector<InteractiveElement*>& modifiedElementList)
 {
-    Logging::debug("AppleseedRenderer::doInteractiveUpdate");
-    if (interactiveUpdateList.empty())
-        return;
-    std::vector<InteractiveElement *>::iterator iaIt;
-    for (iaIt = interactiveUpdateList.begin(); iaIt != interactiveUpdateList.end(); iaIt++)
+    std::vector<InteractiveElement *>::const_iterator iaIt;
+    for (iaIt = modifiedElementList.begin(); iaIt != modifiedElementList.end(); iaIt++)
     {
-        InteractiveElement *iElement = *iaIt;
-        // The iElement can be 0 if the interactiveUpdateList is used to trigger a rendering, but no scene element has changed.
-        // This is the case e.g. if the render region or a render globals attribute changes.
-        if (iElement == 0)
-            continue;
+        InteractiveElement* element = *iaIt;
 
-        if (iElement->node.hasFn(MFn::kShadingEngine))
+        if (element->node.hasFn(MFn::kShadingEngine))
         {
-            if (iElement->obj)
+            if (element->obj)
             {
-                Logging::debug(MString("AppleseedRenderer::doInteractiveUpdate - found shadingEngine.") + iElement->name);
-                updateMaterial(iElement->node);
+                Logging::debug(MString("AppleseedRenderer::applyInteractiveUpdates() - found shadingEngine.") + element->name);
+                updateMaterial(element->node);
             }
         }
-        if (iElement->node.hasFn(MFn::kCamera))
+
+        if (element->node.hasFn(MFn::kCamera))
         {
-            Logging::debug(MString("AppleseedRenderer::doInteractiveUpdate - found camera.") + iElement->name);
-            if (iElement->obj)
-                defineCamera(iElement->obj);
+            Logging::debug(MString("AppleseedRenderer::applyInteractiveUpdates() - found camera.") + element->name);
+            if (element->obj)
+                defineCamera(element->obj);
         }
-        if (iElement->node.hasFn(MFn::kLight))
+
+        if (element->node.hasFn(MFn::kLight))
         {
-            Logging::debug(MString("AppleseedRenderer::doInteractiveUpdate - found light.") + iElement->name);
-            if (iElement->obj)
-            {
-                defineLight(iElement->obj);
-            }
+            Logging::debug(MString("AppleseedRenderer::applyInteractiveUpdates() - found light.") + element->name);
+            if (element->obj)
+                defineLight(element->obj);
         }
+
         // appleseedGlobals node.
-        if (MFnDependencyNode(iElement->node).typeId().id() == 0x0011CF40)
+        if (MFnDependencyNode(element->node).typeId().id() == 0x0011CF40)
         {
             defineEnvironment();
         }
-        if (iElement->node.hasFn(MFn::kMesh))
+
+        if (element->node.hasFn(MFn::kMesh))
         {
-            if (iElement->obj->removed)
-            {
+            if (element->obj->removed)
                 continue;
-            }
 
-            if (iElement->triggeredFromTransform)
+            if (element->triggeredFromTransform)
             {
-                Logging::debug(MString("AppleseedRenderer::doInteractiveUpdate mesh ") + iElement->name + " ieNodeName " + getObjectName(iElement->node) + " objDagPath " + iElement->obj->dagPath.fullPathName());
-                MStatus stat;
+                Logging::debug(MString("AppleseedRenderer::applyInteractiveUpdates() mesh ") + element->name + " ieNodeName " + getObjectName(element->node) + " objDagPath " + element->obj->dagPath.fullPathName());
 
-                renderer::AssemblyInstance *assInst = getExistingObjectAssemblyInstance(iElement->obj.get());
+                renderer::AssemblyInstance *assInst = getExistingObjectAssemblyInstance(element->obj.get());
                 if (assInst == 0)
                     continue;
 
-                MMatrix m = iElement->obj->dagPath.inclusiveMatrix(&stat);
+                MStatus stat;
+                MMatrix m = element->obj->dagPath.inclusiveMatrix(&stat);
                 if (!stat)
                     Logging::debug(MString("Error ") + stat.errorString());
                 assInst->transform_sequence().clear();
@@ -922,14 +905,13 @@ void AppleseedRenderer::doInteractiveUpdate()
             }
             else
             {
-                if (iElement->obj->instanceNumber == 0)
-                    updateGeometry(iElement->obj);
-                if (iElement->obj->instanceNumber > 0)
-                    updateInstance(iElement->obj);
+                if (element->obj->instanceNumber == 0)
+                    updateGeometry(element->obj);
+                if (element->obj->instanceNumber > 0)
+                    updateInstance(element->obj);
             }
         }
     }
-    interactiveUpdateList.clear();
 }
 
 void AppleseedRenderer::defineLight(boost::shared_ptr<MayaObject> obj)
@@ -1258,9 +1240,7 @@ foundation::StringArray AppleseedRenderer::defineMaterial(boost::shared_ptr<Maya
                 mayaScene->interactiveUpdateMap[mayaScene->interactiveUpdateMap.size()] = iel;
 
                 if (getWorldPtr()->getRenderState() == World::RSTATERENDERING)
-                {
                     RenderQueueWorker::IPRUpdateCallbacks();
-                }
             }
         }
 

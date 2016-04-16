@@ -26,13 +26,16 @@
 // THE SOFTWARE.
 //
 
-#ifndef MT_SHADING_TOOLS_SHADINGNODE_H
-#define MT_SHADING_TOOLS_SHADINGNODE_H
+#ifndef SHADINGTOOLS_SHADINGNODE_H
+#define SHADINGTOOLS_SHADINGNODE_H
 
+// Maya headers.
 #include <maya/MObject.h>
-#include <maya/MPlug.h>
 #include <maya/MObjectArray.h>
+#include <maya/MPlug.h>
 #include <maya/MString.h>
+
+// Standard headers.
 #include <string>
 #include <vector>
 
@@ -65,41 +68,41 @@ struct ShaderAttribute
     AttributeType atype;
 };
 
-#define SPLUG_LIST std::vector<ShadingPlug>
-
 class ShadingNode
 {
   public:
+
+    ShadingNode();
+    explicit ShadingNode(const MObject& object);
+
+    ShadingNode(const ShadingNode &other);
+
+    void setMObject(const MObject& object);
+    bool isAttributeValid(const MString& attributeName) const;
+    bool isInPlugValid(const MPlug& plug) const;
+    bool isOutPlugValid(const MPlug& plug) const;
+    void getConnectedInputObjects(MObjectArray& objectArray) const;
+
+    void addInputAttribute(const ShaderAttribute& att)
+    {
+        inputAttributes.push_back(att);
+    }
+
+    void addOutputAttribute(const ShaderAttribute& att)
+    {
+        outputAttributes.push_back(att);
+    }
+
+    bool operator==(const ShadingNode& other) const
+    {
+        return mobject == other.mobject;
+    }
+
     MString typeName; //Lambert, MultiplyDivide
     MString fullName; //myLambert1, mdivi_number_123
     MObject mobject;
     std::vector<ShaderAttribute> inputAttributes;
     std::vector<ShaderAttribute> outputAttributes;
-
-    ShadingNode(MObject& object);
-    ShadingNode(const ShadingNode &other);
-    ShadingNode();
-    ~ShadingNode();
-
-    bool operator==(ShadingNode const& otherOne)
-    {
-        return mobject == otherOne.mobject;
-    }
-
-    void setMObject(MObject object);
-    bool isAttributeValid(MString attributeName);
-    bool isInPlugValid(MPlug plug);
-    bool isOutPlugValid(MPlug plug);
-    void getConnectedInputObjects(MObjectArray& objectArray);
-    void getConnectedOutputObjects(MObjectArray& objectArray);
-    void addInputAttribute(ShaderAttribute att)
-    {
-        inputAttributes.push_back(att);
-    }
-    void addOutputAttribute(ShaderAttribute att)
-    {
-        outputAttributes.push_back(att);
-    }
 };
 
-#endif
+#endif  // !SHADINGTOOLS_SHADINGNODE_H

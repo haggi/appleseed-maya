@@ -51,8 +51,6 @@
 RenderGlobals::RenderGlobals()
 {
     static const char* imageFormats[] = { "png", "exr" };
-    currentRenderPass = 0;
-    currentRenderPassElementId = 0;
     maxTraceDepth = 4;
     doMb = false;
     doDof = false;

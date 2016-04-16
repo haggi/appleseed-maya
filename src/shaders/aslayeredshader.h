@@ -26,6 +26,9 @@
 // THE SOFTWARE.
 //
 
+#ifndef SHADERS_ASLAYEREDSHADER_H
+#define SHADERS_ASLAYEREDSHADER_H
+
 #include <maya/MPxNode.h>
 #include <maya/MTypeId.h>
 
@@ -49,3 +52,5 @@ class asLayeredShader : public MPxNode
     static    MObject materialEntryMode;
     static    MObject outColor;
 };
+
+#endif  // !SHADERS_ASLAYEREDSHADER_H

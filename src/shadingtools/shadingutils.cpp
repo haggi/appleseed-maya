@@ -34,17 +34,16 @@
 
 // Maya headers.
 #include <maya/MFnDependencyNode.h>
-#include <maya/MFnParticleSystem.h>
-#include <maya/MFnNurbsSurface.h>
 #include <maya/MFnMesh.h>
+#include <maya/MFnNurbsSurface.h>
+#include <maya/MFnParticleSystem.h>
 #include <maya/MItMeshPolygon.h>
 #include <maya/MPlug.h>
 #include <maya/MPlugArray.h>
 
 bool getObjectShadingGroups(const MObject& geoObject, MObject& sGroup, int instId)
 {
-
-    MPlugArray  connections;
+    MPlugArray connections;
     MFnDependencyNode dependNode(geoObject);
     MPlug plug(geoObject, dependNode.attribute("instObjGroups"));
 
@@ -60,9 +59,8 @@ bool getObjectShadingGroups(const MObject& geoObject, MObject& sGroup, int instI
         }
     }
     else
-    {
         Logging::debug(MString("Object-instObjGroups has no connection to shading group."));
-    }
+
     return false;
 }
 
@@ -84,7 +82,6 @@ bool getObjectShadingGroups(const MDagPath& shapeObjectDP, MObject& shadingGroup
         // Each set is a Shading Group. Loop through them
         for (unsigned int i = 0; i < sets.length(); ++i)
         {
-            MFnDependencyNode fnDepSGNode(sets[i]);
             shadingGroup = sets[i];
             return true;
         }
@@ -117,7 +114,6 @@ bool getObjectShadingGroups(const MDagPath& shapeObjectDP, MObject& shadingGroup
         // Loop through each ShadingGroup Plug
         for (unsigned int i=0; i < SGPlugArray.length(); ++i)
         {
-            MFnDependencyNode fnDepSGNode(SGPlugArray[i].node());
             shadingGroup = SGPlugArray[i].node();
             return true;
         }
@@ -202,16 +198,13 @@ bool getObjectShadingGroups(const MDagPath& shapeObjectDP, MIntArray& perFaceAss
 
             // simply replicate the index for all subdiv faces
             for (int k = 0; k < subdivisions - 1; k++)
-            {
                 perFaceAssignments.append(index);
-            }
         }
         return true;
     }
 
     if (shapeObjectDP.node().hasFn(MFn::kNurbsSurface)||shapeObjectDP.hasFn(MFn::kParticle)||shapeObjectDP.hasFn(MFn::kNParticle))
     {
-
         MObject instObjGroupsAttr;
         if (shapeObjectDP.hasFn(MFn::kNurbsSurface))
         {
@@ -239,7 +232,6 @@ bool getObjectShadingGroups(const MDagPath& shapeObjectDP, MIntArray& perFaceAss
         // Loop through each ShadingGroup Plug
         for (unsigned int i=0; i < SGPlugArray.length(); ++i)
         {
-            MFnDependencyNode fnDepSGNode(SGPlugArray[i].node());
             shadingGroups.append(SGPlugArray[i].node());
             return true;
         }
