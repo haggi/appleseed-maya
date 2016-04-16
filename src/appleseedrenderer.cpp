@@ -42,6 +42,7 @@
 #include "appleseedutils.h"
 #include "event.h"
 #include "mayascene.h"
+#include "nodecallbacks.h"
 #include "renderglobals.h"
 #include "renderqueue.h"
 #include "tilecallback.h"
@@ -70,6 +71,7 @@
 #include <maya/MFloatVectorArray.h>
 #include <maya/MFnCamera.h>
 #include <maya/MGlobal.h>
+#include <maya/MNodeMessage.h>
 #include <maya/MRenderView.h>
 #include <maya/MFileIO.h>
 #include <maya/MItDag.h>
@@ -847,66 +849,71 @@ void AppleseedRenderer::defineGeometry()
     }
 }
 
-void AppleseedRenderer::applyInteractiveUpdates(const std::vector<const EditableElement*>& modifiedElementList)
+void AppleseedRenderer::applyInteractiveUpdates(const MayaScene::EditableElementContainer& editableElements)
 {
-    for (size_t i = 0, e = modifiedElementList.size(); i < e; ++i)
+    boost::shared_ptr<MayaScene> mayaScene = getWorldPtr()->mScene;
+
+    for (MayaScene::EditableElementContainer::const_iterator
+            i = mayaScene->editableElements.begin(),
+            e = mayaScene->editableElements.end(); i != e; ++i)
     {
-        const EditableElement* element = modifiedElementList[i];
-
-        if (element->node.hasFn(MFn::kShadingEngine))
+        if (i->second.isDirty)
         {
-            if (element->obj)
+            if (i->second.node.hasFn(MFn::kShadingEngine))
             {
-                Logging::debug(MString("AppleseedRenderer::applyInteractiveUpdates() - found shadingEngine.") + element->name);
-                updateMaterial(element->node);
+                if (i->second.mayaObject)
+                {
+                    Logging::debug(MString("AppleseedRenderer::applyInteractiveUpdates() - found shadingEngine.") + i->second.name);
+                    updateMaterial(i->second.node);
+                }
             }
-        }
 
-        if (element->node.hasFn(MFn::kCamera))
-        {
-            Logging::debug(MString("AppleseedRenderer::applyInteractiveUpdates() - found camera.") + element->name);
-            if (element->obj)
-                defineCamera(element->obj);
-        }
-
-        if (element->node.hasFn(MFn::kLight))
-        {
-            Logging::debug(MString("AppleseedRenderer::applyInteractiveUpdates() - found light.") + element->name);
-            if (element->obj)
-                defineLight(element->obj);
-        }
-
-        // appleseedGlobals node.
-        if (MFnDependencyNode(element->node).typeId().id() == 0x0011CF40)
-            defineEnvironment();
-
-        if (element->node.hasFn(MFn::kMesh))
-        {
-            if (element->obj->removed)
-                continue;
-
-            if (element->triggeredFromTransform)
+            if (i->second.node.hasFn(MFn::kCamera))
             {
-                Logging::debug(MString("AppleseedRenderer::applyInteractiveUpdates() mesh ") + element->name + " ieNodeName " + getObjectName(element->node) + " objDagPath " + element->obj->dagPath.fullPathName());
+                Logging::debug(MString("AppleseedRenderer::applyInteractiveUpdates() - found camera.") + i->second.name);
+                if (i->second.mayaObject)
+                    defineCamera(i->second.mayaObject);
+            }
 
-                renderer::AssemblyInstance* assInst = getExistingObjectAssemblyInstance(element->obj.get());
-                if (assInst == 0)
+            if (i->second.node.hasFn(MFn::kLight))
+            {
+                Logging::debug(MString("AppleseedRenderer::applyInteractiveUpdates() - found light.") + i->second.name);
+                if (i->second.mayaObject)
+                    defineLight(i->second.mayaObject);
+            }
+
+            // appleseedGlobals node.
+            if (MFnDependencyNode(i->second.node).typeId().id() == 0x0011CF40)
+                defineEnvironment();
+
+            if (i->second.node.hasFn(MFn::kMesh))
+            {
+                if (i->second.mayaObject->removed)
                     continue;
 
-                MStatus stat;
-                const MMatrix m = element->obj->dagPath.inclusiveMatrix(&stat);
-                if (!stat)
-                    Logging::debug(MString("Error ") + stat.errorString());
-                assInst->transform_sequence().clear();
-                fillTransformMatrices(m, assInst);
-                assInst->bump_version_id();
-            }
-            else
-            {
-                if (element->obj->instanceNumber == 0)
-                    updateGeometry(element->obj);
-                if (element->obj->instanceNumber > 0)
-                    updateInstance(element->obj);
+                if (i->second.isTransformed)
+                {
+                    Logging::debug(MString("AppleseedRenderer::applyInteractiveUpdates() mesh ") + i->second.name + " ieNodeName " + getObjectName(i->second.node) + " objDagPath " + i->second.mayaObject->dagPath.fullPathName());
+
+                    renderer::AssemblyInstance* assInst = getExistingObjectAssemblyInstance(i->second.mayaObject.get());
+                    if (assInst == 0)
+                        continue;
+
+                    MStatus stat;
+                    const MMatrix m = i->second.mayaObject->dagPath.inclusiveMatrix(&stat);
+                    if (!stat)
+                        Logging::debug(MString("Error ") + stat.errorString());
+                    assInst->transform_sequence().clear();
+                    fillTransformMatrices(m, assInst);
+                    assInst->bump_version_id();
+                }
+                else
+                {
+                    if (i->second.mayaObject->instanceNumber == 0)
+                        updateGeometry(i->second.mayaObject);
+                    if (i->second.mayaObject->instanceNumber > 0)
+                        updateInstance(i->second.mayaObject);
+                }
             }
         }
     }
@@ -1230,15 +1237,12 @@ foundation::StringArray AppleseedRenderer::defineMaterial(boost::shared_ptr<Maya
         {
             if (mayaScene)
             {
-                EditableElement element;
+                MCallbackId callbackId = MNodeMessage::addNodeDirtyCallback(materialNode, IPRNodeDirtyCallback);
+                EditableElement& element = mayaScene->editableElements[callbackId];
                 element.mobj = surfaceShaderNode;
-                element.obj = obj;
+                element.mayaObject = obj;
                 element.name = surfaceShaderName;
                 element.node = materialNode;
-                mayaScene->editableElements.push_back(element);
-
-                if (getWorldPtr()->getRenderState() == World::RSTATERENDERING)
-                    RenderQueue::IPRUpdateCallbacks();
             }
         }
 

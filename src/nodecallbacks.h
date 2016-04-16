@@ -26,30 +26,20 @@
 // THE SOFTWARE.
 //
 
-#ifndef RENDERQUEUE_H
-#define RENDERQUEUE_H
+#ifndef NODECALLBACKS_H
+#define NODECALLBACKS_H
 
-// appleseed-maya headers.
-#include "world.h"
+// Maya headers.
+#include <maya/MNodeMessage.h>
 
 // Forward declarations.
-class Event;
-class MDagPath;
+class MObject;
+class MPlug;
 
-void pushEvent(const Event& e);
-void renderQueueWorkerCallback(float time, float lastTime, void* userPtr);
+void IPRAttributeChangedCallback(MNodeMessage::AttributeMessage msg, MPlug& plug, MPlug& otherPlug, void* userPtr);
+void IPRNodeDirtyCallback(void* userPtr);
+void IPRIdleCallback(float time, float lastTime, void* userPtr);
+void IPRNodeAddedCallback(MObject& node, void* userPtr);
+void IPRNodeRemovedCallback(MObject& node, void* userPtr);
 
-void initRender(
-    const World::RenderType renderType,
-    const int               width,
-    const int               height,
-    const MDagPath          cameraDagPath,
-    const bool              doRenderRegion);
-
-void iprUpdateRenderRegion();
-
-void stopRendering();
-void startRendering();
-void waitUntilRenderFinishes();
-
-#endif  // !RENDERQUEUE_H
+#endif  // !NODECALLBACKS_H

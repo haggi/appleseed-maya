@@ -110,6 +110,8 @@ set (sources
     mayascene.h
     meshwalker.cpp
     meshwalker.h
+    nodecallbacks.cpp
+    nodecallbacks.h
     pluginmain.cpp
     proxymesh.cpp
     proxymesh.h
