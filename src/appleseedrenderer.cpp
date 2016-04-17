@@ -1233,11 +1233,13 @@ foundation::StringArray AppleseedRenderer::defineMaterial(boost::shared_ptr<Maya
         }
 
         // If we are in IPR mode, save all translated shading nodes to the interactive update list.
+        // The callback is added to the surfaceShaderNode, but we need the shading group (materialNode) to update the material 
+        // which is assigned to the element.node.
         if (getWorldPtr()->getRenderType() == World::IPRRENDER)
         {
             if (mayaScene)
             {
-                MCallbackId callbackId = MNodeMessage::addNodeDirtyCallback(materialNode, IPRNodeDirtyCallback);
+                MCallbackId callbackId = MNodeMessage::addNodeDirtyCallback(surfaceShaderNode, IPRNodeDirtyCallback);
                 EditableElement& element = mayaScene->editableElements[callbackId];
                 element.mobj = surfaceShaderNode;
                 element.mayaObject = obj;

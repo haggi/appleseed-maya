@@ -194,38 +194,6 @@ namespace
         renderEventQueue.push(event);
     }
 
-    void markTransformsChildrenAsDirty()
-    {
-        boost::shared_ptr<MayaScene> mayaScene = getWorldPtr()->mScene;
-
-        for (MayaScene::EditableElementContainer::iterator
-                i = mayaScene->editableElements.begin(),
-                e = mayaScene->editableElements.end(); i != e; ++i)
-        {
-            if (i->second.isDirty)
-            {
-                if (i->second.node.hasFn(MFn::kTransform))
-                {
-                    MItDag childIter;
-                    for (childIter.reset(i->second.node); !childIter.isDone(); childIter.next())
-                    {
-                        if (childIter.currentItem().hasFn(MFn::kShape))
-                        {
-                            for (MayaScene::EditableElementContainer::iterator
-                                    j = mayaScene->editableElements.begin(),
-                                    f = mayaScene->editableElements.end(); j != f; ++j)
-                            {
-                                j->second.isDirty = true;
-                                j->second.isTransformed = true;
-                                break;
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-
     void addNodeCallbacks()
     {
         boost::shared_ptr<MayaScene> mayaScene = getWorldPtr()->mScene;
