@@ -104,34 +104,39 @@ void IPRNodeDirtyCallback(void* userPtr)
     mayaScene->isAnyDirty = true;
 }
 
-void markTransformsChildrenAsDirty()
+namespace
 {
-    boost::shared_ptr<MayaScene> mayaScene = getWorldPtr()->mScene;
-
-    for (MayaScene::EditableElementContainer::iterator
-        i = mayaScene->editableElements.begin(),
-        e = mayaScene->editableElements.end(); i != e; ++i)
+    void markTransformsChildrenAsDirty()
     {
-        if (i->second.isDirty)
+        boost::shared_ptr<MayaScene> mayaScene = getWorldPtr()->mScene;
+
+        for (MayaScene::EditableElementContainer::iterator
+            i = mayaScene->editableElements.begin(),
+            e = mayaScene->editableElements.end(); i != e; ++i)
         {
-            if (i->second.node.hasFn(MFn::kTransform))
+            if (i->second.isDirty)
             {
-                MItDag childIter;
-                for (childIter.reset(i->second.node); !childIter.isDone(); childIter.next())
+                if (i->second.node.hasFn(MFn::kTransform))
                 {
-                    if (childIter.currentItem().hasFn(MFn::kShape))
+                    MItDag childIter;
+                    for (childIter.reset(i->second.node); !childIter.isDone(); childIter.next())
                     {
-                        for (MayaScene::EditableElementContainer::iterator
-                            j = mayaScene->editableElements.begin(),
-                            f = mayaScene->editableElements.end(); j != f; ++j)
+                        if (childIter.currentItem().hasFn(MFn::kShape))
                         {
-                            MString namea = getObjectName(childIter.currentItem());
-                            MString nameb = getObjectName(j->second.node);
-                            if (childIter.currentItem() == j->second.node)
+                            for (MayaScene::EditableElementContainer::iterator
+                                j = mayaScene->editableElements.begin(),
+                                f = mayaScene->editableElements.end(); j != f; ++j)
                             {
-                                j->second.isDirty = true;
-                                j->second.isTransformed = true;
-                                break;
+                                MString chName = getObjectName(childIter.currentItem());
+                                MString secName = getObjectName(j->second.node);
+                                MObject a = childIter.currentItem();
+                                MObject b = j->second.node;
+                                if (childIter.currentItem() == j->second.node)
+                                {
+                                    j->second.isDirty = true;
+                                    j->second.isTransformed = true;
+                                    break;
+                                }
                             }
                         }
                     }
@@ -170,6 +175,8 @@ void IPRIdleCallback(float time, float lastTime, void* userPtr)
 // So we simply use the shape node, get it's parent - a shape node and let the scene parser do the rest.
 // Then add a node dirty callback for the new elements. By adding the callback ids to the idInteractiveMap, the
 // IPR should detect a modification during the netxt update cycle.
+// Interestingly, if a object is duplicated, it first receives a prefix called "__PrenotatoPerDuplicare_", then later 
+// the geometry will be renamed to the correct name.
 
 // Handling of surface shaders is a bit different. A shader is not assigned directly to a surface but it is connected to a shading group
 // which is nothing else but a objectSet. If a new surface shader is created, it is not in use until it is assigned to an object what means it is connected
@@ -198,42 +205,53 @@ void IPRNodeAddedCallback(MObject& node, void* userPtr)
     }
     MFnDagNode dagNode(node);
     MString p = dagNode.fullPathName();
-    MDagPath dagPath;
-    dagNode.getPath(dagPath);
-    dagPath.pop();
-    MObject transform = dagPath.node();
+    MDagPath transformPath;
+    dagNode.getPath(transformPath);
+    MDagPath dagPath = transformPath;
+    transformPath.pop();
+    MObject transform = transformPath.node();
+    MString name = getObjectName(dagPath.node());
     MString tname = getObjectName(transform);
+    Logging::debug(MString("Node added: ") + name);
 
-    // Here the new object is added to the object list and to the interactive object list.
-    mayaScene->parseSceneHierarchy(dagPath, 0, boost::shared_ptr<ObjectAttributes>(), boost::shared_ptr<MayaObject>());
+    // Here the new object and its children are added to the object list and to the interactive object list.
+    mayaScene->parseSceneHierarchy(transformPath, 0, boost::shared_ptr<ObjectAttributes>(), boost::shared_ptr<MayaObject>());
 
-    //// Now we re-add all interactive objects to the map.
-    //idInteractiveMap.clear();
-    //for (MayaScene::EditableElementContainer::iterator
-    //        i = mayaScene->editableElements.begin(),
-    //        e = mayaScene->editableElements.end(); i != e; ++i)
-    //{
-    //    EditableElement& element = *i;
-    //    if (element.node == node || element.node == transform)
-    //    {
-    //        // Problem: a newly created procedural mesh does not yet have a shape because it not yet connected to its creator node.
-    //        // We have to find a reliable solution for this. Maybe we can add an attribute callback and check for inMesh.
-    //        MCallbackId id = MNodeMessage::addNodeDirtyCallback(element.node, IPRNodeDirtyCallback, &element);
-    //        objIdMap[id] = element.node;
+    for (MayaScene::EditableElementContainer::iterator
+        i = mayaScene->editableElements.begin(),
+        e = mayaScene->editableElements.end(); i != e; ++i)
+    {
+        if (i->second.mayaObject == 0)
+            continue;
+        if (i->second.mayaObject->dagPath == dagPath)
+        {
+            i->second.isDirty = true;
+            mayaScene->isAnyDirty = true;
+            break;
+        }
+    }
+    IPRIdleCallback(0.0f, 0.0f, 0);
+}
 
-    //        // We only add the shape node to the update map because we do not want a transform update.
-    //        if (element.node == node)
-    //            idInteractiveMap[id] = &element;
 
-    //        if (element.node.hasFn(MFn::kMesh))
-    //        {
-    //            MCallbackId id = MNodeMessage::addAttributeChangedCallback(element.node, IPRAttributeChangedCallback, &element);
-    //            objIdMap[id] = element.node;
-    //        }
-
-    //        break;
-    //    }
-    //}
+void IPRNodeRenamedCallback(MObject& node, void* userPtr)
+{
+    boost::shared_ptr<MayaScene> mayaScene = getWorldPtr()->mScene;
+    MString nname = getObjectName(node);
+    for (MayaScene::EditableElementContainer::iterator
+        i = mayaScene->editableElements.begin(),
+        e = mayaScene->editableElements.end(); i != e; ++i)
+    {
+        if (i->second.mayaObject != 0)
+        {
+            if (i->second.node == node)
+            {
+                
+                MString f = "Found";
+                break;
+            }
+        }
+    }
 }
 
 void IPRNodeRemovedCallback(MObject& node, void* userPtr)

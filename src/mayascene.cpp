@@ -191,6 +191,7 @@ bool MayaScene::parseSceneHierarchy(MDagPath currentPath, int level, boost::shar
             element.name = mayaObject->fullName;
             element.node = mayaObject->mobject;
         }
+        MNodeMessage::addNameChangedCallback(mayaObject->mobject, IPRNodeRenamedCallback);
     }
 
     //

@@ -38,9 +38,9 @@ class MPlug;
 
 void IPRAttributeChangedCallback(MNodeMessage::AttributeMessage msg, MPlug& plug, MPlug& otherPlug, void* userPtr);
 void IPRNodeDirtyCallback(void* userPtr);
-void markTransformsChildrenAsDirty();
 void IPRIdleCallback(float time, float lastTime, void* userPtr);
 void IPRNodeAddedCallback(MObject& node, void* userPtr);
 void IPRNodeRemovedCallback(MObject& node, void* userPtr);
+void IPRNodeRenamedCallback(MObject& node, void* userPtr);
 
 #endif  // !NODECALLBACKS_H
