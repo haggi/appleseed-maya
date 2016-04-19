@@ -917,7 +917,13 @@ void AppleseedRenderer::defineLight(boost::shared_ptr<MayaObject> obj)
     renderer::Light *light = lightAssembly->lights().get_by_name(obj->shortName.asChar());
     if (light)
         lightAssembly->lights().remove(light);
-
+    
+    if (obj->removed)
+    {
+        getMasterAssemblyFromProject(project.get())->assemblies().remove(lightAssembly->get_uid);
+        getMasterAssemblyFromProject(project.get())->assembly_instances().remove(lightAssemblyInstance->get_uid());
+        return;
+    }
     MFnDependencyNode depFn(obj->mobject);
 
     if (obj->mobject.hasFn(MFn::kPointLight))

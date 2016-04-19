@@ -36,8 +36,8 @@
 #include "world.h"
 
 // Maya headers.
-#include <maya/MPlug.h>
 #include <maya/MItDag.h>
+#include <maya/MPlug.h>
 
 // Boost headers.
 #include <boost/shared_ptr.hpp>
@@ -83,7 +83,6 @@ void IPRAttributeChangedCallback(MNodeMessage::AttributeMessage msg, MPlug& plug
                 element.mobj = sgNode;
                 element.name = getObjectName(sgNode);
                 element.node = sgNode;
-                //element.mayaObject = userData->obj;
             }
         }
     }
@@ -127,10 +126,6 @@ namespace
                                 j = mayaScene->editableElements.begin(),
                                 f = mayaScene->editableElements.end(); j != f; ++j)
                             {
-                                MString chName = getObjectName(childIter.currentItem());
-                                MString secName = getObjectName(j->second.node);
-                                MObject a = childIter.currentItem();
-                                MObject b = j->second.node;
                                 if (childIter.currentItem() == j->second.node)
                                 {
                                     j->second.isDirty = true;
@@ -245,9 +240,7 @@ void IPRNodeRenamedCallback(MObject& node, void* userPtr)
         if (i->second.mayaObject != 0)
         {
             if (i->second.node == node)
-            {
-                
-                MString f = "Found";
+            {                
                 break;
             }
         }
