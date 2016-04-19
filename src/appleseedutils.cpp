@@ -381,6 +381,7 @@ void fillMatrices(boost::shared_ptr<MayaObject> obj, renderer::TransformSequence
     if (getWorldPtr()->getRenderType() == World::IPRRENDER)
     {
         obj->transformMatrices.clear();
+        MMatrix m = obj->dagPath.inclusiveMatrix();
         obj->transformMatrices.push_back(obj->dagPath.inclusiveMatrix());
     }
     size_t numSteps = obj->transformMatrices.size();

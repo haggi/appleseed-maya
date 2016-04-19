@@ -531,30 +531,21 @@ void AppleseedRenderer::defineEnvironment()
         {
             double sunTheta = getDoubleAttr("sun_theta", appleseedGlobals, 30.0);
             double sunPhi = getDoubleAttr("sun_phi", appleseedGlobals, 60.0);
+            MObject connectedNode = getConnectedInNode(getRenderGlobalsNode(), "physicalSunConnection");
 
-            const bool usePhysicalSun = getBoolAttr("physicalSun", appleseedGlobals, true);
-            if (usePhysicalSun)
+            if (connectedNode != MObject::kNullObj)
             {
-                // Get the connected sun light.
-                MObject connectedNode = getConnectedInNode(getRenderGlobalsNode(), "physicalSunConnection");
-                if (connectedNode != MObject::kNullObj)
+                MFnTransform tn(connectedNode);
+                MMatrix tm = tn.transformationMatrix(&stat);
+                if (stat)
                 {
-                    MFnTransform tn(connectedNode);
-                    MMatrix tm = tn.transformationMatrix(&stat);
-                    if (stat)
-                    {
-                        MVector sunOrient(0.0, 0.0, 1.0);
-                        sunOrient *= tm;
-                        sunOrient.normalize();
-                        const foundation::Vector3d unitVector(sunOrient.x, sunOrient.y, sunOrient.z);
-                        renderer::unit_vector_to_angles(unitVector, sunTheta, sunPhi);
-                        sunTheta = foundation::rad_to_deg(sunTheta);
-                        sunPhi = foundation::rad_to_deg(sunPhi);
-                    }
-                }
-                else
-                {
-                    Logging::warning("physicalSunConnection plug has no connection, but use physical sun is turned on. Please correct.");
+                    MVector sunOrient(0.0, 0.0, 1.0);
+                    sunOrient *= tm;
+                    sunOrient.normalize();
+                    const foundation::Vector3d unitVector(sunOrient.x, sunOrient.y, sunOrient.z);
+                    renderer::unit_vector_to_angles(unitVector, sunTheta, sunPhi);
+                    sunTheta = foundation::rad_to_deg(sunTheta);
+                    sunPhi = foundation::rad_to_deg(sunPhi);
                 }
             }
 
@@ -924,6 +915,9 @@ void AppleseedRenderer::defineLight(boost::shared_ptr<MayaObject> obj)
     renderer::Assembly *lightAssembly = getCreateObjectAssembly(obj);
     renderer::AssemblyInstance *lightAssemblyInstance = getExistingObjectAssemblyInstance(obj.get());
     renderer::Light *light = lightAssembly->lights().get_by_name(obj->shortName.asChar());
+    if (light)
+        lightAssembly->lights().remove(light);
+
     MFnDependencyNode depFn(obj->mobject);
 
     if (obj->mobject.hasFn(MFn::kPointLight))
@@ -935,15 +929,12 @@ void AppleseedRenderer::defineLight(boost::shared_ptr<MayaObject> obj)
         MString colorAttribute = obj->shortName + "_intensity";
         defineColor(project.get(), colorAttribute.asChar(), col, intensity);
         int decay = getEnumInt("decayRate", depFn);
-        if (light == 0)
-        {
-            foundation::auto_release_ptr<renderer::Light> lp = foundation::auto_release_ptr<renderer::Light>(
-                renderer::PointLightFactory().create(
-                obj->shortName.asChar(),
-                renderer::ParamArray()));
-            light = lp.get();
-            lightAssembly->lights().insert(lp);
-        }
+        foundation::auto_release_ptr<renderer::Light> lp = foundation::auto_release_ptr<renderer::Light>(
+            renderer::PointLightFactory().create(
+            obj->shortName.asChar(),
+            renderer::ParamArray()));
+        light = lp.get();
+        lightAssembly->lights().insert(lp);
         renderer::ParamArray& params = light->get_parameters();
         params.insert("intensity", colorAttribute);
         params.insert("intensity_multiplier", intensity);
@@ -965,16 +956,12 @@ void AppleseedRenderer::defineLight(boost::shared_ptr<MayaObject> obj)
         const double penumbraAngle = getDegrees("penumbraAngle", depFn);
         const double innerAngle = coneAngle;
         const double outerAngle = coneAngle + penumbraAngle;
-
-        if (light == 0)
-        {
-            foundation::auto_release_ptr<renderer::Light> lp =
-                renderer::SpotLightFactory().create(
-                    obj->shortName.asChar(),
-                    renderer::ParamArray());
-            light = lp.get();
-            lightAssembly->lights().insert(lp);
-        }
+        foundation::auto_release_ptr<renderer::Light> lp =
+            renderer::SpotLightFactory().create(
+                obj->shortName.asChar(),
+                renderer::ParamArray());
+        light = lp.get();
+        lightAssembly->lights().insert(lp);
 
         renderer::ParamArray& params = light->get_parameters();
         params.insert("radiance", colorAttribute);
@@ -999,27 +986,9 @@ void AppleseedRenderer::defineLight(boost::shared_ptr<MayaObject> obj)
         defineColor(project.get(), colorAttribute.asChar(), col, intensity);
         bool isSunlight = isSunLight(obj->mobject);
 
-        if (light == 0)
-        {
-            if (isSunlight)
-            {
-                foundation::auto_release_ptr<renderer::Light> lp = renderer::SunLightFactory().create(
-                    obj->shortName.asChar(),
-                    renderer::ParamArray());
-                light = lp.get();
-                lightAssembly->lights().insert(lp);
-            }
-            else
-            {
-                foundation::auto_release_ptr<renderer::Light> lp = renderer::DirectionalLightFactory().create(
-                    obj->shortName.asChar(),
-                    renderer::ParamArray());
-                light = lp.get();
-                lightAssembly->lights().insert(lp);
-            }
-        }
-
-        renderer::ParamArray& params = light->get_parameters();
+        renderer::ParamArray params;
+        params.insert("importance_multiplier", importance_multiplier);
+        params.insert("cast_indirect_light", cast_indirect_light);
         if (isSunlight)
         {
             defineEnvironment(); // update environment
@@ -1029,14 +998,22 @@ void AppleseedRenderer::defineLight(boost::shared_ptr<MayaObject> obj)
             params.insert("environment_edf", "sky_edf");
             params.insert("irradiance", colorAttribute);
             params.insert("irradiance_multiplier", intensity);
+            foundation::auto_release_ptr<renderer::Light> lp = renderer::SunLightFactory().create(
+                obj->shortName.asChar(),
+                params);
+            light = lp.get();
+            lightAssembly->lights().insert(lp);
         }
         else
         {
             params.insert("irradiance", colorAttribute);
             params.insert("irradiance_multiplier", intensity);
+            foundation::auto_release_ptr<renderer::Light> lp = renderer::DirectionalLightFactory().create(
+                obj->shortName.asChar(),
+                params);
+            light = lp.get();
+            lightAssembly->lights().insert(lp);
         }
-        params.insert("importance_multiplier", importance_multiplier);
-        params.insert("cast_indirect_light", cast_indirect_light);
 
         fillTransformMatrices(obj, light);
     }
