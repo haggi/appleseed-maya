@@ -54,10 +54,12 @@ class EditableElement
 
     bool isDirty;
     bool isTransformed;     // to recognize if we have to update the shape or only the instance transform
+    bool isDeformed;        // to recognize if a geometry is deformed, we can have both, deform and transform
 
     EditableElement()
       : isDirty(false)
       , isTransformed(false)
+      , isDeformed(false)
     {
     }
 };

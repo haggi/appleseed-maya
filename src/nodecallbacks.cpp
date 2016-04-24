@@ -30,6 +30,7 @@
 #include "nodecallbacks.h"
 
 // appleseed-maya headers.
+#include "appleseedutils.h"
 #include "utilities/logging.h"
 #include "mayascene.h"
 #include "renderqueue.h"
@@ -79,10 +80,9 @@ void IPRAttributeChangedCallback(MNodeMessage::AttributeMessage msg, MPlug& plug
             {
                 Logging::debug(MString("IPRAttributeChangedCallback. Found shading group on the other side: ") + getObjectName(otherPlug.node()));
                 EditableElement& element = mayaScene->editableElements[MMessage::currentCallbackId()];
-                MObject sgNode = otherPlug.node();
-                element.mobj = sgNode;
-                element.name = getObjectName(sgNode);
-                element.node = sgNode;
+                element.isDirty = true;
+                mayaScene->isAnyDirty = true;
+                element.isDeformed = true; // trigger a complete mesh update
             }
         }
     }
@@ -221,15 +221,14 @@ void IPRNodeAddedCallback(MObject& node, void* userPtr)
         if (i->second.mayaObject->dagPath == dagPath)
         {
             i->second.isDirty = true;
+            i->second.isDeformed = true;
             mayaScene->isAnyDirty = true;
             break;
         }
     }
-    IPRIdleCallback(0.0f, 0.0f, 0);
 }
 
-
-void IPRNodeRenamedCallback(MObject& node, void* userPtr)
+void IPRNodeRenamedCallback(MObject& node, const MString& oldName, void* userPtr)
 {
     boost::shared_ptr<MayaScene> mayaScene = getWorldPtr()->mScene;
     MString nname = getObjectName(node);
@@ -240,7 +239,7 @@ void IPRNodeRenamedCallback(MObject& node, void* userPtr)
         if (i->second.mayaObject != 0)
         {
             if (i->second.node == node)
-            {                
+            {
                 break;
             }
         }
@@ -251,16 +250,23 @@ void IPRNodeRemovedCallback(MObject& node, void* userPtr)
 {
     // Find the MayaObject and mark it as removed.
     boost::shared_ptr<MayaScene> mayaScene = getWorldPtr()->mScene;
-    for (MayaScene::EditableElementContainer::const_iterator
+    std::vector<const MCallbackId> removeIds;
+    for (MayaScene::EditableElementContainer::iterator
             i = mayaScene->editableElements.begin(),
             e = mayaScene->editableElements.end(); i != e; ++i)
     {
-        const EditableElement& element = i->second;
+        EditableElement& element = i->second;
         if (element.node == node)
         {
             MNodeMessage::removeCallback(i->first);
+            removeIds.push_back(i->first);
             if (element.mayaObject)
+            {
                 element.mayaObject->removed = true;
+                element.isDirty = true;
+                element.isDeformed = true; // trigger mesh update
+                mayaScene->isAnyDirty = true;
+            }
             break;
         }
     }

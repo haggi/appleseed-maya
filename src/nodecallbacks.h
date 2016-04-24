@@ -41,6 +41,6 @@ void IPRNodeDirtyCallback(void* userPtr);
 void IPRIdleCallback(float time, float lastTime, void* userPtr);
 void IPRNodeAddedCallback(MObject& node, void* userPtr);
 void IPRNodeRemovedCallback(MObject& node, void* userPtr);
-void IPRNodeRenamedCallback(MObject& node, void* userPtr);
+void IPRNodeRenamedCallback(MObject& node, const MString& oldName, void* userPtr);
 
 #endif  // !NODECALLBACKS_H
