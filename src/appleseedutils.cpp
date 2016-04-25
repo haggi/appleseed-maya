@@ -200,7 +200,6 @@ renderer::Assembly* getAssembly(const MayaObject* obj)
     return master->assemblies().get_by_name(assemblyName.asChar());
 }
 
-
 renderer::Assembly* createAssembly(const MayaObject* obj)
 {
     MayaObject* assemblyObject = getAssemblyMayaObject(obj);
@@ -214,7 +213,6 @@ renderer::Assembly* createAssembly(const MayaObject* obj)
         return master;
 
     MString assemblyName = getAssemblyName(assemblyObject);
-    MString assemblyInstanceName = getAssemblyInstanceName(assemblyObject);
 
     if (assemblyName == "world")
         return master;
@@ -224,6 +222,14 @@ renderer::Assembly* createAssembly(const MayaObject* obj)
     renderer::Assembly* ass = assembly.get();
     master->assemblies().insert(assembly);
 
+    return ass;
+}
+
+renderer::Assembly* getOrCreateAssembly(const MayaObject* obj)
+{
+    renderer::Assembly *ass = getAssembly(obj);
+    if (ass == 0)
+        ass = createAssembly(obj);
     return ass;
 }
 
@@ -252,6 +258,14 @@ renderer::AssemblyInstance* getAssemblyInstance(const MayaObject* obj)
     if (assemblyObject == 0 || (obj->mobject.hasFn(MFn::kLight) && !obj->mobject.hasFn(MFn::kAreaLight)))
         return masterAssemblyInstance;
     return masterAssembly->assembly_instances().get_by_name(assemblyInstanceName.asChar());
+}
+
+renderer::AssemblyInstance* getOrCreateAssemblyInstance(const MayaObject* obj)
+{
+    renderer::AssemblyInstance* assInst = getAssemblyInstance(obj);
+    if (assInst == 0)
+        assInst = createAssemblyInstance(obj);
+    return assInst;
 }
 
 void defineColor(renderer::Project* project, const char* name, MColor color, float intensity, MString colorSpace)
@@ -384,14 +398,16 @@ void fillMatrices(const MayaObject* obj, renderer::TransformSequence& transformS
     MMatrix conversionMatrix = getWorldPtr()->mRenderGlobals->globalConversionMatrix;
     float scaleFactor = getWorldPtr()->mRenderGlobals->scaleFactor;
     transformSequence.clear();
-    std::vector<MMatrix> transformMatrices = obj->transformMatrices;
+    std::vector<MMatrix> transformMatrices;
 
     // in ipr mode we have to update the matrix manually
     if (getWorldPtr()->getRenderType() == World::IPRRENDER)
     {
-        transformMatrices.clear();
-        MMatrix m = obj->dagPath.inclusiveMatrix();
         transformMatrices.push_back(obj->dagPath.inclusiveMatrix());
+    }
+    else
+    {
+        transformMatrices = obj->transformMatrices;
     }
     size_t numSteps = transformMatrices.size();
     size_t divSteps = numSteps;
@@ -422,12 +438,15 @@ void fillMatrices(const MayaObject* obj, renderer::TransformSequence& transformS
 
 void fillTransformMatrices(const MayaObject* obj, renderer::Light* light)
 {
-    std::vector<MMatrix> transformMatrices = obj->transformMatrices;
+    std::vector<MMatrix> transformMatrices;
     // in ipr mode we have to update the matrix manually
     if (getWorldPtr()->getRenderType() == World::IPRRENDER)
     {
-        transformMatrices.clear();
         transformMatrices.push_back(obj->dagPath.inclusiveMatrix());
+    } 
+    else
+    {
+        transformMatrices = obj->transformMatrices;
     }
     foundation::Matrix4d appMatrix;
     MMatrix colMatrix = transformMatrices[0];

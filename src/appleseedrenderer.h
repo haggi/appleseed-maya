@@ -76,22 +76,14 @@
 #include <string>
 #include <vector>
 
-#define RENDERGLOBALS_NODE      0x0011CF40
-#define PHYSICAL_SURFACE_SHADER 0x0011CF46
-#define AO_SHADER               0x0011CF41
-#define WIREFRAME_SHADER        0x00106EF6
-#define AOVOXEL_SHADER          0x0011CF42
-#define FASTSSS_SHADER          0x0011CF45
-#define CONST_SHADER            0x0011CF43
-#define DIAGNOSTIC_SHADER       0x0011CF44
-#define SMOKE_SHADER            0x0011CF47
-
 // Forward declarations.
 class MayaObject;
 class MObject;
 class mtap_MayaScene;
 class mtap_RenderGlobals;
 class ShadingNode;
+
+#define APPLESEED_GLOBALS_ID 0x0011CF40
 
 class AppleseedRenderer
 {

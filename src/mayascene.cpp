@@ -191,6 +191,7 @@ bool MayaScene::parseSceneHierarchy(MDagPath currentPath, int level, boost::shar
             element.name = mayaObject->fullName;
             element.node = mayaObject->mobject;
         }
+
         MNodeMessage::addNameChangedCallback(mayaObject->mobject, IPRNodeRenamedCallback);
     }
 
@@ -224,7 +225,6 @@ bool MayaScene::parseSceneHierarchy(MDagPath currentPath, int level, boost::shar
             Logging::debug(MString("Child path problem: parent: ") + currentPath.fullPathName() + " child id " + chId + " type " + currentPath.child(chId).apiTypeStr());
             continue;
         }
-        MString childName = childPath.fullPathName();
         parseSceneHierarchy(childPath, level + 1, currentAttributes, mayaObject);
     }
 

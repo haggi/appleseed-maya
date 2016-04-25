@@ -62,20 +62,20 @@
 #include "foundation/platform/thread.h"
 
 // Maya headers.
-#include <maya/MFnDependencyNode.h>
-#include <maya/MFnMesh.h>
-#include <maya/MItMeshPolygon.h>
-#include <maya/MPointArray.h>
+#include <maya/MFileIO.h>
 #include <maya/MFloatPointArray.h>
 #include <maya/MFloatArray.h>
 #include <maya/MFloatVectorArray.h>
 #include <maya/MFnCamera.h>
-#include <maya/MGlobal.h>
-#include <maya/MNodeMessage.h>
-#include <maya/MRenderView.h>
-#include <maya/MFileIO.h>
-#include <maya/MItDag.h>
+#include <maya/MFnDependencyNode.h>
+#include <maya/MFnMesh.h>
 #include <maya/MFnTransform.h>
+#include <maya/MGlobal.h>
+#include <maya/MItDag.h>
+#include <maya/MItMeshPolygon.h>
+#include <maya/MNodeMessage.h>
+#include <maya/MPointArray.h>
+#include <maya/MRenderView.h>
 
 AppleseedRenderer::AppleseedRenderer()
   : sceneBuilt(false)
@@ -374,9 +374,8 @@ void AppleseedRenderer::defineCamera(boost::shared_ptr<MayaObject> cam)
     foundation::auto_release_ptr<renderer::Camera> appleCam = renderer::ThinLensCameraFactory().create(
         cam->shortName.asChar(),
         camParams);
-    renderer::Camera* camera = appleCam.get();
     project->get_scene()->set_camera(appleCam);
-    fillMatrices(cam.get(), camera->transform_sequence());
+    fillMatrices(cam.get(), appleCam.get()->transform_sequence());
 }
 
 void AppleseedRenderer::defineCamera()
@@ -704,24 +703,19 @@ void AppleseedRenderer::createMesh(boost::shared_ptr<MayaObject> obj)
     }
 
     MayaObject* assemblyObject = getAssemblyMayaObject(obj.get());
-    renderer::Assembly* ass = getAssembly(obj.get());
-    if (ass == 0)
-        ass = createAssembly(obj.get());
-    renderer::AssemblyInstance* assInst = getAssemblyInstance(obj.get());
-    if (assInst == 0)
-        assInst = createAssemblyInstance(obj.get());
-
-    renderer::MeshObject *meshPtr = (renderer::MeshObject *)ass->objects().get_by_name(meshName.asChar());
+    renderer::Assembly* ass = getOrCreateAssembly(obj.get());
+    renderer::AssemblyInstance* assInst = getOrCreateAssemblyInstance(obj.get());
+    renderer::Object* meshPtr = ass->objects().get_by_name(meshName.asChar());
 
     if (meshPtr != 0)
     {
-        Logging::debug(MString("Mesh object ") + meshName + " is already defined, removing...");
+        Logging::debug(format(MString("Mesh object ^1s is already defined, removing..."), meshName));
         ass->objects().remove(meshPtr);
         ass->bump_version_id();
     }
 
     ass->objects().insert(foundation::auto_release_ptr<renderer::Object>(mesh));
-    meshPtr = (renderer::MeshObject *)ass->objects().get_by_name(meshName.asChar());
+    meshPtr = ass->objects().get_by_name(meshName.asChar());
 
     MString objectInstanceName = getObjectInstanceName(obj.get());
 
@@ -734,10 +728,10 @@ void AppleseedRenderer::createMesh(boost::shared_ptr<MayaObject> obj)
     renderer::ParamArray objInstanceParamArray;
     addVisibilityFlags(obj, objInstanceParamArray);
 
-    renderer::ObjectInstance *oinst = ass->object_instances().get_by_name(objectInstanceName.asChar());
+    renderer::ObjectInstance* oinst = ass->object_instances().get_by_name(objectInstanceName.asChar());
     if (oinst != 0)
     {
-        Logging::debug(MString("Mesh object instance ") + objectInstanceName + " is already defined, removing...");
+        Logging::debug(format(MString("Mesh object instance ^1s is already defined, removing..."), objectInstanceName));
         ass->object_instances().remove(oinst);
         ass->bump_version_id();
     }
@@ -763,7 +757,7 @@ void AppleseedRenderer::updateGeometry(boost::shared_ptr<MayaObject> mobj)
             return;
         MString objectName = getObjectName(mobj.get());
         MString objectInstanceName = getObjectInstanceName(mobj.get());
-        renderer::MeshObject* meshPtr = (renderer::MeshObject *)ass->objects().get_by_name(objectName.asChar());
+        renderer::Object* meshPtr = ass->objects().get_by_name(objectName.asChar());
         if (meshPtr == 0)
             return;
         ass->objects().remove(meshPtr);
@@ -897,7 +891,7 @@ void AppleseedRenderer::applyInteractiveUpdates(const MayaScene::EditableElement
             }
 
             // appleseedGlobals node.
-            if (MFnDependencyNode(i->second.node).typeId().id() == 0x0011CF40)
+            if (MFnDependencyNode(i->second.node).typeId().id() == APPLESEED_GLOBALS_ID)
                 defineEnvironment();
 
             if (i->second.node.hasFn(MFn::kMesh))
@@ -908,10 +902,7 @@ void AppleseedRenderer::applyInteractiveUpdates(const MayaScene::EditableElement
                     if (assInst == 0)
                         continue;
 
-                    MStatus stat;
-                    const MMatrix m = i->second.mayaObject->dagPath.inclusiveMatrix(&stat);
-                    if (!stat)
-                        Logging::debug(MString("Error ") + stat.errorString());
+                    const MMatrix m = i->second.mayaObject->dagPath.inclusiveMatrix();
                     assInst->transform_sequence().clear();
                     fillTransformMatrices(m, assInst);
                     assInst->bump_version_id();
@@ -930,13 +921,8 @@ void AppleseedRenderer::applyInteractiveUpdates(const MayaScene::EditableElement
 
 void AppleseedRenderer::defineLight(boost::shared_ptr<MayaObject> obj)
 {
-    renderer::Assembly* lightAssembly = getAssembly(obj.get());
-    if (lightAssembly == 0)
-        lightAssembly = createAssembly(obj.get());
-    renderer::AssemblyInstance* lightAssemblyInstance = getAssemblyInstance(obj.get());
-    if (lightAssemblyInstance == 0)
-        lightAssemblyInstance = createAssemblyInstance(obj.get());
-
+    renderer::Assembly* lightAssembly = getOrCreateAssembly(obj.get());
+    renderer::AssemblyInstance* lightAssemblyInstance = getOrCreateAssemblyInstance(obj.get());
     renderer::Light* light = lightAssembly->lights().get_by_name(obj->fullName.asChar());
     if (light)
         lightAssembly->lights().remove(light);
@@ -948,13 +934,12 @@ void AppleseedRenderer::defineLight(boost::shared_ptr<MayaObject> obj)
 
     if (obj->mobject.hasFn(MFn::kPointLight))
     {
-        bool cast_indirect_light = getBoolAttr("mtap_cast_indirect_light", depFn, true);
-        float importance_multiplier = getFloatAttr("mtap_importance_multiplier", depFn, 1.0f);
-        MColor col = getColorAttr("color", depFn);
-        float intensity = getFloatAttr("intensity", depFn, 1.0f);
-        MString colorAttribute = obj->fullName + "_intensity";
+        const bool cast_indirect_light = getBoolAttr("mtap_cast_indirect_light", depFn, true);
+        const float importance_multiplier = getFloatAttr("mtap_importance_multiplier", depFn, 1.0f);
+        const MColor col = getColorAttr("color", depFn);
+        const float intensity = getFloatAttr("intensity", depFn, 1.0f);
+        const MString colorAttribute = obj->fullName + "_intensity";
         defineColor(project.get(), colorAttribute.asChar(), col, intensity);
-        int decay = getEnumInt("decayRate", depFn);
         foundation::auto_release_ptr<renderer::Light> lp = foundation::auto_release_ptr<renderer::Light>(
             renderer::PointLightFactory().create(
             obj->fullName.asChar(),
@@ -971,11 +956,11 @@ void AppleseedRenderer::defineLight(boost::shared_ptr<MayaObject> obj)
     if (obj->mobject.hasFn(MFn::kSpotLight))
     {
         // Redefinition because it is possible that this value is textured.
-        bool cast_indirect_light = getBoolAttr("mtap_cast_indirect_light", depFn, true);
-        float importance_multiplier = getFloatAttr("mtap_importance_multiplier", depFn, 1.0f);
-        MColor col = getColorAttr("color", depFn);
-        float intensity = getFloatAttr("intensity", depFn, 1.0f);
-        MString colorAttribute = obj->fullName + "_intensity";
+        const bool cast_indirect_light = getBoolAttr("mtap_cast_indirect_light", depFn, true);
+        const float importance_multiplier = getFloatAttr("mtap_importance_multiplier", depFn, 1.0f);
+        const MColor col = getColorAttr("color", depFn);
+        const float intensity = getFloatAttr("intensity", depFn, 1.0f);
+        const MString colorAttribute = obj->fullName + "_intensity";
         defineColor(project.get(), colorAttribute.asChar(), col, intensity);
         Logging::debug(MString("Creating spotLight: ") + depFn.name());
         const double coneAngle = getDegrees("coneAngle", depFn);
@@ -1001,16 +986,16 @@ void AppleseedRenderer::defineLight(boost::shared_ptr<MayaObject> obj)
 
     if (obj->mobject.hasFn(MFn::kDirectionalLight))
     {
-        bool cast_indirect_light = getBoolAttr("mtap_cast_indirect_light", depFn, true);
-        float importance_multiplier = getFloatAttr("mtap_importance_multiplier", depFn, 1.0f);
-        MVector lightDir(0, 0, -1);
-        MVector lightDirTangent(1, 0, 0);
-        MVector lightDirBiTangent(0, 1, 0);
-        MColor col = getColorAttr("color", depFn);
-        float intensity = getFloatAttr("intensity", depFn, 1.0f);
-        MString colorAttribute = obj->fullName + "_intensity";
+        const bool cast_indirect_light = getBoolAttr("mtap_cast_indirect_light", depFn, true);
+        const float importance_multiplier = getFloatAttr("mtap_importance_multiplier", depFn, 1.0f);
+        const MVector lightDir(0, 0, -1);
+        const MVector lightDirTangent(1, 0, 0);
+        const MVector lightDirBiTangent(0, 1, 0);
+        const MColor col = getColorAttr("color", depFn);
+        const float intensity = getFloatAttr("intensity", depFn, 1.0f);
+        const MString colorAttribute = obj->fullName + "_intensity";
         defineColor(project.get(), colorAttribute.asChar(), col, intensity);
-        bool isSunlight = isSunLight(obj->mobject);
+        const bool isSunlight = isSunLight(obj->mobject);
 
         renderer::ParamArray params;
         params.insert("importance_multiplier", importance_multiplier);
@@ -1046,29 +1031,28 @@ void AppleseedRenderer::defineLight(boost::shared_ptr<MayaObject> obj)
 
     if (obj->mobject.hasFn(MFn::kAreaLight))
     {
-        MString areaLightName = obj->fullNiceName;
+        const MString areaLightName = obj->fullNiceName;
         foundation::auto_release_ptr<renderer::MeshObject> plane = defineStandardPlane();
         plane->set_name(areaLightName.asChar());
         lightAssembly->objects().insert(foundation::auto_release_ptr<renderer::Object>(plane));
-        renderer::MeshObject* meshPtr = (renderer::MeshObject *)lightAssembly->objects().get_by_name(areaLightName.asChar());
-        MString objectInstanceName = getObjectInstanceName(obj.get());
+        renderer::Object* meshPtr = lightAssembly->objects().get_by_name(areaLightName.asChar());
+        const MString objectInstanceName = getObjectInstanceName(obj.get());
         // Rotate the defalt up pointing standard plane by 90 degree to match the area light direction.
         MTransformationMatrix tm;
-        double rotate90Deg[3] = { -M_PI_2, 0, 0 };
+        const double rotate90Deg[3] = { -M_PI_2, 0, 0 };
         tm.setRotation(rotate90Deg, MTransformationMatrix::kXYZ);
-        MMatrix objectMatrix = tm.asMatrix();
-        MMatrix diffMatrix = objectMatrix;
+        MMatrix diffMatrix = tm.asMatrix();
         foundation::Matrix4d appleMatrix;
         foundation::Matrix4d::identity();
         MMatrixToAMatrix(diffMatrix, appleMatrix);
         appleMatrix = foundation::Matrix4d::identity();
         MString areaLightMaterialName = areaLightName + "_material";
 
-        MString physicalSurfaceName = areaLightName + "_physical_surface_shader";
-        MString areaLightColorName = areaLightName + "_color";
-        MString edfName = areaLightName + "_edf";
+        const MString physicalSurfaceName = areaLightName + "_physical_surface_shader";
+        const MString areaLightColorName = areaLightName + "_color";
+        const MString edfName = areaLightName + "_edf";
         renderer::ParamArray edfParams;
-        MColor color = getColorAttr("color", depFn);
+        const MColor color = getColorAttr("color", depFn);
         defineColor(project.get(), areaLightColorName.asChar(), color, getFloatAttr("intensity", depFn, 1.0f));
         edfParams.insert("radiance", areaLightColorName.asChar());
 
@@ -1224,9 +1208,7 @@ foundation::StringArray AppleseedRenderer::defineMaterial(boost::shared_ptr<Maya
         {
             Logging::warning(MString("Surface shader type: ") + typeName + " is not supported, using default material.");
             MString objectInstanceName = getObjectInstanceName(obj.get());
-            renderer::Assembly *ass = getAssembly(obj.get());
-            if (ass == 0)
-                ass = createAssembly(obj.get());
+            renderer::Assembly *ass = getOrCreateAssembly(obj.get());
             MString shadingGroupName = getObjectName(materialNode);
             renderer::ObjectInstance *objInstance = ass->object_instances().get_by_name(objectInstanceName.asChar());
             objInstance->get_front_material_mappings().insert("slot0", "default");
@@ -1236,7 +1218,7 @@ foundation::StringArray AppleseedRenderer::defineMaterial(boost::shared_ptr<Maya
 
         // If we are in IPR mode, save all translated shading nodes to the interactive update list.
         // The callback is added to the surfaceShaderNode, but we need the shading group (materialNode) to update the material 
-        // which is assigned to the element.node.
+        // which is assigned to element.node.
         if (getWorldPtr()->getRenderType() == World::IPRRENDER)
         {
             if (mayaScene)
@@ -1253,9 +1235,7 @@ foundation::StringArray AppleseedRenderer::defineMaterial(boost::shared_ptr<Maya
         updateMaterial(materialNode);
 
         MString objectInstanceName = getObjectInstanceName(obj.get());
-        renderer::Assembly *ass = getAssembly(obj.get());
-        if (ass == 0)
-            ass = createAssembly(obj.get());
+        renderer::Assembly *ass = getOrCreateAssembly(obj.get());
 
         MString shadingGroupName = getObjectName(materialNode);
         renderer::ObjectInstance *objInstance = ass->object_instances().get_by_name(objectInstanceName.asChar());

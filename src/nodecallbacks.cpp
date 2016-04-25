@@ -30,8 +30,8 @@
 #include "nodecallbacks.h"
 
 // appleseed-maya headers.
-#include "appleseedutils.h"
 #include "utilities/logging.h"
+#include "appleseedutils.h"
 #include "mayascene.h"
 #include "renderqueue.h"
 #include "world.h"
@@ -170,7 +170,7 @@ void IPRIdleCallback(float time, float lastTime, void* userPtr)
 // So we simply use the shape node, get it's parent - a shape node and let the scene parser do the rest.
 // Then add a node dirty callback for the new elements. By adding the callback ids to the idInteractiveMap, the
 // IPR should detect a modification during the netxt update cycle.
-// Interestingly, if a object is duplicated, it first receives a prefix called "__PrenotatoPerDuplicare_", then later 
+// Interestingly, if an object is duplicated, it first receives a prefix called "__PrenotatoPerDuplicare_", then later 
 // the geometry will be renamed to the correct name.
 
 // Handling of surface shaders is a bit different. A shader is not assigned directly to a surface but it is connected to a shading group
@@ -199,15 +199,10 @@ void IPRNodeAddedCallback(MObject& node, void* userPtr)
             return;
     }
     MFnDagNode dagNode(node);
-    MString p = dagNode.fullPathName();
     MDagPath transformPath;
     dagNode.getPath(transformPath);
     MDagPath dagPath = transformPath;
     transformPath.pop();
-    MObject transform = transformPath.node();
-    MString name = getObjectName(dagPath.node());
-    MString tname = getObjectName(transform);
-    Logging::debug(MString("Node added: ") + name);
 
     // Here the new object and its children are added to the object list and to the interactive object list.
     mayaScene->parseSceneHierarchy(transformPath, 0, boost::shared_ptr<ObjectAttributes>(), boost::shared_ptr<MayaObject>());
@@ -226,12 +221,12 @@ void IPRNodeAddedCallback(MObject& node, void* userPtr)
             break;
         }
     }
+
 }
 
 void IPRNodeRenamedCallback(MObject& node, const MString& oldName, void* userPtr)
 {
     boost::shared_ptr<MayaScene> mayaScene = getWorldPtr()->mScene;
-    MString nname = getObjectName(node);
     for (MayaScene::EditableElementContainer::iterator
         i = mayaScene->editableElements.begin(),
         e = mayaScene->editableElements.end(); i != e; ++i)
@@ -244,6 +239,7 @@ void IPRNodeRenamedCallback(MObject& node, const MString& oldName, void* userPtr
             }
         }
     }
+
 }
 
 void IPRNodeRemovedCallback(MObject& node, void* userPtr)
@@ -270,4 +266,5 @@ void IPRNodeRemovedCallback(MObject& node, void* userPtr)
             break;
         }
     }
+
 }

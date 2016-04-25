@@ -51,10 +51,12 @@ void defineScene(renderer::Project* project);
 renderer::Scene* getSceneFromProject(renderer::Project* project);
 MayaObject* getAssemblyMayaObject(const MayaObject* obj);
 renderer::Assembly* getAssembly(const MayaObject* obj);
+renderer::Assembly* getOrCreateAssembly(const MayaObject* obj);
 void defineMasterAssembly(renderer::Project* project);
 renderer::Assembly* getMasterAssemblyFromProject(renderer::Project* project);
 renderer::Assembly* createAssembly(const MayaObject* obj);
 renderer::AssemblyInstance* getAssemblyInstance(const MayaObject* obj);
+renderer::AssemblyInstance* getOrCreateAssemblyInstance(const MayaObject* obj);
 renderer::AssemblyInstance* createAssemblyInstance(const MayaObject* obj);
 void MMatrixToAMatrix(MMatrix& mayaMatrix, foundation::Matrix4d& appleMatrix);
 
