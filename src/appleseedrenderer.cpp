@@ -934,8 +934,8 @@ void AppleseedRenderer::defineLight(boost::shared_ptr<MayaObject> obj)
 
     if (obj->mobject.hasFn(MFn::kPointLight))
     {
-        const bool cast_indirect_light = getBoolAttr("mtap_cast_indirect_light", depFn, true);
-        const float importance_multiplier = getFloatAttr("mtap_importance_multiplier", depFn, 1.0f);
+        const bool castIndirectLight = getBoolAttr("mtap_cast_indirect_light", depFn, true);
+        const float importanceMultiplier = getFloatAttr("mtap_importance_multiplier", depFn, 1.0f);
         const MColor col = getColorAttr("color", depFn);
         const float intensity = getFloatAttr("intensity", depFn, 1.0f);
         const MString colorAttribute = obj->fullName + "_intensity";
@@ -949,15 +949,15 @@ void AppleseedRenderer::defineLight(boost::shared_ptr<MayaObject> obj)
         renderer::ParamArray& params = light->get_parameters();
         params.insert("intensity", colorAttribute);
         params.insert("intensity_multiplier", intensity);
-        params.insert("importance_multiplier", importance_multiplier);
-        params.insert("cast_indirect_light", cast_indirect_light);
+        params.insert("importance_multiplier", importanceMultiplier);
+        params.insert("cast_indirect_light", castIndirectLight);
         fillTransformMatrices(obj.get(), light);
     }
     if (obj->mobject.hasFn(MFn::kSpotLight))
     {
         // Redefinition because it is possible that this value is textured.
-        const bool cast_indirect_light = getBoolAttr("mtap_cast_indirect_light", depFn, true);
-        const float importance_multiplier = getFloatAttr("mtap_importance_multiplier", depFn, 1.0f);
+        const bool castIndirectLight = getBoolAttr("mtap_cast_indirect_light", depFn, true);
+        const float importanceMultiplier = getFloatAttr("mtap_importance_multiplier", depFn, 1.0f);
         const MColor col = getColorAttr("color", depFn);
         const float intensity = getFloatAttr("intensity", depFn, 1.0f);
         const MString colorAttribute = obj->fullName + "_intensity";
@@ -979,15 +979,15 @@ void AppleseedRenderer::defineLight(boost::shared_ptr<MayaObject> obj)
         params.insert("radiance_multiplier", intensity);
         params.insert("inner_angle", innerAngle);
         params.insert("outer_angle", outerAngle);
-        params.insert("importance_multiplier", importance_multiplier);
-        params.insert("cast_indirect_light", cast_indirect_light);
+        params.insert("importance_multiplier", importanceMultiplier);
+        params.insert("cast_indirect_light", castIndirectLight);
         fillTransformMatrices(obj.get(), light);
     }
 
     if (obj->mobject.hasFn(MFn::kDirectionalLight))
     {
-        const bool cast_indirect_light = getBoolAttr("mtap_cast_indirect_light", depFn, true);
-        const float importance_multiplier = getFloatAttr("mtap_importance_multiplier", depFn, 1.0f);
+        const bool castIndirectLight = getBoolAttr("mtap_cast_indirect_light", depFn, true);
+        const float importanceMultiplier = getFloatAttr("mtap_importance_multiplier", depFn, 1.0f);
         const MVector lightDir(0, 0, -1);
         const MVector lightDirTangent(1, 0, 0);
         const MVector lightDirBiTangent(0, 1, 0);
@@ -998,8 +998,8 @@ void AppleseedRenderer::defineLight(boost::shared_ptr<MayaObject> obj)
         const bool isSunlight = isSunLight(obj->mobject);
 
         renderer::ParamArray params;
-        params.insert("importance_multiplier", importance_multiplier);
-        params.insert("cast_indirect_light", cast_indirect_light);
+        params.insert("importance_multiplier", importanceMultiplier);
+        params.insert("cast_indirect_light", castIndirectLight);
         if (isSunlight)
         {
             defineEnvironment(); // update environment
