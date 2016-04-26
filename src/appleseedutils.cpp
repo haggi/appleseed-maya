@@ -252,10 +252,11 @@ renderer::AssemblyInstance* getAssemblyInstance(const MayaObject* obj)
     boost::shared_ptr<AppleseedRenderer> appleRenderer = boost::static_pointer_cast<AppleseedRenderer>(getWorldPtr()->mRenderer);
     MayaObject* assemblyObject = getAssemblyMayaObject(obj);
 
+    MString assemblyName = getAssemblyName(assemblyObject);
     MString assemblyInstanceName = getAssemblyInstanceName(assemblyObject);
     renderer::Assembly* masterAssembly = getMasterAssemblyFromProject(appleRenderer->getProjectPtr());
     renderer::AssemblyInstance* masterAssemblyInstance = appleRenderer->getProjectPtr()->get_scene()->assembly_instances().get_by_name("world_Inst");
-    if (assemblyObject == 0 || (obj->mobject.hasFn(MFn::kLight) && !obj->mobject.hasFn(MFn::kAreaLight)))
+    if (assemblyName == "world" || assemblyObject == 0 || (obj->mobject.hasFn(MFn::kLight) && !obj->mobject.hasFn(MFn::kAreaLight)))
         return masterAssemblyInstance;
     return masterAssembly->assembly_instances().get_by_name(assemblyInstanceName.asChar());
 }
