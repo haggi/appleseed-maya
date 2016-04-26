@@ -401,8 +401,8 @@ void fillMatrices(const MayaObject* obj, renderer::TransformSequence& transformS
     transformSequence.clear();
     std::vector<MMatrix> transformMatrices;
 
-    // in ipr mode we have to update the matrix manually
-    if (getWorldPtr()->getRenderType() == World::IPRRENDER)
+    // In IPR mode we have to update the matrix from the dagPath
+    if (getWorldPtr()->getRenderType() == World::IPRRENDER && !obj->isInstancerObject)
     {
         transformMatrices.push_back(obj->dagPath.inclusiveMatrix());
     }

@@ -503,9 +503,13 @@ bool MayaScene::parseInstancerNew()
                 particleMObject->instancerParticleId = p;
                 particleMObject->instanceNumber = p;
                 particleMObject->instancerDagPath = instPath;
+                particleMObject->dagPath = curPath;
                 particleMObject->instancerMObj = instancerMObject;
                 particleMObject->fullName = origObj->fullName + MString("_i_") + p;
                 particleMObject->shortName = origObj->shortName + MString("_i_") + p;
+                particleMObject->transformMatrices.clear();
+                particleMObject->transformMatrices.push_back(particleMatrix);
+
                 this->instancerNodeElements.push_back(particleMObject);
                 currentAttributes->hasInstancerConnection = true;
                 if (hasParticleSystem)
