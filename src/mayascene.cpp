@@ -501,12 +501,12 @@ bool MayaScene::parseInstancerNew()
                 particleMObject->isInstancerObject = true;
                 particleMObject->visible = true;
                 particleMObject->instancerParticleId = p;
-                particleMObject->instanceNumber = p;
+                particleMObject->instanceNumber = p + 1; // instanceNumber has to be at least 1, 0 indicates original object
                 particleMObject->instancerDagPath = instPath;
                 particleMObject->dagPath = curPath;
                 particleMObject->instancerMObj = instancerMObject;
-                particleMObject->fullName = origObj->fullName + MString("_i_") + p;
-                particleMObject->shortName = origObj->shortName + MString("_i_") + p;
+                particleMObject->fullName = origObj->fullName + "_i_" + p;
+                particleMObject->shortName = origObj->shortName + "_i_" + p;
                 particleMObject->transformMatrices.clear();
                 particleMObject->transformMatrices.push_back(particleMatrix);
 

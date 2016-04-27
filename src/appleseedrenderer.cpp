@@ -709,7 +709,7 @@ void AppleseedRenderer::createMesh(boost::shared_ptr<MayaObject> obj)
 
     if (meshPtr != 0)
     {
-        Logging::debug(format(MString("Mesh object ^1s is already defined, removing..."), meshName));
+        Logging::debug(format("Mesh object ^1s is already defined, removing...", meshName));
         ass->objects().remove(meshPtr);
         ass->bump_version_id();
     }
@@ -731,7 +731,7 @@ void AppleseedRenderer::createMesh(boost::shared_ptr<MayaObject> obj)
     renderer::ObjectInstance* oinst = ass->object_instances().get_by_name(objectInstanceName.asChar());
     if (oinst != 0)
     {
-        Logging::debug(format(MString("Mesh object instance ^1s is already defined, removing..."), objectInstanceName));
+        Logging::debug(format("Mesh object instance ^1s is already defined, removing...", objectInstanceName));
         ass->object_instances().remove(oinst);
         ass->bump_version_id();
     }
