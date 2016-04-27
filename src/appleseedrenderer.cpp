@@ -374,7 +374,7 @@ void AppleseedRenderer::defineCamera(boost::shared_ptr<MayaObject> cam)
     foundation::auto_release_ptr<renderer::Camera> appleCam = renderer::ThinLensCameraFactory().create(
         cam->shortName.asChar(),
         camParams);
-    fillMatrices(cam.get(), appleCam.get()->transform_sequence());
+    fillMatrices(cam.get(), appleCam->transform_sequence());
     project->get_scene()->set_camera(appleCam);
 }
 
