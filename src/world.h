@@ -40,7 +40,6 @@
 #include <maya/MStringArray.h>
 #include <maya/MImage.h>
 #include <maya/MTimerMessage.h>
-#include <maya/MDistance.h>
 
 // Standard headers.
 #include <memory>
