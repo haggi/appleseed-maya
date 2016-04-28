@@ -170,7 +170,7 @@ void IPRIdleCallback(float time, float lastTime, void* userPtr)
 // So we simply use the shape node, get it's parent - a shape node and let the scene parser do the rest.
 // Then add a node dirty callback for the new elements. By adding the callback ids to the idInteractiveMap, the
 // IPR should detect a modification during the netxt update cycle.
-// Interestingly, if an object is duplicated, it first receives a prefix called "__PrenotatoPerDuplicare_", then later 
+// Interestingly, if an object is duplicated, it first receives a prefix called "__PrenotatoPerDuplicare_", then later
 // the geometry will be renamed to the correct name.
 
 // Handling of surface shaders is a bit different. A shader is not assigned directly to a surface but it is connected to a shading group
@@ -246,7 +246,7 @@ void IPRNodeRemovedCallback(MObject& node, void* userPtr)
 {
     // Find the MayaObject and mark it as removed.
     boost::shared_ptr<MayaScene> mayaScene = getWorldPtr()->mScene;
-    std::vector<const MCallbackId> removeIds;
+    std::vector<MCallbackId> removeIds;
     for (MayaScene::EditableElementContainer::iterator
             i = mayaScene->editableElements.begin(),
             e = mayaScene->editableElements.end(); i != e; ++i)
