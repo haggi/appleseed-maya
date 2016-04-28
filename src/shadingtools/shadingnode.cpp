@@ -50,6 +50,8 @@ ShadingNode::ShadingNode(const ShadingNode& other)
   : inputAttributes(other.inputAttributes)
   , outputAttributes(other.outputAttributes)
 {
+    typeName = other.typeName;
+    fullName = other.fullName;
     setMObject(other.mobject);
 }
 

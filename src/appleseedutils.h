@@ -42,27 +42,30 @@
 class MayaObject;
 class MColor;
 
-void defineDefaultMaterial(renderer::Project *project);
-MString getAssemblyName(MayaObject *obj);
-MString getAssemblyInstanceName(MayaObject *obj);
-MString getObjectInstanceName(MayaObject *obj);
-MString getObjectName(MayaObject* obj);
-void defineScene(renderer::Project *project);
-renderer::Scene *getSceneFromProject(renderer::Project *project);
-MayaObject *getAssemblyMayaObject(MayaObject *obj);
-renderer::Assembly *getCreateObjectAssembly(boost::shared_ptr<MayaObject> obj);
-void defineMasterAssembly(renderer::Project *project);
-renderer::Assembly *getMasterAssemblyFromProject(renderer::Project *project);
-renderer::Assembly *getSceneAssemblyFromProject(renderer::Project *project);
-renderer::AssemblyInstance *getExistingObjectAssemblyInstance(MayaObject *obj);
+void defineDefaultMaterial(renderer::Project* project);
+MString getAssemblyName(const MayaObject* obj);
+MString getAssemblyInstanceName(const MayaObject* obj);
+MString getObjectInstanceName(const MayaObject* obj);
+MString getObjectName(const MayaObject* obj);
+void defineScene(renderer::Project* project);
+renderer::Scene* getSceneFromProject(renderer::Project* project);
+MayaObject* getAssemblyMayaObject(const MayaObject* obj);
+renderer::Assembly* getAssembly(const MayaObject* obj);
+renderer::Assembly* getOrCreateAssembly(const MayaObject* obj);
+void defineMasterAssembly(renderer::Project* project);
+renderer::Assembly* getMasterAssemblyFromProject(renderer::Project* project);
+renderer::Assembly* createAssembly(const MayaObject* obj);
+renderer::AssemblyInstance* getAssemblyInstance(const MayaObject* obj);
+renderer::AssemblyInstance* getOrCreateAssemblyInstance(const MayaObject* obj);
+renderer::AssemblyInstance* createAssemblyInstance(const MayaObject* obj);
 void MMatrixToAMatrix(MMatrix& mayaMatrix, foundation::Matrix4d& appleMatrix);
 
-void fillTransformMatrices(boost::shared_ptr<MayaObject> obj, renderer::Light *assInstance);
-void fillTransformMatrices(MMatrix matrix, renderer::AssemblyInstance *assInstance);
-void fillMatrices(boost::shared_ptr<MayaObject> obj, renderer::TransformSequence& transformSequence);
+void fillTransformMatrices(const MayaObject* obj, renderer::Light* assInstance);
+void fillTransformMatrices(MMatrix matrix, renderer::AssemblyInstance* assInstance);
+void fillMatrices(const MayaObject* obj, renderer::TransformSequence& transformSequence);
 
-void defineColor(renderer::Project *project, const char *name, const MColor color, const float intensity, MString colorSpace = "srgb");
-MString colorOrMap(renderer::Project *project, MFnDependencyNode& shaderNode, MString& attributeName);
+void defineColor(renderer::Project* project, const char* name, const MColor color, const float intensity, MString colorSpace = "srgb");
+MString colorOrMap(renderer::Project* project, MFnDependencyNode& shaderNode, MString& attributeName);
 void removeTextureEntityIfItExists(MString& textureName);
 MString defineTexture(MFnDependencyNode& shader, MString& attributeName);
 void addVisibilityFlags(boost::shared_ptr<MayaObject> obj, renderer::ParamArray& paramArray);

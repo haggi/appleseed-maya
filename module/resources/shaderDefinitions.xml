@@ -2,530 +2,284 @@
 	<shader>
 		<inputs>
 			<input>
+				<default>[0.0, 0.0, 0.0]</default>
+				<type>vector</type>
 				<name>min</name>
-				<hint>None</hint>
-				<default>[0.0, 0.0, 0.0]</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
-				<type>vector</type>
-				<help>None</help>
 			</input>
 			<input>
+				<default>[0.0, 0.0, 0.0]</default>
+				<type>vector</type>
 				<name>max</name>
-				<hint>None</hint>
-				<default>[0.0, 0.0, 0.0]</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
-				<type>vector</type>
-				<help>None</help>
 			</input>
 			<input>
-				<name>input</name>
-				<hint>None</hint>
 				<default>[0.0, 0.0, 0.0]</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
 				<type>vector</type>
-				<help>None</help>
+				<name>input</name>
 			</input>
 		</inputs>
 		<name>clamp</name>
 		<outputs>
 			<output>
+				<default>[0.0, 0.0, 0.0]</default>
 				<type>output vector</type>
 				<name>output</name>
-				<help />
 			</output>
 		</outputs>
 		<mayaId>0</mayaId>
-		<mayaClassification>None</mayaClassification>
-		<help>None</help>
+		<mayaClassification />
+		<help />
 	</shader>
 	<shader>
 		<inputs>
 			<input>
-				<name>placementMatrix</name>
-				<hint>None</hint>
 				<default>]</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
 				<type>matrix</type>
-				<help>None</help>
+				<name>placementMatrix</name>
 			</input>
 			<input>
+				<default>0</default>
+				<type>float</type>
 				<name>exposure</name>
-				<hint>None</hint>
-				<default>0</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
-				<type>float</type>
-				<help>None</help>
 			</input>
 			<input>
-				<name>defaultColor</name>
-				<hint>None</hint>
 				<default>[0.5, 0.5, 0.5]</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
 				<type>vector</type>
-				<help>None</help>
+				<name>defaultColor</name>
 			</input>
 			<input>
-				<name>colorGain</name>
-				<hint>None</hint>
 				<default>[1.0, 1.0, 1.0]</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
 				<type>vector</type>
-				<help>None</help>
+				<name>colorGain</name>
 			</input>
 			<input>
-				<name>colorOffset</name>
-				<hint>None</hint>
 				<default>[0.0, 0.0, 0.0]</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
 				<type>vector</type>
-				<help>None</help>
+				<name>colorOffset</name>
 			</input>
 			<input>
+				<default>1</default>
+				<type>float</type>
 				<name>alphaGain</name>
-				<hint>None</hint>
-				<default>1</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
-				<type>float</type>
-				<help>None</help>
 			</input>
 			<input>
+				<default>0</default>
+				<type>float</type>
 				<name>alphaOffset</name>
-				<hint>None</hint>
-				<default>0</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
-				<type>float</type>
-				<help>None</help>
 			</input>
 			<input>
-				<name>alphaIsLuminance</name>
-				<hint>None</hint>
 				<default>1</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
 				<type>int</type>
-				<help>None</help>
+				<name>alphaIsLuminance</name>
 			</input>
 			<input>
-				<name>invert</name>
-				<hint>None</hint>
 				<default>0</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
 				<type>int</type>
-				<help>None</help>
+				<name>invert</name>
 			</input>
 		</inputs>
 		<name>solidFractal</name>
 		<outputs>
 			<output>
+				<default>[0.0, 0.0, 0.0]</default>
 				<type>output vector</type>
 				<name>outColor</name>
-				<help />
 			</output>
 			<output>
+				<default>0</default>
 				<type>output float</type>
 				<name>outAlpha</name>
-				<help />
 			</output>
 		</outputs>
 		<mayaId>0</mayaId>
-		<mayaClassification>None</mayaClassification>
-		<help>None</help>
+		<mayaClassification />
+		<help />
 	</shader>
 	<shader>
 		<inputs>
 			<input>
-				<name>value</name>
-				<hint>None</hint>
 				<default>[0.0, 0.0, 0.0]</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
 				<type>vector</type>
-				<help>None</help>
+				<name>value</name>
 			</input>
 		</inputs>
 		<name>luminance</name>
 		<outputs>
 			<output>
+				<default>0</default>
 				<type>output float</type>
 				<name>outValue</name>
-				<help />
 			</output>
 		</outputs>
 		<mayaId>0</mayaId>
-		<mayaClassification>None</mayaClassification>
-		<help>None</help>
+		<mayaClassification />
+		<help />
 	</shader>
 	<shader>
 		<inputs>
 			<input>
+				<default>0</default>
+				<type>int</type>
 				<name>projType</name>
-				<hint>None</hint>
-				<default>0</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
-				<type>int</type>
-				<help>None</help>
 			</input>
 			<input>
+				<default>[0.0, 0.0, 0.0]</default>
+				<type>vector</type>
 				<name>transparency</name>
-				<hint>None</hint>
-				<default>[0.0, 0.0, 0.0]</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
-				<type>vector</type>
-				<help>None</help>
 			</input>
 			<input>
+				<default>0</default>
+				<type>float</type>
 				<name>uAngle</name>
-				<hint>None</hint>
-				<default>0</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
-				<type>float</type>
-				<help>None</help>
 			</input>
 			<input>
+				<default>0</default>
+				<type>float</type>
 				<name>vAngle</name>
-				<hint>None</hint>
-				<default>0</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
-				<type>float</type>
-				<help>None</help>
 			</input>
 			<input>
-				<name>image</name>
-				<hint>None</hint>
 				<default>[1.0, 0.0, 0.0]</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
 				<type>vector</type>
-				<help>None</help>
+				<name>image</name>
 			</input>
 			<input>
+				<default>[0.0, 0.0, 0.0]</default>
+				<type>vector</type>
 				<name>uvCoord</name>
-				<hint>None</hint>
-				<default>[0.0, 0.0, 0.0]</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
-				<type>vector</type>
-				<help>None</help>
 			</input>
 			<input>
-				<name>placementMatrix</name>
-				<hint>None</hint>
 				<default>]</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
 				<type>matrix</type>
-				<help>None</help>
+				<name>placementMatrix</name>
 			</input>
 			<input>
+				<default>0</default>
+				<type>float</type>
 				<name>exposure</name>
-				<hint>None</hint>
-				<default>0</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
-				<type>float</type>
-				<help>None</help>
 			</input>
 			<input>
-				<name>defaultColor</name>
-				<hint>None</hint>
 				<default>[0.5, 0.5, 0.5]</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
 				<type>vector</type>
-				<help>None</help>
+				<name>defaultColor</name>
 			</input>
 			<input>
-				<name>colorGain</name>
-				<hint>None</hint>
 				<default>[1.0, 1.0, 1.0]</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
 				<type>vector</type>
-				<help>None</help>
+				<name>colorGain</name>
 			</input>
 			<input>
-				<name>colorOffset</name>
-				<hint>None</hint>
 				<default>[0.0, 0.0, 0.0]</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
 				<type>vector</type>
-				<help>None</help>
+				<name>colorOffset</name>
 			</input>
 			<input>
+				<default>1</default>
+				<type>float</type>
 				<name>alphaGain</name>
-				<hint>None</hint>
-				<default>1</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
-				<type>float</type>
-				<help>None</help>
 			</input>
 			<input>
+				<default>0</default>
+				<type>float</type>
 				<name>alphaOffset</name>
-				<hint>None</hint>
-				<default>0</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
-				<type>float</type>
-				<help>None</help>
 			</input>
 			<input>
-				<name>alphaIsLuminance</name>
-				<hint>None</hint>
 				<default>1</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
 				<type>int</type>
-				<help>None</help>
+				<name>alphaIsLuminance</name>
 			</input>
 			<input>
-				<name>invert</name>
-				<hint>None</hint>
 				<default>0</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
 				<type>int</type>
-				<help>None</help>
+				<name>invert</name>
 			</input>
 		</inputs>
 		<name>projection</name>
 		<outputs>
 			<output>
+				<default>[0.0, 0.0, 0.0]</default>
 				<type>output vector</type>
 				<name>outUVCoord</name>
-				<help />
 			</output>
 			<output>
+				<default>[0.0, 0.0, 0.0]</default>
 				<type>output vector</type>
 				<name>outColor</name>
-				<help />
 			</output>
 			<output>
+				<default>0</default>
 				<type>output float</type>
 				<name>outAlpha</name>
-				<help />
 			</output>
 		</outputs>
 		<mayaId>0</mayaId>
-		<mayaClassification>None</mayaClassification>
-		<help>None</help>
+		<mayaClassification />
+		<help />
 	</shader>
 	<shader>
 		<inputs>
 			<input>
+				<default>[ 0.0, 0.0, 0.0 ]</default>
+				<type>vector</type>
 				<name>Normal</name>
-				<hint>None</hint>
-				<default>[ 0.0, 0.0, 0.0 ]</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
-				<type>vector</type>
-				<help>None</help>
 			</input>
 			<input>
+				<default>[ 0.0, 0.0, 0.0 ]</default>
+				<type>vector</type>
 				<name>Tangent</name>
-				<hint>None</hint>
-				<default>[ 0.0, 0.0, 0.0 ]</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
-				<type>vector</type>
-				<help>None</help>
 			</input>
 			<input>
-				<name>BaseColor</name>
-				<hint>None</hint>
 				<default>[0.5, 0.5, 0.5]</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
 				<type>vector</type>
-				<help>None</help>
+				<name>BaseColor</name>
 			</input>
 			<input>
+				<default>0</default>
+				<type>float</type>
 				<name>Subsurface</name>
-				<hint>None</hint>
-				<default>0</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
-				<type>float</type>
-				<help>None</help>
 			</input>
 			<input>
+				<default>0</default>
+				<type>float</type>
 				<name>Metallic</name>
-				<hint>None</hint>
-				<default>0</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
-				<type>float</type>
-				<help>None</help>
 			</input>
 			<input>
+				<default>0.5</default>
+				<type>float</type>
 				<name>Specular</name>
-				<hint>None</hint>
-				<default>0.5</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
-				<type>float</type>
-				<help>None</help>
 			</input>
 			<input>
+				<default>0</default>
+				<type>float</type>
 				<name>SpecularTint</name>
-				<hint>None</hint>
-				<default>0</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
-				<type>float</type>
-				<help>None</help>
 			</input>
 			<input>
+				<default>0</default>
+				<type>float</type>
 				<name>Anisotropic</name>
-				<hint>None</hint>
-				<default>0</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
-				<type>float</type>
-				<help>None</help>
 			</input>
 			<input>
+				<default>0.5</default>
+				<type>float</type>
 				<name>Roughness</name>
-				<hint>None</hint>
-				<default>0.5</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
-				<type>float</type>
-				<help>None</help>
 			</input>
 			<input>
+				<default>0</default>
+				<type>float</type>
 				<name>Sheen</name>
-				<hint>None</hint>
-				<default>0</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
-				<type>float</type>
-				<help>None</help>
 			</input>
 			<input>
-				<name>SheenTint</name>
-				<hint>None</hint>
 				<default>0.5</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
 				<type>float</type>
-				<help>None</help>
+				<name>SheenTint</name>
 			</input>
 			<input>
-				<name>Clearcoat</name>
-				<hint>None</hint>
 				<default>0</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
 				<type>float</type>
-				<help>None</help>
+				<name>Clearcoat</name>
 			</input>
 			<input>
-				<name>ClearcoatGloss</name>
-				<hint>None</hint>
 				<default>1</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
 				<type>float</type>
-				<help>None</help>
+				<name>ClearcoatGloss</name>
 			</input>
 		</inputs>
 		<name>asDisneyMaterial</name>
@@ -533,642 +287,362 @@
 			<output>
 				<type>output pointer</type>
 				<name>outColor</name>
-				<help />
 			</output>
 		</outputs>
 		<mayaId>0</mayaId>
-		<mayaClassification>None</mayaClassification>
+		<mayaClassification />
 		<help>Material based on the Disney BRDF</help>
 	</shader>
 	<shader>
 		<inputs>
 			<input>
+				<default>1</default>
+				<type>float</type>
 				<name>coverageU</name>
-				<hint>None</hint>
-				<default>1</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
-				<type>float</type>
-				<help>None</help>
 			</input>
 			<input>
+				<default>1</default>
+				<type>float</type>
 				<name>coverageV</name>
-				<hint>None</hint>
-				<default>1</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
-				<type>float</type>
-				<help>None</help>
 			</input>
 			<input>
+				<default>0</default>
+				<type>float</type>
 				<name>translateFrameU</name>
-				<hint>None</hint>
-				<default>0</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
-				<type>float</type>
-				<help>None</help>
 			</input>
 			<input>
+				<default>0</default>
+				<type>float</type>
 				<name>translateFrameV</name>
-				<hint>None</hint>
-				<default>0</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
-				<type>float</type>
-				<help>None</help>
 			</input>
 			<input>
+				<default>0</default>
+				<type>int</type>
 				<name>mirrorU</name>
-				<hint>None</hint>
-				<default>0</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
-				<type>int</type>
-				<help>None</help>
 			</input>
 			<input>
+				<default>0</default>
+				<type>int</type>
 				<name>mirrorV</name>
-				<hint>None</hint>
-				<default>0</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
-				<type>int</type>
-				<help>None</help>
 			</input>
 			<input>
+				<default>1</default>
+				<type>int</type>
 				<name>wrapU</name>
-				<hint>None</hint>
-				<default>1</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
-				<type>int</type>
-				<help>None</help>
 			</input>
 			<input>
+				<default>1</default>
+				<type>int</type>
 				<name>wrapV</name>
-				<hint>None</hint>
-				<default>1</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
-				<type>int</type>
-				<help>None</help>
 			</input>
 			<input>
+				<default>0</default>
+				<type>int</type>
 				<name>stagger</name>
-				<hint>None</hint>
-				<default>0</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
-				<type>int</type>
-				<help>None</help>
 			</input>
 			<input>
+				<default>1</default>
+				<type>float</type>
 				<name>repeatU</name>
-				<hint>None</hint>
-				<default>1</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
-				<type>float</type>
-				<help>None</help>
 			</input>
 			<input>
+				<default>1</default>
+				<type>float</type>
 				<name>repeatV</name>
-				<hint>None</hint>
-				<default>1</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
-				<type>float</type>
-				<help>None</help>
 			</input>
 			<input>
+				<default>0</default>
+				<type>float</type>
 				<name>offsetU</name>
-				<hint>None</hint>
-				<default>0</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
-				<type>float</type>
-				<help>None</help>
 			</input>
 			<input>
+				<default>0</default>
+				<type>float</type>
 				<name>offsetV</name>
-				<hint>None</hint>
-				<default>0</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
-				<type>float</type>
-				<help>None</help>
 			</input>
 			<input>
+				<default>0</default>
+				<type>float</type>
 				<name>rotateUV</name>
-				<hint>None</hint>
-				<default>0</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
-				<type>float</type>
-				<help>None</help>
 			</input>
 			<input>
+				<default>0</default>
+				<type>float</type>
 				<name>noiseU</name>
-				<hint>None</hint>
-				<default>0</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
-				<type>float</type>
-				<help>None</help>
 			</input>
 			<input>
+				<default>0</default>
+				<type>float</type>
 				<name>noiseV</name>
-				<hint>None</hint>
-				<default>0</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
-				<type>float</type>
-				<help>None</help>
 			</input>
 			<input>
-				<name>uvCoord</name>
-				<hint>None</hint>
 				<default>[0.0, 0.0, 0.0]</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
 				<type>vector</type>
-				<help>None</help>
+				<name>uvCoord</name>
 			</input>
 		</inputs>
 		<name>place2dTexture</name>
 		<outputs>
 			<output>
+				<default>[0.0, 0.0, 0.0]</default>
 				<type>output vector</type>
 				<name>outUV</name>
-				<help />
 			</output>
 		</outputs>
 		<mayaId>0</mayaId>
-		<mayaClassification>None</mayaClassification>
-		<help>None</help>
+		<mayaClassification />
+		<help />
 	</shader>
 	<shader>
 		<inputs>
 			<input>
-				<name>matrix</name>
-				<hint>None</hint>
 				<default>]</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
 				<type>matrix</type>
-				<help>None</help>
+				<name>matrix</name>
 			</input>
 		</inputs>
 		<name>place3dTexture</name>
 		<outputs>
 			<output>
+				<default>]</default>
 				<type>output matrix</type>
 				<name>worldInverseMatrix</name>
-				<help />
 			</output>
 		</outputs>
 		<mayaId>0</mayaId>
-		<mayaClassification>None</mayaClassification>
-		<help>None</help>
+		<mayaClassification />
+		<help />
 	</shader>
 	<shader>
 		<inputs>
 			<input>
-				<name>vector</name>
-				<hint>None</hint>
 				<default>[1.0, 1.0, 1.0]</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
 				<type>vector</type>
-				<help>None</help>
+				<name>vector</name>
 			</input>
 		</inputs>
 		<name>vectorToFloat</name>
 		<outputs>
 			<output>
+				<default>0</default>
 				<type>output float</type>
 				<name>outX</name>
-				<help />
 			</output>
 			<output>
+				<default>0</default>
 				<type>output float</type>
 				<name>outY</name>
-				<help />
 			</output>
 			<output>
+				<default>0</default>
 				<type>output float</type>
 				<name>outZ</name>
-				<help />
 			</output>
 		</outputs>
 		<mayaId>0</mayaId>
-		<mayaClassification>None</mayaClassification>
-		<help>None</help>
+		<mayaClassification />
+		<help />
 	</shader>
 	<shader>
 		<inputs>
 			<input>
+				<default>[0.0, 0.0, 0.0]</default>
+				<type>vector</type>
 				<name>uvCoord</name>
-				<hint>None</hint>
-				<default>[0.0, 0.0, 0.0]</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
-				<type>vector</type>
-				<help>None</help>
 			</input>
 			<input>
+				<default />
+				<type>string</type>
 				<name>fileTextureName</name>
-				<hint>None</hint>
-				<default>None</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
-				<type>string</type>
-				<help>None</help>
 			</input>
 			<input>
+				<default />
+				<type>string</type>
 				<name>baseName</name>
-				<hint>None</hint>
-				<default>None</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
-				<type>string</type>
-				<help>None</help>
 			</input>
 			<input>
+				<default />
+				<type>string</type>
 				<name>ext</name>
-				<hint>None</hint>
-				<default>None</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
-				<type>string</type>
-				<help>None</help>
 			</input>
 			<input>
-				<name>uvTilingMode</name>
-				<hint>None</hint>
 				<default>2</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
 				<type>int</type>
-				<help>None</help>
+				<name>uvTilingMode</name>
 			</input>
 			<input>
+				<default>0</default>
+				<type>int</type>
 				<name>fromSRGB</name>
-				<hint>None</hint>
-				<default>0</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
-				<type>int</type>
-				<help>None</help>
 			</input>
 			<input>
+				<default>0</default>
+				<type>int</type>
 				<name>toSRGB</name>
-				<hint>None</hint>
-				<default>0</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
-				<type>int</type>
-				<help>None</help>
 			</input>
 			<input>
+				<default>0</default>
+				<type>int</type>
 				<name>textureFilter</name>
-				<hint>None</hint>
-				<default>0</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
-				<type>int</type>
-				<help>None</help>
 			</input>
 			<input>
+				<default>1</default>
+				<type>float</type>
 				<name>textureFilterWidth</name>
-				<hint>None</hint>
-				<default>1</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
-				<type>float</type>
-				<help>None</help>
 			</input>
 			<input>
+				<default>0</default>
+				<type>float</type>
 				<name>textureBlur</name>
-				<hint>None</hint>
-				<default>0</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
-				<type>float</type>
-				<help>None</help>
 			</input>
 			<input>
+				<default>0</default>
+				<type>float</type>
 				<name>exposure</name>
-				<hint>None</hint>
-				<default>0</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
-				<type>float</type>
-				<help>None</help>
 			</input>
 			<input>
-				<name>defaultColor</name>
-				<hint>None</hint>
 				<default>[0.5, 0.5, 0.5]</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
 				<type>vector</type>
-				<help>None</help>
+				<name>defaultColor</name>
 			</input>
 			<input>
-				<name>colorGain</name>
-				<hint>None</hint>
 				<default>[1.0, 1.0, 1.0]</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
 				<type>vector</type>
-				<help>None</help>
+				<name>colorGain</name>
 			</input>
 			<input>
-				<name>colorOffset</name>
-				<hint>None</hint>
 				<default>[0.0, 0.0, 0.0]</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
 				<type>vector</type>
-				<help>None</help>
+				<name>colorOffset</name>
 			</input>
 			<input>
+				<default>1</default>
+				<type>float</type>
 				<name>alphaGain</name>
-				<hint>None</hint>
-				<default>1</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
-				<type>float</type>
-				<help>None</help>
 			</input>
 			<input>
+				<default>0</default>
+				<type>float</type>
 				<name>alphaOffset</name>
-				<hint>None</hint>
-				<default>0</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
-				<type>float</type>
-				<help>None</help>
 			</input>
 			<input>
-				<name>alphaIsLuminance</name>
-				<hint>None</hint>
 				<default>1</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
 				<type>int</type>
-				<help>None</help>
+				<name>alphaIsLuminance</name>
 			</input>
 			<input>
-				<name>invert</name>
-				<hint>None</hint>
 				<default>0</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
 				<type>int</type>
-				<help>None</help>
+				<name>invert</name>
 			</input>
 		</inputs>
 		<name>file</name>
 		<outputs>
 			<output>
+				<default>[0.0, 0.0, 0.0]</default>
 				<type>output vector</type>
 				<name>outColor</name>
-				<help />
 			</output>
 			<output>
+				<default>0</default>
 				<type>output float</type>
 				<name>outAlpha</name>
-				<help />
 			</output>
 		</outputs>
 		<mayaId>0</mayaId>
-		<mayaClassification>None</mayaClassification>
-		<help>None</help>
+		<mayaClassification />
+		<help />
 	</shader>
 	<shader>
 		<inputs>
 			<input>
+				<default>[0.0, 0.0, 0.0]</default>
+				<type>vector</type>
 				<name>input1</name>
-				<hint>None</hint>
-				<default>[0.0, 0.0, 0.0]</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
-				<type>vector</type>
-				<help>None</help>
 			</input>
 			<input>
+				<default>[0.0, 0.0, 0.0]</default>
+				<type>vector</type>
 				<name>input2</name>
-				<hint>None</hint>
-				<default>[0.0, 0.0, 0.0]</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
-				<type>vector</type>
-				<help>None</help>
 			</input>
 			<input>
-				<name>operation</name>
-				<hint>None</hint>
 				<default>0</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
 				<type>int</type>
-				<help>None</help>
+				<name>operation</name>
 			</input>
 		</inputs>
 		<name>multiplyDivide</name>
 		<outputs>
 			<output>
+				<default>[0.0, 0.0, 0.0]</default>
 				<type>output vector</type>
 				<name>output</name>
-				<help />
 			</output>
 		</outputs>
 		<mayaId>0</mayaId>
-		<mayaClassification>None</mayaClassification>
-		<help>None</help>
+		<mayaClassification />
+		<help />
 	</shader>
 	<shader>
 		<inputs>
 			<input>
-				<name>normalCamera</name>
-				<hint>None</hint>
 				<default>[ 0.0, 0.0, 0.0 ]</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
 				<type>vector</type>
-				<help>None</help>
+				<name>normalCamera</name>
 			</input>
 			<input>
-				<name>tangent</name>
-				<hint>None</hint>
 				<default>[0.0, 0.0, 0.0]</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
 				<type>vector</type>
+				<name>Tn</name>
 				<help>Tangent</help>
 			</input>
 			<input>
-				<name>reflectance</name>
-				<hint>None</hint>
 				<default>0.8</default>
 				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
 				<type>float</type>
-				<help>None</help>
+				<name>reflectance</name>
+				<min>0</min>
 			</input>
 			<input>
-				<name>normalReflectance</name>
-				<hint>useAsColor</hint>
 				<default>[0.92, 0.92, 0.92]</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
+				<hint>useAsColor</hint>
 				<type>vector</type>
+				<name>normalReflectance</name>
 				<help>Normal Reflectance</help>
 			</input>
 			<input>
-				<name>edgeTint</name>
-				<hint>useAsColor</hint>
 				<default>[0.98, 0.98, 0.98]</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
+				<hint>useAsColor</hint>
 				<type>vector</type>
+				<name>edgeTint</name>
 				<help>EdgeTint</help>
 			</input>
 			<input>
-				<name>distribution</name>
-				<hint>None</hint>
 				<default>ggx</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
-				<type>string</type>
 				<options>['beckmann', 'ggx']</options>
+				<type>string</type>
+				<name>distribution</name>
 				<help>Microfacet distribution to use: Beckmann or GGX.</help>
 			</input>
 			<input>
 				<name>roughness</name>
-				<hint>None</hint>
+				<min>0.001</min>
 				<default>0.1</default>
 				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0.001</min>
-				<isArrayPlug>True</isArrayPlug>
 				<type>float</type>
 				<help>Roughness</help>
 			</input>
 			<input>
-				<name>roughnessDepthScale</name>
-				<hint>None</hint>
 				<default>1</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>1</min>
-				<isArrayPlug>True</isArrayPlug>
 				<type>float</type>
-				<help>None</help>
+				<name>roughnessDepthScale</name>
+				<min>1</min>
 			</input>
 			<input>
 				<name>anisotropic</name>
-				<hint>None</hint>
+				<min>-1</min>
 				<default>0</default>
 				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>-1</min>
-				<isArrayPlug>True</isArrayPlug>
 				<type>float</type>
 				<help>Anisotropy</help>
 			</input>
@@ -1178,7 +652,6 @@
 			<output>
 				<type>output pointer</type>
 				<name>outColor</name>
-				<help />
 			</output>
 		</outputs>
 		<mayaId>0</mayaId>
@@ -1188,744 +661,373 @@
 	<shader>
 		<inputs>
 			<input>
+				<default>0</default>
+				<type>float</type>
 				<name>bumpValue</name>
-				<hint>None</hint>
-				<default>0</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
-				<type>float</type>
-				<help>None</help>
 			</input>
 			<input>
-				<name>bumpDepth</name>
-				<hint>None</hint>
 				<default>1</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
 				<type>float</type>
-				<help>None</help>
+				<name>bumpDepth</name>
 			</input>
 			<input>
+				<default>0</default>
+				<type>int</type>
 				<name>bumpInterp</name>
-				<hint>None</hint>
-				<default>0</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
-				<type>int</type>
-				<help>None</help>
 			</input>
 			<input>
-				<name>normalCamera</name>
-				<hint>None</hint>
 				<default>[ 0.0, 0.0, 0.0 ]</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
 				<type>vector</type>
-				<help>None</help>
+				<name>normalCamera</name>
 			</input>
 			<input>
+				<default>[0.0, 0.0, 0.0]</default>
+				<type>vector</type>
 				<name>normalMap</name>
-				<hint>None</hint>
-				<default>[0.0, 0.0, 0.0]</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
-				<type>vector</type>
-				<help>None</help>
 			</input>
 			<input>
+				<default>[0.0, 0.0, 0.0]</default>
+				<type>vector</type>
 				<name>Tn</name>
-				<hint>None</hint>
-				<default>[0.0, 0.0, 0.0]</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
-				<type>vector</type>
-				<help>None</help>
 			</input>
 			<input>
+				<default>[0.0, 0.0, 0.0]</default>
+				<type>vector</type>
 				<name>Bn</name>
-				<hint>None</hint>
-				<default>[0.0, 0.0, 0.0]</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
-				<type>vector</type>
-				<help>None</help>
 			</input>
 			<input>
-				<name>upVector</name>
-				<hint>None</hint>
 				<default>0</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
 				<type>int</type>
-				<help>None</help>
+				<name>upVector</name>
 			</input>
 		</inputs>
 		<name>bump2d</name>
 		<outputs>
 			<output>
+				<default>[1.0, 1.0, 1.0]</default>
 				<type>output vector</type>
 				<name>outNormal</name>
-				<help />
 			</output>
 		</outputs>
 		<mayaId>0</mayaId>
-		<mayaClassification>None</mayaClassification>
-		<help>None</help>
+		<mayaClassification />
+		<help />
 	</shader>
 	<shader>
 		<inputs>
 			<input>
-				<name>value</name>
-				<hint>None</hint>
 				<default>[0.0, 0.0, 0.0]</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
 				<type>vector</type>
-				<help>None</help>
+				<name>value</name>
 			</input>
 			<input>
-				<name>gamma</name>
-				<hint>None</hint>
 				<default>[0.0, 0.0, 0.0]</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
 				<type>vector</type>
-				<help>None</help>
+				<name>gamma</name>
 			</input>
 		</inputs>
 		<name>gammaCorrect</name>
 		<outputs>
 			<output>
+				<default>[0.0, 0.0, 0.0]</default>
 				<type>output vector</type>
 				<name>outValue</name>
-				<help />
 			</output>
 		</outputs>
 		<mayaId>0</mayaId>
-		<mayaClassification>None</mayaClassification>
-		<help>None</help>
+		<mayaClassification />
+		<help />
 	</shader>
 	<shader>
 		<inputs>
 			<input>
+				<default>[0.0, 0.0, 0.0]</default>
+				<type>vector</type>
 				<name>uvCoord</name>
-				<hint>None</hint>
-				<default>[0.0, 0.0, 0.0]</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
-				<type>vector</type>
-				<help>None</help>
 			</input>
 			<input>
+				<default>[1.0, 1.0, 1.0]</default>
+				<type>vector</type>
 				<name>color1</name>
-				<hint>None</hint>
-				<default>[1.0, 1.0, 1.0]</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
-				<type>vector</type>
-				<help>None</help>
 			</input>
 			<input>
+				<default>[0.0, 0.0, 0.0]</default>
+				<type>vector</type>
 				<name>color2</name>
-				<hint>None</hint>
-				<default>[0.0, 0.0, 0.0]</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
-				<type>vector</type>
-				<help>None</help>
 			</input>
 			<input>
+				<default>1</default>
+				<type>float</type>
 				<name>contrast</name>
-				<hint>None</hint>
-				<default>1</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
-				<type>float</type>
-				<help>None</help>
 			</input>
 			<input>
+				<default>0</default>
+				<type>float</type>
 				<name>exposure</name>
-				<hint>None</hint>
-				<default>0</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
-				<type>float</type>
-				<help>None</help>
 			</input>
 			<input>
-				<name>defaultColor</name>
-				<hint>None</hint>
 				<default>[0.5, 0.5, 0.5]</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
 				<type>vector</type>
-				<help>None</help>
+				<name>defaultColor</name>
 			</input>
 			<input>
-				<name>colorGain</name>
-				<hint>None</hint>
 				<default>[1.0, 1.0, 1.0]</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
 				<type>vector</type>
-				<help>None</help>
+				<name>colorGain</name>
 			</input>
 			<input>
-				<name>colorOffset</name>
-				<hint>None</hint>
 				<default>[0.0, 0.0, 0.0]</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
 				<type>vector</type>
-				<help>None</help>
+				<name>colorOffset</name>
 			</input>
 			<input>
+				<default>1</default>
+				<type>float</type>
 				<name>alphaGain</name>
-				<hint>None</hint>
-				<default>1</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
-				<type>float</type>
-				<help>None</help>
 			</input>
 			<input>
+				<default>0</default>
+				<type>float</type>
 				<name>alphaOffset</name>
-				<hint>None</hint>
-				<default>0</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
-				<type>float</type>
-				<help>None</help>
 			</input>
 			<input>
-				<name>alphaIsLuminance</name>
-				<hint>None</hint>
 				<default>1</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
 				<type>int</type>
-				<help>None</help>
+				<name>alphaIsLuminance</name>
 			</input>
 			<input>
-				<name>invert</name>
-				<hint>None</hint>
 				<default>0</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
 				<type>int</type>
-				<help>None</help>
+				<name>invert</name>
 			</input>
 		</inputs>
 		<name>checker</name>
 		<outputs>
 			<output>
+				<default>[0.0, 0.0, 0.0]</default>
 				<type>output vector</type>
 				<name>outColor</name>
-				<help />
 			</output>
 			<output>
+				<default>0</default>
 				<type>output float</type>
 				<name>outAlpha</name>
-				<help />
 			</output>
 		</outputs>
 		<mayaId>0</mayaId>
-		<mayaClassification>None</mayaClassification>
-		<help>None</help>
+		<mayaClassification />
+		<help />
 	</shader>
 	<shader>
 		<inputs>
 			<input>
+				<default>0</default>
+				<type>float</type>
 				<name>inX</name>
-				<hint>None</hint>
-				<default>0</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
-				<type>float</type>
-				<help>None</help>
 			</input>
 			<input>
+				<default>0</default>
+				<type>float</type>
 				<name>inY</name>
-				<hint>None</hint>
-				<default>0</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
-				<type>float</type>
-				<help>None</help>
 			</input>
 			<input>
-				<name>inZ</name>
-				<hint>None</hint>
 				<default>0</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
 				<type>float</type>
-				<help>None</help>
+				<name>inZ</name>
 			</input>
 		</inputs>
 		<name>floatToColor</name>
 		<outputs>
 			<output>
+				<default>[0.0, 0.0, 0.0]</default>
 				<type>output vector</type>
 				<name>outValue</name>
-				<help />
 			</output>
 		</outputs>
 		<mayaId>0</mayaId>
-		<mayaClassification>None</mayaClassification>
-		<help>None</help>
+		<mayaClassification />
+		<help />
 	</shader>
 	<shader>
 		<inputs>
 			<input>
+				<default>[0.0, 0.0, 0.0]</default>
+				<type>vector</type>
 				<name>value</name>
-				<hint>None</hint>
-				<default>[0.0, 0.0, 0.0]</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
-				<type>vector</type>
-				<help>None</help>
 			</input>
 			<input>
+				<default>[0.0, 0.0, 0.0]</default>
+				<type>vector</type>
 				<name>contrast</name>
-				<hint>None</hint>
-				<default>[0.0, 0.0, 0.0]</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
-				<type>vector</type>
-				<help>None</help>
 			</input>
 			<input>
-				<name>bias</name>
-				<hint>None</hint>
 				<default>[0.0, 0.0, 0.0]</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
 				<type>vector</type>
-				<help>None</help>
+				<name>bias</name>
 			</input>
 		</inputs>
 		<name>contrast</name>
 		<outputs>
 			<output>
+				<default>[0.0, 0.0, 0.0]</default>
 				<type>output vector</type>
 				<name>outValue</name>
-				<help />
 			</output>
 		</outputs>
 		<mayaId>0</mayaId>
-		<mayaClassification>None</mayaClassification>
-		<help>None</help>
+		<mayaClassification />
+		<help />
 	</shader>
 	<shader>
 		<inputs>
 			<input>
+				<type>pointer</type>
 				<name>baseMaterial</name>
-				<hint>None</hint>
-				<default>0</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
-				<type>pointer</type>
-				<help>None</help>
 			</input>
 			<input>
+				<type>pointer</type>
 				<name>materialEntryMtl0</name>
-				<hint>None</hint>
-				<default>0</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
-				<type>pointer</type>
-				<help>None</help>
 			</input>
 			<input>
+				<type>pointer</type>
 				<name>materialEntryMtl1</name>
-				<hint>None</hint>
-				<default>0</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
-				<type>pointer</type>
-				<help>None</help>
 			</input>
 			<input>
+				<type>pointer</type>
 				<name>materialEntryMtl2</name>
-				<hint>None</hint>
-				<default>0</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
-				<type>pointer</type>
-				<help>None</help>
 			</input>
 			<input>
+				<type>pointer</type>
 				<name>materialEntryMtl3</name>
-				<hint>None</hint>
-				<default>0</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
-				<type>pointer</type>
-				<help>None</help>
 			</input>
 			<input>
+				<type>pointer</type>
 				<name>materialEntryMtl4</name>
-				<hint>None</hint>
-				<default>0</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
-				<type>pointer</type>
-				<help>None</help>
 			</input>
 			<input>
+				<type>pointer</type>
 				<name>materialEntryMtl5</name>
-				<hint>None</hint>
-				<default>0</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
-				<type>pointer</type>
-				<help>None</help>
 			</input>
 			<input>
+				<type>pointer</type>
 				<name>materialEntryMtl6</name>
-				<hint>None</hint>
-				<default>0</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
-				<type>pointer</type>
-				<help>None</help>
 			</input>
 			<input>
+				<type>pointer</type>
 				<name>materialEntryMtl7</name>
-				<hint>None</hint>
-				<default>0</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
-				<type>pointer</type>
-				<help>None</help>
 			</input>
 			<input>
+				<type>pointer</type>
 				<name>materialEntryMtl8</name>
-				<hint>None</hint>
-				<default>0</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
-				<type>pointer</type>
-				<help>None</help>
 			</input>
 			<input>
+				<type>pointer</type>
 				<name>materialEntryMtl9</name>
-				<hint>None</hint>
-				<default>0</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
-				<type>pointer</type>
-				<help>None</help>
 			</input>
 			<input>
+				<default>0</default>
+				<type>float</type>
 				<name>materialEntryMsk0</name>
-				<hint>None</hint>
-				<default>0</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
-				<type>float</type>
-				<help>None</help>
 			</input>
 			<input>
+				<default>0</default>
+				<type>float</type>
 				<name>materialEntryMsk1</name>
-				<hint>None</hint>
-				<default>0</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
-				<type>float</type>
-				<help>None</help>
 			</input>
 			<input>
+				<default>0</default>
+				<type>float</type>
 				<name>materialEntryMsk2</name>
-				<hint>None</hint>
-				<default>0</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
-				<type>float</type>
-				<help>None</help>
 			</input>
 			<input>
+				<default>0</default>
+				<type>float</type>
 				<name>materialEntryMsk3</name>
-				<hint>None</hint>
-				<default>0</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
-				<type>float</type>
-				<help>None</help>
 			</input>
 			<input>
+				<default>0</default>
+				<type>float</type>
 				<name>materialEntryMsk4</name>
-				<hint>None</hint>
-				<default>0</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
-				<type>float</type>
-				<help>None</help>
 			</input>
 			<input>
+				<default>0</default>
+				<type>float</type>
 				<name>materialEntryMsk5</name>
-				<hint>None</hint>
-				<default>0</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
-				<type>float</type>
-				<help>None</help>
 			</input>
 			<input>
+				<default>0</default>
+				<type>float</type>
 				<name>materialEntryMsk6</name>
-				<hint>None</hint>
-				<default>0</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
-				<type>float</type>
-				<help>None</help>
 			</input>
 			<input>
+				<default>0</default>
+				<type>float</type>
 				<name>materialEntryMsk7</name>
-				<hint>None</hint>
-				<default>0</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
-				<type>float</type>
-				<help>None</help>
 			</input>
 			<input>
+				<default>0</default>
+				<type>float</type>
 				<name>materialEntryMsk8</name>
-				<hint>None</hint>
-				<default>0</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
-				<type>float</type>
-				<help>None</help>
 			</input>
 			<input>
+				<default>0</default>
+				<type>float</type>
 				<name>materialEntryMsk9</name>
-				<hint>None</hint>
-				<default>0</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
-				<type>float</type>
-				<help>None</help>
 			</input>
 			<input>
+				<default>0</default>
+				<type>int</type>
 				<name>materialEntryMode0</name>
-				<hint>None</hint>
-				<default>0</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
-				<type>int</type>
-				<help>None</help>
 			</input>
 			<input>
+				<default>0</default>
+				<type>int</type>
 				<name>materialEntryMode1</name>
-				<hint>None</hint>
-				<default>0</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
-				<type>int</type>
-				<help>None</help>
 			</input>
 			<input>
+				<default>0</default>
+				<type>int</type>
 				<name>materialEntryMode2</name>
-				<hint>None</hint>
-				<default>0</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
-				<type>int</type>
-				<help>None</help>
 			</input>
 			<input>
+				<default>0</default>
+				<type>int</type>
 				<name>materialEntryMode3</name>
-				<hint>None</hint>
-				<default>0</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
-				<type>int</type>
-				<help>None</help>
 			</input>
 			<input>
+				<default>0</default>
+				<type>int</type>
 				<name>materialEntryMode4</name>
-				<hint>None</hint>
-				<default>0</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
-				<type>int</type>
-				<help>None</help>
 			</input>
 			<input>
+				<default>0</default>
+				<type>int</type>
 				<name>materialEntryMode5</name>
-				<hint>None</hint>
-				<default>0</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
-				<type>int</type>
-				<help>None</help>
 			</input>
 			<input>
+				<default>0</default>
+				<type>int</type>
 				<name>materialEntryMode6</name>
-				<hint>None</hint>
-				<default>0</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
-				<type>int</type>
-				<help>None</help>
 			</input>
 			<input>
+				<default>0</default>
+				<type>int</type>
 				<name>materialEntryMode7</name>
-				<hint>None</hint>
-				<default>0</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
-				<type>int</type>
-				<help>None</help>
 			</input>
 			<input>
+				<default>0</default>
+				<type>int</type>
 				<name>materialEntryMode8</name>
-				<hint>None</hint>
-				<default>0</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
-				<type>int</type>
-				<help>None</help>
 			</input>
 			<input>
+				<default>0</default>
+				<type>int</type>
 				<name>materialEntryMode9</name>
-				<hint>None</hint>
-				<default>0</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
-				<type>int</type>
-				<help>None</help>
 			</input>
 			<input>
-				<name>numEntries</name>
-				<hint>None</hint>
 				<default>0</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
 				<type>int</type>
-				<help>None</help>
+				<name>numEntries</name>
 			</input>
 		</inputs>
 		<name>asLayeredShader</name>
@@ -1933,650 +1035,388 @@
 			<output>
 				<type>output pointer</type>
 				<name>outColor</name>
-				<help />
 			</output>
 		</outputs>
 		<mayaId>0</mayaId>
-		<mayaClassification>None</mayaClassification>
-		<help>None</help>
+		<mayaClassification />
+		<help />
 	</shader>
 	<shader>
 		<inputs>
 			<input>
+				<default>0</default>
+				<type>float</type>
 				<name>threshold</name>
-				<hint>None</hint>
-				<default>0</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
-				<type>float</type>
-				<help>None</help>
 			</input>
 			<input>
+				<default>1</default>
+				<type>float</type>
 				<name>amplitude</name>
-				<hint>None</hint>
-				<default>1</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
-				<type>float</type>
-				<help>None</help>
 			</input>
 			<input>
-				<name>ratio</name>
-				<hint>None</hint>
 				<default>0.707</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
 				<type>float</type>
-				<help>None</help>
+				<name>ratio</name>
 			</input>
 			<input>
-				<name>frequencyRatio</name>
-				<hint>None</hint>
 				<default>2</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
 				<type>float</type>
-				<help>None</help>
+				<name>frequencyRatio</name>
 			</input>
 			<input>
-				<name>depthMax</name>
-				<hint>None</hint>
 				<default>3</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
 				<type>int</type>
-				<help>None</help>
+				<name>depthMax</name>
 			</input>
 			<input>
+				<default>0</default>
+				<type>int</type>
 				<name>inflection</name>
-				<hint>None</hint>
-				<default>0</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
-				<type>int</type>
-				<help>None</help>
 			</input>
 			<input>
+				<default>0</default>
+				<type>float</type>
 				<name>inTime</name>
-				<hint>None</hint>
-				<default>0</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
-				<type>float</type>
-				<help>None</help>
 			</input>
 			<input>
-				<name>frequency</name>
-				<hint>None</hint>
 				<default>8</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
 				<type>float</type>
-				<help>None</help>
+				<name>frequency</name>
 			</input>
 			<input>
+				<default>0</default>
+				<type>float</type>
 				<name>implode</name>
-				<hint>None</hint>
-				<default>0</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
-				<type>float</type>
-				<help>None</help>
 			</input>
 			<input>
-				<name>implodeCenter</name>
-				<hint>None</hint>
 				<default>[0.5, 0.5, 0.0]</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
 				<type>vector</type>
-				<help>None</help>
+				<name>implodeCenter</name>
 			</input>
 			<input>
+				<default>1</default>
+				<type>int</type>
 				<name>noiseType</name>
-				<hint>None</hint>
-				<default>1</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
-				<type>int</type>
-				<help>None</help>
 			</input>
 			<input>
+				<default>1</default>
+				<type>float</type>
 				<name>density</name>
-				<hint>None</hint>
-				<default>1</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
-				<type>float</type>
-				<help>None</help>
 			</input>
 			<input>
-				<name>spotynes</name>
-				<hint>None</hint>
 				<default>0.1</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
 				<type>float</type>
-				<help>None</help>
+				<name>spotynes</name>
 			</input>
 			<input>
+				<default>0</default>
+				<type>float</type>
 				<name>sizeRand</name>
-				<hint>None</hint>
-				<default>0</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
-				<type>float</type>
-				<help>None</help>
 			</input>
 			<input>
+				<default>1</default>
+				<type>float</type>
 				<name>randomnes</name>
-				<hint>None</hint>
-				<default>1</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
-				<type>float</type>
-				<help>None</help>
 			</input>
 			<input>
+				<default>0</default>
+				<type>int</type>
 				<name>falloff</name>
-				<hint>None</hint>
-				<default>0</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
-				<type>int</type>
-				<help>None</help>
 			</input>
 			<input>
-				<name>numWaves</name>
-				<hint>None</hint>
 				<default>6</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
 				<type>int</type>
-				<help>None</help>
+				<name>numWaves</name>
 			</input>
 			<input>
+				<default>[0.0, 0.0, 0.0]</default>
+				<type>vector</type>
 				<name>uvCoord</name>
-				<hint>None</hint>
-				<default>[0.0, 0.0, 0.0]</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
-				<type>vector</type>
-				<help>None</help>
 			</input>
 			<input>
+				<default>0</default>
+				<type>float</type>
 				<name>exposure</name>
-				<hint>None</hint>
-				<default>0</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
-				<type>float</type>
-				<help>None</help>
 			</input>
 			<input>
-				<name>defaultColor</name>
-				<hint>None</hint>
 				<default>[0.5, 0.5, 0.5]</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
 				<type>vector</type>
-				<help>None</help>
+				<name>defaultColor</name>
 			</input>
 			<input>
-				<name>colorGain</name>
-				<hint>None</hint>
 				<default>[1.0, 1.0, 1.0]</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
 				<type>vector</type>
-				<help>None</help>
+				<name>colorGain</name>
 			</input>
 			<input>
-				<name>colorOffset</name>
-				<hint>None</hint>
 				<default>[0.0, 0.0, 0.0]</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
 				<type>vector</type>
-				<help>None</help>
+				<name>colorOffset</name>
 			</input>
 			<input>
+				<default>1</default>
+				<type>float</type>
 				<name>alphaGain</name>
-				<hint>None</hint>
-				<default>1</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
-				<type>float</type>
-				<help>None</help>
 			</input>
 			<input>
+				<default>0</default>
+				<type>float</type>
 				<name>alphaOffset</name>
-				<hint>None</hint>
-				<default>0</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
-				<type>float</type>
-				<help>None</help>
 			</input>
 			<input>
-				<name>alphaIsLuminance</name>
-				<hint>None</hint>
 				<default>1</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
 				<type>int</type>
-				<help>None</help>
+				<name>alphaIsLuminance</name>
 			</input>
 			<input>
-				<name>invert</name>
-				<hint>None</hint>
 				<default>0</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
 				<type>int</type>
-				<help>None</help>
+				<name>invert</name>
 			</input>
 		</inputs>
 		<name>noise</name>
 		<outputs>
 			<output>
+				<default>[0.0, 0.0, 0.0]</default>
 				<type>output vector</type>
 				<name>outColor</name>
-				<help />
 			</output>
 			<output>
+				<default>0</default>
 				<type>output float</type>
 				<name>outAlpha</name>
-				<help />
 			</output>
 		</outputs>
 		<mayaId>0</mayaId>
-		<mayaClassification>None</mayaClassification>
-		<help>None</help>
+		<mayaClassification />
+		<help />
 	</shader>
 	<shader>
 		<inputs>
 			<input>
-				<name>matte</name>
-				<hint>useAsBool</hint>
 				<default>0</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
+				<hint>useAsBool</hint>
 				<type>int</type>
+				<name>matte</name>
 				<help>Use matte</help>
 			</input>
 			<input>
-				<name>normalCamera</name>
-				<hint>None</hint>
 				<default>[ 0.0, 0.0, 0.0 ]</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
 				<type>vector</type>
-				<help>None</help>
+				<name>normalCamera</name>
 			</input>
 			<input>
 				<name>diffuseValue</name>
-				<hint>None</hint>
+				<min>0</min>
 				<default>0.8</default>
 				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
 				<type>float</type>
 				<help>Diffuse reflectivity multiplier</help>
 			</input>
 			<input>
-				<name>diffuseColor</name>
-				<hint>useAsColor</hint>
 				<default>[1.0, 1.0, 1.0]</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
+				<hint>useAsColor</hint>
 				<type>vector</type>
+				<name>diffuseColor</name>
 				<help>Color</help>
 			</input>
 			<input>
-				<name>roughness</name>
-				<hint>None</hint>
 				<default>0</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
 				<type>float</type>
+				<name>roughness</name>
 				<help>Surface roughness. Mix between lambert and orenNayar.</help>
 			</input>
 			<input>
-				<name>backlighting</name>
-				<hint>None</hint>
 				<default>0</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
 				<type>float</type>
+				<name>backlighting</name>
 				<help>Backlighting, show light though a surface (poor mans translucency).</help>
 			</input>
 			<input>
 				<name>translucency</name>
-				<hint>None</hint>
+				<min>0</min>
 				<default>0</default>
 				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
 				<type>float</type>
 				<help>Translucency.</help>
 			</input>
 			<input>
-				<name>translucencyColor</name>
-				<hint>useAsColor</hint>
 				<default>[0.0, 0.0, 0.0]</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
+				<hint>useAsColor</hint>
 				<type>vector</type>
+				<name>translucencyColor</name>
 				<help>Translucency color</help>
 			</input>
 			<input>
 				<name>specular1</name>
-				<hint>None</hint>
+				<min>0</min>
 				<default>0.5</default>
 				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
 				<type>float</type>
 				<help>Specularity 1 value</help>
 			</input>
 			<input>
 				<name>specularIOR1</name>
-				<hint>softmax</hint>
+				<min>0.001</min>
 				<default>1.5</default>
 				<max>3</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0.001</min>
-				<isArrayPlug>True</isArrayPlug>
+				<hint>softmax</hint>
 				<type>float</type>
 				<help>Specularity 1 index of reflection</help>
 			</input>
 			<input>
-				<name>specularUseFresnel1</name>
-				<hint>useAsBool</hint>
 				<default>1</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
+				<hint>useAsBool</hint>
 				<type>int</type>
+				<name>specularUseFresnel1</name>
 				<help>Specularity 1 use fresnel</help>
 			</input>
 			<input>
 				<name>reflectivityAtZeroDeg</name>
-				<hint>None</hint>
+				<min>0</min>
 				<default>0</default>
 				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
 				<type>float</type>
 				<help>Reflectivity at 0 Degree</help>
 			</input>
 			<input>
 				<name>roughness1</name>
-				<hint>softmax</hint>
+				<min>0.001</min>
 				<default>0.1</default>
 				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0.001</min>
-				<isArrayPlug>True</isArrayPlug>
+				<hint>softmax</hint>
 				<type>float</type>
 				<help>Roughness</help>
 			</input>
 			<input>
-				<name>specularColor1</name>
-				<hint>useAsColor</hint>
 				<default>[0.0, 0.0, 0.0]</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
+				<hint>useAsColor</hint>
 				<type>vector</type>
+				<name>specularColor1</name>
 				<help>Specular color 1</help>
 			</input>
 			<input>
 				<name>anisotropy1</name>
-				<hint>None</hint>
+				<min>-1</min>
 				<default>0</default>
 				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>-1</min>
-				<isArrayPlug>True</isArrayPlug>
 				<type>float</type>
 				<help>Anisotropy</help>
 			</input>
 			<input>
-				<name>reflectionMdf</name>
-				<hint>None</hint>
 				<default>ggx</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
-				<type>string</type>
 				<options>['beckmann', 'ggx']</options>
+				<type>string</type>
+				<name>reflectionMdf</name>
 				<help>Microfacet distribution to use: Beckmann or GGX.</help>
 			</input>
 			<input>
 				<name>refractionIOR</name>
-				<hint>softminmax</hint>
+				<min>-2</min>
 				<default>1.3</default>
 				<max>2</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>-2</min>
-				<isArrayPlug>True</isArrayPlug>
+				<hint>softminmax</hint>
 				<type>float</type>
 				<help>Refraction Index</help>
 			</input>
 			<input>
-				<name>refractionColor</name>
-				<hint>useAsColor</hint>
 				<default>[1.0, 1.0, 1.0]</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
+				<hint>useAsColor</hint>
 				<type>vector</type>
+				<name>refractionColor</name>
 				<help>Refraction color</help>
 			</input>
 			<input>
 				<name>absorptionDist</name>
-				<hint>softmax</hint>
+				<min>0</min>
 				<default>0</default>
 				<max>5</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
+				<hint>softmax</hint>
 				<type>float</type>
 				<help>Absorption distance</help>
 			</input>
 			<input>
-				<name>absorptionColor</name>
-				<hint>useAsColor</hint>
 				<default>[0.0, 0.0, 0.0]</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
+				<hint>useAsColor</hint>
 				<type>vector</type>
+				<name>absorptionColor</name>
 				<help>Absorption color</help>
 			</input>
 			<input>
 				<name>refractivity</name>
-				<hint>None</hint>
+				<min>0</min>
 				<default>0</default>
 				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
 				<type>float</type>
 				<help>Refractivity</help>
 			</input>
 			<input>
 				<name>refractionRoughness</name>
-				<hint>softmax</hint>
+				<min>0.001</min>
 				<default>0</default>
 				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0.001</min>
-				<isArrayPlug>True</isArrayPlug>
+				<hint>softmax</hint>
 				<type>float</type>
 				<help>Refraction roughness</help>
 			</input>
 			<input>
-				<name>refractionMdf</name>
-				<hint>None</hint>
 				<default>ggx</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
-				<type>string</type>
 				<options>['beckmann', 'ggx']</options>
+				<type>string</type>
+				<name>refractionMdf</name>
 				<help>Microfacet distribution to use: Beckmann or GGX.</help>
 			</input>
 			<input>
-				<name>SSS1</name>
-				<hint>useAsBool</hint>
 				<default>0</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
+				<hint>useAsBool</hint>
 				<type>int</type>
+				<name>SSS1</name>
 				<help>Use SSS 1</help>
 			</input>
 			<input>
-				<name>SSS1Color</name>
-				<hint>useAsColor</hint>
 				<default>[0.0, 0.0, 0.0]</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
+				<hint>useAsColor</hint>
 				<type>vector</type>
+				<name>SSS1Color</name>
 				<help>Subsurface color</help>
 			</input>
 			<input>
 				<name>SSS1Weight</name>
-				<hint>None</hint>
+				<min>0</min>
 				<default>0</default>
 				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
 				<type>float</type>
 				<help>Subsurface color Multiplier</help>
 			</input>
 			<input>
-				<name>SSS1Radius</name>
-				<hint>useAsColor</hint>
 				<default>[0.0, 0.0, 0.0]</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
+				<hint>useAsColor</hint>
 				<type>vector</type>
+				<name>SSS1Radius</name>
 				<help>Radius per Color</help>
 			</input>
 			<input>
 				<name>SSS1RadiusMultiplier</name>
-				<hint>softmax</hint>
+				<min>0</min>
 				<default>1</default>
 				<max>3</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
+				<hint>softmax</hint>
 				<type>float</type>
 				<help>Subsurface color Multiplier</help>
 			</input>
 			<input>
-				<name>emissionColor</name>
-				<hint>useAsColor</hint>
 				<default>[0.0, 0.0, 0.0]</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
+				<hint>useAsColor</hint>
 				<type>vector</type>
+				<name>emissionColor</name>
 				<help>Emission Color</help>
 			</input>
 			<input>
 				<name>emissionMultiplier</name>
-				<hint>softmax</hint>
+				<min>0</min>
 				<default>1</default>
 				<max>3</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
+				<hint>softmax</hint>
 				<type>float</type>
 				<help>Emission Color Multiplier</help>
 			</input>
@@ -2586,7 +1426,6 @@
 			<output>
 				<type>output pointer</type>
 				<name>outColor</name>
-				<help />
 			</output>
 		</outputs>
 		<mayaId>0</mayaId>
@@ -2596,58 +1435,34 @@
 	<shader>
 		<inputs>
 			<input>
-				<name>Normal</name>
-				<hint>None</hint>
 				<default>[ 0.0, 0.0, 0.0 ]</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
 				<type>vector</type>
-				<help>None</help>
+				<name>Normal</name>
 			</input>
 			<input>
-				<name>diffuse</name>
-				<hint>None</hint>
 				<default>0.8</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
 				<type>float</type>
-				<help>None</help>
+				<name>diffuse</name>
 			</input>
 			<input>
-				<name>color</name>
-				<hint>useAsColor</hint>
 				<default>[1.0, 1.0, 1.0]</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
+				<hint>useAsColor</hint>
 				<type>vector</type>
+				<name>color</name>
 				<help>Color</help>
 			</input>
 			<input>
-				<name>incandescence</name>
-				<hint>useAsColor</hint>
 				<default>[0.0, 0.0, 0.0]</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
+				<hint>useAsColor</hint>
 				<type>vector</type>
+				<name>incandescence</name>
 				<help>Incandescence</help>
 			</input>
 			<input>
-				<name>transparency</name>
-				<hint>useAsColor</hint>
 				<default>[0.0, 0.0, 0.0]</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
+				<hint>useAsColor</hint>
 				<type>vector</type>
+				<name>transparency</name>
 				<help>Transparency</help>
 			</input>
 		</inputs>
@@ -2656,112 +1471,74 @@
 			<output>
 				<type>output pointer</type>
 				<name>outColor</name>
-				<help />
 			</output>
 		</outputs>
 		<mayaId>0</mayaId>
-		<mayaClassification>None</mayaClassification>
-		<help>None</help>
+		<mayaClassification />
+		<help />
 	</shader>
 	<shader>
 		<inputs>
 			<input>
-				<name>normalCamera</name>
-				<hint />
 				<default>[ 0.0, 0.0, 0.0 ]</default>
-				<max>1</max>
-				<compAttrArrayPath />
-				<min>0</min>
-				<isArrayPlug />
 				<type>vector</type>
-				<help />
+				<name>normalCamera</name>
 			</input>
 			<input>
-				<name>tangent</name>
-				<hint />
 				<default>[0.0, 0.0, 0.0]</default>
-				<max>1</max>
-				<compAttrArrayPath />
-				<min>0</min>
-				<isArrayPlug />
 				<type>vector</type>
+				<name>Tn</name>
 				<help>Tangent</help>
 			</input>
 			<input>
-				<name>reflectance</name>
-				<hint />
 				<default>0.8</default>
 				<max>1</max>
-				<compAttrArrayPath />
-				<min>0</min>
-				<isArrayPlug />
 				<type>float</type>
-				<help />
+				<name>reflectance</name>
+				<min>0</min>
 			</input>
 			<input>
-				<name>surfaceColor</name>
-				<hint>useAsColor</hint>
 				<default>[1.0, 1.0, 1.0]</default>
-				<max>1</max>
-				<compAttrArrayPath />
-				<min>0</min>
-				<isArrayPlug />
+				<hint>useAsColor</hint>
 				<type>vector</type>
+				<name>surfaceColor</name>
 				<help>Surface Color</help>
 			</input>
 			<input>
 				<name>ior</name>
-				<hint>softminmax</hint>
+				<min>-1</min>
 				<default>1.5</default>
 				<max>1</max>
-				<compAttrArrayPath />
-				<min>-1</min>
-				<isArrayPlug />
+				<hint>softminmax</hint>
 				<type>float</type>
 				<help>Index of refraction</help>
 			</input>
 			<input>
-				<name>distribution</name>
-				<hint />
 				<default>ggx</default>
-				<max>1</max>
-				<compAttrArrayPath />
-				<min>0</min>
-				<isArrayPlug />
-				<type>string</type>
 				<options>['beckmann', 'ggx']</options>
+				<type>string</type>
+				<name>distribution</name>
 				<help>Microfacet distribution to use</help>
 			</input>
 			<input>
 				<name>roughness</name>
-				<hint />
+				<min>0.001</min>
 				<default>0.1</default>
 				<max>1</max>
-				<compAttrArrayPath />
-				<min>0.001</min>
-				<isArrayPlug />
 				<type>float</type>
 				<help>Surface roughness</help>
 			</input>
 			<input>
-				<name>roughnessDepthScale</name>
-				<hint />
 				<default>1</default>
-				<max>1</max>
-				<compAttrArrayPath />
-				<min>1</min>
-				<isArrayPlug />
 				<type>float</type>
-				<help />
+				<name>roughnessDepthScale</name>
+				<min>1</min>
 			</input>
 			<input>
 				<name>anisotropic</name>
-				<hint />
+				<min>-1</min>
 				<default>0</default>
 				<max>1</max>
-				<compAttrArrayPath />
-				<min>-1</min>
-				<isArrayPlug />
 				<type>float</type>
 				<help>Anisotropy</help>
 			</input>
@@ -2771,7 +1548,6 @@
 			<output>
 				<type>output pointer</type>
 				<name>outColor</name>
-				<help />
 			</output>
 		</outputs>
 		<mayaId>0</mayaId>
@@ -2781,445 +1557,247 @@
 	<shader>
 		<inputs>
 			<input>
-				<name>multiplier</name>
-				<hint>None</hint>
 				<default>1</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
 				<type>float</type>
-				<help>None</help>
+				<name>multiplier</name>
 			</input>
 			<input>
+				<default>0</default>
+				<type>float</type>
 				<name>offset</name>
-				<hint>None</hint>
-				<default>0</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
-				<type>float</type>
-				<help>None</help>
 			</input>
 			<input>
-				<name>color</name>
-				<hint>None</hint>
 				<default>[1.0, 1.0, 1.0]</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
 				<type>vector</type>
-				<help>None</help>
+				<name>color</name>
 			</input>
 			<input>
-				<name>inFloat</name>
-				<hint>None</hint>
 				<default>0</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
 				<type>float</type>
-				<help>None</help>
+				<name>inFloat</name>
 			</input>
 			<input>
-				<name>inInt</name>
-				<hint>None</hint>
 				<default>0</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
 				<type>int</type>
-				<help>None</help>
+				<name>inInt</name>
 			</input>
 			<input>
-				<name>vector</name>
-				<hint>None</hint>
 				<default>[0.0, 0.0, 0.0]</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
 				<type>vector</type>
-				<help>None</help>
+				<name>vector</name>
 			</input>
 		</inputs>
 		<name>OSLInterface</name>
 		<outputs>
 			<output>
+				<default>]</default>
 				<type>output color</type>
 				<name>Cout</name>
-				<help />
 			</output>
 		</outputs>
 		<mayaId>0</mayaId>
-		<mayaClassification>None</mayaClassification>
-		<help>None</help>
+		<mayaClassification />
+		<help />
 	</shader>
 	<shader>
 		<inputs>
 			<input>
-				<name>color1</name>
-				<hint>None</hint>
 				<default>[1.0, 0.0, 0.0]</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
 				<type>vector</type>
-				<help>None</help>
+				<name>color1</name>
 			</input>
 			<input>
-				<name>color2</name>
-				<hint>None</hint>
 				<default>[0.0, 0.0, 1.0]</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
 				<type>vector</type>
-				<help>None</help>
+				<name>color2</name>
 			</input>
 			<input>
-				<name>blender</name>
-				<hint>None</hint>
 				<default>0</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
 				<type>float</type>
-				<help>None</help>
+				<name>blender</name>
 			</input>
 		</inputs>
 		<name>blendColors</name>
 		<outputs>
 			<output>
+				<default>[0.0, 0.0, 0.0]</default>
 				<type>output vector</type>
 				<name>output</name>
-				<help />
 			</output>
 		</outputs>
 		<mayaId>0</mayaId>
-		<mayaClassification>None</mayaClassification>
-		<help>None</help>
+		<mayaClassification />
+		<help />
 	</shader>
 	<shader>
 		<inputs>
 			<input>
+				<default>[1.0, 1.0, 1.0]</default>
+				<type>vector</type>
 				<name>lineColor</name>
-				<hint>None</hint>
-				<default>[1.0, 1.0, 1.0]</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
-				<type>vector</type>
-				<help>None</help>
 			</input>
 			<input>
+				<default>[0.0, 0.0, 0.0]</default>
+				<type>vector</type>
 				<name>fillerColor</name>
-				<hint>None</hint>
-				<default>[0.0, 0.0, 0.0]</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
-				<type>vector</type>
-				<help>None</help>
 			</input>
 			<input>
+				<default>0.1</default>
+				<type>float</type>
 				<name>uWidth</name>
-				<hint>None</hint>
-				<default>0.1</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
-				<type>float</type>
-				<help>None</help>
 			</input>
 			<input>
+				<default>0.1</default>
+				<type>float</type>
 				<name>vWidth</name>
-				<hint>None</hint>
-				<default>0.1</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
-				<type>float</type>
-				<help>None</help>
 			</input>
 			<input>
+				<default>[0.0, 0.0, 0.0]</default>
+				<type>vector</type>
 				<name>uvCoord</name>
-				<hint>None</hint>
-				<default>[0.0, 0.0, 0.0]</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
-				<type>vector</type>
-				<help>None</help>
 			</input>
 			<input>
-				<name>contrast</name>
-				<hint>None</hint>
 				<default>0.5</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
 				<type>float</type>
-				<help>None</help>
+				<name>contrast</name>
 			</input>
 			<input>
+				<default>0</default>
+				<type>float</type>
 				<name>exposure</name>
-				<hint>None</hint>
-				<default>0</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
-				<type>float</type>
-				<help>None</help>
 			</input>
 			<input>
-				<name>defaultColor</name>
-				<hint>None</hint>
 				<default>[0.5, 0.5, 0.5]</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
 				<type>vector</type>
-				<help>None</help>
+				<name>defaultColor</name>
 			</input>
 			<input>
-				<name>colorGain</name>
-				<hint>None</hint>
 				<default>[1.0, 1.0, 1.0]</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
 				<type>vector</type>
-				<help>None</help>
+				<name>colorGain</name>
 			</input>
 			<input>
-				<name>colorOffset</name>
-				<hint>None</hint>
 				<default>[0.0, 0.0, 0.0]</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
 				<type>vector</type>
-				<help>None</help>
+				<name>colorOffset</name>
 			</input>
 			<input>
+				<default>1</default>
+				<type>float</type>
 				<name>alphaGain</name>
-				<hint>None</hint>
-				<default>1</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
-				<type>float</type>
-				<help>None</help>
 			</input>
 			<input>
+				<default>0</default>
+				<type>float</type>
 				<name>alphaOffset</name>
-				<hint>None</hint>
-				<default>0</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
-				<type>float</type>
-				<help>None</help>
 			</input>
 			<input>
-				<name>alphaIsLuminance</name>
-				<hint>None</hint>
 				<default>1</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
 				<type>int</type>
-				<help>None</help>
+				<name>alphaIsLuminance</name>
 			</input>
 			<input>
-				<name>invert</name>
-				<hint>None</hint>
 				<default>0</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
 				<type>int</type>
-				<help>None</help>
+				<name>invert</name>
 			</input>
 		</inputs>
 		<name>grid</name>
 		<outputs>
 			<output>
+				<default>[0.0, 0.0, 0.0]</default>
 				<type>output vector</type>
 				<name>outColor</name>
-				<help />
 			</output>
 			<output>
+				<default>0</default>
 				<type>output float</type>
 				<name>outAlpha</name>
-				<help />
 			</output>
 		</outputs>
 		<mayaId>0</mayaId>
-		<mayaClassification>None</mayaClassification>
-		<help>None</help>
+		<mayaClassification />
+		<help />
 	</shader>
 	<shader>
 		<inputs>
 			<input>
+				<default>0</default>
+				<type>float</type>
 				<name>firstTerm</name>
-				<hint>None</hint>
-				<default>0</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
-				<type>float</type>
-				<help>None</help>
 			</input>
 			<input>
+				<default>0</default>
+				<type>float</type>
 				<name>secondTerm</name>
-				<hint>None</hint>
-				<default>0</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
-				<type>float</type>
-				<help>None</help>
 			</input>
 			<input>
-				<name>operation</name>
-				<hint>None</hint>
 				<default>0</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
 				<type>int</type>
-				<help>None</help>
+				<name>operation</name>
 			</input>
 			<input>
+				<default>[0.0, 0.0, 0.0]</default>
+				<type>vector</type>
 				<name>colorIfTrue</name>
-				<hint>None</hint>
-				<default>[0.0, 0.0, 0.0]</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
-				<type>vector</type>
-				<help>None</help>
 			</input>
 			<input>
-				<name>colorIfFalse</name>
-				<hint>None</hint>
 				<default>[0.0, 0.0, 0.0]</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
 				<type>vector</type>
-				<help>None</help>
+				<name>colorIfFalse</name>
 			</input>
 		</inputs>
 		<name>condition</name>
 		<outputs>
 			<output>
+				<default>[0.0, 0.0, 0.0]</default>
 				<type>output vector</type>
 				<name>outColor</name>
-				<help />
 			</output>
 		</outputs>
 		<mayaId>0</mayaId>
-		<mayaClassification>None</mayaClassification>
-		<help>None</help>
+		<mayaClassification />
+		<help />
 	</shader>
 	<shader>
 		<inputs>
 			<input>
+				<default>[0.0, 0.0, 0.0]</default>
+				<type>vector</type>
 				<name>value</name>
-				<hint>None</hint>
-				<default>[0.0, 0.0, 0.0]</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
-				<type>vector</type>
-				<help>None</help>
 			</input>
 			<input>
+				<default>[0.0, 0.0, 0.0]</default>
+				<type>vector</type>
 				<name>min</name>
-				<hint>None</hint>
-				<default>[0.0, 0.0, 0.0]</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
-				<type>vector</type>
-				<help>None</help>
 			</input>
 			<input>
+				<default>[1.0, 1.0, 1.0]</default>
+				<type>vector</type>
 				<name>max</name>
-				<hint>None</hint>
-				<default>[1.0, 1.0, 1.0]</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
-				<type>vector</type>
-				<help>None</help>
 			</input>
 			<input>
-				<name>oldMin</name>
-				<hint>None</hint>
 				<default>[0.0, 0.0, 0.0]</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
 				<type>vector</type>
-				<help>None</help>
+				<name>oldMin</name>
 			</input>
 			<input>
-				<name>oldMax</name>
-				<hint>None</hint>
 				<default>[1.0, 1.0, 1.0]</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
 				<type>vector</type>
-				<help>None</help>
+				<name>oldMax</name>
 			</input>
 		</inputs>
 		<name>setRange</name>
 		<outputs>
 			<output>
+				<default>[0.0, 0.0, 0.0]</default>
 				<type>output vector</type>
 				<name>outValue</name>
-				<help />
 			</output>
 		</outputs>
 		<mayaId>0</mayaId>
-		<mayaClassification>None</mayaClassification>
-		<help>None</help>
+		<mayaClassification />
+		<help />
 	</shader>
 	<shader>
 		<inputs>
@@ -3231,7 +1809,7 @@
 			<input>
 				<default>[0.0, 0.0, 0.0]</default>
 				<type>vector</type>
-				<name>tangent</name>
+				<name>Tn</name>
 				<help>Tangent</help>
 			</input>
 			<input>
@@ -3320,762 +1898,463 @@
 	<shader>
 		<inputs>
 			<input>
-				<name>input</name>
-				<hint>None</hint>
 				<default>[0.0, 0.0, 0.0]</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
 				<type>vector</type>
-				<help>None</help>
+				<name>input</name>
 			</input>
 		</inputs>
 		<name>reverse</name>
 		<outputs>
 			<output>
+				<default>[0.0, 0.0, 0.0]</default>
 				<type>output vector</type>
 				<name>output</name>
-				<help />
 			</output>
 		</outputs>
 		<mayaId>0</mayaId>
-		<mayaClassification>None</mayaClassification>
-		<help>None</help>
+		<mayaClassification />
+		<help />
 	</shader>
 	<shader>
 		<inputs>
 			<input>
+				<default>0</default>
+				<type>float</type>
 				<name>uWidth</name>
-				<hint>None</hint>
-				<default>0</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
-				<type>float</type>
-				<help>None</help>
 			</input>
 			<input>
+				<default>0</default>
+				<type>float</type>
 				<name>vWidth</name>
-				<hint>None</hint>
-				<default>0</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
-				<type>float</type>
-				<help>None</help>
 			</input>
 			<input>
+				<default>[0.0, 0.0, 0.0]</default>
+				<type>vector</type>
 				<name>uvCoord</name>
-				<hint>None</hint>
-				<default>[0.0, 0.0, 0.0]</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
-				<type>vector</type>
-				<help>None</help>
 			</input>
 			<input>
+				<default>0</default>
+				<type>float</type>
 				<name>exposure</name>
-				<hint>None</hint>
-				<default>0</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
-				<type>float</type>
-				<help>None</help>
 			</input>
 			<input>
-				<name>defaultColor</name>
-				<hint>None</hint>
 				<default>[0.5, 0.5, 0.5]</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
 				<type>vector</type>
-				<help>None</help>
+				<name>defaultColor</name>
 			</input>
 			<input>
-				<name>colorGain</name>
-				<hint>None</hint>
 				<default>[1.0, 1.0, 1.0]</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
 				<type>vector</type>
-				<help>None</help>
+				<name>colorGain</name>
 			</input>
 			<input>
-				<name>colorOffset</name>
-				<hint>None</hint>
 				<default>[0.0, 0.0, 0.0]</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
 				<type>vector</type>
-				<help>None</help>
+				<name>colorOffset</name>
 			</input>
 			<input>
+				<default>1</default>
+				<type>float</type>
 				<name>alphaGain</name>
-				<hint>None</hint>
-				<default>1</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
-				<type>float</type>
-				<help>None</help>
 			</input>
 			<input>
+				<default>0</default>
+				<type>float</type>
 				<name>alphaOffset</name>
-				<hint>None</hint>
-				<default>0</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
-				<type>float</type>
-				<help>None</help>
 			</input>
 			<input>
-				<name>alphaIsLuminance</name>
-				<hint>None</hint>
 				<default>1</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
 				<type>int</type>
-				<help>None</help>
+				<name>alphaIsLuminance</name>
 			</input>
 			<input>
-				<name>invert</name>
-				<hint>None</hint>
 				<default>0</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
 				<type>int</type>
-				<help>None</help>
+				<name>invert</name>
 			</input>
 		</inputs>
 		<name>bulge</name>
 		<outputs>
 			<output>
+				<default>[0.0, 0.0, 0.0]</default>
 				<type>output vector</type>
 				<name>outColor</name>
-				<help />
 			</output>
 			<output>
+				<default>0</default>
 				<type>output float</type>
 				<name>outAlpha</name>
-				<help />
 			</output>
 		</outputs>
 		<mayaId>0</mayaId>
-		<mayaClassification>None</mayaClassification>
-		<help>None</help>
+		<mayaClassification />
+		<help />
 	</shader>
 	<shader>
 		<inputs>
 			<input>
+				<default>0</default>
+				<type>float</type>
 				<name>inX</name>
-				<hint>None</hint>
-				<default>0</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
-				<type>float</type>
-				<help>None</help>
 			</input>
 			<input>
+				<default>0</default>
+				<type>float</type>
 				<name>inY</name>
-				<hint>None</hint>
-				<default>0</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
-				<type>float</type>
-				<help>None</help>
 			</input>
 			<input>
-				<name>inZ</name>
-				<hint>None</hint>
 				<default>0</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
 				<type>float</type>
-				<help>None</help>
+				<name>inZ</name>
 			</input>
 		</inputs>
 		<name>floatToVector</name>
 		<outputs>
 			<output>
+				<default>[0.0, 0.0, 0.0]</default>
 				<type>output vector</type>
 				<name>outVector</name>
-				<help />
 			</output>
 		</outputs>
 		<mayaId>0</mayaId>
-		<mayaClassification>None</mayaClassification>
-		<help>None</help>
+		<mayaClassification />
+		<help />
 	</shader>
 	<shader>
 		<inputs>
 			<input>
+				<default>[0.0, 0.0, 0.0]</default>
+				<compAttrArrayPath>colorEntryList.color</compAttrArrayPath>
+				<type>vector</type>
 				<name>color0</name>
-				<hint>None</hint>
-				<default>[0.0, 0.0, 0.0]</default>
-				<max>1</max>
-				<compAttrArrayPath>colorEntryList.color</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
-				<type>vector</type>
-				<help>None</help>
 			</input>
 			<input>
+				<default>[0.0, 0.0, 0.0]</default>
+				<compAttrArrayPath>colorEntryList.color</compAttrArrayPath>
+				<type>vector</type>
 				<name>color1</name>
-				<hint>None</hint>
-				<default>[0.0, 0.0, 0.0]</default>
-				<max>1</max>
-				<compAttrArrayPath>colorEntryList.color</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
-				<type>vector</type>
-				<help>None</help>
 			</input>
 			<input>
+				<default>[0.0, 0.0, 0.0]</default>
+				<compAttrArrayPath>colorEntryList.color</compAttrArrayPath>
+				<type>vector</type>
 				<name>color2</name>
-				<hint>None</hint>
-				<default>[0.0, 0.0, 0.0]</default>
-				<max>1</max>
-				<compAttrArrayPath>colorEntryList.color</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
-				<type>vector</type>
-				<help>None</help>
 			</input>
 			<input>
+				<default>[0.0, 0.0, 0.0]</default>
+				<compAttrArrayPath>colorEntryList.color</compAttrArrayPath>
+				<type>vector</type>
 				<name>color3</name>
-				<hint>None</hint>
-				<default>[0.0, 0.0, 0.0]</default>
-				<max>1</max>
-				<compAttrArrayPath>colorEntryList.color</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
-				<type>vector</type>
-				<help>None</help>
 			</input>
 			<input>
+				<default>[0.0, 0.0, 0.0]</default>
+				<compAttrArrayPath>colorEntryList.color</compAttrArrayPath>
+				<type>vector</type>
 				<name>color4</name>
-				<hint>None</hint>
-				<default>[0.0, 0.0, 0.0]</default>
-				<max>1</max>
-				<compAttrArrayPath>colorEntryList.color</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
-				<type>vector</type>
-				<help>None</help>
 			</input>
 			<input>
+				<default>[0.0, 0.0, 0.0]</default>
+				<compAttrArrayPath>colorEntryList.color</compAttrArrayPath>
+				<type>vector</type>
 				<name>color5</name>
-				<hint>None</hint>
-				<default>[0.0, 0.0, 0.0]</default>
-				<max>1</max>
-				<compAttrArrayPath>colorEntryList.color</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
-				<type>vector</type>
-				<help>None</help>
 			</input>
 			<input>
+				<default>[0.0, 0.0, 0.0]</default>
+				<compAttrArrayPath>colorEntryList.color</compAttrArrayPath>
+				<type>vector</type>
 				<name>color6</name>
-				<hint>None</hint>
-				<default>[0.0, 0.0, 0.0]</default>
-				<max>1</max>
-				<compAttrArrayPath>colorEntryList.color</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
-				<type>vector</type>
-				<help>None</help>
 			</input>
 			<input>
+				<default>[0.0, 0.0, 0.0]</default>
+				<compAttrArrayPath>colorEntryList.color</compAttrArrayPath>
+				<type>vector</type>
 				<name>color7</name>
-				<hint>None</hint>
-				<default>[0.0, 0.0, 0.0]</default>
-				<max>1</max>
-				<compAttrArrayPath>colorEntryList.color</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
-				<type>vector</type>
-				<help>None</help>
 			</input>
 			<input>
+				<default>[0.0, 0.0, 0.0]</default>
+				<compAttrArrayPath>colorEntryList.color</compAttrArrayPath>
+				<type>vector</type>
 				<name>color8</name>
-				<hint>None</hint>
-				<default>[0.0, 0.0, 0.0]</default>
-				<max>1</max>
-				<compAttrArrayPath>colorEntryList.color</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
-				<type>vector</type>
-				<help>None</help>
 			</input>
 			<input>
+				<default>[0.0, 0.0, 0.0]</default>
+				<compAttrArrayPath>colorEntryList.color</compAttrArrayPath>
+				<type>vector</type>
 				<name>color9</name>
-				<hint>None</hint>
-				<default>[0.0, 0.0, 0.0]</default>
-				<max>1</max>
-				<compAttrArrayPath>colorEntryList.color</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
-				<type>vector</type>
-				<help>None</help>
 			</input>
 			<input>
+				<default>-1</default>
+				<compAttrArrayPath>colorEntryList.position</compAttrArrayPath>
+				<type>float</type>
 				<name>position0</name>
-				<hint>None</hint>
-				<default>-1</default>
-				<max>1</max>
-				<compAttrArrayPath>colorEntryList.position</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
-				<type>float</type>
-				<help>None</help>
 			</input>
 			<input>
+				<default>-1</default>
+				<compAttrArrayPath>colorEntryList.position</compAttrArrayPath>
+				<type>float</type>
 				<name>position1</name>
-				<hint>None</hint>
-				<default>-1</default>
-				<max>1</max>
-				<compAttrArrayPath>colorEntryList.position</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
-				<type>float</type>
-				<help>None</help>
 			</input>
 			<input>
+				<default>-1</default>
+				<compAttrArrayPath>colorEntryList.position</compAttrArrayPath>
+				<type>float</type>
 				<name>position2</name>
-				<hint>None</hint>
-				<default>-1</default>
-				<max>1</max>
-				<compAttrArrayPath>colorEntryList.position</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
-				<type>float</type>
-				<help>None</help>
 			</input>
 			<input>
+				<default>-1</default>
+				<compAttrArrayPath>colorEntryList.position</compAttrArrayPath>
+				<type>float</type>
 				<name>position3</name>
-				<hint>None</hint>
-				<default>-1</default>
-				<max>1</max>
-				<compAttrArrayPath>colorEntryList.position</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
-				<type>float</type>
-				<help>None</help>
 			</input>
 			<input>
+				<default>-1</default>
+				<compAttrArrayPath>colorEntryList.position</compAttrArrayPath>
+				<type>float</type>
 				<name>position4</name>
-				<hint>None</hint>
-				<default>-1</default>
-				<max>1</max>
-				<compAttrArrayPath>colorEntryList.position</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
-				<type>float</type>
-				<help>None</help>
 			</input>
 			<input>
+				<default>-1</default>
+				<compAttrArrayPath>colorEntryList.position</compAttrArrayPath>
+				<type>float</type>
 				<name>position5</name>
-				<hint>None</hint>
-				<default>-1</default>
-				<max>1</max>
-				<compAttrArrayPath>colorEntryList.position</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
-				<type>float</type>
-				<help>None</help>
 			</input>
 			<input>
+				<default>-1</default>
+				<compAttrArrayPath>colorEntryList.position</compAttrArrayPath>
+				<type>float</type>
 				<name>position6</name>
-				<hint>None</hint>
-				<default>-1</default>
-				<max>1</max>
-				<compAttrArrayPath>colorEntryList.position</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
-				<type>float</type>
-				<help>None</help>
 			</input>
 			<input>
+				<default>-1</default>
+				<compAttrArrayPath>colorEntryList.position</compAttrArrayPath>
+				<type>float</type>
 				<name>position7</name>
-				<hint>None</hint>
-				<default>-1</default>
-				<max>1</max>
-				<compAttrArrayPath>colorEntryList.position</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
-				<type>float</type>
-				<help>None</help>
 			</input>
 			<input>
+				<default>-1</default>
+				<compAttrArrayPath>colorEntryList.position</compAttrArrayPath>
+				<type>float</type>
 				<name>position8</name>
-				<hint>None</hint>
-				<default>-1</default>
-				<max>1</max>
-				<compAttrArrayPath>colorEntryList.position</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
-				<type>float</type>
-				<help>None</help>
 			</input>
 			<input>
+				<default>-1</default>
+				<compAttrArrayPath>colorEntryList.position</compAttrArrayPath>
+				<type>float</type>
 				<name>position9</name>
-				<hint>None</hint>
-				<default>-1</default>
-				<max>1</max>
-				<compAttrArrayPath>colorEntryList.position</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
-				<type>float</type>
-				<help>None</help>
 			</input>
 			<input>
+				<default>0</default>
+				<type>int</type>
 				<name>numEntries</name>
-				<hint>None</hint>
-				<default>0</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
-				<type>int</type>
-				<help>None</help>
 			</input>
 			<input>
+				<default>0</default>
+				<type>int</type>
 				<name>type</name>
-				<hint>None</hint>
-				<default>0</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
-				<type>int</type>
-				<help>None</help>
 			</input>
 			<input>
+				<default>0</default>
+				<type>int</type>
 				<name>interpolation</name>
-				<hint>None</hint>
-				<default>0</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
-				<type>int</type>
-				<help>None</help>
 			</input>
 			<input>
+				<default>[0.0, 0.0, 0.0]</default>
+				<type>vector</type>
 				<name>uvCoord</name>
-				<hint>None</hint>
-				<default>[0.0, 0.0, 0.0]</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
-				<type>vector</type>
-				<help>None</help>
 			</input>
 			<input>
+				<default>0</default>
+				<type>float</type>
 				<name>uCoord</name>
-				<hint>None</hint>
-				<default>0</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
-				<type>float</type>
-				<help>None</help>
 			</input>
 			<input>
+				<default>0</default>
+				<type>float</type>
 				<name>vCoord</name>
-				<hint>None</hint>
-				<default>0</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
-				<type>float</type>
-				<help>None</help>
 			</input>
 			<input>
+				<default>0</default>
+				<type>float</type>
 				<name>exposure</name>
-				<hint>None</hint>
-				<default>0</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
-				<type>float</type>
-				<help>None</help>
 			</input>
 			<input>
-				<name>defaultColor</name>
-				<hint>None</hint>
 				<default>[0.5, 0.5, 0.5]</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
 				<type>vector</type>
-				<help>None</help>
+				<name>defaultColor</name>
 			</input>
 			<input>
-				<name>colorGain</name>
-				<hint>None</hint>
 				<default>[1.0, 1.0, 1.0]</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
 				<type>vector</type>
-				<help>None</help>
+				<name>colorGain</name>
 			</input>
 			<input>
-				<name>colorOffset</name>
-				<hint>None</hint>
 				<default>[0.0, 0.0, 0.0]</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
 				<type>vector</type>
-				<help>None</help>
+				<name>colorOffset</name>
 			</input>
 			<input>
+				<default>1</default>
+				<type>float</type>
 				<name>alphaGain</name>
-				<hint>None</hint>
-				<default>1</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
-				<type>float</type>
-				<help>None</help>
 			</input>
 			<input>
+				<default>0</default>
+				<type>float</type>
 				<name>alphaOffset</name>
-				<hint>None</hint>
-				<default>0</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
-				<type>float</type>
-				<help>None</help>
 			</input>
 			<input>
-				<name>alphaIsLuminance</name>
-				<hint>None</hint>
 				<default>1</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
 				<type>int</type>
-				<help>None</help>
+				<name>alphaIsLuminance</name>
 			</input>
 			<input>
-				<name>invert</name>
-				<hint>None</hint>
 				<default>0</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
 				<type>int</type>
-				<help>None</help>
+				<name>invert</name>
 			</input>
 		</inputs>
 		<name>ramp</name>
 		<outputs>
 			<output>
+				<default>[0.0, 0.0, 0.0]</default>
 				<type>output vector</type>
 				<name>outColor</name>
-				<help />
 			</output>
 			<output>
+				<default>0</default>
 				<type>output float</type>
 				<name>outAlpha</name>
-				<help />
 			</output>
 		</outputs>
 		<mayaId>0</mayaId>
-		<mayaClassification>None</mayaClassification>
-		<help>None</help>
+		<mayaClassification />
+		<help />
 	</shader>
 	<shader>
 		<inputs>
 			<input>
-				<name>inHsv</name>
-				<hint>None</hint>
 				<default>[0.0, 0.0, 0.0]</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
 				<type>vector</type>
-				<help>None</help>
+				<name>inHsv</name>
 			</input>
 		</inputs>
 		<name>hsvToRgb</name>
 		<outputs>
 			<output>
+				<default>[0.0, 0.0, 0.0]</default>
 				<type>output vector</type>
 				<name>outRgb</name>
-				<help />
 			</output>
 		</outputs>
 		<mayaId>0</mayaId>
-		<mayaClassification>None</mayaClassification>
-		<help>None</help>
+		<mayaClassification />
+		<help />
 	</shader>
 	<shader>
 		<inputs>
 			<input>
-				<name>color</name>
-				<hint>None</hint>
-				<default>0</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
 				<type>pointer</type>
-				<help>None</help>
+				<name>color</name>
 			</input>
 		</inputs>
 		<name>surfaceShaderInterface</name>
 		<outputs />
 		<mayaId>0</mayaId>
-		<mayaClassification>None</mayaClassification>
-		<help>None</help>
+		<mayaClassification />
+		<help />
 	</shader>
 	<shader>
 		<inputs>
 			<input>
-				<name>color</name>
-				<hint>None</hint>
 				<default>[1.0, 1.0, 1.0]</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
 				<type>vector</type>
-				<help>None</help>
+				<name>color</name>
 			</input>
 		</inputs>
 		<name>colorToFloat</name>
 		<outputs>
 			<output>
+				<default>0</default>
 				<type>output float</type>
 				<name>outX</name>
-				<help />
 			</output>
 			<output>
+				<default>0</default>
 				<type>output float</type>
 				<name>outY</name>
-				<help />
 			</output>
 			<output>
+				<default>0</default>
 				<type>output float</type>
 				<name>outZ</name>
-				<help />
 			</output>
 		</outputs>
 		<mayaId>0</mayaId>
-		<mayaClassification>None</mayaClassification>
-		<help>None</help>
+		<mayaClassification />
+		<help />
 	</shader>
 	<shader>
 		<inputs>
 			<input>
-				<name>inRgb</name>
-				<hint>None</hint>
 				<default>[0.0, 0.0, 0.0]</default>
-				<max>1</max>
-				<compAttrArrayPath>None</compAttrArrayPath>
-				<min>0</min>
-				<isArrayPlug>True</isArrayPlug>
 				<type>vector</type>
-				<help>None</help>
+				<name>inRgb</name>
 			</input>
 		</inputs>
 		<name>rgbToHsv</name>
 		<outputs>
 			<output>
+				<default>[0.0, 0.0, 0.0]</default>
 				<type>output vector</type>
 				<name>outHsv</name>
-				<help />
 			</output>
 		</outputs>
 		<mayaId>0</mayaId>
-		<mayaClassification>None</mayaClassification>
-		<help>None</help>
+		<mayaClassification />
+		<help />
 	</shader>
 	<shader>
 		<inputs />
 		<name>samplerInfo</name>
 		<outputs>
 			<output>
+				<default>[0.0, 0.0, 0.0]</default>
 				<type>output vector</type>
 				<name>pointWorld</name>
-				<help />
 			</output>
 			<output>
+				<default>[0.0, 0.0, 0.0]</default>
 				<type>output vector</type>
 				<name>normalCamera</name>
-				<help />
 			</output>
 			<output>
+				<default>[0.0, 0.0, 0.0]</default>
 				<type>output vector</type>
 				<name>normalWorld</name>
-				<help />
 			</output>
 			<output>
+				<default>[0.0, 0.0, 0.0]</default>
 				<type>output vector</type>
 				<name>uvCoord</name>
-				<help />
 			</output>
 			<output>
+				<default>[0.0, 0.0, 0.0]</default>
 				<type>output vector</type>
 				<name>outDPdu</name>
-				<help />
 			</output>
 			<output>
+				<default>[0.0, 0.0, 0.0]</default>
 				<type>output vector</type>
 				<name>outDPdv</name>
-				<help />
 			</output>
 			<output>
+				<default>0</default>
 				<type>output float</type>
 				<name>facingRatio</name>
-				<help />
 			</output>
 		</outputs>
 		<mayaId>0</mayaId>
-		<mayaClassification>None</mayaClassification>
-		<help>None</help>
+		<mayaClassification />
+		<help />
 	</shader>
 </shaders>

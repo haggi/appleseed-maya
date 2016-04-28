@@ -45,7 +45,7 @@
 #include "renderer/api/bsdf.h"
 #include "renderer/api/texture.h"
 
-void defineDefaultMaterial(renderer::Project *project)
+void defineDefaultMaterial(renderer::Project* project)
 {
     renderer::Assembly *assembly = getMasterAssemblyFromProject(project);
     MColor gray(0.5f, 0.5f, 0.5f);
@@ -73,7 +73,7 @@ void defineDefaultMaterial(renderer::Project *project)
         .insert("bsdf", "diffuse_gray_brdf")));
 }
 
-MString getAssemblyInstanceName(MayaObject *obj)
+MString getAssemblyInstanceName(const MayaObject* obj)
 {
     MString assemblyName = getAssemblyName(obj);
     if (obj->instancerParticleId > -1)
@@ -84,17 +84,17 @@ MString getAssemblyInstanceName(MayaObject *obj)
     return assemblyName + "_assInst";
 }
 
-MString getObjectInstanceName(MayaObject *obj)
+MString getObjectInstanceName(const MayaObject* obj)
 {
     return obj->fullNiceName + "_objInst";
 }
 
-MString getObjectName(MayaObject* obj)
+MString getObjectName(const MayaObject* obj)
 {
-    return obj->dagPath.fullPathName();
+    return obj->fullNiceName;
 }
 
-MString getAssemblyName(MayaObject *obj)
+MString getAssemblyName(const MayaObject* obj)
 {
     // if an obj is an instanced object, get the assembly name of the original object.
     if ((obj->instanceNumber > 0) || (obj->instancerParticleId > -1))
@@ -110,27 +110,15 @@ MString getAssemblyName(MayaObject *obj)
         }
     }
 
-    // We always use the transform name as assemblyName, if we have a shape node,
-    // go up one element to the transform node.
-    MDagPath path = obj->dagPath;
-    MStatus stat;
-    while (!path.node().hasFn(MFn::kTransform) && !path.node().hasFn(MFn::kWorld))
-    {
-        MFn::Type pt = path.apiType();
-        MFn::Type nt = path.node().apiType();
-        stat = path.pop();
-        if (!stat)
-            break;
-    }
-    if (path.node().hasFn(MFn::kWorld))
+    if (obj->mobject.hasFn(MFn::kWorld))
         return "world";
-    else
-        return path.fullPathName() + "_ass";
+
+    return obj->fullName + "_ass";
 }
 
-void defineScene(renderer::Project *project)
+void defineScene(renderer::Project* project)
 {
-    renderer::Scene *scenePtr = project->get_scene();
+    renderer::Scene* scenePtr = project->get_scene();
     if (scenePtr == 0)
     {
         foundation::auto_release_ptr<renderer::Scene> scene(renderer::SceneFactory::create());
@@ -138,21 +126,21 @@ void defineScene(renderer::Project *project)
     }
 }
 
-renderer::Scene *getSceneFromProject(renderer::Project *project)
+renderer::Scene* getSceneFromProject(renderer::Project* project)
 {
     defineScene(project);
     return project->get_scene();
 }
 
 // we first define an assembly which contains the world assembly. This "uberMaster" contains the global transformation.
-void defineMasterAssembly(renderer::Project *project)
+void defineMasterAssembly(renderer::Project* project)
 {
     MMatrix conversionMatrix;
     conversionMatrix.setToIdentity();
-    World *world = getWorldPtr();
+    World* world = getWorldPtr();
     if (world != 0)
     {
-        RenderGlobals *rg = world->mRenderGlobals.get();
+        RenderGlobals* rg = world->mRenderGlobals.get();
         if (rg != 0)
             conversionMatrix = rg->globalConversionMatrix;
     }
@@ -178,11 +166,10 @@ renderer::Assembly* getMasterAssemblyFromProject(renderer::Project* project)
 }
 
 // return the maya object above which has it's own assembly
-MayaObject* getAssemblyMayaObject(MayaObject* mobj)
+MayaObject* getAssemblyMayaObject(const MayaObject* obj)
 {
-    MayaObject *obj = mobj;
     if (obj->instanceNumber > 0)
-        obj = mobj->origObject.get();
+        obj = obj->origObject.get();
 
     if (obj->attributes)
     {
@@ -191,62 +178,98 @@ MayaObject* getAssemblyMayaObject(MayaObject* mobj)
     return 0; // only happens if obj is world
 }
 
-renderer::Assembly* getCreateObjectAssembly(boost::shared_ptr<MayaObject> obj)
+renderer::Assembly* getAssembly(const MayaObject* obj)
 {
-    MayaObject* assemblyObject = getAssemblyMayaObject(obj.get());
+    MayaObject* assemblyObject = getAssemblyMayaObject(obj);
+    
+    boost::shared_ptr<AppleseedRenderer> appleRenderer = boost::static_pointer_cast<AppleseedRenderer>(getWorldPtr()->mRenderer);
+    renderer::Assembly* master = getMasterAssemblyFromProject(appleRenderer->getProjectPtr());
+
     if (assemblyObject == 0)
-        return 0;
+        return master;
 
     MString assemblyName = getAssemblyName(assemblyObject);
     MString assemblyInstanceName = getAssemblyInstanceName(assemblyObject);
+
+    if (assemblyName == "world")
+        return master;
+
+    if (obj->mobject.hasFn(MFn::kLight) && !obj->mobject.hasFn(MFn::kAreaLight))
+        return master;
+
+    return master->assemblies().get_by_name(assemblyName.asChar());
+}
+
+renderer::Assembly* createAssembly(const MayaObject* obj)
+{
+    MayaObject* assemblyObject = getAssemblyMayaObject(obj);
 
     boost::shared_ptr<AppleseedRenderer> appleRenderer = boost::static_pointer_cast<AppleseedRenderer>(getWorldPtr()->mRenderer);
     renderer::Assembly* master = getMasterAssemblyFromProject(appleRenderer->getProjectPtr());
     if (obj->mobject.hasFn(MFn::kLight) && !obj->mobject.hasFn(MFn::kAreaLight))
         return master;
 
-    renderer::Assembly* ass = master->assemblies().get_by_name(assemblyName.asChar());
+    if (assemblyObject == 0)
+        return master;
+
+    MString assemblyName = getAssemblyName(assemblyObject);
+
     if (assemblyName == "world")
-        ass = master;
+        return master;
 
-    if (ass == 0)
-    {
-        foundation::auto_release_ptr<renderer::Assembly> assembly(
-            renderer::AssemblyFactory().create(assemblyName.asChar(), renderer::ParamArray()));
-        master->assemblies().insert(assembly);
-        ass = master->assemblies().get_by_name(assemblyName.asChar());
-
-        foundation::auto_release_ptr<renderer::AssemblyInstance> assInst(
-            renderer::AssemblyInstanceFactory().create(assemblyInstanceName.asChar(), renderer::ParamArray(), assemblyName.asChar()));
-
-        fillMatrices(obj, assInst->transform_sequence());
-        master->assembly_instances().insert(assInst);
-    }
+    foundation::auto_release_ptr<renderer::Assembly> assembly(
+        renderer::AssemblyFactory().create(assemblyName.asChar(), renderer::ParamArray()));
+    renderer::Assembly* ass = assembly.get();
+    master->assemblies().insert(assembly);
 
     return ass;
 }
 
-renderer::AssemblyInstance *getExistingObjectAssemblyInstance(MayaObject *obj)
+renderer::Assembly* getOrCreateAssembly(const MayaObject* obj)
 {
-    boost::shared_ptr<AppleseedRenderer> appleRenderer = boost::static_pointer_cast<AppleseedRenderer>(getWorldPtr()->mRenderer);
-    MayaObject *assemblyObject = getAssemblyMayaObject(obj);
-    if (assemblyObject == 0)
-    {
-        Logging::debug("create mesh assemblyPtr == null");
-        return 0;
-    }
-    MString assemblyName = getAssemblyName(obj);
-    MString assemblyInstanceName = getAssemblyInstanceName(obj);
-    renderer::Assembly *ass = getMasterAssemblyFromProject(appleRenderer->getProjectPtr());
-    if (assemblyName == "world")
-        ass = getMasterAssemblyFromProject(appleRenderer->getProjectPtr());
-
+    renderer::Assembly *ass = getAssembly(obj);
     if (ass == 0)
-        return 0;
-    return ass->assembly_instances().get_by_name(assemblyInstanceName.asChar());
+        ass = createAssembly(obj);
+    return ass;
 }
 
-void defineColor(renderer::Project *project, const char *name, MColor color, float intensity, MString colorSpace)
+renderer::AssemblyInstance* createAssemblyInstance(const MayaObject* obj)
+{
+    MayaObject* assemblyObject = getAssemblyMayaObject(obj);
+    boost::shared_ptr<AppleseedRenderer> appleRenderer = boost::static_pointer_cast<AppleseedRenderer>(getWorldPtr()->mRenderer);
+    renderer::Assembly* ass = getAssembly(obj);
+    renderer::Assembly* master = getMasterAssemblyFromProject(appleRenderer->getProjectPtr());
+    MString assemblyInstanceName = getAssemblyInstanceName(assemblyObject);
+    foundation::auto_release_ptr<renderer::AssemblyInstance> assemblyInstance = renderer::AssemblyInstanceFactory::create(assemblyInstanceName.asChar(), renderer::ParamArray(), ass->get_name());
+    fillMatrices(obj, assemblyInstance->transform_sequence());
+    renderer::AssemblyInstance* assInst = assemblyInstance.get();
+    master->assembly_instances().insert(assemblyInstance);
+    return assInst;
+}
+
+renderer::AssemblyInstance* getAssemblyInstance(const MayaObject* obj)
+{
+    boost::shared_ptr<AppleseedRenderer> appleRenderer = boost::static_pointer_cast<AppleseedRenderer>(getWorldPtr()->mRenderer);
+    MayaObject* assemblyObject = getAssemblyMayaObject(obj);
+
+    MString assemblyName = getAssemblyName(assemblyObject);
+    MString assemblyInstanceName = getAssemblyInstanceName(assemblyObject);
+    renderer::Assembly* masterAssembly = getMasterAssemblyFromProject(appleRenderer->getProjectPtr());
+    renderer::AssemblyInstance* masterAssemblyInstance = appleRenderer->getProjectPtr()->get_scene()->assembly_instances().get_by_name("world_Inst");
+    if (assemblyName == "world" || assemblyObject == 0 || (obj->mobject.hasFn(MFn::kLight) && !obj->mobject.hasFn(MFn::kAreaLight)))
+        return masterAssemblyInstance;
+    return masterAssembly->assembly_instances().get_by_name(assemblyInstanceName.asChar());
+}
+
+renderer::AssemblyInstance* getOrCreateAssemblyInstance(const MayaObject* obj)
+{
+    renderer::AssemblyInstance* assInst = getAssemblyInstance(obj);
+    if (assInst == 0)
+        assInst = createAssemblyInstance(obj);
+    return assInst;
+}
+
+void defineColor(renderer::Project* project, const char* name, MColor color, float intensity, MString colorSpace)
 {
     renderer::Scene* scene = project->get_scene();
 
@@ -265,7 +288,7 @@ void defineColor(renderer::Project *project, const char *name, MColor color, flo
 }
 
 // check if a texture is connected to this attribute. If yes, return the texture name, if not define the currentColor and return the color name.
-MString colorOrMap(renderer::Project *project, MFnDependencyNode& shaderNode, MString& attributeName)
+MString colorOrMap(renderer::Project* project, MFnDependencyNode& shaderNode, MString& attributeName)
 {
     MString definition = defineTexture(shaderNode, attributeName);
     if (definition.length() == 0)
@@ -297,7 +320,7 @@ MString defineTexture(MFnDependencyNode& shader, MString& attributeName)
 {
     boost::shared_ptr<AppleseedRenderer> appleRenderer = boost::static_pointer_cast<AppleseedRenderer>(getWorldPtr()->mRenderer);
     assert(appleRenderer != 0);
-    renderer::Scene *scene = getSceneFromProject(appleRenderer->getProjectPtr());
+    renderer::Scene* scene = getSceneFromProject(appleRenderer->getProjectPtr());
     foundation::SearchPaths &searchPaths = appleRenderer->getProjectPtr()->search_paths();
 
     MStatus stat;
@@ -360,7 +383,7 @@ MString defineTexture(MFnDependencyNode& shader, MString& attributeName)
     return textureInstanceName;
 }
 
-void fillTransformMatrices(MMatrix matrix, renderer::AssemblyInstance *assInstance)
+void fillTransformMatrices(MMatrix matrix, renderer::AssemblyInstance* assInstance)
 {
     assInstance->transform_sequence().clear();
     foundation::Matrix4d appMatrix;
@@ -371,19 +394,23 @@ void fillTransformMatrices(MMatrix matrix, renderer::AssemblyInstance *assInstan
         foundation::Transformd::from_local_to_parent(appMatrix));
 }
 
-void fillMatrices(boost::shared_ptr<MayaObject> obj, renderer::TransformSequence& transformSequence)
+void fillMatrices(const MayaObject* obj, renderer::TransformSequence& transformSequence)
 {
     MMatrix conversionMatrix = getWorldPtr()->mRenderGlobals->globalConversionMatrix;
     float scaleFactor = getWorldPtr()->mRenderGlobals->scaleFactor;
     transformSequence.clear();
+    std::vector<MMatrix> transformMatrices;
 
-    // in ipr mode we have to update the matrix manually
-    if (getWorldPtr()->getRenderType() == World::IPRRENDER)
+    // In IPR mode we have to update the matrix from the dagPath
+    if (getWorldPtr()->getRenderType() == World::IPRRENDER && !obj->isInstancerObject)
     {
-        obj->transformMatrices.clear();
-        obj->transformMatrices.push_back(obj->dagPath.inclusiveMatrix());
+        transformMatrices.push_back(obj->dagPath.inclusiveMatrix());
     }
-    size_t numSteps = obj->transformMatrices.size();
+    else
+    {
+        transformMatrices = obj->transformMatrices;
+    }
+    size_t numSteps = transformMatrices.size();
     size_t divSteps = numSteps;
     if (divSteps > 1)
         divSteps -= 1;
@@ -396,7 +423,7 @@ void fillMatrices(boost::shared_ptr<MayaObject> obj, renderer::TransformSequence
     MMatrix transformMatrix;
     for (size_t matrixId = 0; matrixId < numSteps; matrixId++)
     {
-        MMatrix colMatrix = obj->transformMatrices[matrixId];
+        MMatrix colMatrix = transformMatrices[matrixId];
         if (obj->mobject.hasFn(MFn::kCamera))
         {
             colMatrix.matrix[3][0] *= scaleFactor;
@@ -410,16 +437,20 @@ void fillMatrices(boost::shared_ptr<MayaObject> obj, renderer::TransformSequence
     }
 }
 
-void fillTransformMatrices(boost::shared_ptr<MayaObject> obj, renderer::Light *light)
+void fillTransformMatrices(const MayaObject* obj, renderer::Light* light)
 {
+    std::vector<MMatrix> transformMatrices;
     // in ipr mode we have to update the matrix manually
     if (getWorldPtr()->getRenderType() == World::IPRRENDER)
     {
-        obj->transformMatrices.clear();
-        obj->transformMatrices.push_back(obj->dagPath.inclusiveMatrix());
+        transformMatrices.push_back(obj->dagPath.inclusiveMatrix());
+    } 
+    else
+    {
+        transformMatrices = obj->transformMatrices;
     }
     foundation::Matrix4d appMatrix;
-    MMatrix colMatrix = obj->transformMatrices[0];
+    MMatrix colMatrix = transformMatrices[0];
     MMatrixToAMatrix(colMatrix, appMatrix);
     light->set_transform(foundation::Transformd::from_local_to_parent(appMatrix));
 }
