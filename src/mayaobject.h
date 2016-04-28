@@ -94,11 +94,6 @@ class MayaObject
     bool removed; // in IPR we simply flag an object as removed instead of really removing it
     boost::shared_ptr<ObjectAttributes> attributes;
 
-    std::vector<MDagPath> linkedLights; // for objects - light linking
-    bool lightExcludeList; // if true the linkedLights list contains excluded lights, else included lights
-    std::vector<MDagPath> shadowObjects; // for lights - shadow linking
-    bool shadowExcludeList; // if true the shadowObjects contains objects which ignores shadows from the current light
-    std::vector<MDagPath> castNoShadowObjects; // for lights - shadow linking
     std::vector<boost::shared_ptr<MayaObject> >  excludedObjects; // for lights - excluded objects
 
     std::vector<MString> exportFileNames; // for every mb step complete filename for every exported shape file

@@ -178,8 +178,6 @@ void MayaObject::initialize()
     perObjectTransformSteps = 1;
     perObjectDeformSteps = 1;
     shapeConnected = false;
-    lightExcludeList = true; // In most cases only a few lights are ignored, so the list is shorter with excluded lights
-    shadowExcludeList = true; // in most cases only a few objects ignore shadows, so the list is shorter with ignoring objects
     animated = isObjAnimated();
     shapeConnected = isShapeConnected();
     parent.reset();
