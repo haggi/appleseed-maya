@@ -374,9 +374,6 @@ MStatus GlobalsNode::initialize()
     stat = eAttr.addField("Hosek", 1);
     CHECK_MSTATUS(addAttribute(attr.skyModel));
 
-    attr.physicalSun = nAttr.create("physicalSun", "physicalSun",  MFnNumericData::kBoolean, false);
-    CHECK_MSTATUS(addAttribute(attr.physicalSun));
-
     attr.physicalSunConnection = mAttr.create("physicalSunConnection", "physicalSunConnection");
     CHECK_MSTATUS(addAttribute(attr.physicalSunConnection));
 

@@ -29,12 +29,9 @@
 #ifndef GLOBALSNODE_H
 #define GLOBALSNODE_H
 
-// appleseed.foundation headers.
-#include "foundation/platform/compiler.h"
-
 // Maya headers.
+#include <maya/MObject.h>
 #include <maya/MPxNode.h>
-#include <maya/MStringArray.h>
 #include <maya/MTypeId.h>
 
 // Forward declarations.
@@ -159,7 +156,6 @@ class GlobalsNode
         MObject turbidity;
         MObject turbidity_max;
         MObject turbidity_min;
-        MObject physicalSun;
         MObject physicalSunConnection;
         MObject sunTurbidity;
         MObject sunExitanceMultiplier;

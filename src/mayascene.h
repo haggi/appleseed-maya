@@ -34,6 +34,7 @@
 
 // Maya headers.
 #include <maya/MDagPath.h>
+#include <maya/MMessage.h>
 #include <maya/MObject.h>
 
 // Standard headers.
@@ -43,17 +44,22 @@
 // Forward declarations.
 class MDagPathArray;
 
-class InteractiveElement
+class EditableElement
 {
   public:
-    boost::shared_ptr<MayaObject> obj;
+    boost::shared_ptr<MayaObject> mayaObject;
     MObject mobj;
     MString name;
     MObject node;
-    bool triggeredFromTransform; // to recognize if we have to update the shape or only the instance transform
 
-    InteractiveElement()
-      : triggeredFromTransform(false)
+    bool isDirty;
+    bool isTransformed;     // to recognize if we have to update the shape or only the instance transform
+    bool isDeformed;        // to recognize if a geometry is deformed, we can have both, deform and transform
+
+    EditableElement()
+      : isDirty(false)
+      , isTransformed(false)
+      , isDeformed(false)
     {
     }
 };
@@ -65,8 +71,17 @@ class MayaScene
     std::vector<boost::shared_ptr<MayaObject> > camList;
     std::vector<boost::shared_ptr<MayaObject> > lightList;
     std::vector<boost::shared_ptr<MayaObject> > instancerNodeElements; // so its easier to update them
-    std::map<uint, InteractiveElement> interactiveUpdateMap;
+
+    // This map allows node callbacks to retrieve MayaObjects associated to nodes.
+    typedef std::map<MCallbackId, EditableElement> EditableElementContainer;
+    EditableElementContainer editableElements;
+
+    // Was at least one editable element marked as dirty?
+    bool isAnyDirty;
+
     MDagPath uiCamera;
+
+    MayaScene();
 
     bool parseSceneHierarchy(MDagPath currentObject, int level, boost::shared_ptr<ObjectAttributes> attr, boost::shared_ptr<MayaObject> parentObject);
     bool parseScene();

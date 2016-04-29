@@ -35,8 +35,9 @@
 #include "utilities/logging.h"
 #include "utilities/pystring.h"
 #include "utilities/tools.h"
+#include "nodecallbacks.h"
 #include "renderglobals.h"
-#include "renderqueueworker.h"
+#include "renderqueue.h"
 #include "world.h"
 
 // Maya headers.
@@ -52,6 +53,7 @@
 #include <maya/MMatrixArray.h>
 #include <maya/MIntArray.h>
 #include <maya/MLightLinks.h>
+#include <maya/MNodeMessage.h>
 #include <maya/MSelectionList.h>
 #include <maya/MGlobal.h>
 #include <maya/MRenderView.h>
@@ -59,6 +61,11 @@
 #include <maya/MFileIO.h>
 #include <maya/MFnSingleIndexedComponent.h>
 #include <maya/MFnComponent.h>
+
+MayaScene::MayaScene()
+  : isAnyDirty(false)
+{
+}
 
 bool MayaScene::lightObjectIsInLinkedLightList(boost::shared_ptr<MayaObject> lightObject, MDagPathArray& linkedLightsArray)
 {
@@ -156,25 +163,36 @@ bool MayaScene::parseSceneHierarchy(MDagPath currentPath, int level, boost::shar
     if (pystring::find(currentPath.fullPathName().asChar(), "shaderBall") > -1)
         return true;
 
-    boost::shared_ptr<MayaObject> mo(new MayaObject(currentPath));
-    boost::shared_ptr<ObjectAttributes> currentAttributes = mo->getObjectAttributes(parentAttributes);
-    mo->parent = parentObject;
+    boost::shared_ptr<MayaObject> mayaObject(new MayaObject(currentPath));
+    boost::shared_ptr<ObjectAttributes> currentAttributes = mayaObject->getObjectAttributes(parentAttributes);
+    mayaObject->parent = parentObject;
 
-    if (mo->mobject.hasFn(MFn::kCamera))
-        camList.push_back(mo);
-    else if (mo->mobject.hasFn(MFn::kLight))
-        lightList.push_back(mo);
-    else if (mo->mobject.hasFn(MFn::kInstancer))
-        instancerDagPathList.push_back(mo->dagPath);
-    else objectList.push_back(mo);
+    if (mayaObject->mobject.hasFn(MFn::kCamera))
+        camList.push_back(mayaObject);
+    else if (mayaObject->mobject.hasFn(MFn::kLight))
+        lightList.push_back(mayaObject);
+    else if (mayaObject->mobject.hasFn(MFn::kInstancer))
+        instancerDagPathList.push_back(mayaObject->dagPath);
+    else objectList.push_back(mayaObject);
 
     if (getWorldPtr()->getRenderType() == World::IPRRENDER)
     {
-        InteractiveElement iel;
-        iel.obj = mo;
-        iel.name = mo->fullName;
-        iel.node = mo->mobject;
-        interactiveUpdateMap[interactiveUpdateMap.size()] = iel;
+        MCallbackId callbackId = MNodeMessage::addNodeDirtyCallback(mayaObject->mobject, IPRNodeDirtyCallback);
+        EditableElement& element = editableElements[callbackId];
+        element.mayaObject = mayaObject;
+        element.name = mayaObject->fullName;
+        element.node = mayaObject->mobject;
+
+        if (mayaObject->mobject.hasFn(MFn::kMesh))
+        {
+            MCallbackId callbackId = MNodeMessage::addAttributeChangedCallback(mayaObject->mobject, IPRAttributeChangedCallback);
+            EditableElement& element = editableElements[callbackId];
+            element.mayaObject = mayaObject;
+            element.name = mayaObject->fullName;
+            element.node = mayaObject->mobject;
+        }
+
+        MNodeMessage::addNameChangedCallback(mayaObject->mobject, IPRNodeRenamedCallback);
     }
 
     //
@@ -182,7 +200,7 @@ bool MayaScene::parseSceneHierarchy(MDagPath currentPath, int level, boost::shar
     //
 
     if (currentPath.instanceNumber() == 0)
-        origObjects.push_back(mo);
+        origObjects.push_back(mayaObject);
     else
     {
         MFnDagNode node(currentPath.node());
@@ -191,7 +209,7 @@ bool MayaScene::parseSceneHierarchy(MDagPath currentPath, int level, boost::shar
             MFnDagNode onode(origObjects[iId]->mobject);
             if (onode.object() == node.object())
             {
-                mo->origObject = origObjects[iId];
+                mayaObject->origObject = origObjects[iId];
                 break;
             }
         }
@@ -207,8 +225,7 @@ bool MayaScene::parseSceneHierarchy(MDagPath currentPath, int level, boost::shar
             Logging::debug(MString("Child path problem: parent: ") + currentPath.fullPathName() + " child id " + chId + " type " + currentPath.child(chId).apiTypeStr());
             continue;
         }
-        MString childName = childPath.fullPathName();
-        parseSceneHierarchy(childPath, level + 1, currentAttributes, mo);
+        parseSceneHierarchy(childPath, level + 1, currentAttributes, mayaObject);
     }
 
     return true;
@@ -484,11 +501,15 @@ bool MayaScene::parseInstancerNew()
                 particleMObject->isInstancerObject = true;
                 particleMObject->visible = true;
                 particleMObject->instancerParticleId = p;
-                particleMObject->instanceNumber = p;
+                particleMObject->instanceNumber = p + 1; // instanceNumber has to be at least 1, 0 indicates original object
                 particleMObject->instancerDagPath = instPath;
+                particleMObject->dagPath = curPath;
                 particleMObject->instancerMObj = instancerMObject;
-                particleMObject->fullName = origObj->fullName + MString("_i_") + p;
-                particleMObject->shortName = origObj->shortName + MString("_i_") + p;
+                particleMObject->fullName = origObj->fullName + "_i_" + p;
+                particleMObject->shortName = origObj->shortName + "_i_" + p;
+                particleMObject->transformMatrices.clear();
+                particleMObject->transformMatrices.push_back(particleMatrix);
+
                 this->instancerNodeElements.push_back(particleMObject);
                 currentAttributes->hasInstancerConnection = true;
                 if (hasParticleSystem)

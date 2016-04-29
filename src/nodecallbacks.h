@@ -26,51 +26,21 @@
 // THE SOFTWARE.
 //
 
-#ifndef EVENT_H
-#define EVENT_H
-
-// appleseed-maya headers.
-#include "world.h"
+#ifndef NODECALLBACKS_H
+#define NODECALLBACKS_H
 
 // Maya headers.
-#include <maya/MDagPath.h>
-#include <maya/MRenderView.h>
+#include <maya/MNodeMessage.h>
 
-// Boost headers.
-#include "boost/shared_ptr.hpp"
+// Forward declarations.
+class MObject;
+class MPlug;
 
-class Event
-{
-  public:
-    enum Type
-    {
-        INTERRUPT = 0,
-        FRAMEDONE = 2,
-        RENDERDONE = 3,
-        IPRSTART = 6,
-        IPRSTOP = 7,
-        IPRPAUSE = 8,
-        IPRREMOVE = 9,
-        IPRFRAMEDONE = 11,
-        IPRUPDATEREGION = 12,
-        UPDATEUI = 17,
-        PRETILE = 18,
-        INITRENDER = 19,
-        ADDIPRCALLBACKS = 21,
-        FRAMERENDER = 22
-    };
+void IPRAttributeChangedCallback(MNodeMessage::AttributeMessage msg, MPlug& plug, MPlug& otherPlug, void* userPtr);
+void IPRNodeDirtyCallback(void* userPtr);
+void IPRIdleCallback(float time, float lastTime, void* userPtr);
+void IPRNodeAddedCallback(MObject& node, void* userPtr);
+void IPRNodeRemovedCallback(MObject& node, void* userPtr);
+void IPRNodeRenamedCallback(MObject& node, const MString& oldName, void* userPtr);
 
-    Type mType;
-    int width;
-    int height;
-    bool useRenderRegion;
-    MDagPath cameraDagPath;
-    World::RenderType renderType;
-    int xMin;
-    int xMax;
-    int yMin;
-    int yMax;
-    boost::shared_ptr<RV_PIXEL> pixels;
-};
-
-#endif  // !EVENT_H
+#endif  // !NODECALLBACKS_H

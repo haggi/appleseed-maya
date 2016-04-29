@@ -52,17 +52,17 @@ class MbElement
     };
 
     MbElement::Type elementType;
-    double m_time;
+    double time;
 
     // these are for sorting the mb steps
     bool operator>(const MbElement& other) const
     {
-        return m_time > other.m_time;
+        return time > other.time;
     }
 
     bool operator<(const MbElement& other) const
     {
-        return m_time < other.m_time;
+        return time < other.time;
     }
 };
 

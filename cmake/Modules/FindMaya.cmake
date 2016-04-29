@@ -1,3 +1,4 @@
+
 # - Maya finder module
 # This module searches for a valid Maya instalation.
 # It searches for Maya's devkit, libraries, executables
@@ -28,8 +29,8 @@
 
 ## add one to this list to match your install if none match
 
-IF(APPLE)
-  FIND_PATH(MAYA_BASE_DIR ../../devkit/include/maya/MFn.h PATH
+if(APPLE)
+  find_path(MAYA_BASE_DIR ../../devkit/include/maya/MFn.h PATH
     ENV MAYA_LOCATION
     "/Applications/Autodesk/maya2016/Maya.app/Contents"
     "/Applications/Autodesk/maya2015/Maya.app/Contents"
@@ -40,7 +41,7 @@ IF(APPLE)
     "/Applications/Autodesk/maya2011/Maya.app/Contents"
     "/Applications/Autodesk/maya2010/Maya.app/Contents"
   )
-  FIND_PATH(MAYA_LIBRARY_DIR libOpenMaya.dylib
+  find_path(MAYA_LIBRARY_DIR libOpenMaya.dylib
     PATHS
       ENV MAYA_LOCATION
       ${MAYA_BASE_DIR}
@@ -48,10 +49,10 @@ IF(APPLE)
       Maya.app/Contents/MacOS/
     DOC "Maya's libraries path"
   )
-ENDIF(APPLE)
+endif(APPLE)
 
-IF(UNIX)
-  FIND_PATH(MAYA_BASE_DIR include/maya/MFn.h
+if(UNIX)
+  find_path(MAYA_BASE_DIR include/maya/MFn.h
     PATH
       ENV MAYA_LOCATION
       "/usr/autodesk/maya2016"
@@ -63,7 +64,7 @@ IF(UNIX)
       "/usr/autodesk/maya2011-x64"
       "/usr/autodesk/maya2010-x64"
   )
-  FIND_PATH(MAYA_LIBRARY_DIR libOpenMaya.so
+  find_path(MAYA_LIBRARY_DIR libOpenMaya.so
     PATHS
       ENV MAYA_LOCATION
       ${MAYA_BASE_DIR}
@@ -71,10 +72,10 @@ IF(UNIX)
       lib/
     DOC "Maya's libraries path"
   )
-ENDIF(UNIX)
+endif(UNIX)
 
-IF(WIN32)
-  FIND_PATH(MAYA_BASE_DIR include/maya/MFn.h
+if(WIN32)
+  find_path(MAYA_BASE_DIR include/maya/MFn.h
     PATH
       ENV MAYA_LOCATION
         "C:/Program Files/Autodesk/Maya2016"
@@ -94,7 +95,7 @@ IF(WIN32)
         "C:/Program Files (x86)/Autodesk/Maya2010"
         "C:/Autodesk/maya-2010x64"
   )
-  FIND_PATH(MAYA_LIBRARY_DIR OpenMaya.lib
+  find_path(MAYA_LIBRARY_DIR OpenMaya.lib
     PATHS
       ENV MAYA_LOCATION
       ${MAYA_BASE_DIR}
@@ -102,9 +103,9 @@ IF(WIN32)
       lib/
     DOC "Maya's libraries path"
   )
-ENDIF(WIN32)
+endif(WIN32)
 
-FIND_PATH(MAYA_INCLUDE_DIR maya/MFn.h
+find_path(MAYA_INCLUDE_DIR maya/MFn.h
   PATHS
     ENV MAYA_LOCATION
     ${MAYA_BASE_DIR}
@@ -114,7 +115,7 @@ FIND_PATH(MAYA_INCLUDE_DIR maya/MFn.h
   DOC "Maya's devkit headers path"
 )
 
-FIND_PATH(MAYA_LIBRARY_DIR OpenMaya
+find_path(MAYA_LIBRARY_DIR OpenMaya
   PATHS
     ENV MAYA_LOCATION
     ${MAYA_BASE_DIR}
@@ -124,9 +125,9 @@ FIND_PATH(MAYA_LIBRARY_DIR OpenMaya
   DOC "Maya's devkit headers path"
 )
 
-LIST(APPEND MAYA_INCLUDE_DIRS ${MAYA_INCLUDE_DIR})
+list(APPEND MAYA_INCLUDE_DIRS ${MAYA_INCLUDE_DIR})
 
-FIND_PATH(MAYA_DEVKIT_INC_DIR GL/glext.h
+find_path(MAYA_DEVKIT_INC_DIR GL/glext.h
   PATHS
     ENV MAYA_LOCATION
     ${MAYA_BASE_DIR}
@@ -136,9 +137,9 @@ FIND_PATH(MAYA_DEVKIT_INC_DIR GL/glext.h
   DOC "Maya's devkit headers path"
 )
 
-LIST(APPEND MAYA_INCLUDE_DIRS ${MAYA_DEVKIT_INC_DIR})
+list(APPEND MAYA_INCLUDE_DIRS ${MAYA_DEVKIT_INC_DIR})
 
-FOREACH(MAYA_LIB
+foreach(MAYA_LIB
   OpenMaya
   OpenMayaAnim
   OpenMayaFX
@@ -151,7 +152,7 @@ FOREACH(MAYA_LIB
   cg
   cgGL
 )
-  FIND_LIBRARY(MAYA_${MAYA_LIB}_LIBRARY ${MAYA_LIB}
+  find_library(MAYA_${MAYA_LIB}_LIBRARY ${MAYA_LIB}
     PATHS
       ENV MAYA_LOCATION
       ${MAYA_BASE_DIR}
@@ -161,17 +162,18 @@ FOREACH(MAYA_LIB
     DOC "Maya's ${MAYA_LIB} library path"
   )
 
-  LIST(APPEND ${MAYA_LIBRARIES} MAYA_${MAYA_LIB}_LIBRARY)
-ENDFOREACH(MAYA_LIB)
+  list(APPEND ${MAYA_LIBRARIES} MAYA_${MAYA_LIB}_LIBRARY)
+endforeach(MAYA_LIB)
 
 if(MAYA_INCLUDE_DIRS AND EXISTS "${MAYA_INCLUDE_DIR}/maya/MTypes.h")
-    FILE(STRINGS ${MAYA_INCLUDE_DIR}/maya/MTypes.h TMP REGEX "#define MAYA_API_VERSION.*$")
-    STRING(REGEX MATCHALL "[0-9]+" MAYA_API_VERSION ${TMP})
+    file(STRINGS ${MAYA_INCLUDE_DIR}/maya/MTypes.h TMP REGEX "#define MAYA_API_VERSION.*$")
+    string(REGEX MATCHALL "[0-9]+" MAYA_API_VERSION ${TMP})
+    string(SUBSTRING ${MAYA_API_VERSION} 0 4 MAYA_API_VERSION_SHORT)
 endif()
 
 # handle the QUIETLY and REQUIRED arguments and set MAYA_FOUND to TRUE if
 # all listed variables are TRUE
-INCLUDE(FindPackageHandleStandardArgs)
+include(FindPackageHandleStandardArgs)
 FIND_PACKAGE_HANDLE_STANDARD_ARGS(Maya DEFAULT_MSG
     ${MAYA_LIBRARIES}
     MAYA_INCLUDE_DIRS)

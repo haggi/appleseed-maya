@@ -26,26 +26,30 @@
 // THE SOFTWARE.
 //
 
-#ifndef RENDERQUEUEWORKER_H
-#define RENDERQUEUEWORKER_H
+#ifndef RENDERQUEUE_H
+#define RENDERQUEUE_H
 
-#include "utilities/concurrentqueue.h"
-#include "event.h"
+// appleseed-maya headers.
+#include "world.h"
 
-// Maya headers.
-#include <maya/MDagPath.h>
+// Forward declarations.
+class Event;
+class MDagPath;
 
-concurrent_queue<Event>* gEventQueue();
+void pushEvent(const Event& e);
+void renderQueueWorkerCallback(float time, float lastTime, void* userPtr);
 
-class RenderQueueWorker
-{
-  public:
-    static void renderQueueWorkerCallback(float time, float lastTime, void* userPtr);
-    static void IPRUpdateCallbacks();
-};
+void initRender(
+    const World::RenderType renderType,
+    const int               width,
+    const int               height,
+    const MDagPath          cameraDagPath,
+    const bool              doRenderRegion);
 
-void initRender(const World::RenderType renderType, const int width, const int height, const MDagPath cameraDagPath, const bool doRenderRegion);
-void waitUntilRenderFinishes();
 void iprUpdateRenderRegion();
 
-#endif  // !RENDERQUEUEWORKER_H
+void stopRendering();
+void startRendering();
+void waitUntilRenderFinishes();
+
+#endif  // !RENDERQUEUE_H

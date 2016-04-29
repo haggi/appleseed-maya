@@ -96,7 +96,7 @@ struct IdNameStruct
     MObject mobject; // I need to know if I have a light or a mesh or a camera
 };
 
-class HypershadeRenderer 
+class HypershadeRenderer
   : public MPxRenderer
 {
   public:

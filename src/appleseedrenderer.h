@@ -30,6 +30,7 @@
 #define APPLESEEDRENDERER_H
 
 // appleseed-maya headers.
+#include "mayascene.h"
 #include "renderercontroller.h"
 #include "tilecallback.h"
 
@@ -75,23 +76,14 @@
 #include <string>
 #include <vector>
 
-#define RENDERGLOBALS_NODE      0x0011CF40
-#define PHYSICAL_SURFACE_SHADER 0x0011CF46
-#define AO_SHADER               0x0011CF41
-#define WIREFRAME_SHADER        0x00106EF6
-#define AOVOXEL_SHADER          0x0011CF42
-#define FASTSSS_SHADER          0x0011CF45
-#define CONST_SHADER            0x0011CF43
-#define DIAGNOSTIC_SHADER       0x0011CF44
-#define SMOKE_SHADER            0x0011CF47
-
 // Forward declarations.
-class InteractiveElement;
 class MayaObject;
 class MObject;
 class mtap_MayaScene;
 class mtap_RenderGlobals;
 class ShadingNode;
+
+#define APPLESEED_GLOBALS_ID 0x0011CF40
 
 class AppleseedRenderer
 {
@@ -130,8 +122,8 @@ class AppleseedRenderer
     void abortRendering();
 
     // Apply updates to the scene.
-    void applyInteractiveUpdates(const std::vector<InteractiveElement*>& modifiedElementList);
-	
+    void applyInteractiveUpdates(const MayaScene::EditableElementContainer& editableElements);
+
     void defineProject();
     void addRenderParams(renderer::ParamArray& paramArray);//add current render settings to all render configurations
     void defineConfig();
