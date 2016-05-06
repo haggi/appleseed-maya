@@ -471,6 +471,7 @@ void waitUntilRenderFinishes()
             if (getWorldPtr()->getRenderType() != World::IPRRENDER)
                 MGlobal::executePythonCommand("import pymel.core as pm; pm.waitCursor(state=False); pm.refresh()");
         }
+        doPostFrameJobs();
     }
 
     if (getWorldPtr()->getRenderType() == World::IPRRENDER)
