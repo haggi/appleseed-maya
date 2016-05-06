@@ -130,7 +130,6 @@ shader file
     if (uvTilingMode == 3)
         filename = filenames[udim];
 
-    t = 1.0 - t;
     string filters[4] = {"smartcubic", "cubic", "linear", "closest"};
     string filter = filters[textureFilter];
     int numChannels = 0;
