@@ -31,55 +31,6 @@
 
 #define isBlack(c) ((c[0] <= 0.0) && (c[1] <= 0.0) && (c[2] <= 0.0))
 
-closure color calculateReflection(string mdf, color specularColor, float roughness, float anisotropy, vector normalCamera)
-{
-    closure color result = 0;
-    vector Tangent = normalize(dPdu);
-    float roughnessDepthScale = 1.0;
-    color NormalReflectance = 1.0;
-    color EdgeTint = 1.0;
-    result = specularColor * as_metal(
-        mdf,
-        normalCamera,
-        Tangent,
-        NormalReflectance,
-        EdgeTint,
-        microfacet_roughness(roughness, roughnessDepthScale),
-        anisotropy);    
-    return result;
-}
-
-closure color calculateRefraction(float ior, string mdf, color refractionColor, float roughness, vector normalCamera, color absorptionColor, float absorptionDist)
-{
-    closure color result = 0;
-    vector Normal = normalCamera;
-    vector Tangent = normalize(dPdu);
-    // We use a complete transparent version, all reflectivity will be calculated in the calculateReflection function above
-    result = as_glass( mdf, Normal, Tangent, color(1.0), color(0.0), refractionColor, roughness, 1.0, ior, absorptionColor, absorptionDist);
-    return result;
-}
-
-closure color calculateDiffuse(color diffuseColor, float diffuseValue, float roughness, float translucency, color translucencyColor, vector normalCamera)
-{
-    closure color result = 0;
-
-    if (roughness != 0.0)
-        result = diffuseValue * diffuseColor * oren_nayar(normalCamera, roughness);
-    else
-        result = diffuseValue * diffuseColor * diffuse(normalCamera);
-    if ((translucency > 0.0) && (!isBlack(translucencyColor)))
-    {
-        result += translucencyColor * translucency * diffuse(normalCamera);
-    }
-    return result;
-}
-
-closure color calculateTransparentShadow(float kr)
-{
-    closure color result = 0;
-    return (1.0 - kr) * transparent();
-}
-
 shader uberShader
 [[
     string help = "uber shader",
@@ -257,62 +208,5 @@ shader uberShader
 
     output closure color outColor = 0)
 {
-
-    if ((matte == 1) && (iscameraray()))
-    {
-        outColor = emission() * 0.0;
-    }
-    else
-    {
-        closure color reflectionClosure = 0;
-        closure color refractionClosure = 0;
-        closure color subsurfaceClosure = 0;
-        closure color emissionClosure = 0;
-        closure color diffuseClosure = calculateDiffuse(color(diffuseColor), diffuseValue, roughness, translucency, color(translucencyColor), normalCamera);
-
-        int doReflection = (specular1 > 0.0) && (!isBlack(specularColor1));
-        int doRefraction = (refractivity > 0.0) && (!isBlack(refractionColor));
-        float Kr = doReflection;
-        float Kt = doRefraction;
-        
-        if (doReflection)
-        {        
-            if (specularUseFresnel1)
-                fresnel(I, normalCamera, 1.0/specularIOR1, Kr, Kt);                
-        }
-        
-        if (raytype("shadow") && doRefraction)
-        {
-            outColor = refractivity * calculateTransparentShadow(Kt);
-        }
-        
-        if (doReflection)
-        {
-            reflectionClosure = specular1 * calculateReflection(reflectionMdf, color(specularColor1), roughness1, anisotropy1, normalCamera);
-            Kr = max(reflectivityAtZeroDeg, Kr);
-        }
-        if (doRefraction)
-        {
-            refractionClosure = refractivity * calculateRefraction(refractionIOR, refractionMdf, color(refractionColor), refractionRoughness, normalCamera, absorptionColor, absorptionDist);
-        }
-        if (SSS1 > 0)
-        {
-            int depth;
-            getattribute("path:ray_depth", depth);
-            if (depth == 0)
-            {
-                float sssIOR = 1.3;
-                float g = 0.0;
-                //directional_dipole
-                //normalized_diffusion
-                //standard_dipole
-                subsurfaceClosure = as_subsurface("normalized_diffusion", N, color(SSS1Color), color(SSS1Radius * SSS1RadiusMultiplier), sssIOR, g);
-            }
-        }
-        if (emissionMultiplier > 0)
-        {
-            emissionClosure = emission() * color(emissionColor) * emissionMultiplier;
-        }
-        outColor = (diffuseClosure * (1.0 - refractivity) + refractionClosure) * (1.0 - Kr) + reflectionClosure * Kr + subsurfaceClosure + emissionClosure;
-    }
+    outColor = color(diffuseColor) * diffuse(normalCamera);
 }

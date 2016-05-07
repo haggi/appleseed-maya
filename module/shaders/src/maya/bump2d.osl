@@ -34,115 +34,6 @@
 //     https://dl.dropbox.com/u/55891920/papers/mm_sfgrad_bump.pdf
 //
 
-vector normal_map
-(
-    color         Color,
-    vector        Normal,
-    vector        Tn,
-    string        UpVector,
-    string        Space,
-    float         Amount
-)
-{
-    normal n = (normal) mix(-1, 1, clamp(Color, 0, 1));
-    vector NormalOut = n;
-
-    if (UpVector == "Green")
-    {
-        float tmp = n[2];
-        n[2] = n[1];
-        n[1] = tmp;
-    }
-
-    vector bn = cross(Tn, Normal);
-
-    if (Space == "Object")
-    {
-        n = transform("object", "world", n);
-    }
-    else if (Space == "Tangent")
-    {
-        n = n[0] * Tn + n[1] * bn + n[2] * Normal;
-    }
-
-    if (Amount != 1.0)
-        NormalOut = normalize(mix(Normal, n, Amount));
-    else
-        NormalOut = normalize(n);
-    return NormalOut;
-}
-
-vector bump_map
-(
-    vector        Position,
-    vector        Normal,
-    vector        Tn,
-    vector        Bn,
-    float         Height,
-    float         Amount
-)
-{
-    vector NormalOut = 0;
-    vector dpdx = Dx(Position);
-    vector dpdy = Dy(Position);
-
-    float dhx = Dx(Height) * Amount;
-    float dhy = Dy(Height) * Amount;
-    string Method = "classic";
-    
-    if (Method == "classic")
-    {
-        //
-        // Classic Blinn algorithm.
-        // 
-        // Reference:
-        //
-        //    Physically Based Rendering, 2nd edition, page 490.
-        //
-
-        vector new_tn = Tn * length(dpdx) + Normal * dhx;
-        vector new_bn = Bn * length(dpdy) + Normal * dhy;
-        NormalOut = cross(new_bn, new_tn);
-    }
-    else
-    {
-        //
-        // Surface gradients
-        //
-        // Reference:
-        //
-        //     Bump Mapping Unparametrized Surfaces on the GPU
-        //     Morten S. Mikkelsen
-        //     https://dl.dropbox.com/u/55891920/papers/mm_sfgrad_bump.pdf
-        //
-
-        int has_diffs;
-        int get_attr_ok = getattribute("path:ray_has_differentials", has_diffs);
-
-        // dPdx and dPdy are not always defined.
-        if (get_attr_ok && has_diffs)
-        {
-            vector rx = cross(dpdy, Normal);
-            vector ry = cross(Normal, dpdx);
-
-            float det = dot(dpdx, rx);
-            vector surf_grad = sign(det) * (dhx * rx + dhy * ry);
-
-            NormalOut = abs(det) * Normal - surf_grad;
-        }
-    }
-
-    NormalOut = normalize(NormalOut);
-
-    // Place the perturbed normal in the same hemisphere
-    // as the original normal.
-    //if (PreventNormalFlip && dot(Normal, NormalOut) < 0.0)
-    //    NormalOut = -NormalOut;
-    if (dot(Normal, NormalOut) < 0.0)
-        NormalOut = -NormalOut;
-    return NormalOut;
-}
-
 shader bump2d
 (
     float bumpValue = 0,
@@ -163,20 +54,16 @@ shader bump2d
 )
 {
     outNormal = normalCamera;
+    
+    vector dpdx = Dx(P);
+    vector dpdy = Dy(P);
 
-    // bumpInterp 0 == normal bump mapping, bumpInterp > 0 == tangent/object space normal mapping
-    if (bumpInterp == 0)
-    {
-        if (isconnected(bumpValue))
-            outNormal = bump_map(P, normalCamera, Tn, Bn, bumpValue, bumpDepth);
-    }
-    else
-    {
-        if (isconnected(normalMap))
-        {
-            string upVectorList[2] = {"Blue", "Green"};
-            string spaceList[3] = {"Tangent", "Object"}; // Maya only does not offer world space
-            outNormal = normal_map(normalMap, normalCamera, Tn, upVectorList[upVector], spaceList[bumpInterp - 1], bumpDepth);
-        }
-    }
+    float dhx = Dx(bumpValue) * bumpDepth;
+    float dhy = Dy(bumpValue) * bumpDepth;
+    vector new_tn = Tn * length(dpdx) + N * dhx;
+    vector new_bn = Bn * length(dpdy) + N * dhy;
+    vector NormalOut = cross(normalize(new_bn), normalize(new_tn));
+    outNormal = normalize(NormalOut);
+    if (dot(outNormal, N) < 0.0)
+        outNormal = -outNormal;
 }
